@@ -36,7 +36,7 @@ VM_MODPREFIX = Vtop
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-I/home/jiexxpu/ysyx/ysyx-workbench/nvboard/include \
-	-DTOP_NAME="Vtop" \
+	-DTOP_NAME="Vtop -CFLAGS " \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \

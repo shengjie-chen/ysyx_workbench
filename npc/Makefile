@@ -1,4 +1,4 @@
-TOPNAME = top
+TOPNAME = top 
 NXDC_FILES = constr/top.nxdc
 
 VERILATOR = verilator
@@ -17,7 +17,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source
-VSRCS = $(shell find $(abspath ./vsrc) -name "top.v") # "*.v")
+VSRCS = $(shell find $(abspath ./vsrc) -name "light.v") # "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "main.cpp") # "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
