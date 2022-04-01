@@ -32,10 +32,10 @@ LDFLAGS += -lSDL2 -lSDL2_image
 all:
 	@echo "Write this Makefile by your self."
 
-sim:
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
-	nvboard
+	@$^
 
 sim_vcd:
 	@rm -rf obj_dir
@@ -43,7 +43,7 @@ sim_vcd:
 	./obj_dir/Vtop
 	gtkwave Top.vcd
 
-nvboard:$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+$(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		@rm -rf $(OBJ_DIR)
 		$(VERILATOR) $(VERILATOR_CFLAGS) \
 				--top-module $(TOPNAME) $^ \
