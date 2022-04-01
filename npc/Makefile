@@ -35,7 +35,7 @@ all:
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
-	@$^
+	$^
 
 sim_vcd:
 	@rm -rf obj_dir
