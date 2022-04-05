@@ -11,3 +11,6 @@
 !.gitignore
 !init.sh
 /nvboard
+/verilator
+!/verilator_test/*
+!/npc_v/*
