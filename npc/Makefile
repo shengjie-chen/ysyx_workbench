@@ -1,4 +1,5 @@
 BUILD_DIR = ./build
+VERILOG_OBJ_DIR = Xor
 
 test:
 	mill -i __.test
@@ -6,7 +7,7 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
-	mill -i __.test.runMain Elaborate -td $(BUILD_DIR)
+	mill -i __.test.runMain XorGen -td $(BUILD_DIR)/$(VERILOG_OBJ_DIR)
 
 help:
 	mill -i __.test.runMain Elaborate --help
