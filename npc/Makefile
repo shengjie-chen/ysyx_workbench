@@ -13,7 +13,7 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
-	mill -i __.test.runMain XorGen -td $(BUILD_DIR)/$(VERILOG_OBJ_DIR)
+	mill -i __.test.runMain $(TOPNAME)Gen -td $(BUILD_DIR)/$(VERILOG_OBJ_DIR)
 
 help:
 	mill -i __.test.runMain Elaborate --help
