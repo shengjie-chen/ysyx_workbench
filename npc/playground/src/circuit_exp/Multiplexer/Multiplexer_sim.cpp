@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "time.h"
 #include "VMultiplexer.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -19,11 +20,11 @@ int main(int argc, char **argv, char **env){
 	tfp->open("Multiplexer.vcd");
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
-		int sel = rand() & 4;
-		int x0 = rand() & 4;
-		int x1 = rand() & 4;
-		int x2 = rand() & 4;
-		int x3 = rand() & 4;
+		int sel = srand(time(0)) & 4;
+		int x0 = srand(time(0)) & 4;
+		int x1 = srand(time(0)) & 4;
+		int x2 = srand(time(0)) & 4;
+		int x3 = srand(time(0)) & 4;
 		int f;
 
 		top->io_Y = sel;
