@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <nvboard.h>
-#include "VXor.h"
+#include "VMultiplexer.h"
 
-static VXor dut;
+static VMultiplexer dut;
 
-void nvboard_bind_all_pins(VXor* top);
+void nvboard_bind_all_pins(VMultiplexer* top);
 
 int main() {
 		nvboard_bind_all_pins(&dut);

@@ -10,7 +10,8 @@ OBJ_DIR = $(GEN_DIR)/obj_dir
 VERILOG_GEN = Verilog_Gen
 VERILOG_OBJ_DIR = $(GEN_DIR)/$(VERILOG_GEN)
 NXDC_FILES = $(SRC_CODE_DIR)/$(TOPNAME).nxdc
-BIN = $(GEN_DIR)/$(TOPNAME)
+BIN_BOARD = $(GEN_DIR)/$(TOPNAME)
+BIN_VCD = $(GEN_DIR)/$(TOPNAME)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -29,7 +30,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
-CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "Multiplexer_sim.cpp")#"*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "Multiplexer.cpp")#"Multiplexer_sim.cpp")#"*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS_BOARD = $(CSRCS) $(SRC_AUTO_BIND)
 
 # rules for NVBoard
@@ -40,12 +41,12 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
-$(BIN):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
+$(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 		@rm -rf $(OBJ_DIR)
 		$(VERILATOR) $(VERILATOR_CFLAGS) \
 				--top-module $(TOPNAME) $^ \
 				$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
-				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN_BOARD))
 
 test:
 	mill -i __.test
@@ -72,7 +73,7 @@ clean:
 
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
-sim_board:$(BIN)
+sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	$^
@@ -80,8 +81,8 @@ sim_board:$(BIN)
 sim_vcd:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN))
-	$(BIN)
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
+	$(BIN_VCD)
 	gtkwave $(TOPNAME).vcd
 
 
