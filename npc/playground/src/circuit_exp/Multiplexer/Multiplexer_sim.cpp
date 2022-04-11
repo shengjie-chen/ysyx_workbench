@@ -22,11 +22,11 @@ int main(int argc, char **argv, char **env){
     srand(time(NULL));
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
-		int sel = rand() & 4;
-		int x0 = rand() & 4;
-		int x1 = rand() & 4;
-		int x2 = rand() & 4;
-		int x3 = rand() & 4;
+		int sel = rand() % 4;
+		int x0 = rand() % 4;
+		int x1 = rand() % 4;
+		int x2 = rand() % 4;
+		int x3 = rand() % 4;
 		int f;
 
 		top->io_Y = sel;
