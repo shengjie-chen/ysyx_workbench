@@ -19,8 +19,9 @@ int main(int argc, char **argv, char **env){
 	top->trace(tfp,99);
 	tfp->open("Multiplexer.vcd");
 
+    srand(time(NULL));
 	while (!Verilated::gotFinish() && main_time < sim_time) {
-	    srand(time(0));
+
 		int sel = rand() & 4;
 		int x0 = rand() & 4;
 		int x1 = rand() & 4;

@@ -85,5 +85,4 @@ sim_vcd:
 	gtkwave $(TOPNAME).vcd
 
 
-
 include ../Makefile
