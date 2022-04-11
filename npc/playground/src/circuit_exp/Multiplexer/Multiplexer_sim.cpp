@@ -19,17 +19,35 @@ int main(int argc, char **argv, char **env){
 	tfp->open("Multiplexer.vcd");
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
-		int a = rand() & 1;
-		int b = rand() & 1;
-		top->a = a;
-		top->b = b;
+		int sel = rand() & 4;
+		int x0 = rand() & 4;
+		int x1 = rand() & 4;
+		int x2 = rand() & 4;
+		int x3 = rand() & 4;
+		int f;
+
+		top->io_Y = sel;
+		top->io_X_0 = x0;
+		top->io_X_1 = x1;
+		top->io_X_2 = x2;
+		top->io_X_3 = x3;
 
 		top->eval();
 		tfp->dump(main_time);
 
 		main_time++;
-		printf("a = %d, b = %d, f = %d\n", a, b, top->f);
-		assert(top->f == a ^ b);
+		printf("sel = %d\nx0 = %d, x1 = %d, x2 = %d, x3 = %d\nf = %d\n", sel, x0, x1, x2, x3, top->io.F);
+		switch(sel){
+		case 0:
+		    f = x0;break;
+		case 1:
+		    f = x1;break;
+		case 0:
+            f = x2;break;
+        case 1:
+            f = x3;break;
+		}
+		assert(top->f == f);
 	}
 	tfp->close();
 	delete top;

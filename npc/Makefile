@@ -29,7 +29,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
-CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "Multiplexer_sim.cpp")#"*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS_BOARD = $(CSRCS) $(SRC_AUTO_BIND)
 
 # rules for NVBoard
@@ -75,13 +75,11 @@ clean:
 sim_board:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	make verilog
 	$^
 
 sim_vcd:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	make verilog
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN))
 	$(BIN)
 	gtkwave Top.vcd
