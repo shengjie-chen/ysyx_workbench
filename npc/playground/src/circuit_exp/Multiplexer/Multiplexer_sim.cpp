@@ -47,7 +47,7 @@ int main(int argc, char **argv, char **env){
         case 1:
             f = x3;break;
 		}
-		assert(top->f == f);
+		assert(top->io_F == f);
 	}
 	tfp->close();
 	delete top;
