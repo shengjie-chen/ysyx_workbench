@@ -76,16 +76,15 @@ clean:
 
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
+# before run, make verilog
 sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	make verilog
 	$^
 
 sim_vcd:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	make verilog
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
 	$(BIN_VCD)
 	gtkwave $(TOPNAME).vcd
