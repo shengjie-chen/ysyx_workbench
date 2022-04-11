@@ -20,11 +20,12 @@ int main(int argc, char **argv, char **env){
 	tfp->open("Multiplexer.vcd");
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
-		int sel = srand(time(0)) & 4;
-		int x0 = srand(time(0)) & 4;
-		int x1 = srand(time(0)) & 4;
-		int x2 = srand(time(0)) & 4;
-		int x3 = srand(time(0)) & 4;
+	    srand(time(NULL))
+		int sel = rand() & 4;
+		int x0 = rand() & 4;
+		int x1 = rand() & 4;
+		int x2 = rand() & 4;
+		int x3 = rand() & 4;
 		int f;
 
 		top->io_Y = sel;
