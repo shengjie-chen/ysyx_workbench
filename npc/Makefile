@@ -1,10 +1,12 @@
 BUILD_DIR = ./build
 # design module
 TOPNAME = Multiplexer
+SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
-GEN_DIR = $(BUILD_DIR)/circuit_exp/$(TOPNAME)
-SRC_CODE_DIR = ./playground/src/circuit_exp/$(TOPNAME)
+
+SRC_CODE_DIR = $(shell find $(abspath $(SRC_DIR)) -maxdepth 2 -type d -name "$(TOPNAME)")
+GEN_DIR = $(subst $(SRC_DIR),$(BUILD_DIR),$(SRC_CODE_DIR))
 
 OBJ_DIR = $(GEN_DIR)/obj_dir
 VERILOG_GEN = Verilog_Gen
