@@ -79,13 +79,13 @@ clean:
 sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
+	make verilog
 	$^
 
 sim_vcd:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	echo $(SRC_CODE_DIR)
-	echo $(GEN_DIR)
+	make verilog
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
 	$(BIN_VCD)
 	gtkwave $(TOPNAME).vcd
