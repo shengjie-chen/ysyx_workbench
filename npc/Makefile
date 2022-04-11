@@ -1,10 +1,13 @@
 BUILD_DIR = ./build
-TOPNAME = Xor# design module
-TOPMODULE_GEN = $(TOPNAME)Gen# name of object to generate the verilog of design
+# design module
+TOPNAME = Xor
+# name of object to generate the verilog of design
+TOPMODULE_GEN = $(TOPNAME)Gen
 OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/obj_dir
 VERILOG_GEN = Verilog_Gen
 VERILOG_OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/$(VERILOG_GEN)
-NXDC_FILES = $(TOPNAME).nxdc
+SRC_CODE_DIR = ./playground/src/$(TOPNAME)
+NXDC_FILES = $(SRC_CODE_DIR)/$(TOPNAME).nxdc
 BIN = $(BUILD_DIR)/$(TOPNAME)/$(TOPNAME)
 
 VERILATOR = verilator
@@ -24,7 +27,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
-CSRCS = $(shell find $(abspath ./playground/src/$(TOPNAME)) -name  "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
 # rules for NVBoard
