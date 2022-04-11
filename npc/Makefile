@@ -1,9 +1,10 @@
 BUILD_DIR = ./build
 TOPNAME = Xor # design module
 TOPMODULE_GEN = $(TOPNAME)Gen # name of object to generate the verilog of design
-OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/Verilator_Gen
+OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/obj_dir
 VERILOG_OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/Verilog_Gen
 NXDC_FILES = $(TOPNAME).nxdc
+BIN = $(BUILD_DIR)/$(TOPNAME)/$(TOPNAME)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
