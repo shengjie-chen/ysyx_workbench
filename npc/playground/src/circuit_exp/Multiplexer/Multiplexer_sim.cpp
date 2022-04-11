@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **env){
 		tfp->dump(main_time);
 
 		main_time++;
-		printf("sel = %d\nx0 = %d, x1 = %d, x2 = %d, x3 = %d\nf = %d\n", sel, x0, x1, x2, x3, top->io.F);
+		printf("sel = %d\nx0 = %d, x1 = %d, x2 = %d, x3 = %d\nf = %d\n", sel, x0, x1, x2, x3, top->io_F);
 		switch(sel){
 		case 0:
 		    f = x0;break;
