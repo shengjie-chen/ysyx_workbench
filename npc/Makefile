@@ -40,7 +40,7 @@ test:
 
 verilog:
 	$(call git_commit, "generate verilog")
-	mkdir -p $(BUILD_DIR)
+	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 help:
