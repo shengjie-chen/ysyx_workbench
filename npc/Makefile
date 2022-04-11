@@ -1,14 +1,16 @@
 BUILD_DIR = ./build
 # design module
-TOPNAME = Xor
+TOPNAME = Multiplexer
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
-OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/obj_dir
+GEN_DIR = $(BUILD_DIR)/circuit_exp/$(TOPNAME)
+SRC_CODE_DIR = ./playground/src/circuit_exp/$(TOPNAME)
+
+OBJ_DIR = $(GEN_DIR)/obj_dir
 VERILOG_GEN = Verilog_Gen
-VERILOG_OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/$(VERILOG_GEN)
-SRC_CODE_DIR = ./playground/src/$(TOPNAME)
+VERILOG_OBJ_DIR = $(GEN_DIR)/$(VERILOG_GEN)
 NXDC_FILES = $(SRC_CODE_DIR)/$(TOPNAME).nxdc
-BIN = $(BUILD_DIR)/$(TOPNAME)/$(TOPNAME)
+BIN = $(GEN_DIR)/$(TOPNAME)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -28,7 +30,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 # project source
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
 CSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.c" -or -name "*.cc" -or -name "*.cpp")
-CSRCS += $(SRC_AUTO_BIND)
+CSRCS_BOARD = $(CSRCS) $(SRC_AUTO_BIND)
 
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
@@ -38,7 +40,7 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
-$(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+$(BIN):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 		@rm -rf $(OBJ_DIR)
 		$(VERILATOR) $(VERILATOR_CFLAGS) \
 				--top-module $(TOPNAME) $^ \
@@ -70,9 +72,20 @@ clean:
 
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
-sim:$(BIN)
+sim_board:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
+	make verilog
 	$^
+
+sim_vcd:
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	@echo "Write this Makefile by yourself."
+	make verilog
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN))
+	$(BIN)
+	gtkwave Top.vcd
+
+
 
 include ../Makefile
