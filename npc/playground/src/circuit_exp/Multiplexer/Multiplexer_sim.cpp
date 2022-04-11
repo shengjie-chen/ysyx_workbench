@@ -42,9 +42,9 @@ int main(int argc, char **argv, char **env){
 		    f = x0;break;
 		case 1:
 		    f = x1;break;
-		case 0:
+		case 2:
             f = x2;break;
-        case 1:
+        case 3:
             f = x3;break;
 		}
 		assert(top->io_F == f);
