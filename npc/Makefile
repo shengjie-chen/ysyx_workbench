@@ -26,7 +26,7 @@ verilog:
 	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 # constraint file
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/$(TOPNAME)/auto_bind.cpp)
+SRC_AUTO_BIND = $(abspath ./nvboard_constr/auto_bind.cpp)# The file is initialized manually
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
