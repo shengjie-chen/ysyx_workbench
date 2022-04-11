@@ -1,5 +1,11 @@
 BUILD_DIR = ./build
-VERILOG_OBJ_DIR = Xor
+TOPNAME = Xor 
+VERILOG_OBJ_DIR = $(TOPNAME) 
+NXDC_FILES = $(TOPNAME).nxdc
+
+VERILATOR = verilator
+VERILATOR_CFLAGS += -MMD --build -cc  \
+					-O3 --x-assign fast --x-initial fast --noassert
 
 test:
 	mill -i __.test
