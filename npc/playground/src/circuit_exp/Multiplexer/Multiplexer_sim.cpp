@@ -20,7 +20,7 @@ int main(int argc, char **argv, char **env){
 	tfp->open("Multiplexer.vcd");
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
-	    srand(time(NULL));
+	    srand(time(0));
 		int sel = rand() & 4;
 		int x0 = rand() & 4;
 		int x1 = rand() & 4;

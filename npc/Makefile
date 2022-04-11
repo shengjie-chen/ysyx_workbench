@@ -82,7 +82,7 @@ sim_vcd:
 	@echo "Write this Makefile by yourself."
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN))
 	$(BIN)
-	gtkwave Top.vcd
+	gtkwave $(TOPNAME).vcd
 
 
 
