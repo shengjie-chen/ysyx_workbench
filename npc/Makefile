@@ -1,6 +1,6 @@
 BUILD_DIR = ./build
-TOPNAME = Xor # design module
-TOPMODULE_GEN = $(TOPNAME)Gen # name of object to generate the verilog of design
+TOPNAME = Xor# design module
+TOPMODULE_GEN = $(TOPNAME)Gen# name of object to generate the verilog of design
 OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/obj_dir
 VERILOG_GEN = Verilog_Gen
 VERILOG_OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/$(VERILOG_GEN)
