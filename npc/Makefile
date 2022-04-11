@@ -1,12 +1,38 @@
 BUILD_DIR = ./build
-TOPNAME = Xor
-TOPMODULE_GEN = $(TOPNAME)Gen
-VERILOG_OBJ_DIR = $(TOPNAME) 
+TOPNAME = Xor # design module
+TOPMODULE_GEN = $(TOPNAME)Gen # name of object to generate the verilog of design
+OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/Verilator_Gen
+VERILOG_OBJ_DIR = $(BUILD_DIR)/$(TOPNAME)/Verilog_Gen
 NXDC_FILES = $(TOPNAME).nxdc
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 					-O3 --x-assign fast --x-initial fast --noassert
+
+# constraint file
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/$(TOPNAME)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+# project source
+VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
+CSRCS = $(shell find $(abspath ./playground/src/$(TOPNAME)) -name  "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS += $(SRC_AUTO_BIND)
+
+# rules for NVBoard
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+
+# rules for verilator
+INCFLAGS = $(addprefix -I, $(INC_PATH))
+CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+LDFLAGS += -lSDL2 -lSDL2_image
+
+$(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+		@rm -rf $(OBJ_DIR)
+		$(VERILATOR) $(VERILATOR_CFLAGS) \
+				--top-module $(TOPNAME) $^ \
+				$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 test:
 	mill -i __.test
@@ -14,7 +40,7 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
-	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(BUILD_DIR)/$(VERILOG_OBJ_DIR)
+	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 help:
 	mill -i __.test.runMain Elaborate --help
@@ -36,8 +62,9 @@ clean:
 
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
-sim:
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
+	$^
 
 include ../Makefile
