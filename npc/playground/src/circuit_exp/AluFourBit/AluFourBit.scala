@@ -25,7 +25,7 @@ class AluFourBit extends RawModule {
       io.carry := tmp(4)
       io.out := tmp(3,0).asSInt()
       io.overflow := (io.A(3) === io.B(3) && io.A(3) =/= io.out(3))
-      io.zero :=  io.out.asUInt().orR()
+      io.zero :=  ~io.out.asUInt().orR()
     }
     is("b001".U){
       val t_no_Cin = VecInit(Seq.fill(4)(1.U(1.W))).asUInt() ^ io.B.asUInt()
