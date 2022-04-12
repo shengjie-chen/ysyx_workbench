@@ -36,11 +36,11 @@ int main(int argc, char **argv, char **env){
 
 		printf("in = ");
         for(int i=0;i<8:i++){
-            printf("%d",in[7-i])
+            printf("%d",in[7-i]);
         }
 		printf("\n");
-		printf("io_out = %d\n",top.io_out)
-        printf("io_in_valid = %d\n",top.io_in_valid)
+		printf("io_out = %d\n",top.io_out);
+        printf("io_in_valid = %d\n",top.io_in_valid);
 
 		int out,in_valid = 0;
 		for(int i=0;i<8;i++){
