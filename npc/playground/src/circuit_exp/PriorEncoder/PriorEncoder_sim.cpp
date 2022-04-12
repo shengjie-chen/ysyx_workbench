@@ -25,8 +25,8 @@ int main(int argc, char **argv, char **env){
 		int in[8];
         int i;
         for(i=0;i<8;i++){
-            in[i] = rand() % 2
-            top.io_in(0) = in[i]
+            in[i] = rand() % 2;
+            top.io_in(0) = in[i];
         }
 
 		top->eval();
