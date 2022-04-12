@@ -30,19 +30,18 @@ class PriorEncoder extends RawModule {
   }
 
   when(io.in_valid){
-    io.seg := MuxLookup(io.out, "b00111111".U, Array(
-      0.U -> "b11111101".U,
-      1.U -> "b11111101".U,
-      2.U -> "b11111101".U,
-      3.U -> "b11111101".U,
-      4.U -> "b11111101".U,
-      5.U -> "b11111101".U,
-      6.U -> "b11111101".U,
-      7.U -> "b11111101".U,
-      0.U -> "b11111101".U
+    io.seg := ~ MuxLookup(io.out, "b11111100".U, Array(
+      0.U -> "b11111100".U,
+      1.U -> "b01100000".U,
+      2.U -> "b11011010".U,
+      3.U -> "b11110010".U,
+      4.U -> "b01100110".U,
+      5.U -> "b10110110".U,
+      6.U -> "b10111110".U,
+      7.U -> "b11100000".U
     ))
   }.otherwise{
-    io.seg := "b00111111".U
+    io.seg := "b11111100".U
   }
 
 
