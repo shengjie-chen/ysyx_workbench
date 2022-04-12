@@ -16,13 +16,19 @@ class AluFourBit extends RawModule {
 
   switch(io.fun) {
     is("b000".U){
-      Cat(io.carry,io.out) := io.A + io.B
+      val tmp = SInt(5.W)
+      tmp := io.A + io.B
+      io.carry := tmp(4)
+      io.out := tmp(3,0)
       io.overflow := (io.A(3) === io.B(3) && io.A(3) =/= io.out(3))
       io.zero :=  io.out.asUInt().orR()
     }
     is("b001".U){
       val t_no_Cin = Vec(4,1.U).asUInt() ^ io.B.asUInt()
-      Cat(io.carry,io.out) := io.A + t_no_Cin.asSInt()
+      val tmp = SInt(5.W)
+      tmp := io.A + t_no_Cin.asSInt()
+      io.carry := tmp(4)
+      io.out := tmp(3,0)
       io.overflow := (io.A(3) === t_no_Cin(3) && io.A(3) =/= io.out(3))
       io.zero :=  ~io.out.asUInt().orR()
     }
