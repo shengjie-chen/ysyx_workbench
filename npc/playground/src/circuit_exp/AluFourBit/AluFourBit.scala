@@ -24,7 +24,7 @@ class AluFourBit extends RawModule {
       io.zero :=  io.out.asUInt().orR()
     }
     is("b001".U){
-      val t_no_Cin = Vec(4,1.U).asUInt() ^ io.B.asUInt()
+      val t_no_Cin = VecInit(Seq.fill(4)(1.U(1.W))).asUInt() ^ io.B.asUInt()
       val tmp = Wire(SInt(5.W))
       tmp := io.A + t_no_Cin.asSInt()
       io.carry := tmp(4)
