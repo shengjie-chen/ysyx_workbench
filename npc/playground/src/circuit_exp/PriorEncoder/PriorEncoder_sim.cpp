@@ -39,7 +39,7 @@ int main(int argc, char **argv, char **env){
         printf("io_in_valid = %d\n",top->io_in_valid);
 
 		int out = 0, i, in_valid = 0;
-		for(i=7;i>=8;i--){
+		for(i=7;i>=0;i--){
 		    if(GET_BIT(in,i)){
 		        out = i;
 		        in_valid = 1;
