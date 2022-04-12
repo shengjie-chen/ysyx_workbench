@@ -1,9 +1,12 @@
 #include <nvboard.h>
-#include "VPriorEncoder.h"
+#include "VAluFourBit.h"
 
-void nvboard_bind_all_pins(VPriorEncoder* top) {
-	nvboard_bind_pin( &top->io_in, BIND_RATE_SCR, BIND_DIR_IN , 8, SW7, SW6, SW5, SW4, SW3, SW2, SW1, SW0);
+void nvboard_bind_all_pins(VAluFourBit* top) {
+	nvboard_bind_pin( &top->io_fun, BIND_RATE_SCR, BIND_DIR_IN , 3, BTNL, BTNC, BTNR);
+	nvboard_bind_pin( &top->io_A, BIND_RATE_SCR, BIND_DIR_IN , 4, SW3, SW2, SW1, SW0);
+	nvboard_bind_pin( &top->io_B, BIND_RATE_SCR, BIND_DIR_IN , 4, SW7, SW6, SW5, SW4);
 	nvboard_bind_pin( &top->io_out, BIND_RATE_SCR, BIND_DIR_OUT, 3, LD2, LD1, LD0);
-	nvboard_bind_pin( &top->io_in_valid, BIND_RATE_SCR, BIND_DIR_OUT, 1, LD4);
-	nvboard_bind_pin( &top->io_seg, BIND_RATE_SCR, BIND_DIR_OUT, 8, SEG0A, SEG0B, SEG0C, SEG0D, SEG0E, SEG0F, SEG0G, DEC0P);
+	nvboard_bind_pin( &top->io_zero, BIND_RATE_SCR, BIND_DIR_OUT, 1, LD3);
+	nvboard_bind_pin( &top->io_overflow, BIND_RATE_SCR, BIND_DIR_OUT, 1, LD4);
+	nvboard_bind_pin( &top->io_carry, BIND_RATE_SCR, BIND_DIR_OUT, 1, LD5);
 }
