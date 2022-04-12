@@ -45,10 +45,10 @@ class AluFourBit extends RawModule {
       io.out := io.A ^ io.B
     }
     is("b110".U){
-      io.out := (io.A < io.B)
+      io.out := (io.A < io.B).asSInt()
     }
     is("b111".U){
-      io.out := (io.A === io.B)
+      io.out := (io.A === io.B).asSInt()
     }
   }
 
