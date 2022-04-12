@@ -34,21 +34,39 @@ class AluFourBit extends RawModule {
     }
     is("b010".U){
       io.out := ~io.A
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
     is("b011".U){
       io.out := io.A & io.B
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
     is("b100".U){
       io.out := io.A | io.B
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
     is("b101".U){
       io.out := io.A ^ io.B
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
     is("b110".U){
       io.out := (io.A < io.B).asSInt()
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
     is("b111".U){
       io.out := (io.A === io.B).asSInt()
+      io.carry := DontCare
+      io.overflow := DontCare
+      io.zero := DontCare
     }
   }
 
