@@ -6,6 +6,9 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+
+#define	GET_BIT(x, bit)	((x & (1 << bit)) >> bit)
+
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 256;
 
@@ -20,31 +23,24 @@ int main(int argc, char **argv, char **env){
 	tfp->open("./build/circuit_exp/PriorEncoder/PriorEncoder.vcd");
 
     srand(time(NULL));
+    int in = 0;
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
-		int in[8];
-        int i;
-        for(i=0;i<8;i++){
-            in[i] = rand() % 2;
-            top->io_in(0) = in[i];
-        }
+        top->io_in = in;
 
 		top->eval();
 		tfp->dump(main_time);
 
 		main_time++;
 
-		printf("in = ");
-        for(i=0;i<8;i++){
-            printf("%d",in[7-i]);
-        }
-		printf("\n");
+		printf("in = %x %x %x %x %x %x %x %x \n",GET_BIT(in,7),GET_BIT(in,6), \
+		    GET_BIT(in,5),GET_BIT(in,4),GET_BIT(in,3),GET_BIT(in,2),GET_BIT(in,1),GET_BIT(in,0));
 		printf("io_out = %d\n",top->io_out);
         printf("io_in_valid = %d\n",top->io_in_valid);
 
-		int out,in_valid = 0;
+		int out, i, in_valid = 0;
 		for(i=0;i<8;i++){
-		    if(in[7-i]){
+		    if(GET_BIT(in,7-i)){
 		        out = 7-i;
 		        in_valid = 1;
 		        break;
@@ -52,6 +48,7 @@ int main(int argc, char **argv, char **env){
 		}
 		assert(top->io_in_valid == in_valid);
 		assert(top->io_out == out);
+		in++;
 	}
 	tfp->close();
 	delete top;
