@@ -26,7 +26,7 @@ int main(int argc, char **argv, char **env){
         int i;
         for(i=0;i<8;i++){
             in[i] = rand() % 2;
-            top.io_in(0) = in[i];
+            top->io_in(0) = in[i];
         }
 
 		top->eval();
@@ -39,8 +39,8 @@ int main(int argc, char **argv, char **env){
             printf("%d",in[7-i]);
         }
 		printf("\n");
-		printf("io_out = %d\n",top.io_out);
-        printf("io_in_valid = %d\n",top.io_in_valid);
+		printf("io_out = %d\n",top->io_out);
+        printf("io_in_valid = %d\n",top->io_in_valid);
 
 		int out,in_valid = 0;
 		for(i=0;i<8;i++){
