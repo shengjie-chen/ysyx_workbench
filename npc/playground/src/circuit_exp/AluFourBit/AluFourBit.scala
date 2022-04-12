@@ -16,7 +16,7 @@ class AluFourBit extends RawModule {
 
   switch(io.fun) {
     is("b000".U){
-      val tmp = SInt(5.W)
+      val tmp = Wire(SInt(5.W))
       tmp := io.A + io.B
       io.carry := tmp(4)
       io.out := tmp(3,0)
@@ -25,7 +25,7 @@ class AluFourBit extends RawModule {
     }
     is("b001".U){
       val t_no_Cin = Vec(4,1.U).asUInt() ^ io.B.asUInt()
-      val tmp = SInt(5.W)
+      val tmp = Wire(SInt(5.W))
       tmp := io.A + t_no_Cin.asSInt()
       io.carry := tmp(4)
       io.out := tmp(3,0)
