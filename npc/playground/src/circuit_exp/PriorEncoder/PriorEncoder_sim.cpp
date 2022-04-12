@@ -23,8 +23,8 @@ int main(int argc, char **argv, char **env){
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
 		int in[8];
-
-        for(int i=0;i<8:i++){
+        int i;
+        for(i=0;i<8:i++){
             in[i] = rand() % 2
             top.io_in(0) = in[i]
         }
@@ -35,7 +35,7 @@ int main(int argc, char **argv, char **env){
 		main_time++;
 
 		printf("in = ");
-        for(int i=0;i<8:i++){
+        for(i=0;i<8;i++){
             printf("%d",in[7-i]);
         }
 		printf("\n");
@@ -43,7 +43,7 @@ int main(int argc, char **argv, char **env){
         printf("io_in_valid = %d\n",top.io_in_valid);
 
 		int out,in_valid = 0;
-		for(int i=0;i<8;i++){
+		for(i=0;i<8;i++){
 		    if(in[7-i]){
 		        out = 7-i;
 		        in_valid = 1;
