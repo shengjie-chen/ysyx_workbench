@@ -16,6 +16,7 @@ class AluFourBit extends RawModule {
   io.carry := 0.B
   io.overflow := 0.B
   io.zero := 0.B
+  io.out := 0.S
 
   switch(io.fun) {
     is("b000".U){
