@@ -1,11 +1,9 @@
 #include <nvboard.h>
-#include "VMultiplexer.h"
+#include "VPriorEncoder.h"
 
-void nvboard_bind_all_pins(VMultiplexer* top) {
-	nvboard_bind_pin( &top->io_X_0, BIND_RATE_SCR, BIND_DIR_IN , 2, SW3, SW2);
-	nvboard_bind_pin( &top->io_X_1, BIND_RATE_SCR, BIND_DIR_IN , 2, SW5, SW4);
-	nvboard_bind_pin( &top->io_X_2, BIND_RATE_SCR, BIND_DIR_IN , 2, SW7, SW6);
-	nvboard_bind_pin( &top->io_X_3, BIND_RATE_SCR, BIND_DIR_IN , 2, SW9, SW8);
-	nvboard_bind_pin( &top->io_Y, BIND_RATE_SCR, BIND_DIR_IN , 2, SW1, SW0);
-	nvboard_bind_pin( &top->io_F, BIND_RATE_SCR, BIND_DIR_OUT, 2, LD1, LD0);
+void nvboard_bind_all_pins(VPriorEncoder* top) {
+	nvboard_bind_pin( &top->io_in, BIND_RATE_SCR, BIND_DIR_IN , 8, SW7, SW6, SW5, SW4, SW3, SW2, SW1, SW0);
+	nvboard_bind_pin( &top->io_out, BIND_RATE_SCR, BIND_DIR_OUT, 3, LD2, LD1, LD0);
+	nvboard_bind_pin( &top->io_in_valid, BIND_RATE_SCR, BIND_DIR_OUT, 1, LD4);
+	nvboard_bind_pin( &top->io_seg, BIND_RATE_SCR, BIND_DIR_OUT, 8, SEG0A, SEG0B, SEG0C, SEG0D, SEG0E, SEG0F, SEG0G, DEC0P);
 }

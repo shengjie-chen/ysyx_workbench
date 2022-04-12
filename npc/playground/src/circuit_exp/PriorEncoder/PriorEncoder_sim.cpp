@@ -38,10 +38,10 @@ int main(int argc, char **argv, char **env){
 		printf("io_out = %d\n",top->io_out);
         printf("io_in_valid = %d\n",top->io_in_valid);
 
-		int out, i, in_valid = 0;
-		for(i=0;i<8;i++){
-		    if(GET_BIT(in,7-i)){
-		        out = 7-i;
+		int out = 0, i, in_valid = 0;
+		for(i=7;i>=8;i--){
+		    if(GET_BIT(in,i)){
+		        out = i;
 		        in_valid = 1;
 		        break;
 		    }

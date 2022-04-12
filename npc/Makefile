@@ -46,7 +46,6 @@ LDFLAGS += -lSDL2 -lSDL2_image
 
 $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 		@rm -rf $(OBJ_DIR)
-		echo $(NXDC_FILES)
 		$(VERILATOR) $(VERILATOR_CFLAGS) \
 				--top-module $(TOPNAME) $^ \
 				$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
