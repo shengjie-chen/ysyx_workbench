@@ -19,7 +19,7 @@ class AluFourBit extends RawModule {
       val tmp = Wire(SInt(5.W))
       tmp := io.A + io.B
       io.carry := tmp(4)
-      io.out := tmp(3,0)
+      io.out := tmp(3,0).asSInt()
       io.overflow := (io.A(3) === io.B(3) && io.A(3) =/= io.out(3))
       io.zero :=  io.out.asUInt().orR()
     }
