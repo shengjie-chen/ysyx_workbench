@@ -11,7 +11,24 @@ class PriorEncoder extends RawModule {
   })
 
   io.in_valid := io.in.orR()
-  io.out := PriorityEncoder(io.in)
+  when(io.in(7)) {
+    io.out := 7.U
+  }.elsewhen(io.in(6)) {
+    io.out := 6.U
+  }.elsewhen(io.in(5)) {
+    io.out := 5.U
+  }.elsewhen(io.in(4)) {
+    io.out := 4.U
+  }.elsewhen(io.in(3)) {
+    io.out := 3.U
+  }.elsewhen(io.in(2)) {
+    io.out := 2.U
+  }.elsewhen(io.in(1)) {
+    io.out := 1.U
+  }.otherwise {
+    io.out := 0.U
+  }
+
   when(io.in_valid){
     io.seg := MuxLookup(io.out, "b00111111".U, Array(
       0.U -> "b11111101".U,
