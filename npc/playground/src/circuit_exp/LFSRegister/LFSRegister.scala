@@ -14,7 +14,7 @@ class LFSRegister extends Module{
 
 //  val lfsr = VecInit(Seq.fill(9)(RegInit(0.U(1.W))))
 //  val lfsr = RegInit(0.U(9.W))
-//    val lfsr = VecInit(Seq.fill(9)(RegInit(0.U(1.W))))
+//    val lfsr = VecInit(Seq.fill(9)(RegInit(0.U(1.W))))  !!!!!!RegInit outside
   val lfsr = RegInit(VecInit(0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W),0.U(1.W)))
   var x = 0
 
