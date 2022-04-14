@@ -1,3 +1,5 @@
+package Xor
+
 import chisel3._
 
 class Xor extends RawModule {
