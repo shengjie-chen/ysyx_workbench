@@ -1,7 +1,8 @@
+package circuit_exp.AluFourBit
+
 import Chisel.{Cat, switch}
 import chisel3._
 import chisel3.util.is
-package circuit_exp.AluFourBit
 
 class AluFourBit extends RawModule {
   val io = IO(new Bundle {

@@ -1,5 +1,6 @@
-import chisel3._
 package circuit_exp.Multiplexer
+
+import chisel3._
 class Multiplexer extends RawModule {
   val io = IO(new Bundle {
     val X = Input(Vec(4,UInt(2.W)))
