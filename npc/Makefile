@@ -26,7 +26,7 @@ verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VERILOG_OBJ_DIR)
 	echo $(PACKAGE)
-	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
+	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 # constraint file
 SRC_AUTO_BIND = $(abspath ./nvboard_constr/auto_bind.cpp)# The file is initialized manually
