@@ -6,7 +6,9 @@ SRC_DIR = ./playground/src
 TOPMODULE_GEN = $(TOPNAME)Gen
 
 SRC_CODE_DIR = $(shell find $(abspath $(SRC_DIR)) -maxdepth 2 -type d -name "$(TOPNAME)")
-GEN_DIR = $(subst $(abspath $(SRC_DIR)),$(BUILD_DIR),$(SRC_CODE_DIR))
+GEN_DIR = $(subst $(abspath $(SRC_DIR)),$(BUILD_DIR),$(SRC_CODE_DIR))# $(subst FROM, TO, TEXT)，即将字符串TEXT中的子串FROM变为TO
+
+PACKAGE = $(subst /,.,$(subst $(abspath $(SRC_DIR)),,$(SRC_CODE_DIR)))
 
 OBJ_DIR = $(GEN_DIR)/obj_dir
 VERILOG_GEN = Verilog_Gen
@@ -23,6 +25,7 @@ VERILATOR_CFLAGS += -MMD --build -cc  \
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VERILOG_OBJ_DIR)
+	echo $(PACKAGE)
 	mill -i __.test.runMain $(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 # constraint file
