@@ -1,6 +1,6 @@
 BUILD_DIR = ./build
 # design module
-TOPNAME = PriorEncoder
+TOPNAME = Xor
 SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
@@ -25,7 +25,6 @@ VERILATOR_CFLAGS += -MMD --build -cc  \
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VERILOG_OBJ_DIR)
-	echo $(PACKAGE)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 # constraint file
