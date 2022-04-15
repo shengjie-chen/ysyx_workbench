@@ -96,20 +96,17 @@ class KeyBoard extends Module {
 
   io.data := data1
 
-
-
-
   when(io.ps2_clk){
-    io.seg0 := "b11111111".U
+    io.seg0 := ~"b11111111".U
     io.seg1 := "b11111111".U
-    io.seg2 := "b11111111".U
+    io.seg2 := ~"b11111111".U
     io.seg3 := "b11111111".U
   }.otherwise
   {
     io.seg0 := "b11111111".U
-    io.seg1 := ~"b11111111".U
+    io.seg1 := "b11111111".U
     io.seg2 := "b11111111".U
-    io.seg3 := ~"b11111111".U
+    io.seg3 := "b11111111".U
 //    io.seg0 := ~MuxLookup(io.data(3, 0), "b00000010".U, Array(
 //      0.U -> "b11111100".U,
 //      1.U -> "b01100000".U,
