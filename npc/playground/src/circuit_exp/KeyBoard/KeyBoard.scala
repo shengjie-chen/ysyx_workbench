@@ -37,17 +37,22 @@ class KeyBoard extends Module {
   u0.io.clrn := ~ reset.asBool()
   u0.io.ps2_clk := io.ps2_clk
   u0.io.ps2_data := io.ps2_data
-  val nextdata_n = ShiftRegister(~u0.io.ready,2)
+  val nextdata_n = ShiftRegister(u0.io.ready,2)
   u0.io.nextdata_n := nextdata_n
-  val data0 = RegNext(u0.io.data)
+  val data0 = Reg(UInt(8.W))
   val data1 = RegNext(data0)
+  val data2 = RegNext(data1)
   val cnt = RegInit(0.U(8.W))
-  when(data1 === 0xF0.U && data0 =/= 0xF0.U){
+  when(data2 === 0xF0.U && data1 =/= 0xF0.U){
     cnt := cnt + 1.U
   }
   val cnt_vec = VecInit((0 to 100) map (i => (i/10*16+i%10).asUInt()))
   val cnt_r = RegInit(0.U(8.W))
   cnt_r := cnt_vec(cnt)
+
+  when(u0.io.ready){
+    data0 := u0.io.data
+  }
 
   // key code to ascii rom
   val keycode2ascii = MuxCase(0.U(8.W),Array(
