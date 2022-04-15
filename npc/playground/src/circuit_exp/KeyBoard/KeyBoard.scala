@@ -43,7 +43,7 @@ class KeyBoard extends Module {
   val data1 = RegNext(data0)
   val cnt = RegInit(0.U(8.W))
   when(data1 === 0xF0.U && data0 =/= 0xF0.U){
-    cnt := cnt + 1
+    cnt := cnt + 1.U
   }
   val cnt_vec = VecInit((0 to 100) map (i => (i/10*16+i%10).asUInt()))
   val cnt_r = RegInit(0.U(8.W))
