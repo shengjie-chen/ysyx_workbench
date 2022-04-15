@@ -23,7 +23,7 @@ VERILATOR_CFLAGS += -MMD --build -cc  \
 
 
 verilog:
-	$(call git_commit, "generate verilog")
+	$(call git_commit, "generate $(TOPNAME) verilog")
 	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
@@ -34,6 +34,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
+VSRCS += $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.v")# add blackbox verilog file
 CSRCS_BOARD = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "$(TOPNAME).cpp")#"Multiplexer_sim.cpp")#"*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS_BOARD += $(SRC_AUTO_BIND)
 CSRCS_VCD = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "$(TOPNAME)_sim.cpp")
