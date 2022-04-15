@@ -96,7 +96,7 @@ class KeyBoard extends Module {
 
   io.data := data1
 
-  when(io.ps2_clk){
+  when(io.ps2_clk === 1.B){
     io.seg0 := ~"b11111111".U
     io.seg1 := "b11111111".U
     io.seg2 := ~"b11111111".U
