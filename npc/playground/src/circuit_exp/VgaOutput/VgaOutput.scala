@@ -13,7 +13,7 @@ class clkgen extends BlackBox(Map("clk_freq" -> 25000000)) {
   })
 }
 
-class vga_ctl extends Module{
+class vga_ctl extends BlackBox{
   val io = IO(new Bundle {
     val pclk = Input(Clock())
     val reset = Input(Bool())
