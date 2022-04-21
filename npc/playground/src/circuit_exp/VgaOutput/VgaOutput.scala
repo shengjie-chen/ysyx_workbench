@@ -9,7 +9,7 @@ class clkgen extends BlackBox(Map("clk_freq" -> 25000000)) {
     val clkin = Input(Clock())
     val rst = Input(Bool())
     val clken = Input(Bool())
-    val clkout = Output(Bool())
+    val clkout = Output(Clock())
   })
 }
 
