@@ -36,7 +36,7 @@ class Vmem extends Module {
   })
   val memory = Mem(524288,UInt(24.W))
   loadMemoryFromFileInline(memory = memory,
-    fileName = "/home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/circuit_exp/VgaOutput/picture.hex")
+    fileName = "/home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/circuit_exp/VgaOutput/image_640x480.mif")
 
   io.vga_data := memory(Cat(io.h_addr,io.v_addr))
   
