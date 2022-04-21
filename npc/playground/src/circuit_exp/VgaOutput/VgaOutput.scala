@@ -48,7 +48,7 @@ class VgaOutput extends Module {
     val VGA_G = Output(UInt(8.W))
     val VGA_B = Output(UInt(8.W))
     val VGA_CLK = Output(Clock())
-    val VGA_SYNC_N = Output(Bool())
+//    val VGA_SYNC_N = Output(Bool())
     val VGA_BLANK_N = Output(Bool())
     val VGA_HS = Output(Bool())
     val VGA_VS = Output(Bool())
@@ -74,7 +74,7 @@ class VgaOutput extends Module {
 
 
   io.VGA_BLANK_N := ctl.io.valid
-  io.VGA_SYNC_N := 0.B
+//  io.VGA_SYNC_N := 0.B
 
   io.VGA_R := ctl.io.vga_r
   io.VGA_G := ctl.io.vga_g
