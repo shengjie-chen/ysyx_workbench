@@ -10,7 +10,7 @@
 
 
 vluint64_t main_time = 0;
-const vluint64_t sim_time = 10000;
+const vluint64_t sim_time = 100000;
 
 
 
