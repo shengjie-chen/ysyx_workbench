@@ -26,7 +26,10 @@ int main(int argc, char **argv, char **env){
 
     int n = 10;
     top->reset = 1;
-    while (n -- > 0) single_cycle();
+    while (n -- > 0) {
+        top->clock = 0; top->eval();tfp->dump(main_time);
+        top->clock = 1; top->eval();tfp->dump(main_time);
+    }
     top->reset = 0;
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
