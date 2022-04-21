@@ -28,7 +28,7 @@ class vga_ctl extends Module{
     val vga_b = Output(UInt(8.W))
   })
 }
-class Vmem extends RawModule {
+class Vmem extends Module {
   val io = IO(new Bundle {
     val h_addr = Input(UInt(10.W))
     val v_addr = Input(UInt(9.W))
