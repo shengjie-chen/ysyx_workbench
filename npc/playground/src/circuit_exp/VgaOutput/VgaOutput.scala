@@ -65,9 +65,13 @@ class VgaOutput extends Module {
 // ctl
   ctl.io.pclk := clk_gen.io.clkout
   ctl.io.reset := reset
-  ctl.io <> mem.io
   ctl.io.hsync := io.VGA_HS
   ctl.io.vsync := io.VGA_VS
+
+  ctl.io.vga_data := mem.io.vga_data
+  ctl.io.h_addr := mem.io.h_addr
+  ctl.io.v_addr := mem.io.v_addr
+
 
   io.VGA_BLANK_N := ctl.io.valid
   io.VGA_SYNC_N := 0.B
