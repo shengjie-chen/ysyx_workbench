@@ -84,6 +84,7 @@ clean:
 sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
+	rm $(BIN_BOARD)
 	$^
 
 sim_vcd:
