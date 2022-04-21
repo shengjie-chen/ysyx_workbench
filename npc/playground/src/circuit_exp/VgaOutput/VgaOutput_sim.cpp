@@ -25,14 +25,14 @@ int main(int argc, char **argv, char **env){
 	tfp->open("./build/circuit_exp/VgaOutput/VgaOutput.vcd");
 
     int n = 10;
-    top.reset = 1;
+    top->reset = 1;
     while (n -- > 0) single_cycle();
-    top.reset = 0;
+    top->reset = 0;
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
-        top.clock = 0; top.eval();tfp->dump(main_time);
-        top.clock = 1; top.eval();tfp->dump(main_time);
+        top->clock = 0; top->eval();tfp->dump(main_time);
+        top->clock = 1; top->eval();tfp->dump(main_time);
 
 		main_time++;
 
