@@ -78,13 +78,15 @@ checkformat:
 clean:
 	-rm -rf $(BUILD_DIR)
 
-.PHONY: test verilog help compile bsp reformat checkformat clean
+clean_object:
+	rm $(BIN_BOARD)
+
+.PHONY: test verilog help compile bsp reformat checkformat clean clean_object
 
 # before run, make verilog
 sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	rm $(BIN_BOARD)
 	$^
 
 sim_vcd:
