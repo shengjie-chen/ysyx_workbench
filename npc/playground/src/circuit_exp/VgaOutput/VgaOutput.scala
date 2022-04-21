@@ -70,7 +70,7 @@ class VgaOutput extends Module {
 
   ctl.io.vga_data := mem.io.vga_data
   mem.io.h_addr := ctl.io.h_addr
-  mem.io.v_addr := ctl.io.v_addr
+  mem.io.v_addr := ctl.io.v_addr(8,0)
 
 
   io.VGA_BLANK_N := ctl.io.valid
