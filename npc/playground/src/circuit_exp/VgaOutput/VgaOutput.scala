@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.util.experimental.loadMemoryFromFileInline
 
-class clkgen extends BlackBox(Map("clk_freq" -> 50000000)) {
+class clkgen extends BlackBox(Map("clk_freq" -> 25000000)) {
   val io = IO(new Bundle{
     val clkin = Input(Clock())
     val rst = Input(Bool())
@@ -53,17 +53,17 @@ class VgaOutput extends Module {
     val VGA_HS = Output(Bool())
     val VGA_VS = Output(Bool())
   })
-  val clk_gen = Module(new clkgen)
+//  val clk_gen = Module(new clkgen)
   val ctl = Module(new vga_ctrl)
   val mem = Module(new Vmem)
 // clk_gen
-  clk_gen.io.clken := 1.B
-  clk_gen.io.clkin := clock
-  io.VGA_CLK := clk_gen.io.clkout
-  clk_gen.io.rst := reset
+//  clk_gen.io.clken := 1.B
+//  clk_gen.io.clkin := clock
+//  io.VGA_CLK := clk_gen.io.clkout
+//  clk_gen.io.rst := reset
 
 // ctl
-  ctl.io.pclk := clk_gen.io.clkout
+  ctl.io.pclk := clock //clk_gen.io.clkout
   ctl.io.reset := reset
   io.VGA_HS := ctl.io.hsync
   io.VGA_VS := ctl.io.vsync
