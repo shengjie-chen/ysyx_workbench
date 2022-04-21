@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.util.experimental.loadMemoryFromFileInline
 
-class clkgen extends BlackBox(Map("clk_freq" -> 25000000)) {
+class clkgen extends BlackBox(Map("clk_freq" -> 50000000)) {
   val io = IO(new Bundle{
     val clkin = Input(Clock())
     val rst = Input(Bool())
