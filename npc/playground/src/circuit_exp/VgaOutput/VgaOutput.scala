@@ -47,7 +47,7 @@ class VgaOutput extends Module {
     val VGA_R = Output(UInt(8.W))
     val VGA_G = Output(UInt(8.W))
     val VGA_B = Output(UInt(8.W))
-    val VGA_CLK = Output(Bool())
+    val VGA_CLK = Output(Clock())
     val VGA_SYNC_N = Output(Bool())
     val VGA_BLANK_N = Output(Bool())
     val VGA_HS = Output(Bool())
