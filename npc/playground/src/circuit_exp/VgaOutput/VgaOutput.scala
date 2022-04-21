@@ -61,6 +61,7 @@ class VgaOutput extends Module {
 //  clk_gen.io.clkin := clock
 //  io.VGA_CLK := clk_gen.io.clkout
 //  clk_gen.io.rst := reset
+  io.VGA_CLK := clock
 
 // ctl
   ctl.io.pclk := clock //clk_gen.io.clkout
