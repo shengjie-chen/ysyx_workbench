@@ -7,21 +7,12 @@
 #include "verilated_vcd_c.h"
 
 
-#define	GET_BIT(x, bit)	((x & (1 << bit)) >> bit)
+
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 256;
 
-static void single_cycle() {
-  dut.clock = 0; dut.eval();tfp->dump(main_time);
-  dut.clock = 1; dut.eval();tfp->dump(main_time);
-}
 
-static void reset(int n) {
-  dut.reset = 1;
-  while (n -- > 0) single_cycle();
-  dut.reset = 0;
-}
 
 int main(int argc, char **argv, char **env){
 	Verilated::commandArgs(argc, argv);
@@ -33,11 +24,15 @@ int main(int argc, char **argv, char **env){
 	top->trace(tfp,99);
 	tfp->open("./build/circuit_exp/VgaOutput/VgaOutput.vcd");
 
-    reset(10);
+    int n = 10;
+    top.reset = 1;
+    while (n -- > 0) single_cycle();
+    top.reset = 0;
 
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
-        single_cycle();
+        top.clock = 0; top.eval();tfp->dump(main_time);
+        top.clock = 1; top.eval();tfp->dump(main_time);
 
 		main_time++;
 
