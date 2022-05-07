@@ -115,7 +115,7 @@ class VgaOutput extends Module {
   io.VGA_R          := ctl.io.vga_r
   io.VGA_G          := ctl.io.vga_g
   io.VGA_B          := ctl.io.vga_b
-  ctl.io.x_addr     := mem.io.x_addr
+  mem.io.x_addr     := ctl.io.x_addr
   ctl.io.y_addr     := mem.io.y_addr
   ctl.io.x_addr_cnt := mem.io.x_addr_cnt
   ctl.io.y_addr_cnt := mem.io.y_addr_cnt
