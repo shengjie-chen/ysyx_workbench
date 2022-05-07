@@ -72,7 +72,7 @@ class Vmem extends Module {
     when(write_point === 2099.U){
       write_point := 0.U
     }.otherwise{
-      write_point := write_point + 1
+      write_point := write_point + 1.U
     }
   }
 }
