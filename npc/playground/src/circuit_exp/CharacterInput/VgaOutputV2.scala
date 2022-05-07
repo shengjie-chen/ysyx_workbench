@@ -107,7 +107,7 @@ class VgaOutput extends Module {
 
   // ctl
   ctl.io.pclk       := clock //clk_gen.io.clkout
-  ctl.io.reset      := reset
+  ctl.io.reset      := reset.asBool()
   ctl.io.vga_data   := mem.io.vga_data
   io.VGA_HS         := ctl.io.hsync
   io.VGA_VS         := ctl.io.vsync
