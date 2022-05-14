@@ -70,15 +70,18 @@ class Vmem extends Module {
       }.elsewhen(y_write_point =/= 0.U && x_write_point =/= 0.U){
         x_write_point := x_write_point - 1.U
       }
-    }.elsewhen(io.keycode === 0x63.U){ // up arrow
+    }
+    //上下左右按键调整光标，不知道具体原因，这四个键码没使用第三套方案，和数字键盘重复，所以当方向键启用，则数字键盘4826无法使用
+      .elsewhen(io.keycode === 0x26.U){ // up arrow
       y_write_point := y_write_point - 1.U
-    }.elsewhen(io.keycode === 0x61.U){ // left arrow
+    }.elsewhen(io.keycode === 0x25.U){ // left arrow
       x_write_point := x_write_point - 1.U
-    }.elsewhen(io.keycode === 0x60.U){ // down arrow
+    }.elsewhen(io.keycode === 0x28.U){ // down arrow
       y_write_point := y_write_point + 1.U
-    }.elsewhen(io.keycode === 0x6a.U){ // right arrow
+    }.elsewhen(io.keycode === 0x27.U){ // right arrow
       x_write_point := x_write_point + 1.U
-    }.otherwise{
+    }
+      .otherwise{
       memory.write(write_point,io.write_data)
       when(y_write_point === 29.U && x_write_point === 69.U){ // 30 * 70
         y_write_point := 0.U
