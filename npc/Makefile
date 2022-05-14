@@ -22,10 +22,7 @@ VERILATOR_CFLAGS += -MMD --build -cc  \
 					-O3 --x-assign fast --x-initial fast --noassert
 
 
-verilog:
-	$(call git_commit, "generate $(TOPNAME) verilog")
-	mkdir -p $(VERILOG_OBJ_DIR)
-	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
+
 
 # constraint file
 SRC_AUTO_BIND = $(abspath ./nvboard_constr/auto_bind.cpp)# The file is initialized manually
@@ -55,6 +52,25 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 				$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN_BOARD))
 
+
+verilog:
+	$(call git_commit, "generate $(TOPNAME) verilog")
+	mkdir -p $(VERILOG_OBJ_DIR)
+	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
+
+# before run, make verilog
+sim_board:$(BIN_BOARD)
+	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
+	@echo "Write this Makefile by yourself."
+	$^
+
+sim_vcd:
+	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
+	@echo "Write this Makefile by yourself."
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
+	$(BIN_VCD)
+	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+
 test:
 	mill -i __.test
 
@@ -83,18 +99,7 @@ clean_object:
 
 .PHONY: test verilog help compile bsp reformat checkformat clean clean_object
 
-# before run, make verilog
-sim_board:$(BIN_BOARD)
-	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by yourself."
-	$^
 
-sim_vcd:
-	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by yourself."
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
-	$(BIN_VCD)
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 
 include ../Makefile
