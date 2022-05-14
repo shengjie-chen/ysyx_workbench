@@ -87,12 +87,14 @@ module vga_ctrl_v2(
         end
         else begin
             if((y_cnt >= v_active) & (y_cnt < v_backporch)) begin
-                if (y_addr_cnt == 15) begin
-                    y_addr_cnt <= 0;
-                    y_addr <= y_addr + 5'd1;
+                if (x_cnt == h_total) begin
+                    if (y_addr_cnt == 15) begin
+                        y_addr_cnt <= 0;
+                        y_addr <= y_addr + 5'd1;
+                    end
+                    else
+                        y_addr_cnt <= y_addr_cnt + 4'd1;
                 end
-                else
-                    y_addr_cnt <= y_addr_cnt + 4'd1;
             end
             else if(y_cnt == v_backporch) begin
                 y_addr <= 0;
