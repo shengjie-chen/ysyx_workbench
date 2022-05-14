@@ -44,6 +44,7 @@ class Vmem extends Module {
     val write_en    = Input(Bool())
     val write_data  = Input(UInt(8.W))
     val char = Input(Bool()) //当前像素在字符中
+    val keycode = Input(UInt(8.W))
   })
   val memory = Mem(2100,UInt(8.W)) //30行70列字符
   val row_mul_lut = VecInit((0 to 29) map {i => i.U * 70.U}) //根据行数返回对应的字符次序
@@ -69,6 +70,14 @@ class Vmem extends Module {
       }.elsewhen(y_write_point =/= 0.U && x_write_point =/= 0.U){
         x_write_point := x_write_point - 1.U
       }
+    }.elsewhen(io.keycode === 0x63.U){ // up arrow
+      y_write_point := y_write_point - 1.U
+    }.elsewhen(io.keycode === 0x61.U){ // left arrow
+      x_write_point := x_write_point - 1.U
+    }.elsewhen(io.keycode === 0x60.U){ // down arrow
+      y_write_point := y_write_point + 1.U
+    }.elsewhen(io.keycode === 0x6a.U){ // right arrow
+      x_write_point := x_write_point + 1.U
     }.otherwise{
       memory.write(write_point,io.write_data)
       when(y_write_point === 29.U && x_write_point === 69.U){ // 30 * 70
@@ -149,6 +158,8 @@ class VgaOutput extends Module {
   mem.io.y_addr     := ctl.io.y_addr
   mem.io.x_addr_cnt := ctl.io.x_addr_cnt
   mem.io.y_addr_cnt := ctl.io.y_addr_cnt
+
+  mem.io.keycode    := io.mem_write_data
 
   // key code to ascii rom  扫描玛使用集合3（IBM 3270 PC）
   val keycode2ascii = MuxCase(0.U(8.W),Array(
