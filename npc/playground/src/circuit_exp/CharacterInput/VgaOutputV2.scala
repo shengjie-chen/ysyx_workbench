@@ -120,6 +120,57 @@ class VgaOutput extends Module {
   mem.io.x_addr_cnt := ctl.io.x_addr_cnt
   mem.io.y_addr_cnt := ctl.io.y_addr_cnt
 
+  // key code to ascii rom
+  val keycode2ascii = MuxCase(0.U(8.W),Array(
+    //a - z
+    (io.mem_write_data === 0x1c.U) -> 97.U,
+    (io.mem_write_data === 0x32.U) -> 98.U,
+    (io.mem_write_data === 0x21.U) -> 99.U,
+    (io.mem_write_data === 0x23.U) -> 100.U,
+    (io.mem_write_data === 0x24.U) -> 101.U,
+    (io.mem_write_data === 0x2b.U) -> 102.U,
+    (io.mem_write_data === 0x34.U) -> 103.U,
+    (io.mem_write_data === 0x33.U) -> 104.U,
+    (io.mem_write_data === 0x43.U) -> 105.U,
+    (io.mem_write_data === 0x3b.U) -> 106.U,
+    (io.mem_write_data === 0x42.U) -> 107.U,
+    (io.mem_write_data === 0x4b.U) -> 108.U,
+    (io.mem_write_data === 0x3a.U) -> 109.U,
+    (io.mem_write_data === 0x31.U) -> 110.U,
+    (io.mem_write_data === 0x44.U) -> 111.U,
+    (io.mem_write_data === 0x4d.U) -> 112.U,
+    (io.mem_write_data === 0x15.U) -> 113.U,
+    (io.mem_write_data === 0x2d.U) -> 114.U,
+    (io.mem_write_data === 0x1b.U) -> 115.U,
+    (io.mem_write_data === 0x2c.U) -> 116.U,
+    (io.mem_write_data === 0x3c.U) -> 117.U,
+    (io.mem_write_data === 0x2a.U) -> 118.U,
+    (io.mem_write_data === 0x1d.U) -> 119.U,
+    (io.mem_write_data === 0x22.U) -> 120.U,
+    (io.mem_write_data === 0x35.U) -> 121.U,
+    (io.mem_write_data === 0x1a.U) -> 122.U,
+    // all Numeric keypad
+    (io.mem_write_data === 0x70.U) -> 48.U,//0
+    (io.mem_write_data === 0x69.U) -> 49.U,//1
+    (io.mem_write_data === 0x72.U) -> 50.U,//2
+    (io.mem_write_data === 0x7a.U) -> 51.U,//3
+    (io.mem_write_data === 0x6b.U) -> 52.U,//4
+    (io.mem_write_data === 0x73.U) -> 53.U,//5
+    (io.mem_write_data === 0x74.U) -> 54.U,//6
+    (io.mem_write_data === 0x6c.U) -> 55.U,//7
+    (io.mem_write_data === 0x75.U) -> 56.U,//8
+    (io.mem_write_data === 0x7d.U) -> 57.U,//9
+    //
+    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    (io.mem_write_data === 0x66.U) -> 8.U,//backspace
+    (io.mem_write_data === 0x29.U) -> 32.U,//space
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+
+
+  ))
+  
   // Mem
   val char = Wire(Bool())
   when(ctl.io.h_addr >629.U){
@@ -128,6 +179,6 @@ class VgaOutput extends Module {
     char := 1.B
   }
   mem.io.char := char
-  mem.io.write_data := io.mem_write_data
+  mem.io.write_data := keycode2ascii
   mem.io.write_en := io.mem_write_en
 }
