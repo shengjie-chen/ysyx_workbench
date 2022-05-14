@@ -66,18 +66,21 @@ class Vmem extends Module {
   }
 
   // 对memory更新字符
-  val write_point = RegInit(UInt(12.W),0.U)
+  val x_write_point = RegInit(UInt(7.W),0.U)
+  val y_write_point = RegInit(UInt(5.W),0.U)
+  val write_point = Wire(UInt(12.W))
+  write_point := row_mul_lut(y_write_point) + x_write_point
 //  val enter_wp_add_num = VecInit((0 to 2099) map {i => 70.U - i.U % 70.U})// 当遇到回车时write_point需要增加的数值
   when(io.write_en){
     memory.write(write_point,io.write_data)
-    when(write_point === 2099.U){ // 30 * 70
-      write_point := 0.U
+    when(y_write_point === 29.U && x_write_point === 69.U){ // 30 * 70
+      y_write_point := 0.U
+      x_write_point := 0.U
+    }.elsewhen(x_write_point === 69.U || io.write_data === 13.U){
+      x_write_point := 0.U
+      y_write_point := y_write_point + 1.U
     }.otherwise{
-      when(io.write_data === 13.U){
-        write_point := write_point + 70.U - io.x_addr
-      }.otherwise{
-        write_point := write_point + 1.U
-      }
+      x_write_point := x_write_point + 1.U
     }
   }
 }
