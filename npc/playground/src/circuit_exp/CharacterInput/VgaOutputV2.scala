@@ -168,6 +168,7 @@ class VgaOutput extends Module {
     (io.mem_write_data === 0x75.U) -> 45.U,//-
     (io.mem_write_data === 0x7d.U) -> 43.U,//+
     (io.mem_write_data === 0x54.U) -> 46.U,//.
+    (io.mem_write_data === 0x79.U) -> 13.U,//enter
     //
     (io.mem_write_data === 0x5a.U) -> 13.U,//enter
     (io.mem_write_data === 0x66.U) -> 8.U,//backspace
