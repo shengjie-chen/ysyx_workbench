@@ -55,11 +55,6 @@ class KeyBoardV2 extends Module {
   val cnt_r = RegInit(0.U(8.W))
   cnt_r := cnt_vec(cnt)
 
-
-  when(u0.io.ready){
-    data0 := keycode2ascii
-  }
-
   // key code to ascii rom
   val keycode2ascii = MuxCase(0.U(8.W),Array(
     //a - z
@@ -103,13 +98,16 @@ class KeyBoardV2 extends Module {
     //
     (u0.io.data === 0x5a.U) -> 13.U,//enter
     (u0.io.data === 0x66.U) -> 8.U,//backspace
-    (u0.io.data === 0x29.U) -> 32.U,//space
-//    (io.data === 0x5a.U) -> 13.U,//enter
-//    (io.data === 0x5a.U) -> 13.U,//enter
-//    (io.data === 0x5a.U) -> 13.U,//enter
-
+    (u0.io.data === 0x29.U) -> 32.U//space
+    //    (io.data === 0x5a.U) -> 13.U,//enter
+    //    (io.data === 0x5a.U) -> 13.U,//enter
+    //    (io.data === 0x5a.U) -> 13.U,//enter
 
   ))
+
+  when(u0.io.ready){
+    data0 := keycode2ascii
+  }
 
   io.data := data1
 
