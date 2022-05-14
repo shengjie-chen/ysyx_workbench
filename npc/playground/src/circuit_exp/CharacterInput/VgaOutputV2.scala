@@ -67,9 +67,13 @@ class Vmem extends Module {
 
   // 对memory更新字符
   val write_point = RegInit(UInt(12.W),0.U)
+  val enter_wp_add_num = VecInit((0 to 2099) map {i => (70.U - i.U % 70.U)})// 当遇到回车时write_point需要增加的数值
   when(io.write_en){
     memory.write(write_point,io.write_data)
-    when(write_point === 2099.U){
+    when(io.write_data === 13.U){
+      write_point := write_point + enter_wp_add_num(write_point)
+    }
+    when(write_point === 2099.U){ // 30 * 70
       write_point := 0.U
     }.otherwise{
       write_point := write_point + 1.U
@@ -160,15 +164,42 @@ class VgaOutput extends Module {
     (io.mem_write_data === 0x6c.U) -> 55.U,//7
     (io.mem_write_data === 0x75.U) -> 56.U,//8
     (io.mem_write_data === 0x7d.U) -> 57.U,//9
+    (io.mem_write_data === 0x6c.U) -> 42.U,//*
+    (io.mem_write_data === 0x75.U) -> 45.U,//-
+    (io.mem_write_data === 0x7d.U) -> 43.U,//+
+    (io.mem_write_data === 0x54.U) -> 46.U,//.
     //
     (io.mem_write_data === 0x5a.U) -> 13.U,//enter
     (io.mem_write_data === 0x66.U) -> 8.U,//backspace
     (io.mem_write_data === 0x29.U) -> 32.U,//space
-    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
-    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
-    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    // 0-1
+    (io.mem_write_data === 0x45.U) -> 48.U,//0
+    (io.mem_write_data === 0x16.U) -> 49.U,//1
+    (io.mem_write_data === 0x1e.U) -> 50.U,//2
+    (io.mem_write_data === 0x26.U) -> 51.U,//3
+    (io.mem_write_data === 0x25.U) -> 52.U,//4
+    (io.mem_write_data === 0x2e.U) -> 53.U,//5
+    (io.mem_write_data === 0x36.U) -> 54.U,//6
+    (io.mem_write_data === 0x3d.U) -> 55.U,//7
+    (io.mem_write_data === 0x3e.U) -> 56.U,//8
+    (io.mem_write_data === 0x46.U) -> 57.U,//9
+    // symbol
+    (io.mem_write_data === 0x0e.U) -> 96.U,//`
+    (io.mem_write_data === 0x4e.U) -> 45.U,//-
+    (io.mem_write_data === 0x55.U) -> 61.U,//=
+    (io.mem_write_data === 0x5d.U) -> 92.U,//\
+    (io.mem_write_data === 0x54.U) -> 91.U,//[
+    (io.mem_write_data === 0x5b.U) -> 93.U,//]
+    (io.mem_write_data === 0x74.U) -> 59.U,//;
+    (io.mem_write_data === 0x6c.U) -> 39.U,//'
+    (io.mem_write_data === 0x75.U) -> 44.U,//,
+    (io.mem_write_data === 0x7d.U) -> 46.U,//.
+    (io.mem_write_data === 0x54.U) -> 47.U,///
 
 
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
+    //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
   ))
   
   // Mem
