@@ -10,10 +10,10 @@ module vga_ctrl_v2(
     output [7:0]    vga_r,    //红绿蓝颜色信号
     output [7:0]    vga_g,
     output [7:0]    vga_b,
-    output [6:0]    x_addr,    //当前像素在画面的第几列字符，需要用h_addr卡一下，因为630-640是多余的像素
-    output [4:0]    y_addr,    //当前像素在画面的第几行字符
-    output [3:0]    x_addr_cnt,//当前像素在字符的第几列像素
-    output [3:0]    y_addr_cnt //当前像素在字符的第几行像素
+    output reg [6:0]    x_addr,    //当前像素在画面的第几列字符，需要用h_addr卡一下，因为630-640是多余的像素
+    output reg [4:0]    y_addr,    //当前像素在画面的第几行字符
+    output reg [3:0]    x_addr_cnt,//当前像素在字符的第几列像素
+    output reg [3:0]    y_addr_cnt //当前像素在字符的第几行像素
     );
 
     //640x480分辨率下的VGA参数设置
@@ -30,10 +30,10 @@ module vga_ctrl_v2(
     //像素计数值
     reg [9:0]    x_cnt;
     reg [9:0]    y_cnt;
-    reg [6:0]    x_addr;
-    reg [4:0]    y_addr;
-    reg [3:0]    x_addr_cnt;
-    reg [3:0]    y_addr_cnt;
+    //reg [6:0]    x_addr;
+    //reg [4:0]    y_addr;
+    //reg [3:0]    x_addr_cnt;
+    //reg [3:0]    y_addr_cnt;
     wire         h_valid;
     wire         v_valid;
 
@@ -74,7 +74,7 @@ module vga_ctrl_v2(
                 else
                     x_addr_cnt <= x_addr_cnt + 4'd1;
             end
-            else if(x_cnt = h_backporch) begin
+            else if(x_cnt == h_backporch) begin
                 x_addr <= 0;
                 x_addr_cnt <= 0;
             end
@@ -89,12 +89,12 @@ module vga_ctrl_v2(
             if((y_cnt >= v_active) & (y_cnt < v_backporch)) begin
                 if (y_addr_cnt == 15) begin
                     y_addr_cnt <= 0;
-                    y_addr <= y_addr + 7'd1;
+                    y_addr <= y_addr + 5'd1;
                 end
                 else
                     y_addr_cnt <= y_addr_cnt + 4'd1;
             end
-            else if(y_cnt = v_backporch) begin
+            else if(y_cnt == v_backporch) begin
                 y_addr <= 0;
                 y_addr_cnt <= 0;
             end

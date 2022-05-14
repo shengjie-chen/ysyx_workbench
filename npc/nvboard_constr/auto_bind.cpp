@@ -1,7 +1,9 @@
 #include <nvboard.h>
-#include "VVgaOutput.h"
+#include "VCharacterInput.h"
 
-void nvboard_bind_all_pins(VVgaOutput* top) {
+void nvboard_bind_all_pins(VCharacterInput* top) {
+	nvboard_bind_pin( &top->io_ps2_clk, BIND_RATE_RT , BIND_DIR_IN , 1, PS2_CLK);
+	nvboard_bind_pin( &top->io_ps2_data, BIND_RATE_RT , BIND_DIR_IN , 1, PS2_DAT);
 	nvboard_bind_pin( &top->io_VGA_VS, BIND_RATE_RT , BIND_DIR_OUT, 1, VGA_VSYNC);
 	nvboard_bind_pin( &top->io_VGA_HS, BIND_RATE_RT , BIND_DIR_OUT, 1, VGA_HSYNC);
 	nvboard_bind_pin( &top->io_VGA_BLANK_N, BIND_RATE_RT , BIND_DIR_OUT, 1, VGA_BLANK_N);
