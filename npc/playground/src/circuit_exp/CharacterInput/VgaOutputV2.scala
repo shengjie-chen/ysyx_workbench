@@ -70,13 +70,15 @@ class Vmem extends Module {
   val enter_wp_add_num = VecInit((0 to 2099) map {i => (70.U - i.U % 70.U)})// 当遇到回车时write_point需要增加的数值
   when(io.write_en){
     memory.write(write_point,io.write_data)
-    when(io.write_data === 13.U){
-      write_point := write_point + enter_wp_add_num(write_point)
-    }
+
     when(write_point === 2099.U){ // 30 * 70
       write_point := 0.U
     }.otherwise{
-      write_point := write_point + 1.U
+      when(io.write_data === 13.U){
+        write_point := write_point + enter_wp_add_num(write_point)
+      }.otherwise{
+        write_point := write_point + 1.U
+      }
     }
   }
 }
