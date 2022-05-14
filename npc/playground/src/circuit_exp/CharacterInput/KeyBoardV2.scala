@@ -116,7 +116,7 @@ class KeyBoardV2 extends Module {
   // no_press posedge detect
   val no_press_r = Reg(UInt(3.W))
   no_press_r := Cat(no_press_r(1,0),no_press)
-  val no_press_posedge = ~no_press_r(2) & no_press_r(1)
+  val no_press_posedge = !no_press_r(2) & no_press_r(1)
   io.mem_write_en := no_press_posedge
 
 }
