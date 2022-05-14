@@ -37,7 +37,7 @@ class vga_ctrl_v2 extends BlackBox{
 class Vmem extends Module {
   val io = IO(new Bundle {
     val x_addr = Input(UInt(7.W))
-    val y_addr = Input(UInt(5.W))
+    val y_addr = Input(UInt(5.W))     //当前像素在第几行字符
     val x_addr_cnt = Input(UInt(4.W)) //当前像素在字符的第几列像素
     val y_addr_cnt = Input(UInt(4.W)) //当前像素在字符的第几行像素
     val vga_data = Output(UInt(24.W))
@@ -45,32 +45,21 @@ class Vmem extends Module {
     val write_data  = Input(UInt(8.W))
     val char = Input(Bool()) //当前像素在字符中
   })
-  val memory = Mem(2100,UInt(8.W)) //30行70列
+  val memory = Mem(2100,UInt(8.W)) //30行70列字符
   val row_mul_lut = VecInit((0 to 29) map {i => i.U * 70.U}) //根据行数返回对应的字符次序
-  val row = row_mul_lut(io.y_addr)
-  val idx = row + io.x_addr
-  val ascii = memory(idx)
+  val row = row_mul_lut(io.y_addr)  //当前行之前有多少字符
+  val idx = row + io.x_addr // 当前扫描到字符的序号
+  val ascii = memory(idx)   //当前字符的ascii
   val dot_txt = Mem(4096,UInt(12.W))
   loadMemoryFromFileInline(memory = dot_txt,
     fileName = "/home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/circuit_exp/CharacterInput/vga_font.txt")
-
-  val char_baseaddr_lut = VecInit((0 to 255) map {i => i.U * 16.U})
-  val char_baseaddr = char_baseaddr_lut(ascii)
-  val piexl_addr = char_baseaddr + io.y_addr_cnt
-  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char
-
-  when(pixel_white.asBool()){
-    io.vga_data := 0xffffff.U
-  }.otherwise{
-    io.vga_data := 0x000000.U
-  }
 
   // 对memory更新字符
   val x_write_point = RegInit(UInt(7.W),0.U)
   val y_write_point = RegInit(UInt(5.W),0.U)
   val write_point = Wire(UInt(12.W))
   write_point := row_mul_lut(y_write_point) + x_write_point
-//  val enter_wp_add_num = VecInit((0 to 2099) map {i => 70.U - i.U % 70.U})// 当遇到回车时write_point需要增加的数值
+  //  val enter_wp_add_num = VecInit((0 to 2099) map {i => 70.U - i.U % 70.U})// 当遇到回车时write_point需要增加的数值
   when(io.write_en){
     when(io.write_data === 8.U){ //backspace
       memory.write(write_point-1.U,0.U(8.W))
@@ -92,8 +81,25 @@ class Vmem extends Module {
         x_write_point := x_write_point + 1.U
       }
     }
-
   }
+
+  // cursor
+  val cursor = Wire(Bool()) // 当前像素在光标上的标志位
+  cursor := (io.x_addr_cnt === 0.U | io.x_addr_cnt === 1.U) & (io.x_addr === x_write_point) & (io.y_addr === y_write_point)
+
+  // 输出当前像素亮度
+  val char_baseaddr_lut = VecInit((0 to 255) map {i => i.U * 16.U}) // 一个字符在dot_txt中占据16行
+  val char_baseaddr = char_baseaddr_lut(ascii)  // 计算当前ascii在dot_txt中第几行开始
+  val piexl_addr = char_baseaddr + io.y_addr_cnt  // 当前像素在dot_txt中对应第几行
+  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char || cursor
+
+  when(pixel_white.asBool()){
+    io.vga_data := 0xffffff.U
+  }.otherwise{
+    io.vga_data := 0x000000.U
+  }
+
+
 }
 
 
