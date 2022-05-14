@@ -74,7 +74,7 @@ class Vmem extends Module {
       write_point := 0.U
     }.otherwise{
       when(io.write_data === 13.U){
-        write_point := write_point + enter_wp_add_num(write_point)
+        write_point := write_point + 70.U
       }.otherwise{
         write_point := write_point + 1.U
       }
