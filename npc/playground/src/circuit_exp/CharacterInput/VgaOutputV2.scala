@@ -124,7 +124,7 @@ class VgaOutput extends Module {
   mem.io.x_addr_cnt := ctl.io.x_addr_cnt
   mem.io.y_addr_cnt := ctl.io.y_addr_cnt
 
-  // key code to ascii rom
+  // key code to ascii rom  扫描玛使用集合3（IBM 3270 PC）
   val keycode2ascii = MuxCase(0.U(8.W),Array(
     //a - z
     (io.mem_write_data === 0x1c.U) -> 97.U,
@@ -164,10 +164,10 @@ class VgaOutput extends Module {
     (io.mem_write_data === 0x6c.U) -> 55.U,//7
     (io.mem_write_data === 0x75.U) -> 56.U,//8
     (io.mem_write_data === 0x7d.U) -> 57.U,//9
-    (io.mem_write_data === 0x6c.U) -> 42.U,//*
-    (io.mem_write_data === 0x75.U) -> 45.U,//-
-    (io.mem_write_data === 0x7d.U) -> 43.U,//+
-    (io.mem_write_data === 0x54.U) -> 46.U,//.
+    (io.mem_write_data === 0x7e.U) -> 42.U,//*
+    (io.mem_write_data === 0x4e.U) -> 45.U,//-
+    (io.mem_write_data === 0x7c.U) -> 43.U,//+
+    (io.mem_write_data === 0x71.U) -> 46.U,//.
     (io.mem_write_data === 0x79.U) -> 13.U,//enter
     //
     (io.mem_write_data === 0x5a.U) -> 13.U,//enter
@@ -188,14 +188,14 @@ class VgaOutput extends Module {
     (io.mem_write_data === 0x0e.U) -> 96.U,//`
     (io.mem_write_data === 0x4e.U) -> 45.U,//-
     (io.mem_write_data === 0x55.U) -> 61.U,//=
-    (io.mem_write_data === 0x5d.U) -> 92.U,//\
+    (io.mem_write_data === 0x5c.U) -> 92.U,//\
     (io.mem_write_data === 0x54.U) -> 91.U,//[
     (io.mem_write_data === 0x5b.U) -> 93.U,//]
-    (io.mem_write_data === 0x74.U) -> 59.U,//;
-    (io.mem_write_data === 0x6c.U) -> 39.U,//'
-    (io.mem_write_data === 0x75.U) -> 44.U,//,
-    (io.mem_write_data === 0x7d.U) -> 46.U,//.
-    (io.mem_write_data === 0x54.U) -> 47.U,///
+    (io.mem_write_data === 0x4c.U) -> 59.U,//;
+    (io.mem_write_data === 0x52.U) -> 39.U,//'
+    (io.mem_write_data === 0x41.U) -> 44.U,//,
+    (io.mem_write_data === 0x49.U) -> 46.U,//.
+    (io.mem_write_data === 0x4a.U) -> 47.U,///
 
 
     //    (io.mem_write_data === 0x5a.U) -> 13.U,//enter
