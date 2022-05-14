@@ -94,7 +94,7 @@ class Vmem extends Module {
   val char_baseaddr_lut = VecInit((0 to 255) map {i => i.U * 16.U}) // 一个字符在dot_txt中占据16行
   val char_baseaddr = char_baseaddr_lut(ascii)  // 计算当前ascii在dot_txt中第几行开始
   val piexl_addr = char_baseaddr + io.y_addr_cnt  // 当前像素在dot_txt中对应第几行
-  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char || cursor//(cursor_white & cursor)
+  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char //|| cursor//(cursor_white & cursor)
 
   when(pixel_white.asBool()){
     io.vga_data := 0xffffff.U
