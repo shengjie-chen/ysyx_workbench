@@ -86,8 +86,8 @@ class Vmem extends Module {
   // cursor
   val cursor = Wire(Bool()) // 当前像素在光标上的标志位
   cursor := (io.x_addr_cnt === 0.U | io.x_addr_cnt === 1.U) & (io.x_addr === x_write_point) & (io.y_addr === y_write_point)
-  val cursor_white = RegInit(0.B)
-  val (cursor_cnt, cursor_change) = Counter(cursor, 580)
+  val cursor_white = RegInit(1.B)
+  val (cursor_cnt, cursor_change) = Counter(cursor, 1024)
   when(cursor_change){cursor_white := ~cursor_white}
 
   // 输出当前像素亮度
