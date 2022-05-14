@@ -87,14 +87,16 @@ class Vmem extends Module {
   val cursor = Wire(Bool()) // 当前像素在光标上的标志位
   cursor := (io.x_addr_cnt === 0.U | io.x_addr_cnt === 1.U) & (io.x_addr === x_write_point) & (io.y_addr === y_write_point)
   val cursor_white = RegInit(1.B)
-  val (cursor_cnt, cursor_change) = Counter(cursor, 1024)
+  val cursor_last_pixel = Wire(Bool()) // 当前像素在光标上最后一个像素的标志位
+  cursor_last_pixel := (io.x_addr_cnt === 1.U) & cursor & (io.y_addr_cnt === 15.U)
+  val (cursor_cnt, cursor_change) = Counter(cursor_last_pixel, 20)
   when(cursor_change){cursor_white := ~cursor_white}
 
   // 输出当前像素亮度
   val char_baseaddr_lut = VecInit((0 to 255) map {i => i.U * 16.U}) // 一个字符在dot_txt中占据16行
   val char_baseaddr = char_baseaddr_lut(ascii)  // 计算当前ascii在dot_txt中第几行开始
   val piexl_addr = char_baseaddr + io.y_addr_cnt  // 当前像素在dot_txt中对应第几行
-  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char || cursor//(cursor_white & cursor)
+  val pixel_white = dot_txt(piexl_addr)(io.x_addr_cnt) & io.char || (cursor_white & cursor)
 
   when(pixel_white.asBool()){
     io.vga_data := 0xffffff.U
