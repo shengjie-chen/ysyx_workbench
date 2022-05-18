@@ -14,3 +14,4 @@
 /verilator
 !/verilator_test/*
 !/npc_v/*
+/yolo-sim
