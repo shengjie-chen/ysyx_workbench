@@ -3,11 +3,14 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <string.h>
+#include <math.h>
 
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+int ascii2num(char* args);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -46,7 +49,7 @@ static int cmd_si(char *args) {
     cpu_exec(1);
   }
   else{
-    cpu_exec((uint64_t) *args);
+    cpu_exec(ascii2num(args));
   }
   return 0;
 }
@@ -137,4 +140,14 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+}
+
+int ascii2num(char* args){
+    int len = strlen(args);
+    int num = 0;
+    int i;
+    for(i=0;i<len;i++){
+        num += (args[i]-48)*pow(10,len-i-1);
+    }
+    return num;
 }
