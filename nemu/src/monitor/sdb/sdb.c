@@ -54,6 +54,13 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+static int cmd_info(char *args) {
+  if(*args=='r'){
+    isa_reg_display();
+  }
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -65,6 +72,8 @@ static struct {
 
   /* TODO: Add more commands */
   { "si", "Next step", cmd_si },
+  { "info", "Print program state", cmd_info },
+
 };
 
 #define NR_CMD ARRLEN(cmd_table)
