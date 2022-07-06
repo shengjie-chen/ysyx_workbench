@@ -5,6 +5,7 @@
 #include "sdb.h"
 #include <string.h>
 #include <math.h>
+#include <memory/paddr.h>
 
 static int is_batch_mode = false;
 
@@ -76,16 +77,23 @@ static int cmd_x(char *args) {
   // }
   // return 0;
   int args1;
-  long int args2;
-  sscanf(args, "%d %lx",&args1, &args2);
-  uint32_t* args2_p;
-  args2_p = (uint32_t*)args2;
+  paddr_t args2;
+  sscanf(args, "%d %x",&args1, &args2);
+  // paddr_t* args2_p;
+  // args2_p = (uint32_t*)args2;
   // const char* mem_p = (char*)args2;
   // uint32_t img[args1];
   // memcpy(img, guest_to_host(args2), args1*4);
-  int i;
+  int i,j;
+  uint8_t* addr;
   for(i=0;i<args1;i++){
-    printf("addr: %p : 0x%08x\n",args2_p,*(args2_p+i));
+    addr = guest_to_host(args2+i);
+    printf("addr: %p : ",addr);
+    for(j=0;j<4;j++){
+      addr = guest_to_host(args2+i+j);
+      printf("%d ", *addr);
+    }
+    printf("\n");
   }
   return 0;
 }
