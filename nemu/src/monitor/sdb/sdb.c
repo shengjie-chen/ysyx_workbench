@@ -76,7 +76,8 @@ static int cmd_x(char *args) {
   // }
   // return 0;
   int args1;
-  int *args2 = &args1;
+  int j;
+  int *args2 = &j;
   sscanf(args, "%d %x",&args1, args2);
   // const char* mem_p = (char*)args2;
   // uint32_t img[args1];
