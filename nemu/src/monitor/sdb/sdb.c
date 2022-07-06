@@ -64,15 +64,26 @@ static int cmd_info(char *args) {
 static int cmd_x(char *args) {
   // char *args1 = strtok(args, " ");
   // char *args2 = args1 + strlen(args1) + 1;
+  // int args1;
+  // int **args2 = 0;
+  // sscanf(args, "%d %x",&args1, *args2);
+  // // const char* mem_p = (char*)args2;
+  // // uint32_t img[args1];
+  // // memcpy(img, guest_to_host(args2), args1*4);
+  // int i;
+  // for(i=0;i<args1;i++){
+  //   printf("addr: 0x%8ls : 0x%08x\n",(*args2)+i*4,*(*args2+i));
+  // }
+  // return 0;
   int args1;
-  int **args2 = 0;
-  sscanf(args, "%d %x",&args1, *args2);
+  int *args2 = 0;
+  sscanf(args, "%d %x",&args1, args2);
   // const char* mem_p = (char*)args2;
   // uint32_t img[args1];
   // memcpy(img, guest_to_host(args2), args1*4);
   int i;
   for(i=0;i<args1;i++){
-    printf("addr: 0x%8ls : 0x%08x\n",(*args2)+i*4,*(*args2+i));
+    printf("addr: %p : 0x%08x\n",args2,*(args2+i));
   }
   return 0;
 }
