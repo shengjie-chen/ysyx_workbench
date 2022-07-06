@@ -76,14 +76,14 @@ static int cmd_x(char *args) {
   // }
   // return 0;
   int args1;
-  int *args2 = 0;
-  sscanf(args, "%d %x",&args1, args2);
+  int args2;
+  sscanf(args, "%d %x",&args1, &args2);
   // const char* mem_p = (char*)args2;
   // uint32_t img[args1];
   // memcpy(img, guest_to_host(args2), args1*4);
   int i;
   for(i=0;i<args1;i++){
-    printf("addr: %p : 0x%08x\n",args2,*(args2+i));
+    printf("addr: %p : 0x%08x\n",&args2,*(&args2+i));
   }
   return 0;
 }
