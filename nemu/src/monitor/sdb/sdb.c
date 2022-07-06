@@ -61,6 +61,22 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+static int cmd_x(char *args) {
+  // char *args1 = strtok(args, " ");
+  // char *args2 = args1 + strlen(args1) + 1;
+  int args1;
+  long int args2;
+  sscanf(args, "%d %lx",&args1, &args2);
+  const char* mem_p = (char*)args2;
+  uint32_t img[args1];
+  memcpy(img, mem_p, args1*4);
+  int i;
+  for(i=0;i<args1;i++){
+    printf("addr:" FMT_WORD ": %08x",args2+4*i,img[i]);
+  }
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -73,6 +89,7 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Next step", cmd_si },
   { "info", "Print program state", cmd_info },
+  { "x", "Scan Memory", cmd_x },
 
 };
 
