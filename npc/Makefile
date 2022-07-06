@@ -60,7 +60,7 @@ verilog:
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 # before run, make verilog
-sim_board:$(BIN_BOARD) $(SRC_AUTO_BIND)
+sim_board:$(BIN_BOARD)
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	$^
