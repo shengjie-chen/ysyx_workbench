@@ -55,6 +55,7 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 
 verilog:
 	$(call git_commit, "generate $(TOPNAME) verilog")
+	echo $(GEN_DIR)
 	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
