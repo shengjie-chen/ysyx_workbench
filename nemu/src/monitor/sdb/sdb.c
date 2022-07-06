@@ -88,10 +88,10 @@ static int cmd_x(char *args) {
   uint8_t* addr;
   for(i=0;i<args1;i++){
     addr = guest_to_host(args2+i);
-    printf("addr: %p : ",addr);
-    for(j=0;j<4;j++){
+    printf("addr: %hhn : ",addr);
+    for(j=3;j>=0;j--){
       addr = guest_to_host(args2+i+j);
-      printf("%d ", *addr);
+      printf("%x ", *addr);
     }
     printf("\n");
   }
