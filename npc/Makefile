@@ -1,6 +1,6 @@
 BUILD_DIR = ./build
 # design module
-TOPNAME = CharacterInput
+TOPNAME = AluFourBit # CharacterInput
 SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
