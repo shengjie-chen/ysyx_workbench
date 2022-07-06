@@ -1,6 +1,6 @@
 BUILD_DIR = ./build
-# design module AluFourBit CharacterInput
-TOPNAME = AluFourBit
+# design module AluFourBit VgaOutput CharacterInput
+TOPNAME = VgaOutput
 SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
