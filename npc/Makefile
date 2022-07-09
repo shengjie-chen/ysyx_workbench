@@ -1,5 +1,5 @@
 BUILD_DIR = ./build
-# design module AluFourBit LFSRegister KeyBoard VgaOutput CharacterInput
+# design module AluFourBit LFSRegister Multiplexer PriorEncoder KeyBoard VgaOutput CharacterInput
 TOPNAME = AluFourBit
 SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
