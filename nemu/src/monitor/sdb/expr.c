@@ -25,7 +25,7 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
 
-  {"\\d+", DEC_INT},    // decimal integer
+  {"[0-9]+", DEC_INT},    // decimal integer
   {"\\-", '-'},         // substract
   {"\\*", '*'},         // multiply
   {"/", '/'},           // divide
