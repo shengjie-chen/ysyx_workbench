@@ -107,6 +107,27 @@ static bool make_token(char *e) {
   return true;
 }
 
+static bool check_parentheses(char *p, char *q){
+  if(*p == '(' && *q == ')'){return true;}
+  else {return false;}
+}
+
+static uint32_t eval(char *p, char *q) {
+  if(p > q){
+    printf("Bad expression\n");
+    return 0;
+  }
+  else if(p == q){
+    assert(*p >= '0' && *p <= '9');
+    return *p-'0';
+  }
+  else if(check_parentheses(p,q) == true) {
+    return eval(p+1,q-1);
+  }
+  else {
+    return 0;
+  }
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -115,7 +136,9 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
+  // TODO();
+  uint32_t value;
+  value = eval(e, strchr(e,'\0')-1);
+  printf("EXP is %d",value);
   return 0;
 }
