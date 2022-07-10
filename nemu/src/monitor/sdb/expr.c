@@ -90,9 +90,9 @@ static bool make_token(char *e) {
         strncpy(tokens[nr_token].str, substr_start, substr_len);
         nr_token++;
 
-        switch (rules[i].token_type) {
-          default: TODO();
-        }
+        // switch (rules[i].token_type) {
+        //   default: TODO();
+        // }
 
         break;
       }
