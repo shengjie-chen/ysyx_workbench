@@ -79,6 +79,12 @@ static int cmd_x(char *args) {
   return 0;
 }
 
+static int cmd_p(char *args) {
+  bool *success = 0;
+  expr(args, success);
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -92,6 +98,7 @@ static struct {
   { "si", "Next step", cmd_si },
   { "info", "Print program state", cmd_info },
   { "x", "Scan Memory", cmd_x },
+  { "p", "Calculate Expression", cmd_p},
 
 };
 
