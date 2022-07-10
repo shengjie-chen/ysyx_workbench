@@ -139,6 +139,6 @@ word_t expr(char *e, bool *success) {
   // TODO();
   uint32_t value;
   value = eval(e, strchr(e,'\0')-1);
-  printf("EXP is %d",value);
+  printf("EXP is %d\n",value);
   return 0;
 }
