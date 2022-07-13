@@ -86,14 +86,13 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         assert(nr_token<32);
-        tokens[nr_token].type = rules[i].token_type;
-        strncpy(tokens[nr_token].str, substr_start, substr_len);
-        nr_token++;
-
-        // switch (rules[i].token_type) {
-        //   default: TODO();
-        // }
-
+        switch (rules[i].token_type) {
+          case TK_NOTYPE: break;
+          default: 
+            tokens[nr_token].type = rules[i].token_type;
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            nr_token++;
+        }
         break;
       }
     }
@@ -107,24 +106,93 @@ static bool make_token(char *e) {
   return true;
 }
 
-static bool check_parentheses(char *p, char *q){
-  if(*p == '(' && *q == ')'){return true;}
+int find_right_brackets(int p,int q){
+  int i;
+  for(i=p+1;i<=q;){
+    if(tokens[i].type == ')'){
+      return i;
+    }
+    else if(tokens[i].type == '('){
+      i = find_right_brackets(i,q);
+    }
+    else{
+      i++;
+    }
+  }
+  panic("can't find ')'\n");
+}
+
+static bool check_parentheses(int p, int q){
+  if(tokens[p].type == '(' ){
+    if(q == find_right_brackets(p,q)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
   else {return false;}
 }
 
-static uint32_t eval(char *p, char *q) {
+static uint32_t eval(int p, int q) {
   if(p > q){
-    printf("Bad expression\n");
+    panic("Bad expression\n");
     return 0;
   }
   else if(p == q){
-    assert(*p >= '0' && *p <= '9');
-    return *p-'0';
+    if(tokens[p].type == DEC_INT){
+      uint32_t val;
+      sscanf(tokens[p].str,"%d",&val);
+      return val;
+    }
+    else{
+      panic("Sigle expression is not a number\n");
+      return 0;
+    }
   }
   else if(check_parentheses(p,q) == true) {
     return eval(p+1,q-1);
   }
   else {
+    int i;
+    int op=0;
+    int op_type=0;
+    for(i=p;i<=q;){
+      switch(tokens[i].type){
+        case '(':
+          i = find_right_brackets(i,q);
+          break;
+        case '-':
+        case '+':
+          op = i;
+          op_type = tokens[i].type;
+          i++;
+          break;
+        case '*':
+        case '/':
+          if(op_type != '+' && op_type != '-'){
+            op = i;
+            op_type = tokens[i].type;
+          }
+          i++;
+          break;
+        default:
+          op_type = op_type;
+          op = op;
+          i++;
+      }
+    }
+    uint32_t val1 = eval(p,op-1);
+    uint32_t val2 = eval(op+1,q);
+
+    switch(op_type){
+      case '+': return val1 + val2;break;
+      case '-': return val1 - val2;break;
+      case '*': return val1 * val2;break;
+      case '/': return val1 / val2;break;
+      default: assert(0);
+    }
+
     return 0;
   }
 }
@@ -138,7 +206,7 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
   // TODO();
   uint32_t value;
-  value = eval(e, strchr(e,'\0')-1);
+  value = eval(0, nr_token-1);
   printf("EXP is %d\n",value);
   return 0;
 }
