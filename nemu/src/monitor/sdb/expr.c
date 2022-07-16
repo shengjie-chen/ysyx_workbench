@@ -235,6 +235,7 @@ bool check_expr()
   } else {
     int i;
     for (i = 0; i < 1000; i++) {
+      printf("check %d line",i);
       if (fgets(input, 65536, fp) != NULL) {
         sscanf(input, "%u %s", &result, e);
         if (expr(e, success) != result) {
