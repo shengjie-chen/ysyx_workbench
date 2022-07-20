@@ -82,8 +82,8 @@ static bool make_token(char *e)
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -235,7 +235,8 @@ bool check_expr()
   FILE *fp = fopen("./tools/gen-expr/input", "r");
   char input[65536];
   bool *success = 0;
-  uint32_t result;
+  uint32_t spec;
+  uint32_t impl;
   char e[65536];
   if (fp == NULL) {
     panic("read expr input file error\n");
@@ -245,8 +246,10 @@ bool check_expr()
       printf("check %d line",i);
       if (fgets(input, 65536, fp) != NULL) {
         memset(e,0,sizeof(e));
-        sscanf(input, "%u %[^\n]", &result,e);
-        if (expr(e, success) != result) {
+        sscanf(input, "%u %[^\n]", &spec,e);
+        impl = expr(e, success);
+        if (impl != spec) {
+          printf("%d line is wrong, spec value is %u, compute value is %u",i,spec,impl);
           return false;
         }
         else{
