@@ -243,17 +243,17 @@ bool check_expr()
   } else {
     int i;
     for (i = 0; i < 1000; i++) {
-      printf("check %d line",i);
+      printf("check %d line\n",i);
       if (fgets(input, 65536, fp) != NULL) {
         memset(e,0,sizeof(e));
         sscanf(input, "%u %[^\n]", &spec,e);
         impl = expr(e, success);
         if (impl != spec) {
-          printf("%d line is wrong, spec value is %u, compute value is %u",i,spec,impl);
+          printf("%d line is wrong, spec value is %u, compute value is %u\n",i,spec,impl);
           return false;
         }
         else{
-          printf("%d line is right",i);
+          printf("%d line is right\n",i);
         }
       }
     }
