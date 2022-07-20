@@ -47,6 +47,7 @@ static void gen_num()
     num = rand() % 10 + 48;
     gen(num);
   }
+  gen('u');
 }
 
 static void gen_rand_op()
@@ -135,7 +136,7 @@ int main(int argc, char *argv[])
 
     int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
     if (ret != 0)
-      break;
+      continue;
 
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
