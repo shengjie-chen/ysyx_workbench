@@ -222,6 +222,11 @@ uint32_t expr(char *e, bool *success)
   uint32_t value;
   value = eval(0, nr_token - 1);
   printf("EXP is %d\n", value);
+  int i;
+  for(i=0;i<nr_token;i++){
+    memset(tokens[i].str,0,sizeof(tokens[i].str));
+    tokens[i].type = 0;
+  }
   return value;
 }
 
