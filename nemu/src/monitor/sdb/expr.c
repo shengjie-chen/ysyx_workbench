@@ -121,6 +121,7 @@ int find_right_brackets(int p, int q)
       return i;
     } else if (tokens[i].type == '(') {
       i = find_right_brackets(i, q);
+      i++;
     } else {
       i++;
     }
