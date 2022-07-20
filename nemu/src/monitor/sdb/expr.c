@@ -82,8 +82,8 @@ static bool make_token(char *e)
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-        //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -243,7 +243,7 @@ bool check_expr()
   } else {
     int i;
     for (i = 0; i < 1000; i++) {
-      printf("check %d line\n",i);
+      // printf("check %d line\n",i);
       if (fgets(input, 65536, fp) != NULL) {
         memset(e,0,sizeof(e));
         sscanf(input, "%u %[^\n]", &spec,e);
