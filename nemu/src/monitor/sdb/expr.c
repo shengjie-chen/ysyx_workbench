@@ -30,7 +30,7 @@ static struct rule {
     {"[0-9]+", DEC_INT}, // decimal integer
     {"\\-", '-'},        // substract
     {"\\*", '*'},        // multiply
-    {"/", '/'},          // divide
+    {"\\/", '/'},          // divide
     {"\\(", '('},        // (
     {"\\)", ')'},         // )
 
