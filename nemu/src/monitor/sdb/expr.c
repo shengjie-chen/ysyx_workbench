@@ -243,7 +243,7 @@ bool check_expr()
     panic("read expr input file error\n");
   } else {
     int i;
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < 10000; i++) {
       // printf("check %d line\n",i);
       if (fgets(input, 65536, fp) != NULL) {
         memset(e,0,sizeof(e));
@@ -256,6 +256,9 @@ bool check_expr()
         else{
           printf("%d line is right\n",i);
         }
+      }
+      else{
+        break;
       }
     }
     return true;
