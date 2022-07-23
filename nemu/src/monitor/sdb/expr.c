@@ -228,10 +228,10 @@ static uint32_t eval(int p, int q)
     case LOG_AND:
       return val1 && val2;
       break;
-    case LOG_NEQ:
+    case LOG_EQ:
       return val1 == val2;
       break;
-    case LOG_EQ:
+    case LOG_NEQ:
       return val1 != val2;
       break;
     case '+':
