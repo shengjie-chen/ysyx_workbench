@@ -7,8 +7,13 @@
 
 enum {
   TK_NOTYPE = 256,
-  TK_EQ,
-  DEC_INT
+  DEC_NUM,
+  HEX_NUM,
+  REG_NAME,
+  LOG_EQ,
+  LOG_NEQ,
+  LOG_AND,
+  DEREF // dereference
 
   /* TODO: Add more token types */
 
@@ -24,17 +29,22 @@ static struct rule {
      */
 
     {" +", TK_NOTYPE}, // spaces
-    {"\\+", '+'},      // plus
-    {"==", TK_EQ},     // equal
+    {"u", TK_NOTYPE},  // unsigned suffix
 
-    {"[0-9]+", DEC_INT}, // decimal integer
-    {"\\-", '-'},        // substract
-    {"\\*", '*'},        // multiply
-    {"\\/", '/'},          // divide
+    {"[0-9]+", DEC_NUM}, // decimal number
+    {"\\+", '+'},        // plus 43
+    {"\\-", '-'},        // substract 45
+    {"\\*", '*'},        // multiply 42
+    {"\\/", '/'},        // divide 47
     {"\\(", '('},        // (
-    {"\\)", ')'},         // )
+    {"\\)", ')'},        // )
 
-    {"u", TK_NOTYPE}      // unsigned suffix
+    {"0x[0-9]+", HEX_NUM},   // hexadecimal number
+    {"\\$[0-9]+", REG_NAME}, // reg name
+    {"==", LOG_EQ},          // == logic equal
+    {"!=", LOG_NEQ},         // != logic not equal
+    {"&&", LOG_AND},         // && logic and
+
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -148,9 +158,18 @@ static uint32_t eval(int p, int q)
     panic("Bad expression\n");
     return 0;
   } else if (p == q) {
-    if (tokens[p].type == DEC_INT) {
+    if (tokens[p].type == DEC_NUM) {
       uint32_t val;
       sscanf(tokens[p].str, "%d", &val);
+      return val;
+    } else if (tokens[p].type == HEX_NUM) {
+      uint32_t val;
+      sscanf(tokens[p].str, "%x", &val);
+      return val;
+    } else if (tokens[p].type == REG_NAME) {
+      word_t val;
+      bool *success=0;
+      val = isa_reg_str2val(tokens[p].str, success);
       return val;
     } else {
       panic("Sigle expression is not a number\n");
@@ -167,15 +186,30 @@ static uint32_t eval(int p, int q)
       case '(':
         i = find_right_brackets(i, q);
         break;
-      case '-':
-      case '+':
+      case LOG_AND:
         op = i;
         op_type = tokens[i].type;
         i++;
         break;
+      case LOG_NEQ:
+      case LOG_EQ:
+        if (op_type != LOG_AND) {
+          op = i;
+          op_type = tokens[i].type;
+        }
+        i++;
+        break;
+      case '-':
+      case '+':
+        if (op_type < 256) {
+          op = i;
+          op_type = tokens[i].type;
+        }
+        i++;
+        break;
       case '*':
       case '/':
-        if (op_type != '+' && op_type != '-') {
+        if (op_type != '+' && op_type != '-' && op_type < 256) {
           op = i;
           op_type = tokens[i].type;
         }
@@ -191,6 +225,15 @@ static uint32_t eval(int p, int q)
     uint32_t val2 = eval(op + 1, q);
 
     switch (op_type) {
+    case LOG_AND:
+      return val1 && val2;
+      break;
+    case LOG_NEQ:
+      return val1 == val2;
+      break;
+    case LOG_EQ:
+      return val1 != val2;
+      break;
     case '+':
       return val1 + val2;
       break;
@@ -220,18 +263,35 @@ uint32_t expr(char *e, bool *success)
 
   /* TODO: Insert codes to evaluate the expression. */
   // TODO();
+  int i;
+  bool is_deref;
+  for (i = 0; i < nr_token; i++) {
+    is_deref = i == 0 ||
+               tokens[i - 1].type == '(' ||
+               tokens[i - 1].type == '+' ||
+               tokens[i - 1].type == '-' ||
+               tokens[i - 1].type == '*' ||
+               tokens[i - 1].type == '/' ||
+               tokens[i - 1].type == LOG_EQ ||
+               tokens[i - 1].type == LOG_NEQ ||
+               tokens[i - 1].type == LOG_AND ||
+               tokens[i - 1].type == DEREF;
+    if (tokens[i].type == '*' && is_deref) {
+      tokens[i].type = DEREF;
+    }
+  }
+
   uint32_t value;
   value = eval(0, nr_token - 1);
   printf("EXP is %d\n", value);
-  int i;
-  for(i=0;i<nr_token;i++){
-    memset(tokens[i].str,0,sizeof(tokens[i].str));
+  for (i = 0; i < nr_token; i++) {
+    memset(tokens[i].str, 0, sizeof(tokens[i].str));
     tokens[i].type = 0;
   }
   return value;
 }
 
-bool check_expr()
+bool check_expr() // check function expr() when initial
 {
   FILE *fp = fopen("./tools/gen-expr/input", "r");
   char input[65536];
@@ -246,18 +306,16 @@ bool check_expr()
     for (i = 0; i < 10000; i++) {
       // printf("check %d line\n",i);
       if (fgets(input, 65536, fp) != NULL) {
-        memset(e,0,sizeof(e));
-        sscanf(input, "%u %[^\n]", &spec,e);
+        memset(e, 0, sizeof(e));
+        sscanf(input, "%u %[^\n]", &spec, e);
         impl = expr(e, success);
         if (impl != spec) {
-          printf("%d line is wrong, spec value is %u, compute value is %u\n",i,spec,impl);
+          printf("%d line is wrong, spec value is %u, compute value is %u\n", i, spec, impl);
           return false;
+        } else {
+          printf("%d line is right\n", i);
         }
-        else{
-          printf("%d line is right\n",i);
-        }
-      }
-      else{
+      } else {
         break;
       }
     }
