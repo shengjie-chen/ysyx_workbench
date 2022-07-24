@@ -4,6 +4,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
+#include <memory/paddr.h>
 
 enum {
   TK_NOTYPE = 256,
@@ -152,6 +153,12 @@ static bool check_parentheses(int p, int q)
   }
 }
 
+static uint32_t eval_deref(uint32_t val){
+  uint8_t* addr;
+  addr = guest_to_host(val);
+  return *addr;
+}
+
 static uint32_t eval(int p, int q)
 {
   if (p > q) {
@@ -168,7 +175,7 @@ static uint32_t eval(int p, int q)
       return val;
     } else if (tokens[p].type == REG_NAME) {
       word_t val;
-      bool *success=0;
+      bool *success = 0;
       val = isa_reg_str2val(tokens[p].str, success);
       return val;
     } else {
@@ -215,15 +222,25 @@ static uint32_t eval(int p, int q)
         }
         i++;
         break;
+      case DEREF:
+        if (op_type == 0) {
+          op = i;
+          op_type = tokens[i].type;
+        }
+        i++;
+        break;
       default:
         op_type = op_type;
         op = op;
         i++;
       }
     }
-    uint32_t val1 = eval(p, op - 1);
-    uint32_t val2 = eval(op + 1, q);
 
+    uint32_t val1;
+    uint32_t val2 = eval(op + 1, q);
+    if(op_type != DEREF){
+    val1 = eval(p, op - 1);
+    }
     switch (op_type) {
     case LOG_AND:
       return val1 && val2;
@@ -245,6 +262,9 @@ static uint32_t eval(int p, int q)
       break;
     case '/':
       return val1 / val2;
+      break;
+    case DEREF:
+      return eval_deref(val2);
       break;
     default:
       assert(0);
