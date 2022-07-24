@@ -62,7 +62,7 @@ static int cmd_info(char *args)
   if (*args == 'r') {
     isa_reg_display();
   } else if (*args == 'w') {
-    // print_watchpoint();
+    print_watchpoint();
   }
   return 0;
 }
@@ -98,6 +98,14 @@ static int cmd_w(char *args)
   return 0;
 }
 
+static int cmd_d(char *args)
+{
+  int index;
+  sscanf(args, "%d", &index);
+  free_wp(index);
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -113,6 +121,7 @@ static struct {
     {"x", "Scan Memory", cmd_x},
     {"p", "Calculate Expression", cmd_p},
     {"w", "Watchpoint", cmd_w},
+    {"d", "Delete Watchpoint", cmd_d},
 
 };
 

@@ -65,21 +65,19 @@ WP *new_wp()
   return n_wp;
 }
 
-void free_wp(WP *wp)
+void free_wp(int index)
 {
   int i;
   WP *temp = head;
   WP *f_wp = head;
-  if (wp->NO == 0) { // find f_wp
-    assert(wp == head);
+  if (index == 0) { // find f_wp
     head = head->next;
     temp = head->next;
   } else {
-    for (i = 0; i < wp->NO; i++) {
+    for (i = 0; i < index; i++) {
       temp = f_wp;
       f_wp = f_wp->next;
     }
-    assert(f_wp == wp);
     temp->next = f_wp->next;
     temp = temp->next;
   }
@@ -103,17 +101,27 @@ void free_wp(WP *wp)
   }
 }
 
-void add_new_wp(char *args){
+void add_new_wp(char *args)
+{
   WP *n_wp = new_wp();
   n_wp->e = args;
 }
 
-// void print_watchpoint()
-// {
-//   int i;
-//   for (i = 0; i < NR_WP; i++) {
-//   }
-// }
+void print_watchpoint()
+{
+  WP *temp = head;
+  if (temp == NULL) {
+    printf("no checkpoint!\n");
+  }
+  int i;
+  for (i = 0; i < NR_WP; i++) {
+    printf("watchpoint NO.%d is %s -> %u\n", i, temp->e, temp->value);
+    if (temp->next == NULL) {
+      break;
+    }
+    temp = temp->next;
+  }
+}
 
 void check_watchpoint()
 {
