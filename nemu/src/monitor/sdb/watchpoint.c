@@ -115,7 +115,7 @@ void print_watchpoint()
   }
   int i;
   for (i = 0; i < NR_WP; i++) {
-    printf("watchpoint NO.%d is %s -> %u\n", i, temp->e, temp->value);
+    printf("watchpoint NO.%d is %s \n", i, temp->e);
     if (temp->next == NULL) {
       break;
     }
