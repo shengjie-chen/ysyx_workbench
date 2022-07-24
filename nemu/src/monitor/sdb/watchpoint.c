@@ -104,7 +104,7 @@ void free_wp(int index)
 void add_new_wp(char *args)
 {
   WP *n_wp = new_wp();
-  n_wp->e = args;
+  strcpy(n_wp->e,args);
 }
 
 void print_watchpoint()
