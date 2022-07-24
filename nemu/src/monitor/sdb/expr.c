@@ -174,7 +174,7 @@ static uint32_t eval(int p, int q)
       sscanf(tokens[p].str, "%x", &val);
       return val;
     } else if (tokens[p].type == REG_NAME) {
-      word_t val;
+      uint32_t val;
       bool *success = 0;
       val = isa_reg_str2val(tokens[p].str, success);
       return val;
