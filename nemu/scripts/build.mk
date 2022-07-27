@@ -55,3 +55,6 @@ $(BINARY): $(OBJS) $(ARCHIVES)
 
 clean:
 	-rm -rf $(BUILD_DIR)
+	rm $(NEMU_HOME)/*.s
+	rm $(NEMU_HOME)/*.i
+
