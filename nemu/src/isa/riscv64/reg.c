@@ -19,10 +19,25 @@ void isa_reg_display()
 word_t isa_reg_str2val(const char *s, bool *success)
 {
   int reg_index;
-  sscanf(s + 1, "%d", &reg_index);
-  if (reg_index > 32) {
+  char *reg = 0;
+  if (*(s + 1) > 48 && *(s + 1) < 57) {
+    sscanf(s + 1, "%d", &reg_index);
+    if (reg_index > 32) {
+      *success = false;
+      panic("reg index overflow\n");
+    }
+  } else {
+    sscanf(s + 1, "%s", reg);
+    int i;
+    for (i = 0; i < 32; i++) {
+      if (regs[i] == reg) {
+        reg_index = i;
+        goto return_flag;
+      }
+    }
     *success = false;
-    panic("reg index overflow\n");
+    panic("reg tag incorrect\n");
   }
+return_flag:
   return cpu.gpr[reg_index];
 }
