@@ -127,7 +127,7 @@ void check_watchpoint()
 {
   WP *temp = head;
   if (temp == NULL) {
-    printf("no checkpoint!\n");
+    // printf("no checkpoint!\n");
   } else {
     int i;
     bool *success = false;
