@@ -137,10 +137,12 @@ void init_monitor(int argc, char *argv[])
   /* Display welcome message. */
   welcome();
 
-  /* Check expr() and input */
+/* Check expr() and input */
+#ifdef CONFIG_CHECK_EXPR
   if (check_expr() != true) {
     panic("expr verifation error");
   }
+#endif
 }
 #else // CONFIG_TARGET_AM
 static long load_img()

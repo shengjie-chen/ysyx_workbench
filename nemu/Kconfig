@@ -123,6 +123,10 @@ config WATCHPOINT
   bool "Enable watchpoint function"
   default n
 
+config CHECK_EXPR
+  bool "Enable check expr function when init"
+  default n
+
 menu "Testing and Debugging"
 
 
