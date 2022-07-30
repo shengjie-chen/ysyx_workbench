@@ -104,7 +104,7 @@ void free_wp(int index)
 void add_new_wp(char *args)
 {
   WP *n_wp = new_wp();
-  strcpy(n_wp->e,args);
+  strcpy(n_wp->e, args);
 }
 
 void print_watchpoint()
@@ -128,20 +128,21 @@ void check_watchpoint()
   WP *temp = head;
   if (temp == NULL) {
     printf("no checkpoint!\n");
-  }
-  int i;
-  bool *success = false;
-  uint32_t c_value;
-  for (i = 0; i < NR_WP; i++) {
-    c_value = expr(temp->e, success);
-    if (c_value != temp->value) {
-      printf("watchpoint NO.%d change: %u -> %u\n", i, temp->value, c_value);
-      temp->value = c_value;
-      nemu_state.state = NEMU_STOP;
+  } else {
+    int i;
+    bool *success = false;
+    uint32_t c_value;
+    for (i = 0; i < NR_WP; i++) {
+      c_value = expr(temp->e, success);
+      if (c_value != temp->value) {
+        printf("watchpoint NO.%d change: %u -> %u\n", i, temp->value, c_value);
+        temp->value = c_value;
+        nemu_state.state = NEMU_STOP;
+      }
+      if (temp->next == NULL) {
+        break;
+      }
+      temp = temp->next;
     }
-    if (temp->next == NULL) {
-      break;
-    }
-    temp = temp->next;
   }
 }
