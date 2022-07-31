@@ -39,5 +39,5 @@ class RegisterFile(
 
 object RegisterFileGen extends App {
   (new chisel3.stage.ChiselStage)
-    .execute(Array("-td", "./build/RVNoob"), Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RegisterFile())))
+    .execute(args, Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RegisterFile())))
 }
