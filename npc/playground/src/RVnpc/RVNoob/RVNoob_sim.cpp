@@ -44,7 +44,6 @@ int main(int argc, char **argv, char **env){
 
 
         top->clock = 1;
-        top->io_inst = pmem_read(top->io_pc,4);
         top->eval();
         tfp->dump(main_time);
 		main_time++;
