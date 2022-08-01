@@ -37,14 +37,14 @@ int main(int argc, char **argv, char **env){
 	while (!Verilated::gotFinish() && main_time < sim_time) {
 
         top->clock = 0;
-//        top->io_inst = pmem_read(top->io_pc,4);
+        top->io_inst = pmem_read(top->io_pc,4);
         top->eval();
         tfp->dump(main_time);
         main_time++;
 
 
         top->clock = 1;
-//        top->io_inst = pmem_read(top->io_pc,4);
+        top->io_inst = pmem_read(top->io_pc,4);
         top->eval();
         tfp->dump(main_time);
 		main_time++;
