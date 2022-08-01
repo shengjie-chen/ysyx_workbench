@@ -28,6 +28,7 @@ int main(int argc, char **argv, char **env){
     while (n -- > 0) {
         top->clock = 0; top->eval();tfp->dump(main_time);
         top->clock = 1; top->eval();tfp->dump(main_time);
+        main_time++;
     }
     top->reset = 0;
 
