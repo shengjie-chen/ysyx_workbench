@@ -1,4 +1,5 @@
-package RVNoob
+package RVnpc.RVNoob
+
 import chisel3._
 
 class EXE extends Module {

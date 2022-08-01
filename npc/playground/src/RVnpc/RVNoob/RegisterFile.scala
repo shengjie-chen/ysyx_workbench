@@ -1,6 +1,8 @@
-package RVNoob
+package RVnpc.RVNoob
+
 import chisel3._
-import math._
+
+import scala.math._
 
 class RegisterFile(
   val ADDR_WIDTH: Int = 5,
@@ -21,7 +23,11 @@ class RegisterFile(
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
   val rf = Reg(Vec(reg_num, UInt(DATA_WIDTH.W)))
   rf(0) := 0.U
-
+  when(reset.asBool) {
+    for (i <- 1 to 31) {
+      rf(i) := i.U
+    }
+  }
   // read src1 and src2
   val rdata1 = Wire(UInt(DATA_WIDTH.W))
   val rdata2 = Wire(UInt(DATA_WIDTH.W))
