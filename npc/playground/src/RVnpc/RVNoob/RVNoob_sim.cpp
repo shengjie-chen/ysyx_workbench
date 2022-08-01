@@ -9,7 +9,7 @@
 //#include "RVNoob.h"
 
 vluint64_t main_time = 0;
-const vluint64_t sim_time = 20;
+const vluint64_t sim_time = 40;
 
 int main(int argc, char **argv, char **env){
 	Verilated::commandArgs(argc, argv);
@@ -27,6 +27,8 @@ int main(int argc, char **argv, char **env){
     top->reset = 1;
     while (n -- > 0) {
         top->clock = 0; top->eval();tfp->dump(main_time);
+        main_time++;
+
         top->clock = 1; top->eval();tfp->dump(main_time);
         main_time++;
     }
@@ -38,12 +40,13 @@ int main(int argc, char **argv, char **env){
 //        top->io_inst = pmem_read(top->io_pc,4);
         top->eval();
         tfp->dump(main_time);
+        main_time++;
+
 
         top->clock = 1;
 //        top->io_inst = pmem_read(top->io_pc,4);
         top->eval();
         tfp->dump(main_time);
-
 		main_time++;
 
 	}
