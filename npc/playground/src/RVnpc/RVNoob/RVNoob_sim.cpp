@@ -6,7 +6,7 @@
 #include "VRVNoob.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-//#include "RVNoob.h"
+#include "RVNoob.h"
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 40;
@@ -21,7 +21,7 @@ int main(int argc, char **argv, char **env){
 	top->trace(tfp,99);
 	tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
 
-//    memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
+    memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
 
     int n = 10;
     top->reset = 1;
