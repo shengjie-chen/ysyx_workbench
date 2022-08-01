@@ -7,7 +7,7 @@ module Ebreak(
 
 initial begin
     $display("%x + %x = %x", 1, 2, add(1,2));
-endtask
+end
 
 always@* begin
     if(inst == 32'b0000000 00001 00000 000 00000 11100 11) begin
