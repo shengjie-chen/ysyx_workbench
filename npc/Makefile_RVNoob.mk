@@ -7,7 +7,7 @@ TOPMODULE_GEN = $(TOPNAME)Gen
 
 SRC_CODE_DIR = $(shell find $(abspath $(SRC_DIR)) -maxdepth 2 -name "RVNoob")
 GEN_DIR = $(subst $(abspath $(SRC_DIR)),$(BUILD_DIR),$(SRC_CODE_DIR))# $(subst FROM, TO, TEXT)，即将字符串TEXT中的子串FROM变为TO
-
+VERILOG_OBJ_DIR = $(GEN_DIR)/$(TOPNAME)
 PACKAGE = RVNoob
 
 verilog:
@@ -15,7 +15,7 @@ verilog:
 	echo $(SRC_CODE_DIR)
 	echo $(GEN_DIR)
 	mkdir -p $(GEN_DIR)
-	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(GEN_DIR)
+	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
 test:
 	mill -i __.test

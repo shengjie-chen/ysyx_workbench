@@ -21,9 +21,6 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 					-O3 --x-assign fast --x-initial fast --noassert
 
-
-
-
 # constraint file
 SRC_AUTO_BIND = $(abspath ./nvboard_constr/auto_bind.cpp)# The file is initialized manually
 $(SRC_AUTO_BIND): $(NXDC_FILES)
