@@ -1,18 +1,18 @@
 package RVNoob
 import chisel3._
-class RVNoob extends Module{
-  val io = IO(new Bundle{
-    val pc = Output(UInt(64.W))
+class RVNoob extends Module {
+  val io = IO(new Bundle {
+    val pc   = Output(UInt(64.W))
     val inst = Input(UInt(32.W))
   })
-  val pc = RegInit(0x80000000L.U(64.W))//2147483648
+  val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
   val snpc = Wire(UInt(64.W))
-  snpc := pc + 4.U
-  pc := snpc
+  snpc  := pc + 4.U
+  pc    := snpc
   io.pc := pc
 
   val idu = Module(new IDU)
-  val rf = Module(new RegisterFile)
+  val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
 
   idu.io.inst := io.inst
@@ -27,6 +27,7 @@ class RVNoob extends Module{
 
   exe.io.src1 <> rf.io.rdata1
   exe.io.src2 <> idu.io.imm
+  exe.io.add_en <> idu.io.add_en
 
 }
 
