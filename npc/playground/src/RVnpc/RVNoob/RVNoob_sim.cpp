@@ -8,7 +8,7 @@
 #include "verilated_vcd_c.h"
 #include "RVNoob.h"
 #include "svdpi.h"
-#include "Vour__Dpi.h"
+#include "VRVNoob__Dpi.h"
 
 int add(int a, int b) { return a+b; }
 
