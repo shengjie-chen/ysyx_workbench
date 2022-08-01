@@ -19,7 +19,7 @@ class RegisterFile(
   })
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
-  val rf = Vec(reg_num, Reg(UInt(DATA_WIDTH.W)))
+  val rf = Reg(Vec(reg_num, UInt(DATA_WIDTH.W)))
   rf(0) := 0.U
 
   // read src1 and src2
