@@ -10,7 +10,7 @@ initial begin
 end
 
 always@* begin
-    if(inst == 32'b0000000 00001 00000 000 00000 11100 11) begin
+    if(inst == 32'b0000000_00001_00000_000_00000_11100_11) begin
         ebreak = 1;
         $finish;
     end
