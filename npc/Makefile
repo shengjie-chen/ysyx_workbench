@@ -1,6 +1,6 @@
 BUILD_DIR = ./build
 # design module AluFourBit LFSRegister Multiplexer PriorEncoder KeyBoard VgaOutput CharacterInput
-TOPNAME = RVNoob
+TOPNAME = VgaOutput
 SRC_DIR = ./playground/src
 # name of object to generate the verilog of design
 TOPMODULE_GEN = $(TOPNAME)Gen
