@@ -5,7 +5,7 @@ class RVNoob extends Module{
     val pc = Output(UInt(64.W))
     val inst = Input(UInt(32.W))
   })
-  val pc = RegInit(0x80000000.U(64.W))
+  val pc = RegInit(0x0000000080000000.U(64.W))
   val snpc = Wire(UInt(64.W))
   snpc := pc + 4.U
   pc := snpc
