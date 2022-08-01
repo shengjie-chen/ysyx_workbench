@@ -42,6 +42,7 @@ const uint32_t img [] = {
   0x004c8c93,          	// addi	s9,s9,4
   0x00840413,          	// addi	s0,s0,8
   0x004a0a13,          	// addi	s4,s4,4
+  0x00100073          	// ebreak
 //  0x0102b503,  // ld  a0,16(t0)
 //  0x00100073,  // ebreak (used as nemu_trap)
 //  0xdeadbeef,  // some data
