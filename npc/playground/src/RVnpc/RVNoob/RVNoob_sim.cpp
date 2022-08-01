@@ -5,7 +5,7 @@
 #include "VRVNoob.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-//#include "RVNoob.h"
+#include "RVNoob.h"
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 20;
