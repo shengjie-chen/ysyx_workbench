@@ -7,6 +7,10 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "RVNoob.h"
+#include "svdpi.h"
+#include "Vour__Dpi.h"
+
+int add(int a, int b) { return a+b; }
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 40;

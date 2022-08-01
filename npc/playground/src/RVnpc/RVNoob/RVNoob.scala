@@ -6,6 +6,7 @@ class RVNoob extends Module {
     val pc   = Output(UInt(64.W))
     val inst = Input(UInt(32.W))
     val res  = Output(UInt(64.W))
+    val ebreak = Output(Bool())
 //    override val prefix
   })
   val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
@@ -34,6 +35,9 @@ class RVNoob extends Module {
 
   io.res <> exe.io.result
 
+  val U_ebreak = Module(new Ebreak)
+  U_ebreak.io.inst <> io.inst
+  U_ebreak.io.ebreak <> io.ebreak
 }
 
 object RVNoobGen extends App {
