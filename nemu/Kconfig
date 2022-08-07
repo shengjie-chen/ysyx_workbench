@@ -127,9 +127,6 @@ config CHECK_EXPR
   bool "Enable check expr function when init"
   default n
 
-config BATCH_MODE
-  bool "Enable batch mode"
-  default n
 
 menu "Testing and Debugging"
 
