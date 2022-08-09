@@ -19,7 +19,8 @@ int int2char(int d, char *out)
 {
   int count = 0;
   int n = d;
-  char m[10];
+  char m[1];
+  // char m[10];
   if (d < 0) {
     *out++ = '-';
     n = -d;
