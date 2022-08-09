@@ -73,7 +73,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   //   memcpy(ptr, "     ", 5);
   // }
   ptr += 5;
-  memcpy(ptr, s->logbuf, 123);
+  // memcpy(ptr, s->logbuf, 123);
 
   // if (nemu_state.state == NEMU_ABORT) {
   //   char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
