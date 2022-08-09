@@ -72,7 +72,7 @@ int strcmp(const char *s1, const char *s2)
   int r;
   while (1) {
     r = *(unsigned char *)(s1 + i) - *(unsigned char *)(s2 + i);
-    if (r != 0 && *(unsigned char *)(s1 + i) == 0) {
+    if (r != 0 || *(unsigned char *)(s1 + i) == 0) {
       return (r);
     }
     i++;
