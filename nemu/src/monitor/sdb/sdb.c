@@ -52,7 +52,9 @@ static int cmd_si(char *args)
   if (args == 0) {
     cpu_exec(1);
   } else {
-    cpu_exec(ascii2num(args));
+    int n;
+    sscanf(args, "%d", &n);
+    cpu_exec(n);
   }
   return 0;
 }
