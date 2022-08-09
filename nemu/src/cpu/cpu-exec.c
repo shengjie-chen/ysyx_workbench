@@ -16,7 +16,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-static char * const iringbuf[16];
+static char * iringbuf[16];
 static int iringbuf_ptr = 0;
 
 void device_update();
@@ -72,8 +72,8 @@ static void exec_once(Decode *s, vaddr_t pc)
   } else {
     memcpy(ptr, "     ", 5);
   }
-  // ptr += 5;
-  // memcpy(ptr, s->logbuf, 123);
+  ptr += 5;
+  memcpy(ptr, s->logbuf, 123);
 
   // if (nemu_state.state == NEMU_ABORT) {
   //   char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
@@ -81,8 +81,8 @@ static void exec_once(Decode *s, vaddr_t pc)
   //   Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
   //   int i;
   //   for (i = 0; i < 16; i++) {
-  //     // fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
-      printf("%s\n", iringbuf[i]);
+  //     fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
+  //     // printf("%s\n", iringbuf[i]);
   //   }
   // }
   if (iringbuf_ptr == 15) {
