@@ -98,7 +98,7 @@ void *memset(void *s, int c, size_t n)
   int i;
   char *pstr = s;
   for (i = 0; i < n; i++) {
-    *(pstr+i) = c;
+    *(pstr + i) = c;
   }
   return s;
 }
@@ -106,11 +106,18 @@ void *memset(void *s, int c, size_t n)
 void *memmove(void *dst, const void *src, size_t n)
 {
   panic("Not implemented");
+  // int i = 0;
+  // while (*(src + i) != '\0')
+  //   i++;
+  // for (; i != -1; i--)
+  //   *(dst + i) = *(src + i);
 }
 
 void *memcpy(void *out, const void *in, size_t n)
 {
   panic("Not implemented");
+  // for (int i = 0; *(in + i) != '\0'; i++)
+  //   *(out + i) = *(in + i);
 }
 
 int memcmp(const void *s1, const void *s2, size_t n)
