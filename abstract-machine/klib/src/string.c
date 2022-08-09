@@ -98,7 +98,7 @@ void *memset(void *s, int c, size_t n)
   int i;
   char *pstr = s;
   for (i = 0; i < n; i++) {
-    *pstr = c;
+    *(pstr+i) = c;
   }
   return s;
 }
