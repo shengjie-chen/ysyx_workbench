@@ -72,19 +72,19 @@ static void exec_once(Decode *s, vaddr_t pc)
   } else {
     memcpy(ptr, "     ", 5);
   }
-  ptr += 5;
-  memcpy(ptr, s->logbuf, 123);
+  // ptr += 5;
+  // memcpy(ptr, s->logbuf, 123);
 
-  if (nemu_state.state == NEMU_ABORT) {
-    char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
-    FILE *iringbuf_fp = fopen(iringbuf_file, "w");
-    Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
-    int i;
-    for (i = 0; i < 16; i++) {
-      // fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
+  // if (nemu_state.state == NEMU_ABORT) {
+  //   char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
+  //   FILE *iringbuf_fp = fopen(iringbuf_file, "w");
+  //   Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
+  //   int i;
+  //   for (i = 0; i < 16; i++) {
+  //     // fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
       printf("%s\n", iringbuf[i]);
-    }
-  }
+  //   }
+  // }
   if (iringbuf_ptr == 15) {
     iringbuf_ptr = 0;
   } else {
