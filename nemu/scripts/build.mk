@@ -23,6 +23,7 @@ endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
+-include $(NEMU_HOME)/include/config/auto.conf
 ifdef CONFIG_SAVE_TEMPS
 	CFLAGS  += -save-temps
 endif
