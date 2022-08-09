@@ -67,11 +67,11 @@ static void exec_once(Decode *s, vaddr_t pc)
 
   // #ifdef CONFIG_IRINGBUF
   char *ptr = iringbuf[iringbuf_ptr];
-  if (nemu_state.state == NEMU_ABORT) {
-    memcpy(ptr, " --> ", 5);
-  } else {
-    memcpy(ptr, "     ", 5);
-  }
+  // if (nemu_state.state == NEMU_ABORT) {
+  //   memcpy(ptr, " --> ", 5);
+  // } else {
+  //   memcpy(ptr, "     ", 5);
+  // }
   ptr += 5;
   memcpy(ptr, s->logbuf, 123);
 
