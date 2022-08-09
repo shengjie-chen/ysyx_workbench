@@ -16,8 +16,8 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-// static char * const iringbuf[16];
-// static int iringbuf_ptr = 0;
+static char * const iringbuf[16];
+static int iringbuf_ptr = 0;
 
 void device_update();
 
@@ -65,33 +65,33 @@ static void exec_once(Decode *s, vaddr_t pc)
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #endif
 
-  // // #ifdef CONFIG_IRINGBUF
-  // char *ptr = iringbuf[iringbuf_ptr];
-  // if (nemu_state.state == NEMU_ABORT) {
-  //   memcpy(ptr, " --> ", 5);
-  // } else {
-  //   memcpy(ptr, "     ", 5);
-  // }
-  // ptr += 5;
-  // memcpy(ptr, s->logbuf, 123);
+  // #ifdef CONFIG_IRINGBUF
+  char *ptr = iringbuf[iringbuf_ptr];
+  if (nemu_state.state == NEMU_ABORT) {
+    memcpy(ptr, " --> ", 5);
+  } else {
+    memcpy(ptr, "     ", 5);
+  }
+  ptr += 5;
+  memcpy(ptr, s->logbuf, 123);
 
-  // if (nemu_state.state == NEMU_ABORT) {
-  //   char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
-  //   FILE *iringbuf_fp = fopen(iringbuf_file, "w");
-  //   Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
-  //   int i;
-  //   for (i = 0; i < 16; i++) {
-  //     // fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
-  //     printf("%s\n", iringbuf[i]);
-  //   }
-  // }
-  // if (iringbuf_ptr == 15) {
-  //   iringbuf_ptr = 0;
-  // } else {
-  //   iringbuf_ptr++;
-  // }
-  // memset(iringbuf[iringbuf_ptr], 0, 128);
-  // // #endif
+  if (nemu_state.state == NEMU_ABORT) {
+    char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
+    FILE *iringbuf_fp = fopen(iringbuf_file, "w");
+    Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
+    int i;
+    for (i = 0; i < 16; i++) {
+      // fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
+      printf("%s\n", iringbuf[i]);
+    }
+  }
+  if (iringbuf_ptr == 15) {
+    iringbuf_ptr = 0;
+  } else {
+    iringbuf_ptr++;
+  }
+  memset(iringbuf[iringbuf_ptr], 0, 128);
+  // #endif
 }
 
 static void execute(uint64_t n)
