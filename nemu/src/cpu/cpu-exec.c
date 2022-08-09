@@ -90,7 +90,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   } else {
     iringbuf_ptr++;
   }
-  memset(iringbuf[iringbuf_ptr], 0, 128);
+  // memset(iringbuf[iringbuf_ptr], 0, 128);
   // #endif
 }
 
