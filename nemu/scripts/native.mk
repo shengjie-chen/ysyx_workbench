@@ -8,10 +8,13 @@ compile_git:
 $(BINARY): compile_git
 
 # Some convenient rules
+-include $(NEMU_HOME)/include/config/auto.conf
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
-override ARGS += --batch
+ifdef CONFIG_BATCH_MODE
+	override ARGS += --batch
+endif
 
 # Command to execute NEMU
 IMG ?=
