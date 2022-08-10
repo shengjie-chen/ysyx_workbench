@@ -61,7 +61,22 @@ word_t paddr_read(paddr_t addr, int len)
   if (likely(in_pmem(addr))) {
 #ifdef CONFIG_MTRACE
     word_t mem_value = pmem_read(addr, len);
-    fprintf(mtrace_fp, " -> 0x%lx \n", mem_value);
+    switch (len) {
+    case 1:
+      fprintf(mtrace_fp, " -> 0x%01lx \n", mem_value);
+      break;
+    case 2:
+      fprintf(mtrace_fp, " -> 0x%02lx \n", mem_value);
+      break;
+    case 4:
+      fprintf(mtrace_fp, " -> 0x%04lx \n", mem_value);
+      break;
+      IFDEF(CONFIG_ISA64, case 8
+            : fprintf(mtrace_fp, " -> 0x%08lx \n", mem_value);
+            break);
+      IFDEF(CONFIG_RT_CHECK, default
+            : assert(0));
+    }
     return mem_value;
 #endif
     return pmem_read(addr, len);
@@ -86,20 +101,23 @@ void paddr_write(paddr_t addr, int len, word_t data)
     switch (len) {
     case 1:
       *(uint8_t *)mem_value_ptr = data;
+      fprintf(mtrace_fp, " -> 0x%01lx \n", *mem_value_ptr);
       break;
     case 2:
       *(uint16_t *)mem_value_ptr = data;
+      fprintf(mtrace_fp, " -> 0x%02lx \n", *mem_value_ptr);
       break;
     case 4:
       *(uint32_t *)mem_value_ptr = data;
+      fprintf(mtrace_fp, " -> 0x%04lx \n", *mem_value_ptr);
       break;
       IFDEF(CONFIG_ISA64, case 8
             : *(uint64_t *)mem_value_ptr = data;
+            fprintf(mtrace_fp, " -> 0x%08lx \n", *mem_value_ptr);
             break);
       IFDEF(CONFIG_RT_CHECK, default
             : assert(0));
     }
-    fprintf(mtrace_fp, " -> 0x%8lx \n", *mem_value_ptr);
 #endif
     pmem_write(addr, len, data);
     return;
