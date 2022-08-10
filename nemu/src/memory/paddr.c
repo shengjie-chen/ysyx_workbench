@@ -81,24 +81,25 @@ void paddr_write(paddr_t addr, int len, word_t data)
 #endif
   if (likely(in_pmem(addr))) {
 #ifdef CONFIG_MTRACE
-    word_t *mem_value = 0;
+    word_t mem_value;
+    word_t *mem_value_ptr = &mem_value;
     switch (len) {
     case 1:
-      *(uint8_t *)mem_value = data;
+      *(uint8_t *)mem_value_ptr = data;
       break;
     case 2:
-      *(uint16_t *)mem_value = data;
+      *(uint16_t *)mem_value_ptr = data;
       break;
     case 4:
-      *(uint32_t *)mem_value = data;
+      *(uint32_t *)mem_value_ptr = data;
       break;
       IFDEF(CONFIG_ISA64, case 8
-            : *(uint64_t *)mem_value = data;
+            : *(uint64_t *)mem_value_ptr = data;
             break);
       IFDEF(CONFIG_RT_CHECK, default
             : assert(0));
     }
-    fprintf(mtrace_fp, " -> 0x%8lx \n", *mem_value);
+    fprintf(mtrace_fp, " -> 0x%8lx \n", *mem_value_ptr);
 #endif
     pmem_write(addr, len, data);
     return;
