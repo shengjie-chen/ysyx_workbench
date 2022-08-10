@@ -82,7 +82,7 @@ static void exec_once(Decode *s, vaddr_t pc)
     int i;
     for (i = 0; i < 16; i++) {
       fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
-      printf("%s\n", iringbuf[i]);
+      // printf("%s\n", iringbuf[i]);
     }
   }
   if (iringbuf_ptr == 15) {

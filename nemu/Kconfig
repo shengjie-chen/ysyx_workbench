@@ -135,6 +135,10 @@ config SAVE_TEMPS
   bool "Enable -save-temps in cflags"
   default n 
 
+config MTRACE
+  bool "Enable mtrace"
+  default n 
+
 menu "Testing and Debugging"
 
 
