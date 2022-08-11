@@ -43,9 +43,27 @@ extern int ftrace_func_num;
 extern int ftrace_depth;
 extern char symname[MAX_FUNC_NUM][20];
 extern vaddr_t symaddr[MAX_FUNC_NUM];
+extern vaddr_t symaddr_end[MAX_FUNC_NUM];
 extern FILE *ftrace_fp;
-static void ftrace_call(Decode *s, vaddr_t pc)
+static void ftrace_call_ret(Decode *s, vaddr_t pc)
 {
+  if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
+    return;
+  }
+  if (s->isa.inst.val == 0x00008067) {
+    for (int i = 0; i < ftrace_func_num; i++) {
+      if (s->dnpc >= symaddr[i] && s->dnpc <= symaddr_end[i]) {
+        fprintf(ftrace_fp, "0x%8lx: ", pc);
+        for (int i = 0; i < ftrace_depth; i++) {
+          fprintf(ftrace_fp, "  ");
+        }
+        fprintf(ftrace_fp, "#%d ret  [%s@%8lx]\n", ftrace_depth, symname[i], symaddr[i]);
+        ftrace_depth--;
+        return;
+      }
+    }
+    return;
+  }
   for (int i = 0; i < ftrace_func_num; i++) {
     if (s->dnpc == symaddr[i]) {
       fprintf(ftrace_fp, "0x%8lx: ", pc);
@@ -54,9 +72,10 @@ static void ftrace_call(Decode *s, vaddr_t pc)
       }
       fprintf(ftrace_fp, "#%d call [%s@%8lx]\n", ftrace_depth, symname[i], symaddr[i]);
       ftrace_depth++;
-      break;
+      return;
     }
   }
+  return;
 }
 #endif
 
@@ -67,7 +86,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   isa_exec_once(s);
   cpu.pc = s->dnpc;
 #ifdef CONFIG_FTRACE
-  ftrace_call(s, pc);
+  ftrace_call_ret(s, pc);
 #endif
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;

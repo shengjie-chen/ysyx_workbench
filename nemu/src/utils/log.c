@@ -17,6 +17,7 @@ int ftrace_func_num;
 #define MAX_FUNC_NUM 100
 char symname[MAX_FUNC_NUM][20];
 vaddr_t symaddr[MAX_FUNC_NUM];
+vaddr_t symaddr_end[MAX_FUNC_NUM];
 
 void init_ftrace(const char *elf_file)
 {
@@ -162,6 +163,7 @@ void init_ftrace(const char *elf_file)
       strcpy(symname[n], (char *)(strtab_data + symtab[j].st_name));
       // symname[n] = (char *)(strtab_data + symtab[j].st_name);
       symaddr[n] = symtab[j].st_value;
+      symaddr_end[n] = symtab[j].st_value + symtab[j].st_size;
       printf("%s : %lx\n", symname[n], symaddr[n]);
       n++;
     }
