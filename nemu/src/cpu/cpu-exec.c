@@ -41,8 +41,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 #ifdef CONFIG_FTRACE
 // extern int mtrace_func_num;
 // extern int mtrace_depth;
-// extern char symname[][];
-// extern vaddr_t symaddr[];
+// extern char symname[MAX_FUNC_NUM][20];
+// extern vaddr_t symaddr[MAX_FUNC_NUM];
 // extern FILE *ftrace_fp;
 static void ftrace_call(Decode *s, vaddr_t pc)
 {

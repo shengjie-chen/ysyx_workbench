@@ -1,3 +1,4 @@
+#pragma once
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
 char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-log.txt";
