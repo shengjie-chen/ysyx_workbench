@@ -2,7 +2,6 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
-#include </home/jiexxpu/ysyx/ysyx-workbench/nemu/src/utils/log.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -39,20 +38,21 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 }
 
 #ifdef CONFIG_FTRACE
-// extern int mtrace_func_num;
-// extern int mtrace_depth;
-// extern char symname[MAX_FUNC_NUM][20];
-// extern vaddr_t symaddr[MAX_FUNC_NUM];
-// extern FILE *ftrace_fp;
+#define MAX_FUNC_NUM 100
+extern int ftrace_func_num;
+extern int ftrace_depth;
+extern char symname[MAX_FUNC_NUM][20];
+extern vaddr_t symaddr[MAX_FUNC_NUM];
+extern FILE *ftrace_fp;
 static void ftrace_call(Decode *s, vaddr_t pc)
 {
-  for (int i = 0; i < mtrace_func_num; i++) {
+  for (int i = 0; i < ftrace_func_num; i++) {
     if (s->dnpc == symaddr[i]) {
       fprintf(ftrace_fp, "0x%8lx: ", pc);
-      for (int i = 0; i < mtrace_depth; i++) {
+      for (int i = 0; i < ftrace_depth; i++) {
         fprintf(ftrace_fp, "  ");
       }
-      fprintf(ftrace_fp, "#%d call [%s@%8lx]\n", mtrace_depth, symname[i], symaddr[i]);
+      fprintf(ftrace_fp, "#%d call [%s@%8lx]\n", ftrace_depth, symname[i], symaddr[i]);
       break;
     }
   }
