@@ -63,7 +63,6 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc)
         return;
       }
     }
-    return;
   }
   for (int i = 0; i < ftrace_func_num; i++) {
     if (s->dnpc == symaddr[i]) {
