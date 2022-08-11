@@ -53,7 +53,7 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc)
   // }
   if (s->isa.inst.val == 0x00008067) {
     for (int i = 0; i < ftrace_func_num; i++) {
-      if (s->dnpc >= symaddr[i] && s->dnpc <= symaddr_end[i]) {
+      if (s->dnpc > symaddr[i] && s->dnpc <= symaddr_end[i]) {
         ftrace_depth--;
         fprintf(ftrace_fp, "0x%8lx: ", pc);
         for (int i = 0; i < ftrace_depth; i++) {
