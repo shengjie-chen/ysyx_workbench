@@ -16,10 +16,10 @@ char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-lo
 void init_mtrace(const char *elf_file)
 {
   FILE *fp = fopen(elf_file, "r");
-  if (NULL == fp) {
-    printf("fail to open the file");
-    exit(0);
-  }
+  // if (NULL == fp) {
+  //   printf("fail to open the elf file");
+  //   exit(0);
+  // }
   Assert(fp, "Can not open '%s'", elf_file);
   ftrace_fp = fopen(ftrace_file, "w");
 
