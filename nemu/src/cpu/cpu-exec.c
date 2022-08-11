@@ -47,7 +47,7 @@ extern vaddr_t symaddr_end[MAX_FUNC_NUM];
 extern FILE *ftrace_fp;
 static void ftrace_call_ret(Decode *s, vaddr_t pc)
 {
-  printf("djfa;d");
+  // printf("djfa;d");
   // if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
   //   return;
   // }
