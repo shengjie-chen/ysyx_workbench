@@ -48,9 +48,9 @@ extern FILE *ftrace_fp;
 static void ftrace_call_ret(Decode *s, vaddr_t pc)
 {
   printf("djfa;d");
-  if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
-    return;
-  }
+  // if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
+  //   return;
+  // }
   if (s->isa.inst.val == 0x00008067) {
     for (int i = 0; i < ftrace_func_num; i++) {
       if (s->dnpc >= symaddr[i] && s->dnpc <= symaddr_end[i]) {
