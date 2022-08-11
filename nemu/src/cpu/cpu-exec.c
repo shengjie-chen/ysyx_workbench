@@ -2,6 +2,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include </home/jiexxpu/ysyx/ysyx-workbench/nemu/src/utils/log.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -38,11 +39,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 }
 
 #ifdef CONFIG_FTRACE
-extern int mtrace_func_num;
-extern int mtrace_depth;
-extern char *symname[];
-extern vaddr_t symaddr[];
-extern FILE *ftrace_fp;
+// extern int mtrace_func_num;
+// extern int mtrace_depth;
+// extern char symname[][];
+// extern vaddr_t symaddr[];
+// extern FILE *ftrace_fp;
 static void ftrace_call(Decode *s, vaddr_t pc)
 {
   for (int i = 0; i < mtrace_func_num; i++) {
