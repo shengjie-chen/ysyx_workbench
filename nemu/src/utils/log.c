@@ -93,32 +93,10 @@ void init_ftrace(const char *elf_file)
     temp = temp + shdr[i].sh_name;
     if (strcmp(temp, ".strtab") != 0)
       continue; //该section名称
-    printf("节的名称: %s\n", temp);
-    printf("节首的偏移: %lx\n", shdr[i].sh_offset);
-    printf("节的大小: %lx\n", shdr[i].sh_size);
     strtab_data = (uint8_t *)malloc(sizeof(uint8_t) * shdr[i].sh_size);
     // 依据此段在文件中的偏移读取出
     fseek(fp, shdr[i].sh_offset, SEEK_SET);
     a = fread(strtab_data, sizeof(uint8_t) * shdr[i].sh_size, 1, fp);
-    // 显示读取的内容
-    char *p = (char *)strtab_data;
-    char *strtab[elf_head.e_shnum];
-    int j = 0;
-    for (j = 0; j < elf_head.e_shnum; j++) {
-      strtab[j] = p;
-      printf("%s\n", strtab[j]);
-      while (*p != 0) {
-        p++;
-      }
-      p++;
-    }
-    p = (char *)strtab_data;
-    for (j = 0; j < shdr[i].sh_size; j++) {
-      printf("%c", *p);
-      p++;
-    }
-    printf("\n");
-    break;
   }
 
   /******************************************************
@@ -164,7 +142,7 @@ void init_ftrace(const char *elf_file)
       // symname[n] = (char *)(strtab_data + symtab[j].st_name);
       symaddr[n] = symtab[j].st_value;
       symaddr_end[n] = symtab[j].st_value + symtab[j].st_size;
-      printf("%s : %lx\n", symname[n], symaddr[n]);
+      // printf("%s : %lx\n", symname[n], symaddr[n]);
       n++;
     }
   }
