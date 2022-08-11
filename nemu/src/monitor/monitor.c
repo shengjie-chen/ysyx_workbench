@@ -10,7 +10,7 @@ void init_sdb();
 void init_disasm(const char *triple);
 bool check_expr();
 #ifdef CONFIG_FTRACE
-void init_mtrace(const char *elf_file);
+void init_ftrace(const char *elf_file);
 #endif
 
 static void welcome()
@@ -121,7 +121,7 @@ void init_monitor(int argc, char *argv[])
   init_log(log_file);
 
 #ifdef CONFIG_FTRACE
-  init_mtrace(elf_file);
+  init_ftrace(elf_file);
 #endif
 
   /* Initialize memory. */
