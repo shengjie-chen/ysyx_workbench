@@ -15,6 +15,9 @@ override ARGS += $(ARGS_DIFF)
 ifdef CONFIG_BATCH_MODE
 	override ARGS += --batch
 endif
+ifdef CONFIG_FTRACE
+	override ARGS += --elf=$(basename $(IMG)).elf
+endif
 
 # Command to execute NEMU
 IMG ?=
