@@ -159,7 +159,8 @@ void init_mtrace(const char *elf_file)
       if (n > MAX_FUNC_NUM) {
         panic("mtrace : program have too many function, you have to increase MAX_FUNC_NUM!!");
       }
-      symname[n] = (char *)(strtab_data + symtab[j].st_name);
+      strcpy(symname[n], (char *)(strtab_data + symtab[j].st_name));
+      // symname[n] = (char *)(strtab_data + symtab[j].st_name);
       symaddr[n] = symtab[j].st_value;
       printf("%s : %lx\n", symname[n], symaddr[n]);
       n++;
