@@ -37,12 +37,36 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 #endif
 }
 
+#ifdef CONFIG_FTRACE
+extern int mtrace_func_num;
+extern int mtrace_depth;
+extern char *symname[];
+extern vaddr_t symaddr[];
+extern FILE *ftrace_fp;
+static void ftrace_call(Decode *s, vaddr_t pc)
+{
+  for (int i = 0; i < mtrace_func_num; i++) {
+    if (s->dnpc == symaddr[i]) {
+      fprintf(ftrace_fp, "0x%8lx: ", pc);
+      for (int i = 0; i < mtrace_depth; i++) {
+        fprintf(ftrace_fp, "  ");
+      }
+      fprintf(ftrace_fp, "#%d call [%s@%8lx]\n", mtrace_depth, symname[i], symaddr[i]);
+      break;
+    }
+  }
+}
+#endif
+
 static void exec_once(Decode *s, vaddr_t pc)
 {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+#ifdef CONFIG_FTRACE
+  ftrace_call(s, pc);
+#endif
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);

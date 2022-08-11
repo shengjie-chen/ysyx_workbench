@@ -12,6 +12,11 @@ FILE *mtrace_fp = NULL;
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
 char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-log.txt";
+int mtrace_depth = 0;
+int mtrace_func_num;
+#define MAX_FUNC_NUM 100
+char *symname[MAX_FUNC_NUM];
+vaddr_t symaddr[MAX_FUNC_NUM];
 
 void init_mtrace(const char *elf_file)
 {
@@ -147,15 +152,23 @@ void init_mtrace(const char *elf_file)
     exit(0);
   }
   int symnum = shdr[i].sh_size / sizeof(Elf64_Sym);
-  char *symname[symnum];
   int n = 0;
   int j;
   for (j = 0; j < symnum; j++) {
     if (ELF64_ST_TYPE(symtab[j].st_info) == STT_FUNC) {
+      if (n > MAX_FUNC_NUM) {
+        panic("mtrace : program have too many function, you have to increase MAX_FUNC_NUM!!");
+      }
       symname[n] = (char *)(strtab_data + symtab[j].st_name);
-      printf("%s\n", symname[n]);
+      symaddr[n] = symtab[j].st_value;
+      printf("%s : %lx\n", symname[n], symaddr[n]);
+      n++;
     }
   }
+  mtrace_func_num = n;
+  free(shdr);
+  free(strtab_data);
+  free(symtab);
 }
 #endif
 
