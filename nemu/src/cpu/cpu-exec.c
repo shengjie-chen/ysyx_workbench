@@ -59,7 +59,7 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc)
         for (int i = 0; i < ftrace_depth; i++) {
           fprintf(ftrace_fp, "  ");
         }
-        fprintf(ftrace_fp, "#%d ret  [%s@%8lx]\n", ftrace_depth, symname[i], symaddr[i]);
+        fprintf(ftrace_fp, "#%d ret  [%s@%8lx]\n", ftrace_depth, symname[i], s->dnpc);
         return;
       }
     }
