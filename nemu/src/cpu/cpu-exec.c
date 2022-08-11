@@ -53,6 +53,7 @@ static void ftrace_call(Decode *s, vaddr_t pc)
         fprintf(ftrace_fp, "  ");
       }
       fprintf(ftrace_fp, "#%d call [%s@%8lx]\n", ftrace_depth, symname[i], symaddr[i]);
+      ftrace_depth++;
       break;
     }
   }
