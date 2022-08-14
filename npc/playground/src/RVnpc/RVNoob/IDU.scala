@@ -83,5 +83,5 @@ class IDU extends Module {
   io.exe_out_mux := rvi_jal || rvi_jalr
   io.dnpc_mux := rvi_jalr || rvi_auipc
   io.dnpc_0b0 := rvi_jalr
-  io.pc_mux := rvi_jal || rvi_jalr || rvi_auipc
+  io.pc_mux := rvi_jal || rvi_jalr 
 }
