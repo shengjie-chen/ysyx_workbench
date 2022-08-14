@@ -28,9 +28,6 @@ int main(int argc, char **argv, char **env){
     memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
     img_file = *(argv+1);
     load_img();
-//    for(int i=0;i<200;i++){
-//    printf("%x\n",*(((uint32_t*)pmem)+i));
-//    }
 
     int n = 10;
     top->reset = 1;
