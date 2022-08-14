@@ -1,5 +1,4 @@
 #include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/include/macro.h"
-#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/include/debug.h"
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
@@ -56,17 +55,19 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 long load_img()
 {
   if (img_file == NULL) {
-    Log("No image is given. Use the default build-in image.");
+    printf("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
 
   FILE *fp = fopen(img_file, "rb");
-  Assert(fp, "Can not open '%s'", img_file);
+  if(fp==NULL){
+  printf("Can not open '%s'", img_file);
+  }
 
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
 
-  Log("The image is %s, size = %ld", img_file, size);
+  printf("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
   int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
