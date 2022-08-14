@@ -72,7 +72,7 @@ sim_vcd: verilog
 	@echo "Write this Makefile by yourself."
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
 	$(BIN_VCD) $(IMG)
-	#gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 test:
 	mill -i __.test
