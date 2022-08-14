@@ -52,7 +52,7 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN_BOARD))
 
 
-verilog:$(SSRCS)
+verilog:
 	$(call git_commit, "generate $(TOPNAME) verilog")
 	echo $(SRC_CODE_DIR)
 	echo $(GEN_DIR)
@@ -71,13 +71,11 @@ sim_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
-	$(BIN_VCD) $(IMG)
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	#$(BIN_VCD) $(IMG)
+	#gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 test:
 	mill -i __.test
-
-
 
 help:
 	mill -i __.test.runMain Elaborate --help
