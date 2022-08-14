@@ -83,5 +83,5 @@ class IDU extends Module {
   io.exe_out_mux := rvi_jal || rvi_jalr
   io.dnpc_mux := rvi_jalr || rvi_auipc
   io.dnpc_0b0 := rvi_jalr
-  io.pc_mux := rvi_jal || rvi_jalr // 出现pc=的指令
+  io.pc_mux := rvi_jal || rvi_jalr || rvi_auipc
 }
