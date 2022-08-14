@@ -26,6 +26,8 @@ int main(int argc, char **argv, char **env){
 	tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
 
     memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
+    img_file = *(argv+1);
+    load_img();
 
     int n = 10;
     top->reset = 1;

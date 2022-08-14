@@ -1,4 +1,5 @@
 #include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/include/macro.h"
+#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/include/debug.h"
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
@@ -30,6 +31,8 @@ typedef uint64_t paddr_t;
 #define CONFIG_PC_RESET_OFFSET 0x0
 //#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
 
+char *img_file = NULL;
+
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 const uint32_t img [] = {
   0xff010113,          	// addi	sp,sp,-16
@@ -49,6 +52,29 @@ const uint32_t img [] = {
 };
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+
+long load_img()
+{
+  if (img_file == NULL) {
+    Log("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
+  }
+
+  FILE *fp = fopen(img_file, "rb");
+  Assert(fp, "Can not open '%s'", img_file);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+
+  Log("The image is %s, size = %ld", img_file, size);
+
+  fseek(fp, 0, SEEK_SET);
+  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+  assert(ret == 1);
+
+  fclose(fp);
+  return size;
+}
 
 word_t host_read(void *addr, int len) {
   switch (len) {
