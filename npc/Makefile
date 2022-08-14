@@ -27,6 +27,8 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source
+SSRCS = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.scala")
+SSRCS += $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.v")
 VSRCS = $(shell find $(abspath $(VERILOG_OBJ_DIR)) -name  "*.v")
 VSRCS += $(shell find $(abspath $(SRC_CODE_DIR)) -name  "*.v")# add blackbox verilog file
 CSRCS_BOARD = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "$(TOPNAME).cpp")#"Multiplexer_sim.cpp")#"*.c" -or -name "*.cc" -or -name "*.cpp")
@@ -50,7 +52,7 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN_BOARD))
 
 
-verilog:
+verilog:$(SSRCS)
 	$(call git_commit, "generate $(TOPNAME) verilog")
 	echo $(SRC_CODE_DIR)
 	echo $(GEN_DIR)
