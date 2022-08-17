@@ -81,7 +81,7 @@ class IDU extends Module {
   io.alu_src1_mux := type_I || type_R || type_S || type_B
   io.alu_src2_mux := type_S || type_R || type_B
   io.exe_out_mux := rvi_jal || rvi_jalr
-  io.dnpc_mux := rvi_jalr || rvi_auipc
+  io.dnpc_mux := rvi_jalr || rvi_auipc || rvi_jal
   io.dnpc_0b0 := rvi_jalr
   io.pc_mux := rvi_jal || rvi_jalr // 出现pc=的指令
 }
