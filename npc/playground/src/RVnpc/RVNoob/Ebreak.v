@@ -14,9 +14,9 @@ always@* begin
     if(inst == 32'b0000000_00001_00000_000_00000_11100_11) begin
         ebreak = 1;
         if(a0 == 0) begin
-            $display("HIT GOOD TRAP");
+            $display("!!!!  HIT GOOD TRAP !!!!");
         end else begin
-            $display("HIT BAD TRAP");
+            $display("!!!!  HIT BAD TRAP !!!!");
         end
         $finish;
     end
