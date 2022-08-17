@@ -13,7 +13,7 @@
 int add(int a, int b) { return a+b; }
 
 vluint64_t main_time = 0;
-const vluint64_t sim_time = 25;
+const vluint64_t sim_time = 27;
 
 int main(int argc, char **argv, char **env){
 	Verilated::commandArgs(argc, argv);
