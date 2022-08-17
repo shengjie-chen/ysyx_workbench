@@ -3,9 +3,9 @@ package RVnpc.RVNoob
 import chisel3._
 class RVNoob extends Module {
   val io = IO(new Bundle {
-    val pc   = Output(UInt(64.W))
-    val inst = Input(UInt(32.W))
-    val res  = Output(UInt(64.W))
+    val pc     = Output(UInt(64.W))
+    val inst   = Input(UInt(32.W))
+    val res    = Output(UInt(64.W))
     val ebreak = Output(Bool())
 //    override val prefix
   })
@@ -17,7 +17,7 @@ class RVNoob extends Module {
   val exe = Module(new EXE)
 
   snpc  := pc + 4.U
-  pc    := Mux(idu.io.pc_mux,exe.io.dnpc,snpc)
+  pc    := Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
   io.pc := pc
 
   idu.io.inst := io.inst
@@ -35,17 +35,18 @@ class RVNoob extends Module {
   exe.io.imm <> idu.io.imm
   exe.io.pc <> pc
   exe.io.snpc <> snpc
-  exe.io.add_en       <> idu.io.add_en
+  exe.io.add_en <> idu.io.add_en
   exe.io.alu_src1_mux <> idu.io.alu_src1_mux
   exe.io.alu_src2_mux <> idu.io.alu_src2_mux
-  exe.io.exe_out_mux  <> idu.io.exe_out_mux
-  exe.io.dnpc_mux     <> idu.io.dnpc_mux
-  exe.io.dnpc_0b0     <> idu.io.dnpc_0b0
+  exe.io.exe_out_mux <> idu.io.exe_out_mux
+  exe.io.dnpc_mux <> idu.io.dnpc_mux
+  exe.io.dnpc_0b0 <> idu.io.dnpc_0b0
 
   io.res <> exe.io.gp_out
 
   val U_ebreak = Module(new Ebreak)
   U_ebreak.io.inst <> io.inst
+  U_ebreak.io.a0 <> rf.io.a0
   U_ebreak.io.ebreak <> io.ebreak
 }
 

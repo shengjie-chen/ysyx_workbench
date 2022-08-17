@@ -2,6 +2,7 @@ import "DPI-C" function int add (input int a, input int b);
 
 module Ebreak(
     input [31:0] inst,
+    input [63:0] a0,
     output reg ebreak
 );
 
@@ -12,6 +13,11 @@ end
 always@* begin
     if(inst == 32'b0000000_00001_00000_000_00000_11100_11) begin
         ebreak = 1;
+        if(a0 == 0) begin
+            $display("HIT GOOD TRAP");
+        end else begin
+            $display("HIT BAD TRAP");
+        end
         $finish;
     end
     else begin

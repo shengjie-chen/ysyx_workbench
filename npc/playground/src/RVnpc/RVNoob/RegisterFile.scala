@@ -18,6 +18,7 @@ class RegisterFile(
     val rdata2 = Output(UInt(DATA_WIDTH.W))
     val raddr1 = Input(UInt(ADDR_WIDTH.W))
     val raddr2 = Input(UInt(ADDR_WIDTH.W))
+    val a0     = Output(UInt(DATA_WIDTH.W))
   })
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
@@ -40,6 +41,8 @@ class RegisterFile(
   when(io.wen) {
     rf(io.waddr) := io.wdata
   }
+
+  io.a0 := rf(10)
 
 }
 
