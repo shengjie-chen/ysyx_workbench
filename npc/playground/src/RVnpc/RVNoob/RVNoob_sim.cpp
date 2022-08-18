@@ -49,7 +49,7 @@ int main(int argc, char **argv, char **env)
   load_img();
 
   npc_state.state = NPC_RUNNING;
-  printf("!!\n");
+
   int n = 10;
   top->reset = 1;
   while (n-- > 0) {
@@ -65,7 +65,9 @@ int main(int argc, char **argv, char **env)
   }
   top->reset = 0;
 
-  bool sdb_en = ~strcmp(*(argv + 2), "sdb");
+  if ((argv + 2) != NULL) {
+    bool sdb_en = ~strcmp(*(argv + 2), "sdb");
+  }
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
   if (sdb_en) {
