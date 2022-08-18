@@ -6,7 +6,7 @@
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "verilated_dpi.h"
+
 
 // int add(int a, int b) { return a + b; }
 
