@@ -66,6 +66,7 @@ int main(int argc, char **argv, char **env)
   top->reset = 0;
 
   bool sdb_en = (*(argv + 2) == "sdb");
+  printf("%s\n",*(argv + 2));
   if (sdb_en) {
     for (char *str; (str = rl_gets()) != NULL;) {
       char *str_end = str + strlen(str);
