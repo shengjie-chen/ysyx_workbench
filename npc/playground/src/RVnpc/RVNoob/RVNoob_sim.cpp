@@ -14,9 +14,7 @@ NPCState npc_state;
 
 void npc_ebreak()
 {
-  npc_state.state == NPC_END;
-  printf("%d\n", NPC_END);
-  printf("%d\n", npc_state.state);
+  npc_state.state = NPC_END;
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
