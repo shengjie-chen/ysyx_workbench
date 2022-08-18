@@ -47,9 +47,9 @@ int main(int argc, char **argv, char **env)
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   load_img();
-  printf("!!\n");
-  npc_state.state = NPC_RUNNING;
 
+  npc_state.state = NPC_RUNNING;
+  printf("!!\n");
   int n = 10;
   top->reset = 1;
   while (n-- > 0) {
