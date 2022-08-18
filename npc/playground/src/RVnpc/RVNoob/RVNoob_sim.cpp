@@ -10,7 +10,7 @@
 // int add(int a, int b) { return a + b; }
 
 vluint64_t main_time = 0;
-const vluint64_t sim_time = 100;
+const vluint64_t sim_time = 20;
 NPCState npc_state;
 
 void npc_ebreak()
