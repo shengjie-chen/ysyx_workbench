@@ -92,7 +92,7 @@ int main(int argc, char **argv, char **env)
         for (i = 0; i < NR_CMD; i++) {
           if (strcmp(cmd, cmd_table[i].name) == 0) {
             if (cmd_table[i].handler(args) < 0) {
-              printf("inst args error!!");
+              printf("inst args error or quit!!");
             }
             break;
           }

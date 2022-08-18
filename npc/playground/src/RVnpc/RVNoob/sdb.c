@@ -40,7 +40,7 @@ char *rl_gets()
 
 static int cmd_c(char *args)
 {
-  while (!Verilated::gotFinish() && main_time < sim_time) {
+  while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
     one_clock();
   }
   return 0;
@@ -64,12 +64,20 @@ static int cmd_si(char *args)
 static int cmd_info(char *args)
 {
   if (*args == 'r') {
+    printf("exe info r \n")
     dump_gpr();
   }
   //   else if (*args == 'w') {
   //     print_watchpoint();
   //   }
   return 0;
+}
+
+static int cmd_q(char *args)
+{
+  npc_state.state = NPC_QUIT;
+  printf("Exit NEMU\n");
+  return -1;
 }
 
 static int cmd_help(char *args);
@@ -81,6 +89,7 @@ struct {
 } cmd_table[] = {
     {"help", "Display informations about all supported commands", cmd_help},
     {"c", "Continue the execution of the program", cmd_c},
+    {"q", "Exit NEMU", cmd_q},
 
     /* TODO: Add more commands */
     {"si", "Next step", cmd_si},
