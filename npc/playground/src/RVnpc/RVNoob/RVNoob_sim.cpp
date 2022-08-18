@@ -1,4 +1,3 @@
-#include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 #include "svdpi.h"
@@ -9,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "RVNoob.h"
 
 int add(int a, int b) { return a + b; }
 
