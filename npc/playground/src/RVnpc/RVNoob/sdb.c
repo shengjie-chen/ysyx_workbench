@@ -6,8 +6,6 @@
 #include <readline/readline.h>
 extern void one_clock();
 extern NPCState npc_state;
-struct cmd_table[];
-#define NR_CMD ARRLEN(cmd_table)
 
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
@@ -33,28 +31,7 @@ char *rl_gets()
   return line_read;
 }
 
-static int cmd_help(char *args)
-{
-  /* extract the first argument */
-  char *arg = strtok(NULL, " ");
-  int i;
 
-  if (arg == NULL) {
-    /* no argument given */
-    for (i = 0; i < NR_CMD; i++) {
-      printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
-    }
-  } else {
-    for (i = 0; i < NR_CMD; i++) {
-      if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
-        return 0;
-      }
-    }
-    printf("Unknown command '%s'\n", arg);
-  }
-  return 0;
-}
 
 static int cmd_c(char *args)
 {
@@ -108,4 +85,27 @@ struct {
 
 };
 
+#define NR_CMD ARRLEN(cmd_table)
 
+static int cmd_help(char *args)
+{
+  /* extract the first argument */
+  char *arg = strtok(NULL, " ");
+  int i;
+
+  if (arg == NULL) {
+    /* no argument given */
+    for (i = 0; i < NR_CMD; i++) {
+      printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+    }
+  } else {
+    for (i = 0; i < NR_CMD; i++) {
+      if (strcmp(arg, cmd_table[i].name) == 0) {
+        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        return 0;
+      }
+    }
+    printf("Unknown command '%s'\n", arg);
+  }
+  return 0;
+}
