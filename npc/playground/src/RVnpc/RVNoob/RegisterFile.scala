@@ -8,30 +8,10 @@ import scala.math._
 class RF_read(
                val ADDR_WIDTH: Int = 5,
                val DATA_WIDTH: Int = 64)
-  extends BlackBox with HasBlackBoxInline {
+  extends BlackBox {
   val io = IO(new Bundle {
     val rf = Input(Vec(pow(2, ADDR_WIDTH).toInt, UInt(DATA_WIDTH.W)))
   })
-
-  setInline("rf_read.v",
-    """
-      |module rf_read(input [31:0] a,
-      |           input clk,
-      |           input reset,
-      |           output [3:0] b);
-      |
-      |  reg [3:0] b_temp;
-      |
-      |  always @ (posedge clk, negedge reset)
-      |    if(!reset)
-      |      b_temp <= 'b0;
-      |    else if(a == 'b0)
-      |      b_temp <= b_temp + 1'b1
-      |
-      |  assign b = b_temp;
-      |endmodule
-            """.stripMargin)
-
 }
 
 class RegisterFile(
