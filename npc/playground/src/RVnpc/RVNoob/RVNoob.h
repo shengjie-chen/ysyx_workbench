@@ -102,6 +102,6 @@ typedef struct {
 
 extern NEMUState nemu_state;
 
-void ebreak(){
+void npc_ebreak(){
   nemu_state.state == NPC_END;
 }
