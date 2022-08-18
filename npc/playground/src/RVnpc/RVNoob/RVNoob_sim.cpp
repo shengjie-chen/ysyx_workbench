@@ -47,7 +47,7 @@ int main(int argc, char **argv, char **env)
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   load_img();
-
+  printf("!!\n");
   npc_state.state = NPC_RUNNING;
 
   int n = 10;
@@ -66,7 +66,7 @@ int main(int argc, char **argv, char **env)
   top->reset = 0;
 
   bool sdb_en = ~strcmp(*(argv + 2), "sdb");
-  printf("%s\n",*(argv + 2));
+  // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
   if (sdb_en) {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
