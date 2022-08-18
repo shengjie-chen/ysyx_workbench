@@ -6,6 +6,8 @@
 #include <readline/readline.h>
 extern void one_clock();
 extern NPCState npc_state;
+extern vluint64_t main_time;
+extern vluint64_t sim_time;
 
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
