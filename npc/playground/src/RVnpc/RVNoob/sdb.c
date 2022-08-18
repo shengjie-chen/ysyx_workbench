@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include "verilated_dpi.h"
 #include <readline/readline.h>
-#include "stdio.h"
+#include <stdio.h>
 extern void one_clock();
 extern NPCState npc_state;
 extern vluint64_t main_time;
@@ -27,7 +27,7 @@ void dump_gpr()
 
 char *rl_gets()
 {
-  char *line_read = NULL;
+  char line_readp[50] = {0};
 
   gets(line_read);
 
