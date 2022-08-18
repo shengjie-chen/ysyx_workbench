@@ -65,7 +65,7 @@ static int cmd_si(char *args)
 static int cmd_info(char *args)
 {
   if (*args == 'r') {
-    printf("exe info r \n")
+    printf("exe info r \n");
     dump_gpr();
   }
   //   else if (*args == 'w') {
