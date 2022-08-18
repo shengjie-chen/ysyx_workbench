@@ -1,5 +1,4 @@
 #include "macro.h"
-#include <stdio.h>
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
@@ -101,7 +100,7 @@ typedef struct {
   // uint32_t halt_ret;
 } NPCState;
 
-extern NEMUState nemu_state;
+extern NPCState nemu_state;
 
 void npc_ebreak(){
   nemu_state.state == NPC_END;
