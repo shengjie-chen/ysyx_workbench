@@ -16,6 +16,10 @@ vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
 
+void npc_ebreak(){
+  npc_state.state == NPC_END;
+}
+
 VRVNoob *top = new VRVNoob;
 VerilatedVcdC *tfp = new VerilatedVcdC;
 
