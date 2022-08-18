@@ -28,7 +28,7 @@ char *rl_gets()
 {
   char *line_read = NULL;
 
-  line_read = readline("(npc) ");
+  gets(line_read);
 
   return line_read;
 }
