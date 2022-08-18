@@ -45,6 +45,7 @@ class RVNoob extends Module {
   io.res <> exe.io.gp_out
 
   val U_ebreak = Module(new Ebreak)
+  U_ebreak.io.clk <> clock
   U_ebreak.io.inst <> io.inst
   U_ebreak.io.a0 <> rf.io.a0
   U_ebreak.io.ebreak <> io.ebreak
