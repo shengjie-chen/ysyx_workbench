@@ -1,3 +1,4 @@
+#include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 #include "svdpi.h"
@@ -8,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "RVNoob.h"
 
 // int add(int a, int b) { return a + b; }
 
@@ -16,8 +16,10 @@ vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
 
-void npc_ebreak(){
+void npc_ebreak()
+{
   npc_state.state == NPC_END;
+  printf("%d\n", npc_state.state);
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
@@ -102,6 +104,7 @@ int main(int argc, char **argv, char **env)
   //   }
   // } else {
   while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
+    // printf("%d\n",npc_state.state);
     one_clock();
     // }
   }
