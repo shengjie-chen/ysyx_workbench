@@ -1,3 +1,7 @@
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "macro.h"
 
 typedef signed char __int8_t;

@@ -5,10 +5,6 @@
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 // int add(int a, int b) { return a + b; }
 
