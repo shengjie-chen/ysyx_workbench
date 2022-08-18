@@ -1,4 +1,5 @@
 #include "RVNoob.h"
+#include "sdb.c"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 #include "svdpi.h"
@@ -6,19 +7,6 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "verilated_dpi.h"
-
-uint64_t *cpu_gpr = NULL;
-extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
-}
-
-// 一个输出RTL中通用寄存器的值的示例
-void dump_gpr() {
-  int i;
-  for (i = 0; i < 32; i++) {
-    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
-  }
-}
 
 // int add(int a, int b) { return a + b; }
 
@@ -78,44 +66,44 @@ int main(int argc, char **argv, char **env)
   }
   top->reset = 0;
 
-  // bool sdb_en = (*(argv + 2) == "sdb");
-  // if (sdb_en) {
-  //   for (char *str; (str = rl_gets()) != NULL;) {
-  //     char *str_end = str + strlen(str);
+  bool sdb_en = (*(argv + 2) == "sdb");
+  if (sdb_en) {
+    for (char *str; (str = rl_gets()) != NULL;) {
+      char *str_end = str + strlen(str);
 
-  //     /* extract the first token as the command */
-  //     char *cmd = strtok(str, " ");
-  //     if (cmd == NULL) {
-  //       continue;
-  //     }
+      /* extract the first token as the command */
+      char *cmd = strtok(str, " ");
+      if (cmd == NULL) {
+        continue;
+      }
 
-  //     /* treat the remaining string as the arguments,
-  //      * which may need further parsing
-  //      */
-  //     char *args = cmd + strlen(cmd) + 1;
-  //     if (args >= str_end) {
-  //       args = NULL;
-  //     }
+      /* treat the remaining string as the arguments,
+       * which may need further parsing
+       */
+      char *args = cmd + strlen(cmd) + 1;
+      if (args >= str_end) {
+        args = NULL;
+      }
 
-  //     int i;
-  //     for (i = 0; i < NR_CMD; i++) {
-  //       if (strcmp(cmd, cmd_table[i].name) == 0) {
-  //         if (cmd_table[i].handler(args) < 0) {
-  //           return;
-  //         }
-  //         break;
-  //       }
-  //     }
+      int i;
+      for (i = 0; i < NR_CMD; i++) {
+        if (strcmp(cmd, cmd_table[i].name) == 0) {
+          if (cmd_table[i].handler(args) < 0) {
+            return;
+          }
+          break;
+        }
+      }
 
-  //     if (i == NR_CMD) {
-  //       printf("Unknown command '%s'\n", cmd);
-  //     }
-  //   }
-  // } else {
+      if (i == NR_CMD) {
+        printf("Unknown command '%s'\n", cmd);
+      }
+    }
+  } else {
   while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
     // printf("%d\n",npc_state.state);
     one_clock();
-    // }
+    }
   }
 
   tfp->close();

@@ -3,7 +3,24 @@
 #include "verilated_vcd_c.h"
 #include <stddef.h>
 extern void one_clock();
+extern NPCState npc_state;
+
 #define NR_CMD ARRLEN(cmd_table)
+
+uint64_t *cpu_gpr = NULL;
+extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
+{
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
+}
+
+// 一个输出RTL中通用寄存器的值的示例
+void dump_gpr()
+{
+  int i;
+  for (i = 0; i < 32; i++) {
+    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
+  }
+}
 
 char *rl_gets()
 {
@@ -53,7 +70,7 @@ static int cmd_si(char *args)
     int n, i;
     sscanf(args, "%d", &n);
     i = 0;
-    while (!Verilated::gotFinish() && main_time < sim_time && i < n) {
+    while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING && i < n) {
       one_clock();
     }
   }
@@ -63,7 +80,7 @@ static int cmd_si(char *args)
 static int cmd_info(char *args)
 {
   if (*args == 'r') {
-    isa_reg_display();
+    dump_gpr();
   }
   //   else if (*args == 'w') {
   //     print_watchpoint();
@@ -81,10 +98,10 @@ struct {
 
     /* TODO: Add more commands */
     {"si", "Next step", cmd_si},
-    {"info", "Print program state", cmd_info},
-    {"x", "Scan Memory", cmd_x},
-    {"p", "Calculate Expression", cmd_p},
-    {"w", "Watchpoint", cmd_w},
-    {"d", "Delete Watchpoint", cmd_d},
+    {"info", "Print program state", cmd_info}
+    // {"x", "Scan Memory", cmd_x},
+    // {"p", "Calculate Expression", cmd_p},
+    // {"w", "Watchpoint", cmd_w},
+    // {"d", "Delete Watchpoint", cmd_d},
 
 };
