@@ -7,8 +7,6 @@
 extern void one_clock();
 extern NPCState npc_state;
 
-#define NR_CMD ARRLEN(cmd_table)
-
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
 {
@@ -107,3 +105,5 @@ struct {
     // {"d", "Delete Watchpoint", cmd_d},
 
 };
+
+#define NR_CMD ARRLEN(cmd_table)
