@@ -7,7 +7,6 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-extern struct cmd_table[];
 // int add(int a, int b) { return a + b; }
 
 vluint64_t main_time = 0;
