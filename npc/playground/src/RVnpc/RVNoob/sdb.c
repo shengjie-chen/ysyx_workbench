@@ -29,7 +29,7 @@ char *rl_gets()
 {
   char line_read[50] = {0};
 
-  gets(line_read);
+  cin.gerline(line_read,50);
 
   return line_read;
 }
