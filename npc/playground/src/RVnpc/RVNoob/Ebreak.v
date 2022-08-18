@@ -1,5 +1,5 @@
-import "DPI-C" function int add (input int a, input int b);
-
+//import "DPI-C" function int add (input int a, input int b);
+import "DPI-C" function void ebreak();
 module Ebreak(
     input [31:0] inst,
     input [63:0] a0,
@@ -18,7 +18,8 @@ always@* begin
         end else begin
             $display("!!!!  HIT BAD TRAP !!!!");
         end
-        $finish;
+        ebreak();
+        // $finish;
     end
     else begin
         ebreak = 0;

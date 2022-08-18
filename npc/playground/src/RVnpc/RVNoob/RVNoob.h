@@ -1,4 +1,4 @@
-#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/include/macro.h"
+#include "macro.h"
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
@@ -46,7 +46,7 @@ const uint32_t img [] = {
   0x004a0a13,          	// addi	s4,s4,4
   0x00100073          	// ebreak
 //  0x0102b503,  // ld  a0,16(t0)
-//  0x00100073,  // ebreak (used as nemu_trap)
+//  0x00100073,  // ebreak (used as NPC_trap)
 //  0xdeadbeef,  // some data
 };
 
@@ -90,4 +90,18 @@ word_t host_read(void *addr, int len) {
 word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
+}
+
+enum { NPC_RUNNING, NPC_STOP, NPC_END/*, NPC_ABORT, NPC_QUIT*/ };
+
+typedef struct {
+  int state;
+  vaddr_t halt_pc;
+  uint32_t halt_ret;
+} NPCState;
+
+extern NEMUState nemu_state;
+
+void ebreak(){
+  nemu_state.state == NPC_END;
 }
