@@ -100,8 +100,8 @@ typedef struct {
   // uint32_t halt_ret;
 } NPCState;
 
-extern NPCState nemu_state;
+extern NPCState npc_state;
 
 void npc_ebreak(){
-  nemu_state.state == NPC_END;
+  npc_state.state == NPC_END;
 }
