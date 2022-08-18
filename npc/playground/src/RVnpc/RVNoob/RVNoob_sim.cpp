@@ -15,7 +15,6 @@ int add(int a, int b) { return a + b; }
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
-npc_state.state = NPC_RUNNING;
 
 int main(int argc, char **argv, char **env)
 {
@@ -31,6 +30,8 @@ int main(int argc, char **argv, char **env)
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   load_img();
+
+  npc_state.state = NPC_RUNNING;
 
   int n = 10;
   top->reset = 1;
