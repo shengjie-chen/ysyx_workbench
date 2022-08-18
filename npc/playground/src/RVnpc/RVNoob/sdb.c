@@ -27,7 +27,7 @@ void dump_gpr()
 
 char *rl_gets()
 {
-  char line_readp[50] = {0};
+  char line_read[50] = {0};
 
   gets(line_read);
 
