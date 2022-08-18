@@ -65,8 +65,9 @@ int main(int argc, char **argv, char **env)
   }
   top->reset = 0;
 
+  bool sdb_en = 0;
   if ((argv + 2) != NULL) {
-    bool sdb_en = ~strcmp(*(argv + 2), "sdb");
+    sdb_en = ~strcmp(*(argv + 2), "sdb");
   }
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
