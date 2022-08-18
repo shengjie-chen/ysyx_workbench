@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "verilated_dpi.h"
 #include <readline/readline.h>
+#include "stdio.h"
 extern void one_clock();
 extern NPCState npc_state;
 extern vluint64_t main_time;
