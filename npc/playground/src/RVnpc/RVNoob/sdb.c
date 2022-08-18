@@ -3,7 +3,7 @@
 #include "verilated_vcd_c.h"
 #include <stddef.h>
 #include "verilated_dpi.h"
-#include <readline.h>
+#include <readline/readline.h>
 extern void one_clock();
 extern NPCState npc_state;
 
