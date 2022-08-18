@@ -31,7 +31,7 @@ char *rl_gets()
 {
   char line_read[50] = {0};
 
-  cin.gerline(line_read,50);
+  cin.getline(line_read,50);
 
   return line_read;
 }
