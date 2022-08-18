@@ -1,4 +1,5 @@
 #include "macro.h"
+#include "util.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <stddef.h>
