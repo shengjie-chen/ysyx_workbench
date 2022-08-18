@@ -18,7 +18,7 @@ NPCState npc_state;
 
 void npc_ebreak(){
   npc_state.state == NPC_END;
-  printf("!!!!!! npc ebreak !!!!!!\n")
+  printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
 VRVNoob *top = new VRVNoob;
