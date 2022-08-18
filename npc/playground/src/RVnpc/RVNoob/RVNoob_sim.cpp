@@ -95,7 +95,7 @@ int main(int argc, char **argv, char **env)
   //     }
   //   }
   // } else {
-    while (!Verilated::gotFinish() && main_time < sim_time && NPC_state.state != NPC_END) {
+    while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state != NPC_END) {
       one_clock();
     // }
   }
