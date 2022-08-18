@@ -100,7 +100,7 @@ typedef struct {
   // uint32_t halt_ret;
 } NPCState;
 
-extern NPCState npc_state;
+// extern NPCState npc_state;
 
 void npc_ebreak(){
   npc_state.state == NPC_END;
