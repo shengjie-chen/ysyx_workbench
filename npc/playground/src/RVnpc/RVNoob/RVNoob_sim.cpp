@@ -1,3 +1,4 @@
+#include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 #include "svdpi.h"
@@ -8,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "RVNoob.h"
 
 int add(int a, int b) { return a + b; }
 
@@ -16,13 +16,27 @@ vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
 
+VRVNoob *top = new VRVNoob;
+VerilatedVcdC *tfp = new VerilatedVcdC;
+
+void one_clock()
+{
+  top->clock = 0;
+  top->io_inst = pmem_read(top->io_pc, 4);
+  top->eval();
+  tfp->dump(main_time);
+  main_time++;
+
+  top->clock = 1;
+  top->eval();
+  tfp->dump(main_time);
+  main_time++;
+}
+
 int main(int argc, char **argv, char **env)
 {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-
-  VRVNoob *top = new VRVNoob;
-  VerilatedVcdC *tfp = new VerilatedVcdC;
 
   top->trace(tfp, 99);
   tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
@@ -47,20 +61,6 @@ int main(int argc, char **argv, char **env)
     main_time++;
   }
   top->reset = 0;
-
-  void one_clock()
-  {
-    top->clock = 0;
-    top->io_inst = pmem_read(top->io_pc, 4);
-    top->eval();
-    tfp->dump(main_time);
-    main_time++;
-
-    top->clock = 1;
-    top->eval();
-    tfp->dump(main_time);
-    main_time++;
-  }
 
   // bool sdb_en = (*(argv + 2) == "sdb");
   // if (sdb_en) {
@@ -96,8 +96,8 @@ int main(int argc, char **argv, char **env)
   //     }
   //   }
   // } else {
-    while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state != NPC_END) {
-      one_clock();
+  while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state != NPC_END) {
+    one_clock();
     // }
   }
 
