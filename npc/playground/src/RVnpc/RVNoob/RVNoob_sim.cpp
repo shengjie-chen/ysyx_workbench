@@ -10,7 +10,7 @@
 #include <string.h>
 #include "RVNoob.h"
 
-int add(int a, int b) { return a + b; }
+// int add(int a, int b) { return a + b; }
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;

@@ -1,4 +1,4 @@
-import "DPI-C" function int add (input int a, input int b);
+//import "DPI-C" function int add (input int a, input int b);
 import "DPI-C" function void npc_ebreak();
 module Ebreak(
     input [31:0] inst,
@@ -6,9 +6,9 @@ module Ebreak(
     output reg ebreak
 );
 
-initial begin
-    $display("%x + %x = %x", 1, 2, add(1,2));
-end
+//initial begin
+//    $display("%x + %x = %x", 1, 2, add(1,2));
+//end
 
 always@* begin
     if(inst == 32'b0000000_00001_00000_000_00000_11100_11) begin
