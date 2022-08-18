@@ -65,9 +65,9 @@ int main(int argc, char **argv, char **env)
   }
   top->reset = 0;
 
-  bool sdb_en = (*(argv + 2) == "sdb");
+  bool sdb_en = (*(argv + 2) == "sdb\0");
   printf("%s\n",*(argv + 2));
-  printf("%d",sdb_en);
+  printf("%d\n",sdb_en);
   if (sdb_en) {
     for (char *str; (str = rl_gets()) != NULL;) {
       char *str_end = str + strlen(str);
