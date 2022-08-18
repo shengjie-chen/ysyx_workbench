@@ -61,7 +61,7 @@ int main(int argc, char **argv, char **env)
     main_time++;
   }
 
-  bool sdb_en = (*(argv + 2) == "sdb");
+  // bool sdb_en = (*(argv + 2) == "sdb");
   // if (sdb_en) {
   //   for (char *str; (str = rl_gets()) != NULL;) {
   //     char *str_end = str + strlen(str);

@@ -1,4 +1,5 @@
 #include "macro.h"
+#include <stdio.h>
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
