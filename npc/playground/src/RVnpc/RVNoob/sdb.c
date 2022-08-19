@@ -24,9 +24,9 @@ void dump_gpr()
   int i;
   for (i = 0; i < 8; i++) {
     printf("gpr[%d] = 0x%lx\t", i, cpu_gpr[i]);
-    printf("gpr[%d] = 0x%lx\t", i+4, cpu_gpr[i+4]);
-    printf("gpr[%d] = 0x%lx\t", i+8, cpu_gpr[i+8]);
-    printf("gpr[%d] = 0x%lx\n", i+12, cpu_gpr[i+12]);
+    printf("gpr[%d] = 0x%lx\t", i + 4, cpu_gpr[i + 4]);
+    printf("gpr[%d] = 0x%lx\t", i + 8, cpu_gpr[i + 8]);
+    printf("gpr[%d] = 0x%lx\n", i + 12, cpu_gpr[i + 12]);
   }
 }
 
@@ -65,11 +65,13 @@ static int cmd_si(char *args)
 
 static int cmd_info(char *args)
 {
+  if (args == NULL) {
+    return -1;
+  }
   if (*args == 'r') {
     printf("exe info r \n");
     dump_gpr();
-  }
-  else{
+  } else {
     return -1;
   }
   //   else if (*args == 'w') {
