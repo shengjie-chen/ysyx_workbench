@@ -22,8 +22,11 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
 void dump_gpr()
 {
   int i;
-  for (i = 0; i < 32; i++) {
-    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
+  for (i = 0; i < 8; i++) {
+    printf("gpr[%d] = 0x%lx\t", i, cpu_gpr[i]);
+    printf("gpr[%d] = 0x%lx\t", i+4, cpu_gpr[i+4]);
+    printf("gpr[%d] = 0x%lx\t", i+8, cpu_gpr[i+8]);
+    printf("gpr[%d] = 0x%lx\n", i+12, cpu_gpr[i+12]);
   }
 }
 
