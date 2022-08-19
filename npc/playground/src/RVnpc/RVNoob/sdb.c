@@ -29,9 +29,9 @@ void dump_gpr()
 
 char *rl_gets()
 {
-  char line_read[50] = {0};
+  char *line_read;
 
-  cin.getline(line_read, 50);
+  cin.getline(line_read, 15);
   printf("%s\n",line_read);
 
   return line_read;
