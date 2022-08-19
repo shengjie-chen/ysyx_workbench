@@ -69,6 +69,9 @@ static int cmd_info(char *args)
     printf("exe info r \n");
     dump_gpr();
   }
+  else{
+    return -1;
+  }
   //   else if (*args == 'w') {
   //     print_watchpoint();
   //   }
