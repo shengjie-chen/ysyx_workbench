@@ -1,6 +1,7 @@
 #include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
+#include "conf.h"
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
@@ -8,6 +9,7 @@
 #include "verilated_vcd_c.h"
 
 // int add(int a, int b) { return a + b; }
+IFDEF(CONFIG_ITRACE, char logbuf[128]);
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
@@ -17,6 +19,12 @@ void npc_ebreak()
 {
   npc_state.state = NPC_END;
   printf("!!!!!! npc ebreak !!!!!!\n");
+}
+
+uint32_t *cpu_inst = NULL;
+extern "C" void set_inst_ptr(const svOpenArrayHandle r)
+{
+  cpu_inst = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
 VRVNoob *top = new VRVNoob;
@@ -29,6 +37,31 @@ void one_clock()
   top->eval();
   tfp->dump(main_time);
   main_time++;
+
+#ifdef CONFIG_ITRACE
+  char *p = logbuf;
+  p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->pc);
+  int i;
+  uint8_t *inst = (uint8_t *)cpu_inst;
+  int ilen = 4;
+  for (i = ilen - 1; i >= 0; i--) {
+    p += snprintf(p, 4, " %02x", inst[i]);
+  }
+  int ilen_max = 4;
+  int space_len = ilen_max - ilen;
+  if (space_len < 0)
+    space_len = 0;
+  space_len = space_len * 3 + 1;
+  memset(p, ' ', space_len);
+  p += space_len;
+
+  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  disassemble(p, logbuf + sizeof(logbuf) - p,
+              top->pc, (uint8_t *)cpu_inst, ilen);
+
+  fprintf(itrace_fp, "%s\n", logbuf);
+
+#endif
 
   top->clock = 1;
   top->eval();
@@ -47,6 +80,11 @@ int main(int argc, char **argv, char **env)
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   load_img();
+
+#ifdef CONFIG_ITRACE
+  FILE *itrace_fp;
+  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+#endif
 
   npc_state.state = NPC_RUNNING;
 
@@ -112,6 +150,9 @@ int main(int argc, char **argv, char **env)
       one_clock();
     }
   }
+#ifdef CONFIG_ITRACE
+  fclose(itrace_fp);
+#endif
 
   tfp->close();
   delete top;

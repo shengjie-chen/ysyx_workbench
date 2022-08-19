@@ -67,7 +67,7 @@ sim_board:$(BIN_BOARD)
 
 IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 # sdb itrace mtrace ftrace
-FUN=sdb 
+FUN=sdb
 sim_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
