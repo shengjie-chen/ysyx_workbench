@@ -27,12 +27,11 @@ void dump_gpr()
   }
 }
 
+char line_read[20] = {0};
 char *rl_gets()
 {
-  char *line_read = 0;
-
-  cin.getline(line_read, 15);
-  printf("%s\n",line_read);
+  cin.getline(line_read, 20);
+  printf("%s\n", line_read);
 
   return line_read;
 }
