@@ -75,6 +75,7 @@ int main(int argc, char **argv, char **env)
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
       char *str;
       if ((str = rl_gets()) != NULL) {
+        printf("%s\n",str);
         char *str_end = str + strlen(str);
 
         /* extract the first token as the command */
