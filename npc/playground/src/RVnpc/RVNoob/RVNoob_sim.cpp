@@ -74,11 +74,7 @@ int main(int argc, char **argv, char **env)
   if (sdb_en) {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
       char *str;
-      str = rl_gets();
-      printf("%s\n", str);
-
-      if (str != NULL) {
-        printf("%s\n", str);
+      if ((str = rl_gets()) != NULL) {
         char *str_end = str + strlen(str);
 
         /* extract the first token as the command */
@@ -98,7 +94,6 @@ int main(int argc, char **argv, char **env)
         int i;
         for (i = 0; i < NR_CMD; i++) {
           if (strcmp(cmd, cmd_table[i].name) == 0) {
-            printf("main_time:%d\n", main_time);
             if (cmd_table[i].handler(args) < 0) {
               printf("inst args error or quit!!");
             }
