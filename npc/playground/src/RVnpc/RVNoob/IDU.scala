@@ -23,6 +23,9 @@ class IDU extends Module {
     val pc_mux = Output(Bool())
     val dnpc_0b0 = Output(Bool())
   })
+  val dpi_inst = Module(new DpiInst)
+  dpi_inst.io.inst <> io.inst
+
   val opcode = Wire(UInt(7.W))
   val fun3 = Wire(UInt(3.W))
   opcode := io.inst(6, 0)
@@ -84,4 +87,20 @@ class IDU extends Module {
   io.dnpc_mux := rvi_jalr || rvi_auipc || rvi_jal
   io.dnpc_0b0 := rvi_jalr
   io.pc_mux := rvi_jal || rvi_jalr // 出现pc=的指令
+}
+
+class DpiInst extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val inst = Input(UInt(32.W))
+  })
+  setInline("DpiInst.v",
+    """
+      |import "DPI-C" function void set_inst_ptr(input logic [31:0] a);
+      |module DpiInst(input [31:0] inst);
+      |
+      | initial set_inst_ptr(inst);
+      |
+      |endmodule
+            """.stripMargin)
+
 }
