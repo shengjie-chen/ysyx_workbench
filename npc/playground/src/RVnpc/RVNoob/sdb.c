@@ -29,7 +29,7 @@ void dump_gpr()
 
 char *rl_gets()
 {
-  char *line_read;
+  char *line_read = 0;
 
   cin.getline(line_read, 15);
   printf("%s\n",line_read);
