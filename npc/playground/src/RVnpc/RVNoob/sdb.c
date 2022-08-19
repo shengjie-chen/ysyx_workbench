@@ -32,6 +32,7 @@ char *rl_gets()
   char line_read[50] = {0};
 
   cin.getline(line_read, 50);
+  printf("%s\n",line_read);
 
   return line_read;
 }
