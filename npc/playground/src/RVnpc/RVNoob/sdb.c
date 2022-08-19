@@ -54,6 +54,7 @@ static int cmd_si(char *args)
     i = 0;
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING && i < n) {
       one_clock();
+      i++;
     }
   }
   return 0;
