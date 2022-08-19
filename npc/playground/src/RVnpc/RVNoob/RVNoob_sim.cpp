@@ -73,7 +73,6 @@ int main(int argc, char **argv, char **env)
   // printf("%d\n",sdb_en);
   if (sdb_en) {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
-      printf("main_time:%d\n", main_time);
       char *str;
       if ((str = rl_gets()) != NULL) {
         char *str_end = str + strlen(str);

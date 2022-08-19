@@ -1,11 +1,11 @@
 #include "macro.h"
 #include "verilated.h"
-#include "verilated_vcd_c.h"
-#include <stddef.h>
 #include "verilated_dpi.h"
-#include <readline/readline.h>
-#include <string>
+#include "verilated_vcd_c.h"
 #include <iostream>
+#include <readline/readline.h>
+#include <stddef.h>
+#include <string>
 using namespace std;
 extern void one_clock();
 extern NPCState npc_state;
@@ -31,12 +31,10 @@ char *rl_gets()
 {
   char line_read[50] = {0};
 
-  cin.getline(line_read,50);
+  cin.getline(line_read, 50);
 
   return line_read;
 }
-
-
 
 static int cmd_c(char *args)
 {
@@ -49,6 +47,7 @@ static int cmd_c(char *args)
 static int cmd_si(char *args)
 {
   if (args == 0) {
+    printf("main_time:%d\n", main_time);
     one_clock();
   } else {
     int n, i;
