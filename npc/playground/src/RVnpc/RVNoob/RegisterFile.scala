@@ -34,6 +34,7 @@ class RegisterFile(
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
   val rf = Reg(Vec(reg_num, UInt(DATA_WIDTH.W)))
   val rf_read = Module(new RF_read)
+  rf_read.io.rf <> rf
 
   rf(0) := 0.U
   when(reset.asBool) {
