@@ -74,8 +74,11 @@ int main(int argc, char **argv, char **env)
   if (sdb_en) {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
       char *str;
-      if ((str = rl_gets()) != NULL) {
-        printf("%s\n",str);
+      str = rl_gets();
+      printf("%s\n", str);
+
+      if (str != NULL) {
+        printf("%s\n", str);
         char *str_end = str + strlen(str);
 
         /* extract the first token as the command */
