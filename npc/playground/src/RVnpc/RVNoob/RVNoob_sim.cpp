@@ -7,6 +7,7 @@
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
+#include "disasm.cc"
 
 // int add(int a, int b) { return a + b; }
 IFDEF(CONFIG_ITRACE, char logbuf[128]);
