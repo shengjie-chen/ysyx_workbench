@@ -46,7 +46,7 @@ static int cmd_c(char *args)
 
 static int cmd_si(char *args)
 {
-  printf("main_time:%d\n", main_time);
+  // printf("main_time:%d\n", main_time);
   if (args == 0) {
     one_clock();
   } else {
