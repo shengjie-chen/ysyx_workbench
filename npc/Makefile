@@ -77,12 +77,12 @@ IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-ris
 FUN=sdb
 CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
-LIBS += $(shell llvm-config --libs) -pie
+LIBS += $(shell llvm-config --libs)
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(OBJ_DIR)/disasm.o $(CXXSRC)
-	verilator --cc $(VSRCS) --trace --exe --build $(abspath $(OBJ_DIR)/disasm.o) $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) -LDFLAGS $(LIBS) # $(addprefix -CFLAGS ,$(CXXFLAGS))
+	verilator --cc $(VSRCS) --trace --exe --build $(abspath $(OBJ_DIR)/disasm.o) $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) -LDFLAGS $(LIBS) -LDFLAGS -pie # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
