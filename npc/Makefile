@@ -77,7 +77,7 @@ IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-ris
 FUN=sdb
 CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
-LIBS += $(shell llvm-config --libs) -O2 -fsanitize=address -lreadline ldl -pie
+LIBS += $(shell llvm-config --libs) -O2 -fsanitize=address -lreadline -ldl -pie
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
