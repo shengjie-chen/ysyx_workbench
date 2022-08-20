@@ -29,8 +29,7 @@ extern "C" void set_inst_ptr(const svOpenArrayHandle r)
 
 #ifdef CONFIG_ITRACE
 char logbuf[128];
-FILE *fp;
-fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+FILE *itrace_fp;
 #endif
 
 VRVNoob *top = new VRVNoob;
@@ -45,6 +44,8 @@ void one_clock()
   main_time++;
 
 #ifdef CONFIG_ITRACE
+  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
@@ -65,7 +66,7 @@ void one_clock()
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)cpu_inst, ilen);
 
-  fprintf(fp, "%s\n", logbuf);
+  fprintf(itrace_fp, "%s\n", logbuf);
 
 #endif
 
@@ -152,7 +153,7 @@ int main(int argc, char **argv, char **env)
     }
   }
 #ifdef CONFIG_ITRACE
-  fclose(fp);
+  fclose(itrace_fp);
 #endif
 
   tfp->close();
