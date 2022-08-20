@@ -74,7 +74,7 @@ void one_clock()
   p += space_len;
   printf("%s\n",logbuf);
   printf("%x\n",top->io_pc);
-  printf()
+//  printf()
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)(&cpu_inst), ilen);
 
