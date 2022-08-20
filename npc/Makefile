@@ -77,7 +77,7 @@ IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-ris
 FUN=sdb
 DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
-DISASM_LIBS = $(shell llvm-config --libs) -O2 -pie
+DISASM_LIBS = $(shell llvm-config --libs) -O2 -fsanitize=address -pie
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."

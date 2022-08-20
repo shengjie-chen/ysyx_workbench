@@ -31,7 +31,7 @@ uint32_t cpu_inst;
 extern "C" void inst_change(const svLogicVecVal *r)
 {
   cpu_inst = *(uint32_t *)(r);
-  printf("inst : %lx\n", cpu_inst);
+  printf("inst : %x\n", cpu_inst);
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
@@ -73,7 +73,7 @@ void one_clock()
   memset(p, ' ', space_len);
   p += space_len;
   printf("%s\n",logbuf);
-  printf("%x\n",top->io_pc);
+  printf("%lx\n",top->io_pc);
 //  printf()
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)(&cpu_inst), ilen);
