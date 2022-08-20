@@ -73,6 +73,7 @@ void one_clock()
   memset(p, ' ', space_len);
   p += space_len;
   printf("%s\n",logbuf);
+  printf("%x\n",top->io_pc);
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)(&cpu_inst), ilen);
 
