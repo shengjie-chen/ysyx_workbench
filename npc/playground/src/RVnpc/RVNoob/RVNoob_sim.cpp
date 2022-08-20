@@ -55,9 +55,8 @@ void one_clock()
   main_time++;
 
 #ifdef CONFIG_ITRACE
-  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 
-  memset(logbuf,0,128);
+  memset(logbuf, 0, 128);
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
@@ -104,6 +103,7 @@ int main(int argc, char **argv, char **env)
 
 #ifdef CONFIG_ITRACE
   init_disasm("riscv64-pc-linux-gnu");
+  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 #endif
 
   npc_state.state = NPC_RUNNING;
