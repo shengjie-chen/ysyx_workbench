@@ -101,9 +101,7 @@ int main(int argc, char **argv, char **env)
   img_file = *(argv + 1);
   load_img();
 
-#ifdef CONFIG_ITRACE
-  init_disasm("riscv64-pc-linux-gnu");
-#endif
+  IFDEF(CONFIG_ITRACE, init_disasm("riscv64-pc-linux-gnu"));
 
   npc_state.state = NPC_RUNNING;
 
