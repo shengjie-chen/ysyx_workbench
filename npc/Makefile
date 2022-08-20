@@ -75,14 +75,14 @@ sim_vcd: verilog
 IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 # sdb itrace mtrace ftrace
 FUN=sdb
-CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
-CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
-LIBS += $(shell llvm-config --libs) -O2 -fsanitize=address -lreadline -ldl -pie
+DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
+DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
+DISASM_LIBS = $(shell llvm-config --libs) -O2 -fsanitize=address -lreadline -ldl -pie
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(CXXSRC)
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
+	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 #$(abspath $(OBJ_DIR)/disasm.o)
