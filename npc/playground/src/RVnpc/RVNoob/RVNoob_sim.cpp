@@ -48,7 +48,7 @@ void one_clock()
 
 #ifdef CONFIG_ITRACE
   itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
-  printf("error\n");
+
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
@@ -57,6 +57,8 @@ void one_clock()
   for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
+  printf("error\n");
+
   int ilen_max = 4;
   int space_len = ilen_max - ilen;
   if (space_len < 0)
