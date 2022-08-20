@@ -73,10 +73,13 @@ extern "C" void init_disasm(const char *triple) {
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
+  printf("error\n");
+
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
   uint64_t dummy_size = 0;
   gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
+  printf("error\n");
 
   std::string s;
   raw_string_ostream os(s);
