@@ -22,7 +22,7 @@ void npc_ebreak()
 }
 
 uint32_t *cpu_inst = NULL;
-extern "C" void set_inst_ptr(const svLogic r)
+extern "C" void set_inst_ptr(const svLogicVecVal r)
 {
   cpu_inst = (uint32_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
