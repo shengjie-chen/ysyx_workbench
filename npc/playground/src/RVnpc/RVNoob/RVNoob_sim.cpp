@@ -21,17 +21,17 @@ void npc_ebreak()
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
-uint32_t *cpu_inst = NULL;
-extern "C" void set_inst_ptr(const svLogicVecVal *r)
-{
-  cpu_inst = (uint32_t *)(r);
-}
+//uint32_t *cpu_inst = NULL;
+//extern "C" void set_inst_ptr(const svLogicVecVal *r)
+//{
+//  cpu_inst = (uint32_t *)(r);
+//}
 
-uint32_t inst;
+uint32_t cpu_inst;
 extern "C" void inst_change(const svLogicVecVal *r)
 {
-  inst = *(uint32_t *)(r);
-  printf("inst : %lx\n", inst);
+  cpu_inst = *(uint32_t *)(r);
+  printf("inst : %lx\n", cpu_inst);
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
@@ -59,7 +59,7 @@ void one_clock()
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
-  uint8_t *inst = (uint8_t *)cpu_inst;
+  uint8_t *inst = (uint8_t *)(&cpu_inst);
   printf("%x\n",cpu_inst);
   int ilen = 4;
   for (i = ilen - 1; i >= 0; i--) {
@@ -74,7 +74,7 @@ void one_clock()
   p += space_len;
   printf("%s\n",logbuf);
   disassemble(p, logbuf + sizeof(logbuf) - p,
-              top->io_pc, (uint8_t *)cpu_inst, ilen);
+              top->io_pc, (uint8_t *)(&cpu_inst), ilen);
 
   fprintf(itrace_fp, "%s\n", logbuf);
 
