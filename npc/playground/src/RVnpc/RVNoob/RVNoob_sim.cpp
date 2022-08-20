@@ -27,6 +27,13 @@ extern "C" void set_inst_ptr(const svLogicVecVal *r)
   cpu_inst = (uint32_t *)(r);
 }
 
+uint32_t inst;
+extern "C" void set_inst_ptr(const svLogicVecVal *r)
+{
+  inst = *(uint32_t *)(r);
+  printf("inst : %lx", inst);
+}
+
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 #ifdef CONFIG_ITRACE
