@@ -83,7 +83,7 @@ sim_npc_vcd: verilog
 	@echo "Write this Makefile by yourself."
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 #$(abspath $(OBJ_DIR)/disasm.o)
