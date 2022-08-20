@@ -3,7 +3,6 @@
 #include "verilated_dpi.h"
 #include "verilated_vcd_c.h"
 #include <iostream>
-#include <readline/readline.h>
 #include <stddef.h>
 #include <string>
 using namespace std;

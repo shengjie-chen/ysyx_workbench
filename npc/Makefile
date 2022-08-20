@@ -68,11 +68,14 @@ sim_board:$(BIN_BOARD)
 IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 # sdb itrace mtrace ftrace
 FUN=sdb
+CXXSRC = src/utils/disasm.cc
+CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
+LIBS += $(shell llvm-config --libs)
 sim_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	# g++ -O2 -MMD -Wall -Werror -save-temps -I/home/jiexxpu/ysyx/ysyx-workbench/nemu/include -I/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/engine/interpreter -I/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/isa/riscv64/include -O2  -Og -ggdb3 -fsanitize=address -DITRACE_COND=true -D__GUEST_ISA__=riscv64 -I/usr/lib/llvm-12/include -std=c++14   -fno-exceptions -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -fPIE -c -o /home/jiexxpu/ysyx/ysyx-workbench/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.o src/utils/disasm.cc
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
+	g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(OBJ_DIR)/disasm.o $(CXXSRC)
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(OBJ_DIR)/disasm.o --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) -CFLAGS $(LIBS)
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
