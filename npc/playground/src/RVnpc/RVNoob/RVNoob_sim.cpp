@@ -28,6 +28,11 @@ extern "C" void set_inst_ptr(const svOpenArrayHandle r)
   cpu_inst = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
+#ifdef CONFIG_ITRACE
+  FILE *itrace_fp;
+  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+#endif
+
 VRVNoob *top = new VRVNoob;
 VerilatedVcdC *tfp = new VerilatedVcdC;
 
@@ -41,7 +46,7 @@ void one_clock()
 
 #ifdef CONFIG_ITRACE
   char *p = logbuf;
-  p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->pc);
+  p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
   uint8_t *inst = (uint8_t *)cpu_inst;
   int ilen = 4;
@@ -58,7 +63,7 @@ void one_clock()
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, logbuf + sizeof(logbuf) - p,
-              top->pc, (uint8_t *)cpu_inst, ilen);
+              top->io_pc, (uint8_t *)cpu_inst, ilen);
 
   fprintf(itrace_fp, "%s\n", logbuf);
 
@@ -81,11 +86,6 @@ int main(int argc, char **argv, char **env)
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   load_img();
-
-#ifdef CONFIG_ITRACE
-  FILE *itrace_fp;
-  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
-#endif
 
   npc_state.state = NPC_RUNNING;
 
