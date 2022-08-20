@@ -28,11 +28,13 @@ static llvm::MCDisassembler *gDisassembler = nullptr;
 static llvm::MCSubtargetInfo *gSTI = nullptr;
 static llvm::MCInstPrinter *gIP = nullptr;
 
-extern "C" void init_disasm(const char *triple) {
+extern "C" void init_disasm(const char *triple)
+{
   llvm::InitializeAllTargetInfos();
   llvm::InitializeAllTargetMCs();
   llvm::InitializeAllAsmParsers();
   llvm::InitializeAllDisassemblers();
+  printf("!!\n");
 
   std::string errstr;
   std::string gTriple(triple);
@@ -49,6 +51,8 @@ extern "C" void init_disasm(const char *triple) {
   gSTI = target->createMCSubtargetInfo(gTriple, "", "");
   std::string isa = target->getName();
   if (isa == "riscv32" || isa == "riscv64") {
+    printf("!\n");
+
     gSTI->ApplyFeatureFlag("+m");
     gSTI->ApplyFeatureFlag("+a");
     gSTI->ApplyFeatureFlag("+c");
@@ -59,27 +63,28 @@ extern "C" void init_disasm(const char *triple) {
   gMRI = target->createMCRegInfo(gTriple);
   auto AsmInfo = target->createMCAsmInfo(*gMRI, gTriple, MCOptions);
 #if LLVM_VERSION_MAJOR >= 13
-   auto llvmTripleTwine = Twine(triple);
-   auto llvmtriple = llvm::Triple(llvmTripleTwine);
-   auto Ctx = new llvm::MCContext(llvmtriple,AsmInfo, gMRI, nullptr);
+  auto llvmTripleTwine = Twine(triple);
+  auto llvmtriple = llvm::Triple(llvmTripleTwine);
+  auto Ctx = new llvm::MCContext(llvmtriple, AsmInfo, gMRI, nullptr);
 #else
-   auto Ctx = new llvm::MCContext(AsmInfo, gMRI, nullptr);
+  auto Ctx = new llvm::MCContext(AsmInfo, gMRI, nullptr);
 #endif
   gDisassembler = target->createMCDisassembler(*gSTI, *Ctx);
   gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
-      AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
+                                    AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
   gIP->setPrintImmHex(true);
   gIP->setPrintBranchImmAsAddress(true);
 }
 
-extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
+extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte)
+{
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
   uint64_t dummy_size = 0;
   printf("error\n");
   gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
   printf("error\n");
-  
+
   std::string s;
   raw_string_ostream os(s);
   gIP->printInst(&inst, pc, "", *gSTI, os);
