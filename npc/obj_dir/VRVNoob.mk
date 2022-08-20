@@ -41,6 +41,7 @@ VM_USER_LDLIBS = \
 	/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/obj_dir/disasm.o \
 	-lLLVM-12 \
 	-O2 \
+	-fsanitize=address \
 	-pie \
 
 # User .cpp files (from .cpp's on Verilator command line)
