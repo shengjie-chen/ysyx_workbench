@@ -62,7 +62,7 @@ void one_clock()
   memset(p, ' ', space_len);
   p += space_len;
 
-  extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)cpu_inst, ilen);
 
