@@ -21,6 +21,12 @@ void npc_ebreak()
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
+uint32_t *cpu_inst = NULL;
+extern "C" void set_inst_ptr(const svLogic r)
+{
+  cpu_inst = (uint32_t *)(((VerilatedDpiOpenVar *)r)->datap());
+}
+
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
