@@ -24,7 +24,7 @@ void npc_ebreak()
 uint32_t *cpu_inst = NULL;
 extern "C" void set_inst_ptr(const svOpenArrayHandle r)
 {
-  cpu_inst = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
+  cpu_inst = (uint32_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
 #ifdef CONFIG_ITRACE
