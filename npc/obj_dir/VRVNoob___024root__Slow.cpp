@@ -27,23 +27,16 @@ void VRVNoob___024root::__Vconfigure(VRVNoob__Syms* _vlSymsp, bool first) {
 VRVNoob___024root::~VRVNoob___024root() {
 }
 
-void VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit(IData/*31:0*/ a);
+void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a);
 
-void VRVNoob___024root___initial__TOP__1(VRVNoob___024root* vlSelf) {
+void VRVNoob___024root___settle__TOP__2(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___initial__TOP__1\n"); );
-    // Body
-    VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit(vlSelf->io_inst);
-}
-
-void VRVNoob___024root___settle__TOP__3(VRVNoob___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___settle__TOP__3\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___settle__TOP__2\n"); );
     // Variables
     QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_44;
     // Body
+    VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(vlSelf->io_inst);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_addi = (IData)(
                                                       (0x13U 
                                                        == 
@@ -755,13 +748,15 @@ void VRVNoob___024root___settle__TOP__3(VRVNoob___024root* vlSelf) {
     vlSelf->io_res = vlSelf->RVNoob__DOT__exe_io_gp_out;
 }
 
+void VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit(IData/*31:0*/ a);
 void VRVNoob___024unit____Vdpiimwrap_set_gpr_ptr__Vdpioc2_TOP____024unit(const VlUnpacked<QData/*63:0*/, 32> &a);
 
-void VRVNoob___024root___initial__TOP__5(VRVNoob___024root* vlSelf) {
+void VRVNoob___024root___initial__TOP__3(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___initial__TOP__5\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___initial__TOP__3\n"); );
     // Body
+    VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit(vlSelf->io_inst);
     VRVNoob___024unit____Vdpiimwrap_set_gpr_ptr__Vdpioc2_TOP____024unit(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf);
 }
 
@@ -770,9 +765,8 @@ void VRVNoob___024root___eval_initial(VRVNoob___024root* vlSelf) {
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___eval_initial\n"); );
     // Body
-    VRVNoob___024root___initial__TOP__1(vlSelf);
+    VRVNoob___024root___initial__TOP__3(vlSelf);
     vlSelf->__Vclklast__TOP__clock = vlSelf->clock;
-    VRVNoob___024root___initial__TOP__5(vlSelf);
 }
 
 void VRVNoob___024root___eval_settle(VRVNoob___024root* vlSelf) {
@@ -780,7 +774,7 @@ void VRVNoob___024root___eval_settle(VRVNoob___024root* vlSelf) {
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___eval_settle\n"); );
     // Body
-    VRVNoob___024root___settle__TOP__3(vlSelf);
+    VRVNoob___024root___settle__TOP__2(vlSelf);
     vlSelf->__Vm_traceActivity[2U] = 1U;
     vlSelf->__Vm_traceActivity[1U] = 1U;
     vlSelf->__Vm_traceActivity[0U] = 1U;

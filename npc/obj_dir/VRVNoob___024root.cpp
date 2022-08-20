@@ -9,11 +9,14 @@
 
 //==========
 
-VL_INLINE_OPT void VRVNoob___024root___combo__TOP__2(VRVNoob___024root* vlSelf) {
+void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a);
+
+VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__2\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__1\n"); );
     // Body
+    VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(vlSelf->io_inst);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_addi = (IData)(
                                                       (0x13U 
                                                        == 
@@ -629,10 +632,10 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__4(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_10;
 }
 
-VL_INLINE_OPT void VRVNoob___024root___combo__TOP__6(VRVNoob___024root* vlSelf) {
+VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__6\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__5\n"); );
     // Variables
     QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_44;
     // Body
@@ -1041,13 +1044,13 @@ void VRVNoob___024root___eval(VRVNoob___024root* vlSelf) {
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___eval\n"); );
     // Body
-    VRVNoob___024root___combo__TOP__2(vlSelf);
+    VRVNoob___024root___combo__TOP__1(vlSelf);
     vlSelf->__Vm_traceActivity[1U] = 1U;
     if (((IData)(vlSelf->clock) & (~ (IData)(vlSelf->__Vclklast__TOP__clock)))) {
         VRVNoob___024root___sequent__TOP__4(vlSelf);
         vlSelf->__Vm_traceActivity[2U] = 1U;
     }
-    VRVNoob___024root___combo__TOP__6(vlSelf);
+    VRVNoob___024root___combo__TOP__5(vlSelf);
     // Final
     vlSelf->__Vclklast__TOP__clock = vlSelf->clock;
 }

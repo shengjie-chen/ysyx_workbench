@@ -28,7 +28,7 @@ extern "C" void set_inst_ptr(const svLogicVecVal *r)
 }
 
 uint32_t inst;
-extern "C" void set_inst_ptr(const svLogicVecVal *r)
+extern "C" void inst_change(const svLogicVecVal *r)
 {
   inst = *(uint32_t *)(r);
   printf("inst : %lx", inst);
