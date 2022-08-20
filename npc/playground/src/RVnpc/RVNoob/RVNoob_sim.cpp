@@ -57,6 +57,7 @@ void one_clock()
 #ifdef CONFIG_ITRACE
   itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 
+  memset(logbuf,0,128);
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
