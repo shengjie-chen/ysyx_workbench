@@ -85,7 +85,7 @@ sim_npc_vcd: verilog
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
-
+#$(abspath $(OBJ_DIR)/disasm.o)
 test:
 	mill -i __.test
 
