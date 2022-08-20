@@ -17,6 +17,12 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
+uint32_t *cpu_inst = NULL;
+extern "C" void set_inst_ptr(const svOpenArrayHandle r)
+{
+  cpu_inst = (uint32_t *)(((VerilatedDpiOpenVar *)r)->datap());
+}
+
 // 一个输出RTL中通用寄存器的值的示例
 void dump_gpr()
 {

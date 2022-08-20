@@ -95,10 +95,10 @@ class DpiInst extends BlackBox with HasBlackBoxInline {
   })
   setInline("DpiInst.v",
     """
-      |import "DPI-C" function void set_top_inst_ptr(input logic [31:0] a);
+      |import "DPI-C" function void set_inst_ptr(input logic [31:0] a);
       |module DpiInst(input [31:0] inst);
       |
-      | initial set_top_inst_ptr(inst);
+      | initial set_inst_ptr(inst);
       |
       |endmodule
             """.stripMargin)
