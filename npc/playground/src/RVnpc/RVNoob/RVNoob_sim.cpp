@@ -53,6 +53,7 @@ void one_clock()
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
   uint8_t *inst = (uint8_t *)cpu_inst;
+  printf("%x\n",cpu_inst);
   int ilen = 4;
   for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
