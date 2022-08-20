@@ -9,16 +9,6 @@
 
 //==========
 
-extern "C" void set_inst_ptr(const svLogicVecVal* a);
-
-VL_INLINE_OPT void VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit(IData/*31:0*/ a) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+        VRVNoob___024unit____Vdpiimwrap_set_inst_ptr_TOP____024unit\n"); );
-    // Body
-    svLogicVecVal a__Vcvt[1];
-    for (size_t a__Vidx = 0; a__Vidx < 1; ++a__Vidx) VL_SET_SVLV_I(32, a__Vcvt + 1 * a__Vidx, a);
-    set_inst_ptr(a__Vcvt);
-}
-
 extern "C" void inst_change(const svLogicVecVal* a);
 
 VL_INLINE_OPT void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a) {

@@ -264,10 +264,10 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) 
 
 void VRVNoob___024unit____Vdpiimwrap_npc_ebreak_TOP____024unit();
 
-VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__4(VRVNoob___024root* vlSelf) {
+VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___sequent__TOP__4\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___sequent__TOP__3\n"); );
     // Body
     if ((0x100073U == vlSelf->io_inst)) {
         if ((0ULL == vlSelf->RVNoob__DOT__rf__DOT__rf_10)) {
@@ -1047,7 +1047,7 @@ void VRVNoob___024root___eval(VRVNoob___024root* vlSelf) {
     VRVNoob___024root___combo__TOP__1(vlSelf);
     vlSelf->__Vm_traceActivity[1U] = 1U;
     if (((IData)(vlSelf->clock) & (~ (IData)(vlSelf->__Vclklast__TOP__clock)))) {
-        VRVNoob___024root___sequent__TOP__4(vlSelf);
+        VRVNoob___024root___sequent__TOP__3(vlSelf);
         vlSelf->__Vm_traceActivity[2U] = 1U;
     }
     VRVNoob___024root___combo__TOP__5(vlSelf);

@@ -19,8 +19,6 @@ extern "C" {
     extern void npc_ebreak();
     // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/RF_read.v:1:30
     extern void set_gpr_ptr(const svOpenArrayHandle a);
-    // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/DpiInst.v:2:30
-    extern void set_inst_ptr(const svLogicVecVal* a);
 
 #ifdef __cplusplus
 }
