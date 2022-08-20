@@ -2,15 +2,14 @@
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 #include "conf.h"
+#include "disasm.cc"
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "disasm.cc"
 
 // int add(int a, int b) { return a + b; }
-IFDEF(CONFIG_ITRACE, char logbuf[128]);
 
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
@@ -29,8 +28,9 @@ extern "C" void set_inst_ptr(const svOpenArrayHandle r)
 }
 
 #ifdef CONFIG_ITRACE
-  FILE *itrace_fp;
-  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+char logbuf[128];
+FILE *itrace_fp;
+itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 #endif
 
 VRVNoob *top = new VRVNoob;

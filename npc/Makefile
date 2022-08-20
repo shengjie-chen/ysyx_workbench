@@ -65,13 +65,20 @@ sim_board:$(BIN_BOARD)
 	@echo "Write this Makefile by yourself."
 	$^
 
+sim_vcd: verilog
+	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
+	@echo "Write this Makefile by yourself."
+	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
+	$(BIN_VCD) $(IMG)
+	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+
 IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 # sdb itrace mtrace ftrace
 FUN=sdb
 CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
 LIBS += $(shell llvm-config --libs)
-sim_vcd: verilog
+sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(OBJ_DIR)/disasm.o $(CXXSRC)
