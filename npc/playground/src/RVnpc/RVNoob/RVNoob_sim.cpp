@@ -27,9 +27,12 @@ extern "C" void set_inst_ptr(const svLogicVecVal *r)
   cpu_inst = (uint32_t *)(r);
 }
 
+extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
+
 #endif
 
 VRVNoob *top = new VRVNoob;
@@ -62,7 +65,6 @@ void one_clock()
   memset(p, ' ', space_len);
   p += space_len;
 
-  extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)cpu_inst, ilen);
 
