@@ -62,10 +62,11 @@ void one_clock()
   if (space_len < 0)
     space_len = 0;
   space_len = space_len * 3 + 1;
+  memset(p, ' ', space_len);
   printf("error\n");
 
-  memset(p, ' ', space_len);
   p += space_len;
+  printf("error\n");
 
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)cpu_inst, ilen);
