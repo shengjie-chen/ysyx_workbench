@@ -21,11 +21,11 @@ void npc_ebreak()
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
 
-//uint32_t *cpu_inst = NULL;
-//extern "C" void set_inst_ptr(const svLogicVecVal *r)
+// uint32_t *cpu_inst = NULL;
+// extern "C" void set_inst_ptr(const svLogicVecVal *r)
 //{
-//  cpu_inst = (uint32_t *)(r);
-//}
+//   cpu_inst = (uint32_t *)(r);
+// }
 
 uint32_t cpu_inst;
 extern "C" void inst_change(const svLogicVecVal *r)
@@ -60,7 +60,7 @@ void one_clock()
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
   int i;
   uint8_t *inst = (uint8_t *)(&cpu_inst);
-  printf("%x\n",cpu_inst);
+  printf("%x\n", cpu_inst);
   int ilen = 4;
   for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
@@ -72,9 +72,9 @@ void one_clock()
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-  printf("%s\n",logbuf);
-  printf("%lx\n",top->io_pc);
-//  printf()
+  printf("%s\n", logbuf);
+  printf("%lx\n", top->io_pc);
+  //  printf()
   disassemble(p, logbuf + sizeof(logbuf) - p,
               top->io_pc, (uint8_t *)(&cpu_inst), ilen);
 
@@ -100,7 +100,7 @@ int main(int argc, char **argv, char **env)
   img_file = *(argv + 1);
   load_img();
 
-    IFDEF(CONFIG_ITRACE, init_disasm("riscv64" "-pc-linux-gnu"));
+  IFDEF(CONFIG_ITRACE, init_disasm("riscv64-pc-linux-gnu"));
 
   npc_state.state = NPC_RUNNING;
 
