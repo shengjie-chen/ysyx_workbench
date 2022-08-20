@@ -57,13 +57,13 @@ void one_clock()
   for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
-  printf("error\n");
-
   int ilen_max = 4;
   int space_len = ilen_max - ilen;
   if (space_len < 0)
     space_len = 0;
   space_len = space_len * 3 + 1;
+  printf("error\n");
+
   memset(p, ' ', space_len);
   p += space_len;
 
