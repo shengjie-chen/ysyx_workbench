@@ -73,22 +73,25 @@ extern "C" void init_disasm(const char *triple) {
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
-  printf("error\n");
   MCInst inst;
-  printf("error\n");
-
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
-  printf("error\n");
   uint64_t dummy_size = 0;
-  printf("error\n");
   gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
+  printf("error\n");
   
   std::string s;
+  printf("error\n");
   raw_string_ostream os(s);
+  printf("error\n");
   gIP->printInst(&inst, pc, "", *gSTI, os);
+  printf("error\n");
 
   int skip = s.find_first_not_of('\t');
+  printf("error\n");
   const char *p = s.c_str() + skip;
+  printf("error\n");
   assert((int)s.length() - skip < size);
+  printf("error\n");
   strcpy(str, p);
+  printf("error\n");
 }
