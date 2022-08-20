@@ -31,7 +31,7 @@ uint32_t inst;
 extern "C" void inst_change(const svLogicVecVal *r)
 {
   inst = *(uint32_t *)(r);
-  printf("inst : %lx", inst);
+  printf("inst : %lx\n", inst);
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
