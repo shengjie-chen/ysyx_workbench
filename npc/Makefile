@@ -81,7 +81,7 @@ LIBS += $(shell llvm-config --libs)
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	#g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(OBJ_DIR)/disasm.o $(CXXSRC)
+	g++ -O2 -MMD -Wall -Werror -save-temps $(CXXFLAGS) -c -o $(OBJ_DIR)/disasm.o $(CXXSRC)
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD)) -LDFLAGS $(LIBS) #$(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(FUN)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
