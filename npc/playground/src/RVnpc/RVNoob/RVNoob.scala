@@ -21,7 +21,7 @@ class RVNoob extends Module {
   pc    := Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
   io.pc := pc
   val dpi_npc = Module(new DpiNpc)
-  dpi_npc.io.pc <> Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
+  dpi_npc.io.npc <> Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
 
   idu.io.inst := io.inst
 
