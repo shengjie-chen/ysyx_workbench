@@ -111,9 +111,6 @@ int main(int argc, char **argv, char **env)
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 #endif
-#ifdef CONFIG_FTRACE
-  init_ftrace(elf_file);
-#endif
 
   npc_state.state = NPC_RUNNING;
 
@@ -131,11 +128,23 @@ int main(int argc, char **argv, char **env)
     main_time++;
   }
   top->reset = 0;
-
+  // parse_args
   bool sdb_en = 0;
+  bool elf_en = 0;
   if (argc > 2) {
     sdb_en = ~strcmp(*(argv + 2), "sdb_y");
+    if (argc > 3) {
+      elf_en = ~strncmp(*(argv + 3), "elf=", 4);
+    }
   }
+
+#ifdef CONFIG_FTRACE
+  if (elf_en) {
+    elf_file = *(argv + 3) + 4;
+    printf("%s\n", elf_file);
+    init_ftrace(elf_file);
+  }
+#endif
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
   if (sdb_en) {
