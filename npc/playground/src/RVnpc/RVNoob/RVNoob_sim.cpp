@@ -3,7 +3,7 @@
 #include "VRVNoob__Dpi.h"
 #include "conf.h"
 // #include "disasm.cc"
-// #include "sdb.c"
+#include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
 #include "verilated.h"
