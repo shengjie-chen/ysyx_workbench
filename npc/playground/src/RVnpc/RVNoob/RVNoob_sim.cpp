@@ -61,7 +61,7 @@ void one_clock()
   main_time++;
 
 #ifdef CONFIG_FTRACE
-  ftrace_call_ret(cpu_inst, pc, cpu_npc);
+  ftrace_call_ret(cpu_inst, top->io_pc, cpu_npc);
 #endif
 
 #ifdef CONFIG_ITRACE
