@@ -1,3 +1,4 @@
+#include "RVNoob.h"
 #include "macro.h"
 #include "verilated.h"
 #include "verilated_dpi.h"
@@ -5,7 +6,6 @@
 #include <iostream>
 #include <stddef.h>
 #include <string>
-#include "RVNoob.h"
 using namespace std;
 extern void one_clock();
 extern NPCState npc_state;
@@ -108,6 +108,8 @@ struct {
 
 };
 
+#define NR_CMD ARRLEN(cmd_table)
+
 static int cmd_help(char *args)
 {
   /* extract the first argument */
@@ -129,4 +131,40 @@ static int cmd_help(char *args)
     printf("Unknown command '%s'\n", arg);
   }
   return 0;
+}
+
+void sdb_mainloop()
+{
+  char *str;
+  if ((str = rl_gets()) != NULL) {
+    char *str_end = str + strlen(str);
+
+    /* extract the first token as the command */
+    char *cmd = strtok(str, " ");
+    if (cmd == NULL) {
+      continue;
+    }
+
+    /* treat the remaining string as the arguments,
+     * which may need further parsing
+     */
+    char *args = cmd + strlen(cmd) + 1;
+    if (args >= str_end) {
+      args = NULL;
+    }
+
+    int i;
+    for (i = 0; i < NR_CMD; i++) {
+      if (strcmp(cmd, cmd_table[i].name) == 0) {
+        if (cmd_table[i].handler(args) < 0) {
+          printf("inst args error or quit!!\n");
+        }
+        break;
+      }
+    }
+
+    if (i == NR_CMD) {
+      printf("Unknown command '%s'\n", cmd);
+    }
+  }
 }
