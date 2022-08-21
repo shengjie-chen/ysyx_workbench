@@ -60,6 +60,6 @@ typedef uint16_t ioaddr_t;
 //    } \
 //  } while (0)
 
-#define panic(format, ...) Assert(0, format, ## __VA_ARGS__)
+#define panic(format, ...) printf(format);exit(0);
 
 #endif
