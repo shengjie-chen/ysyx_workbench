@@ -15,11 +15,10 @@ vaddr_t symaddr_end[MAX_FUNC_NUM];
 void init_ftrace(const char *elf_file)
 {
   FILE *fp = fopen(elf_file, "r");
-  // if (NULL == fp) {
-  //   printf("fail to open the elf file");
-  //   exit(0);
-  // }
-  Assert(fp, "Can not open '%s'", elf_file);
+   if (NULL == fp) {
+     printf("fail to open the elf file");
+     exit(0);
+   }
   ftrace_fp = fopen(ftrace_file, "w");
 
   // 解析head
