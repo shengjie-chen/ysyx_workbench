@@ -61,7 +61,7 @@ object RVNoobGen extends App {
 
 class DpiNpc extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
-    val pc = Input(UInt(64.W))
+    val npc = Input(UInt(64.W))
   })
   setInline("DpiNpc.v",
     """
