@@ -6,9 +6,9 @@
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
+#include "trace.c"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "trace.c"
 
 // int add(int a, int b) { return a + b; }
 
@@ -128,9 +128,8 @@ int main(int argc, char **argv, char **env)
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
   if (sdb_en) {
-  while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
     sdb_mainloop();
-  }
+
   } else {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
       // printf("%d\n",npc_state.state);

@@ -134,36 +134,39 @@ static int cmd_help(char *args)
 
 void sdb_mainloop()
 {
-  char *str;
-  if ((str = rl_gets()) != NULL) {
-    char *str_end = str + strlen(str);
+  while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
 
-    /* extract the first token as the command */
-    char *cmd = strtok(str, " ");
-    if (cmd == NULL) {
-      continue;
-    }
+    char *str;
+    if ((str = rl_gets()) != NULL) {
+      char *str_end = str + strlen(str);
 
-    /* treat the remaining string as the arguments,
-     * which may need further parsing
-     */
-    char *args = cmd + strlen(cmd) + 1;
-    if (args >= str_end) {
-      args = NULL;
-    }
-
-    int i;
-    for (i = 0; i < NR_CMD; i++) {
-      if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) {
-          printf("inst args error or quit!!\n");
-        }
-        break;
+      /* extract the first token as the command */
+      char *cmd = strtok(str, " ");
+      if (cmd == NULL) {
+        continue;
       }
-    }
 
-    if (i == NR_CMD) {
-      printf("Unknown command '%s'\n", cmd);
+      /* treat the remaining string as the arguments,
+       * which may need further parsing
+       */
+      char *args = cmd + strlen(cmd) + 1;
+      if (args >= str_end) {
+        args = NULL;
+      }
+
+      int i;
+      for (i = 0; i < NR_CMD; i++) {
+        if (strcmp(cmd, cmd_table[i].name) == 0) {
+          if (cmd_table[i].handler(args) < 0) {
+            printf("inst args error or quit!!\n");
+          }
+          break;
+        }
+      }
+
+      if (i == NR_CMD) {
+        printf("Unknown command '%s'\n", cmd);
+      }
     }
   }
 }
