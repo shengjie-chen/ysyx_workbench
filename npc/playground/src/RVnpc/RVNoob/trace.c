@@ -1,4 +1,8 @@
+#include "common.h"
+#include <elf.h>
+
 #ifdef CONFIG_FTRACE
+char *elf_file = NULL;
 FILE *ftrace_fp = NULL;
 char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-ftrace-log.txt";
 int ftrace_depth = 0;
@@ -139,5 +143,34 @@ void init_ftrace(const char *elf_file)
   free(shdr);
   free(strtab_data);
   free(symtab);
+}
+
+void ftrace_call_ret(uint32_t cpu_inst, vaddr_t pc, vaddr_t npc)
+{
+  if (cpu_inst == 0x00008067) {
+    for (int i = 0; i < ftrace_func_num; i++) {
+      if (pc > symaddr[i] && pc <= symaddr_end[i] && (npc < symaddr[i] || npc > symaddr_end[i])) {
+        ftrace_depth--;
+        fprintf(ftrace_fp, "0x%8lx: ", pc);
+        for (int i = 0; i < ftrace_depth; i++) {
+          fprintf(ftrace_fp, "  ");
+        }
+        fprintf(ftrace_fp, "ret  [%s@%8lx]\n", symname[i], npc);
+        return;
+      }
+    }
+  }
+  for (int i = 0; i < ftrace_func_num; i++) {
+    if (npc == symaddr[i]) {
+      fprintf(ftrace_fp, "0x%8lx: ", pc);
+      for (int i = 0; i < ftrace_depth; i++) {
+        fprintf(ftrace_fp, "  ");
+      }
+      fprintf(ftrace_fp, "call [%s@%8lx]\n", symname[i], symaddr[i]);
+      ftrace_depth++;
+      return;
+    }
+  }
+  return;
 }
 #endif

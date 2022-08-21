@@ -1,6 +1,7 @@
 package RVnpc.RVNoob
 
 import chisel3._
+import chisel3.util.HasBlackBoxInline
 class RVNoob extends Module {
   val io = IO(new Bundle {
     val pc     = Output(UInt(64.W))
@@ -19,6 +20,8 @@ class RVNoob extends Module {
   snpc  := pc + 4.U
   pc    := Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
   io.pc := pc
+  val dpi_npc = Module(new DpiNpc)
+  dpi_npc.io.pc <> Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
 
   idu.io.inst := io.inst
 
@@ -54,4 +57,20 @@ class RVNoob extends Module {
 object RVNoobGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(args, Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RVNoob())))
+}
+
+class DpiNpc extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val pc = Input(UInt(64.W))
+  })
+  setInline("DpiNpc.v",
+    """
+      |import "DPI-C" function void npc_change(input logic [63:0] a);
+      |module DpiInst(input [63:0] npc);
+      |
+      | always @* npc_change(npc);
+      |
+      |endmodule
+            """.stripMargin)
+
 }

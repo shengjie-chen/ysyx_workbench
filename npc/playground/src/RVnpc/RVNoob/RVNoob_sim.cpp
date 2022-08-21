@@ -1,7 +1,6 @@
 #include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
-#include "conf.h"
 // #include "disasm.cc"
 #include "sdb.c"
 #include "svdpi.h"
@@ -35,6 +34,12 @@ extern "C" void inst_change(const svLogicVecVal *r)
   // printf("inst : %x\n", cpu_inst);
 }
 
+uint32_t cpu_npc;
+extern "C" void npc_change(const svLogicVecVal *r)
+{
+  cpu_npc = *(vaddr_t *)(r);
+}
+
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern "C" void init_disasm(const char *triple);
 
@@ -55,8 +60,11 @@ void one_clock()
   tfp->dump(main_time);
   main_time++;
 
-#ifdef CONFIG_ITRACE
+#ifdef CONFIG_FTRACE
+  ftrace_call_ret(cpu_inst, pc, cpu_npc);
+#endif
 
+#ifdef CONFIG_ITRACE
   memset(logbuf, 0, 128);
   char *p = logbuf;
   p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
@@ -103,6 +111,9 @@ int main(int argc, char **argv, char **env)
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
 #endif
+#ifdef CONFIG_FTRACE
+  init_ftrace(elf_file);
+#endif
 
   npc_state.state = NPC_RUNNING;
 
@@ -129,7 +140,6 @@ int main(int argc, char **argv, char **env)
   // printf("%d\n",sdb_en);
   if (sdb_en) {
     sdb_mainloop();
-
   } else {
     while (!Verilated::gotFinish() && main_time < sim_time && npc_state.state == NPC_RUNNING) {
       // printf("%d\n",npc_state.state);

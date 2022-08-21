@@ -1,10 +1,6 @@
-#ifndef __RVNPPB_H__
-#define __RVNPPB_H__
-#include "macro.h"
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef __RVNOOB_H__
+#define __RVNOOB_H__
+#include "common.h"
 #include "verilated_dpi.h"
 
 
