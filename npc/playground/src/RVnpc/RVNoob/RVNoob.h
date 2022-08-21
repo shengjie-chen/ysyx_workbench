@@ -118,8 +118,7 @@ enum { NPC_RUNNING,
 
 
 // extern NPCState npc_state;
-extern char *rl_gets();
-struct cmd_table;
-#define NR_CMD ARRLEN(cmd_table)
+
+void sdb_mainloop();
 
 #endif
