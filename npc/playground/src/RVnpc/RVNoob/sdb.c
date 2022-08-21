@@ -1,4 +1,3 @@
-#include "RVNoob.h"
 #include "macro.h"
 #include "verilated.h"
 #include "verilated_dpi.h"
