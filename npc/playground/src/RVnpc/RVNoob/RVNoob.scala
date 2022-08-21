@@ -66,7 +66,7 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
   setInline("DpiNpc.v",
     """
       |import "DPI-C" function void npc_change(input logic [63:0] a);
-      |module DpiInst(input [63:0] npc);
+      |module DpiNpc(input [63:0] npc);
       |
       | always @* npc_change(npc);
       |
