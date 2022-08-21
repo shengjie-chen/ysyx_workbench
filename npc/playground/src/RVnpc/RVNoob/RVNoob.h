@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "verilated_dpi.h"
+
 
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
