@@ -33,6 +33,7 @@ VL_MODULE(VRVNoob___024root) {
     // Anonymous structures to workaround compiler member-count bugs
     struct {
         CData/*0:0*/ RVNoob__DOT__idu_io_wen;
+        CData/*0:0*/ RVNoob__DOT__idu_io_pc_mux;
         CData/*0:0*/ RVNoob__DOT__U_ebreak_ebreak;
         CData/*0:0*/ RVNoob__DOT__idu__DOT__rvi_addi;
         CData/*0:0*/ RVNoob__DOT__idu__DOT__rvi_jalr;
@@ -42,10 +43,10 @@ VL_MODULE(VRVNoob___024root) {
         SData/*12:0*/ RVNoob__DOT__idu__DOT__immI_lo_lo;
         QData/*63:0*/ RVNoob__DOT__idu_io_imm;
         QData/*63:0*/ RVNoob__DOT__exe_io_gp_out;
+        QData/*63:0*/ RVNoob__DOT__exe_io_dnpc;
         QData/*63:0*/ RVNoob__DOT__pc;
         QData/*63:0*/ RVNoob__DOT__snpc;
         QData/*43:0*/ RVNoob__DOT__idu__DOT__immJ_hi_hi_1;
-        QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_1;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_0;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_1;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_2;
@@ -95,9 +96,9 @@ VL_MODULE(VRVNoob___024root) {
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_14;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_15;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_16;
-        QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_17;
     };
     struct {
+        QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_17;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_18;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_19;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_20;

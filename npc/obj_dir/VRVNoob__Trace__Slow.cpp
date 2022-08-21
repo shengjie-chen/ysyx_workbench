@@ -22,224 +22,226 @@ void VRVNoob___024root__traceInitSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
     if (false && tracep && c) {}  // Prevent unused
     // Body
     {
-        tracep->declBit(c+152,"clock", false,-1);
-        tracep->declBit(c+153,"reset", false,-1);
-        tracep->declQuad(c+154,"io_pc", false,-1, 63,0);
-        tracep->declBus(c+156,"io_inst", false,-1, 31,0);
-        tracep->declQuad(c+157,"io_res", false,-1, 63,0);
-        tracep->declBit(c+159,"io_ebreak", false,-1);
-        tracep->declBit(c+152,"RVNoob clock", false,-1);
-        tracep->declBit(c+153,"RVNoob reset", false,-1);
-        tracep->declQuad(c+154,"RVNoob io_pc", false,-1, 63,0);
-        tracep->declBus(c+156,"RVNoob io_inst", false,-1, 31,0);
-        tracep->declQuad(c+157,"RVNoob io_res", false,-1, 63,0);
-        tracep->declBit(c+159,"RVNoob io_ebreak", false,-1);
-        tracep->declBus(c+156,"RVNoob idu_io_inst", false,-1, 31,0);
+        tracep->declBit(c+155,"clock", false,-1);
+        tracep->declBit(c+156,"reset", false,-1);
+        tracep->declQuad(c+157,"io_pc", false,-1, 63,0);
+        tracep->declBus(c+159,"io_inst", false,-1, 31,0);
+        tracep->declQuad(c+160,"io_res", false,-1, 63,0);
+        tracep->declBit(c+162,"io_ebreak", false,-1);
+        tracep->declBit(c+155,"RVNoob clock", false,-1);
+        tracep->declBit(c+156,"RVNoob reset", false,-1);
+        tracep->declQuad(c+157,"RVNoob io_pc", false,-1, 63,0);
+        tracep->declBus(c+159,"RVNoob io_inst", false,-1, 31,0);
+        tracep->declQuad(c+160,"RVNoob io_res", false,-1, 63,0);
+        tracep->declBit(c+162,"RVNoob io_ebreak", false,-1);
+        tracep->declBus(c+159,"RVNoob idu_io_inst", false,-1, 31,0);
         tracep->declQuad(c+1,"RVNoob idu_io_imm", false,-1, 63,0);
         tracep->declBit(c+3,"RVNoob idu_io_wen", false,-1);
-        tracep->declBus(c+160,"RVNoob idu_io_rd", false,-1, 4,0);
+        tracep->declBus(c+163,"RVNoob idu_io_rd", false,-1, 4,0);
         tracep->declBit(c+4,"RVNoob idu_io_ren1", false,-1);
-        tracep->declBus(c+161,"RVNoob idu_io_rs1", false,-1, 4,0);
-        tracep->declBit(c+162,"RVNoob idu_io_add_en", false,-1);
+        tracep->declBus(c+164,"RVNoob idu_io_rs1", false,-1, 4,0);
+        tracep->declBit(c+165,"RVNoob idu_io_add_en", false,-1);
         tracep->declBit(c+4,"RVNoob idu_io_alu_src1_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob idu_io_exe_out_mux", false,-1);
-        tracep->declBit(c+164,"RVNoob idu_io_dnpc_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob idu_io_pc_mux", false,-1);
-        tracep->declBit(c+165,"RVNoob idu_io_dnpc_0b0", false,-1);
-        tracep->declBit(c+152,"RVNoob rf_clock", false,-1);
-        tracep->declBit(c+153,"RVNoob rf_reset", false,-1);
+        tracep->declBit(c+166,"RVNoob idu_io_exe_out_mux", false,-1);
+        tracep->declBit(c+167,"RVNoob idu_io_dnpc_mux", false,-1);
+        tracep->declBit(c+5,"RVNoob idu_io_pc_mux", false,-1);
+        tracep->declBit(c+168,"RVNoob idu_io_dnpc_0b0", false,-1);
+        tracep->declBit(c+155,"RVNoob rf_clock", false,-1);
+        tracep->declBit(c+156,"RVNoob rf_reset", false,-1);
         tracep->declBit(c+3,"RVNoob rf_io_wen", false,-1);
-        tracep->declQuad(c+5,"RVNoob rf_io_wdata", false,-1, 63,0);
-        tracep->declBus(c+160,"RVNoob rf_io_waddr", false,-1, 4,0);
+        tracep->declQuad(c+6,"RVNoob rf_io_wdata", false,-1, 63,0);
+        tracep->declBus(c+163,"RVNoob rf_io_waddr", false,-1, 4,0);
         tracep->declBit(c+4,"RVNoob rf_io_ren1", false,-1);
-        tracep->declQuad(c+166,"RVNoob rf_io_rdata1", false,-1, 63,0);
-        tracep->declBus(c+161,"RVNoob rf_io_raddr1", false,-1, 4,0);
-        tracep->declQuad(c+19,"RVNoob rf_io_a0", false,-1, 63,0);
-        tracep->declQuad(c+166,"RVNoob exe_io_src1", false,-1, 63,0);
+        tracep->declQuad(c+169,"RVNoob rf_io_rdata1", false,-1, 63,0);
+        tracep->declBus(c+164,"RVNoob rf_io_raddr1", false,-1, 4,0);
+        tracep->declQuad(c+22,"RVNoob rf_io_a0", false,-1, 63,0);
+        tracep->declQuad(c+169,"RVNoob exe_io_src1", false,-1, 63,0);
         tracep->declQuad(c+1,"RVNoob exe_io_imm", false,-1, 63,0);
-        tracep->declQuad(c+21,"RVNoob exe_io_pc", false,-1, 63,0);
-        tracep->declQuad(c+23,"RVNoob exe_io_snpc", false,-1, 63,0);
-        tracep->declQuad(c+5,"RVNoob exe_io_gp_out", false,-1, 63,0);
-        tracep->declQuad(c+168,"RVNoob exe_io_dnpc", false,-1, 63,0);
-        tracep->declBit(c+162,"RVNoob exe_io_add_en", false,-1);
+        tracep->declQuad(c+24,"RVNoob exe_io_pc", false,-1, 63,0);
+        tracep->declQuad(c+26,"RVNoob exe_io_snpc", false,-1, 63,0);
+        tracep->declQuad(c+6,"RVNoob exe_io_gp_out", false,-1, 63,0);
+        tracep->declQuad(c+8,"RVNoob exe_io_dnpc", false,-1, 63,0);
+        tracep->declBit(c+165,"RVNoob exe_io_add_en", false,-1);
         tracep->declBit(c+4,"RVNoob exe_io_alu_src1_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob exe_io_exe_out_mux", false,-1);
-        tracep->declBit(c+164,"RVNoob exe_io_dnpc_mux", false,-1);
-        tracep->declBit(c+165,"RVNoob exe_io_dnpc_0b0", false,-1);
-        tracep->declBit(c+152,"RVNoob U_ebreak_clk", false,-1);
-        tracep->declBus(c+156,"RVNoob U_ebreak_inst", false,-1, 31,0);
-        tracep->declQuad(c+19,"RVNoob U_ebreak_a0", false,-1, 63,0);
-        tracep->declBit(c+25,"RVNoob U_ebreak_ebreak", false,-1);
-        tracep->declQuad(c+21,"RVNoob pc", false,-1, 63,0);
-        tracep->declQuad(c+23,"RVNoob snpc", false,-1, 63,0);
-        tracep->declBus(c+156,"RVNoob idu io_inst", false,-1, 31,0);
+        tracep->declBit(c+166,"RVNoob exe_io_exe_out_mux", false,-1);
+        tracep->declBit(c+167,"RVNoob exe_io_dnpc_mux", false,-1);
+        tracep->declBit(c+168,"RVNoob exe_io_dnpc_0b0", false,-1);
+        tracep->declQuad(c+171,"RVNoob dpi_npc_npc", false,-1, 63,0);
+        tracep->declBit(c+155,"RVNoob U_ebreak_clk", false,-1);
+        tracep->declBus(c+159,"RVNoob U_ebreak_inst", false,-1, 31,0);
+        tracep->declQuad(c+22,"RVNoob U_ebreak_a0", false,-1, 63,0);
+        tracep->declBit(c+28,"RVNoob U_ebreak_ebreak", false,-1);
+        tracep->declQuad(c+24,"RVNoob pc", false,-1, 63,0);
+        tracep->declQuad(c+26,"RVNoob snpc", false,-1, 63,0);
+        tracep->declBus(c+159,"RVNoob idu io_inst", false,-1, 31,0);
         tracep->declQuad(c+1,"RVNoob idu io_imm", false,-1, 63,0);
         tracep->declBit(c+3,"RVNoob idu io_wen", false,-1);
-        tracep->declBus(c+160,"RVNoob idu io_rd", false,-1, 4,0);
+        tracep->declBus(c+163,"RVNoob idu io_rd", false,-1, 4,0);
         tracep->declBit(c+4,"RVNoob idu io_ren1", false,-1);
-        tracep->declBus(c+161,"RVNoob idu io_rs1", false,-1, 4,0);
-        tracep->declBit(c+162,"RVNoob idu io_add_en", false,-1);
+        tracep->declBus(c+164,"RVNoob idu io_rs1", false,-1, 4,0);
+        tracep->declBit(c+165,"RVNoob idu io_add_en", false,-1);
         tracep->declBit(c+4,"RVNoob idu io_alu_src1_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob idu io_exe_out_mux", false,-1);
-        tracep->declBit(c+164,"RVNoob idu io_dnpc_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob idu io_pc_mux", false,-1);
-        tracep->declBit(c+165,"RVNoob idu io_dnpc_0b0", false,-1);
-        tracep->declBus(c+156,"RVNoob idu dpi_inst_inst", false,-1, 31,0);
-        tracep->declBus(c+170,"RVNoob idu opcode", false,-1, 6,0);
-        tracep->declBus(c+171,"RVNoob idu fun3", false,-1, 2,0);
-        tracep->declBit(c+7,"RVNoob idu rvi_addi", false,-1);
-        tracep->declBit(c+172,"RVNoob idu rvi_auipc", false,-1);
-        tracep->declBit(c+173,"RVNoob idu rvi_lui", false,-1);
-        tracep->declBit(c+174,"RVNoob idu rvi_jal", false,-1);
-        tracep->declBit(c+8,"RVNoob idu rvi_jalr", false,-1);
+        tracep->declBit(c+166,"RVNoob idu io_exe_out_mux", false,-1);
+        tracep->declBit(c+167,"RVNoob idu io_dnpc_mux", false,-1);
+        tracep->declBit(c+5,"RVNoob idu io_pc_mux", false,-1);
+        tracep->declBit(c+168,"RVNoob idu io_dnpc_0b0", false,-1);
+        tracep->declBus(c+159,"RVNoob idu dpi_inst_inst", false,-1, 31,0);
+        tracep->declBus(c+173,"RVNoob idu opcode", false,-1, 6,0);
+        tracep->declBus(c+174,"RVNoob idu fun3", false,-1, 2,0);
+        tracep->declBit(c+10,"RVNoob idu rvi_addi", false,-1);
+        tracep->declBit(c+175,"RVNoob idu rvi_auipc", false,-1);
+        tracep->declBit(c+176,"RVNoob idu rvi_lui", false,-1);
+        tracep->declBit(c+177,"RVNoob idu rvi_jal", false,-1);
+        tracep->declBit(c+11,"RVNoob idu rvi_jalr", false,-1);
         tracep->declBit(c+4,"RVNoob idu type_I", false,-1);
-        tracep->declBit(c+175,"RVNoob idu type_U", false,-1);
-        tracep->declBus(c+9,"RVNoob idu immI_lo_lo_lo", false,-1, 5,0);
-        tracep->declBus(c+10,"RVNoob idu immI_lo_lo", false,-1, 12,0);
-        tracep->declBus(c+176,"RVNoob idu immI_lo", false,-1, 25,0);
-        tracep->declQuad(c+177,"RVNoob idu immI_hi_1", false,-1, 51,0);
-        tracep->declQuad(c+179,"RVNoob idu immI", false,-1, 63,0);
-        tracep->declBus(c+11,"RVNoob idu immU_lo_lo", false,-1, 7,0);
-        tracep->declBus(c+181,"RVNoob idu immU_lo", false,-1, 15,0);
-        tracep->declBus(c+182,"RVNoob idu immU_hi_hi_1", false,-1, 31,0);
-        tracep->declQuad(c+183,"RVNoob idu immU", false,-1, 63,0);
-        tracep->declBus(c+12,"RVNoob idu immJ_lo_lo_lo", false,-1, 4,0);
-        tracep->declBus(c+185,"RVNoob idu immJ_lo_lo", false,-1, 9,0);
-        tracep->declBus(c+186,"RVNoob idu immJ_lo_hi", false,-1, 10,0);
-        tracep->declBus(c+187,"RVNoob idu immJ_lo", false,-1, 20,0);
-        tracep->declBus(c+188,"RVNoob idu immJ_hi_lo_1", false,-1, 7,0);
-        tracep->declBit(c+189,"RVNoob idu immJ_lo_hi_hi_1", false,-1);
-        tracep->declBus(c+190,"RVNoob idu immJ_lo_hi_lo_1", false,-1, 9,0);
-        tracep->declQuad(c+13,"RVNoob idu immJ_hi_hi_1", false,-1, 43,0);
-        tracep->declQuad(c+191,"RVNoob idu immJ", false,-1, 63,0);
-        tracep->declBus(c+156,"RVNoob idu dpi_inst inst", false,-1, 31,0);
-        tracep->declBit(c+152,"RVNoob rf clock", false,-1);
-        tracep->declBit(c+153,"RVNoob rf reset", false,-1);
+        tracep->declBit(c+178,"RVNoob idu type_U", false,-1);
+        tracep->declBus(c+12,"RVNoob idu immI_lo_lo_lo", false,-1, 5,0);
+        tracep->declBus(c+13,"RVNoob idu immI_lo_lo", false,-1, 12,0);
+        tracep->declBus(c+179,"RVNoob idu immI_lo", false,-1, 25,0);
+        tracep->declQuad(c+180,"RVNoob idu immI_hi_1", false,-1, 51,0);
+        tracep->declQuad(c+182,"RVNoob idu immI", false,-1, 63,0);
+        tracep->declBus(c+14,"RVNoob idu immU_lo_lo", false,-1, 7,0);
+        tracep->declBus(c+184,"RVNoob idu immU_lo", false,-1, 15,0);
+        tracep->declBus(c+185,"RVNoob idu immU_hi_hi_1", false,-1, 31,0);
+        tracep->declQuad(c+186,"RVNoob idu immU", false,-1, 63,0);
+        tracep->declBus(c+15,"RVNoob idu immJ_lo_lo_lo", false,-1, 4,0);
+        tracep->declBus(c+188,"RVNoob idu immJ_lo_lo", false,-1, 9,0);
+        tracep->declBus(c+189,"RVNoob idu immJ_lo_hi", false,-1, 10,0);
+        tracep->declBus(c+190,"RVNoob idu immJ_lo", false,-1, 20,0);
+        tracep->declBus(c+191,"RVNoob idu immJ_hi_lo_1", false,-1, 7,0);
+        tracep->declBit(c+192,"RVNoob idu immJ_lo_hi_hi_1", false,-1);
+        tracep->declBus(c+193,"RVNoob idu immJ_lo_hi_lo_1", false,-1, 9,0);
+        tracep->declQuad(c+16,"RVNoob idu immJ_hi_hi_1", false,-1, 43,0);
+        tracep->declQuad(c+194,"RVNoob idu immJ", false,-1, 63,0);
+        tracep->declBus(c+159,"RVNoob idu dpi_inst inst", false,-1, 31,0);
+        tracep->declBit(c+155,"RVNoob rf clock", false,-1);
+        tracep->declBit(c+156,"RVNoob rf reset", false,-1);
         tracep->declBit(c+3,"RVNoob rf io_wen", false,-1);
-        tracep->declQuad(c+5,"RVNoob rf io_wdata", false,-1, 63,0);
-        tracep->declBus(c+160,"RVNoob rf io_waddr", false,-1, 4,0);
+        tracep->declQuad(c+6,"RVNoob rf io_wdata", false,-1, 63,0);
+        tracep->declBus(c+163,"RVNoob rf io_waddr", false,-1, 4,0);
         tracep->declBit(c+4,"RVNoob rf io_ren1", false,-1);
-        tracep->declQuad(c+166,"RVNoob rf io_rdata1", false,-1, 63,0);
-        tracep->declBus(c+161,"RVNoob rf io_raddr1", false,-1, 4,0);
-        tracep->declQuad(c+19,"RVNoob rf io_a0", false,-1, 63,0);
-        tracep->declQuad(c+26,"RVNoob rf rf_read_rf_0", false,-1, 63,0);
-        tracep->declQuad(c+28,"RVNoob rf rf_read_rf_1", false,-1, 63,0);
-        tracep->declQuad(c+30,"RVNoob rf rf_read_rf_2", false,-1, 63,0);
-        tracep->declQuad(c+32,"RVNoob rf rf_read_rf_3", false,-1, 63,0);
-        tracep->declQuad(c+34,"RVNoob rf rf_read_rf_4", false,-1, 63,0);
-        tracep->declQuad(c+36,"RVNoob rf rf_read_rf_5", false,-1, 63,0);
-        tracep->declQuad(c+38,"RVNoob rf rf_read_rf_6", false,-1, 63,0);
-        tracep->declQuad(c+40,"RVNoob rf rf_read_rf_7", false,-1, 63,0);
-        tracep->declQuad(c+42,"RVNoob rf rf_read_rf_8", false,-1, 63,0);
-        tracep->declQuad(c+44,"RVNoob rf rf_read_rf_9", false,-1, 63,0);
-        tracep->declQuad(c+19,"RVNoob rf rf_read_rf_10", false,-1, 63,0);
-        tracep->declQuad(c+46,"RVNoob rf rf_read_rf_11", false,-1, 63,0);
-        tracep->declQuad(c+48,"RVNoob rf rf_read_rf_12", false,-1, 63,0);
-        tracep->declQuad(c+50,"RVNoob rf rf_read_rf_13", false,-1, 63,0);
-        tracep->declQuad(c+52,"RVNoob rf rf_read_rf_14", false,-1, 63,0);
-        tracep->declQuad(c+54,"RVNoob rf rf_read_rf_15", false,-1, 63,0);
-        tracep->declQuad(c+56,"RVNoob rf rf_read_rf_16", false,-1, 63,0);
-        tracep->declQuad(c+58,"RVNoob rf rf_read_rf_17", false,-1, 63,0);
-        tracep->declQuad(c+60,"RVNoob rf rf_read_rf_18", false,-1, 63,0);
-        tracep->declQuad(c+62,"RVNoob rf rf_read_rf_19", false,-1, 63,0);
-        tracep->declQuad(c+64,"RVNoob rf rf_read_rf_20", false,-1, 63,0);
-        tracep->declQuad(c+66,"RVNoob rf rf_read_rf_21", false,-1, 63,0);
-        tracep->declQuad(c+68,"RVNoob rf rf_read_rf_22", false,-1, 63,0);
-        tracep->declQuad(c+70,"RVNoob rf rf_read_rf_23", false,-1, 63,0);
-        tracep->declQuad(c+72,"RVNoob rf rf_read_rf_24", false,-1, 63,0);
-        tracep->declQuad(c+74,"RVNoob rf rf_read_rf_25", false,-1, 63,0);
-        tracep->declQuad(c+76,"RVNoob rf rf_read_rf_26", false,-1, 63,0);
-        tracep->declQuad(c+78,"RVNoob rf rf_read_rf_27", false,-1, 63,0);
-        tracep->declQuad(c+80,"RVNoob rf rf_read_rf_28", false,-1, 63,0);
-        tracep->declQuad(c+82,"RVNoob rf rf_read_rf_29", false,-1, 63,0);
-        tracep->declQuad(c+84,"RVNoob rf rf_read_rf_30", false,-1, 63,0);
-        tracep->declQuad(c+86,"RVNoob rf rf_read_rf_31", false,-1, 63,0);
-        tracep->declQuad(c+26,"RVNoob rf rf_0", false,-1, 63,0);
-        tracep->declQuad(c+28,"RVNoob rf rf_1", false,-1, 63,0);
-        tracep->declQuad(c+30,"RVNoob rf rf_2", false,-1, 63,0);
-        tracep->declQuad(c+32,"RVNoob rf rf_3", false,-1, 63,0);
-        tracep->declQuad(c+34,"RVNoob rf rf_4", false,-1, 63,0);
-        tracep->declQuad(c+36,"RVNoob rf rf_5", false,-1, 63,0);
-        tracep->declQuad(c+38,"RVNoob rf rf_6", false,-1, 63,0);
-        tracep->declQuad(c+40,"RVNoob rf rf_7", false,-1, 63,0);
-        tracep->declQuad(c+42,"RVNoob rf rf_8", false,-1, 63,0);
-        tracep->declQuad(c+44,"RVNoob rf rf_9", false,-1, 63,0);
-        tracep->declQuad(c+19,"RVNoob rf rf_10", false,-1, 63,0);
-        tracep->declQuad(c+46,"RVNoob rf rf_11", false,-1, 63,0);
-        tracep->declQuad(c+48,"RVNoob rf rf_12", false,-1, 63,0);
-        tracep->declQuad(c+50,"RVNoob rf rf_13", false,-1, 63,0);
-        tracep->declQuad(c+52,"RVNoob rf rf_14", false,-1, 63,0);
-        tracep->declQuad(c+54,"RVNoob rf rf_15", false,-1, 63,0);
-        tracep->declQuad(c+56,"RVNoob rf rf_16", false,-1, 63,0);
-        tracep->declQuad(c+58,"RVNoob rf rf_17", false,-1, 63,0);
-        tracep->declQuad(c+60,"RVNoob rf rf_18", false,-1, 63,0);
-        tracep->declQuad(c+62,"RVNoob rf rf_19", false,-1, 63,0);
-        tracep->declQuad(c+64,"RVNoob rf rf_20", false,-1, 63,0);
-        tracep->declQuad(c+66,"RVNoob rf rf_21", false,-1, 63,0);
-        tracep->declQuad(c+68,"RVNoob rf rf_22", false,-1, 63,0);
-        tracep->declQuad(c+70,"RVNoob rf rf_23", false,-1, 63,0);
-        tracep->declQuad(c+72,"RVNoob rf rf_24", false,-1, 63,0);
-        tracep->declQuad(c+74,"RVNoob rf rf_25", false,-1, 63,0);
-        tracep->declQuad(c+76,"RVNoob rf rf_26", false,-1, 63,0);
-        tracep->declQuad(c+78,"RVNoob rf rf_27", false,-1, 63,0);
-        tracep->declQuad(c+80,"RVNoob rf rf_28", false,-1, 63,0);
-        tracep->declQuad(c+82,"RVNoob rf rf_29", false,-1, 63,0);
-        tracep->declQuad(c+84,"RVNoob rf rf_30", false,-1, 63,0);
-        tracep->declQuad(c+86,"RVNoob rf rf_31", false,-1, 63,0);
-        tracep->declQuad(c+193,"RVNoob rf rdata1", false,-1, 63,0);
-        tracep->declQuad(c+26,"RVNoob rf rf_read rf_0", false,-1, 63,0);
-        tracep->declQuad(c+28,"RVNoob rf rf_read rf_1", false,-1, 63,0);
-        tracep->declQuad(c+30,"RVNoob rf rf_read rf_2", false,-1, 63,0);
-        tracep->declQuad(c+32,"RVNoob rf rf_read rf_3", false,-1, 63,0);
-        tracep->declQuad(c+34,"RVNoob rf rf_read rf_4", false,-1, 63,0);
-        tracep->declQuad(c+36,"RVNoob rf rf_read rf_5", false,-1, 63,0);
-        tracep->declQuad(c+38,"RVNoob rf rf_read rf_6", false,-1, 63,0);
-        tracep->declQuad(c+40,"RVNoob rf rf_read rf_7", false,-1, 63,0);
-        tracep->declQuad(c+42,"RVNoob rf rf_read rf_8", false,-1, 63,0);
-        tracep->declQuad(c+44,"RVNoob rf rf_read rf_9", false,-1, 63,0);
-        tracep->declQuad(c+19,"RVNoob rf rf_read rf_10", false,-1, 63,0);
-        tracep->declQuad(c+46,"RVNoob rf rf_read rf_11", false,-1, 63,0);
-        tracep->declQuad(c+48,"RVNoob rf rf_read rf_12", false,-1, 63,0);
-        tracep->declQuad(c+50,"RVNoob rf rf_read rf_13", false,-1, 63,0);
-        tracep->declQuad(c+52,"RVNoob rf rf_read rf_14", false,-1, 63,0);
-        tracep->declQuad(c+54,"RVNoob rf rf_read rf_15", false,-1, 63,0);
-        tracep->declQuad(c+56,"RVNoob rf rf_read rf_16", false,-1, 63,0);
-        tracep->declQuad(c+58,"RVNoob rf rf_read rf_17", false,-1, 63,0);
-        tracep->declQuad(c+60,"RVNoob rf rf_read rf_18", false,-1, 63,0);
-        tracep->declQuad(c+62,"RVNoob rf rf_read rf_19", false,-1, 63,0);
-        tracep->declQuad(c+64,"RVNoob rf rf_read rf_20", false,-1, 63,0);
-        tracep->declQuad(c+66,"RVNoob rf rf_read rf_21", false,-1, 63,0);
-        tracep->declQuad(c+68,"RVNoob rf rf_read rf_22", false,-1, 63,0);
-        tracep->declQuad(c+70,"RVNoob rf rf_read rf_23", false,-1, 63,0);
-        tracep->declQuad(c+72,"RVNoob rf rf_read rf_24", false,-1, 63,0);
-        tracep->declQuad(c+74,"RVNoob rf rf_read rf_25", false,-1, 63,0);
-        tracep->declQuad(c+76,"RVNoob rf rf_read rf_26", false,-1, 63,0);
-        tracep->declQuad(c+78,"RVNoob rf rf_read rf_27", false,-1, 63,0);
-        tracep->declQuad(c+80,"RVNoob rf rf_read rf_28", false,-1, 63,0);
-        tracep->declQuad(c+82,"RVNoob rf rf_read rf_29", false,-1, 63,0);
-        tracep->declQuad(c+84,"RVNoob rf rf_read rf_30", false,-1, 63,0);
-        tracep->declQuad(c+86,"RVNoob rf rf_read rf_31", false,-1, 63,0);
+        tracep->declQuad(c+169,"RVNoob rf io_rdata1", false,-1, 63,0);
+        tracep->declBus(c+164,"RVNoob rf io_raddr1", false,-1, 4,0);
+        tracep->declQuad(c+22,"RVNoob rf io_a0", false,-1, 63,0);
+        tracep->declQuad(c+29,"RVNoob rf rf_read_rf_0", false,-1, 63,0);
+        tracep->declQuad(c+31,"RVNoob rf rf_read_rf_1", false,-1, 63,0);
+        tracep->declQuad(c+33,"RVNoob rf rf_read_rf_2", false,-1, 63,0);
+        tracep->declQuad(c+35,"RVNoob rf rf_read_rf_3", false,-1, 63,0);
+        tracep->declQuad(c+37,"RVNoob rf rf_read_rf_4", false,-1, 63,0);
+        tracep->declQuad(c+39,"RVNoob rf rf_read_rf_5", false,-1, 63,0);
+        tracep->declQuad(c+41,"RVNoob rf rf_read_rf_6", false,-1, 63,0);
+        tracep->declQuad(c+43,"RVNoob rf rf_read_rf_7", false,-1, 63,0);
+        tracep->declQuad(c+45,"RVNoob rf rf_read_rf_8", false,-1, 63,0);
+        tracep->declQuad(c+47,"RVNoob rf rf_read_rf_9", false,-1, 63,0);
+        tracep->declQuad(c+22,"RVNoob rf rf_read_rf_10", false,-1, 63,0);
+        tracep->declQuad(c+49,"RVNoob rf rf_read_rf_11", false,-1, 63,0);
+        tracep->declQuad(c+51,"RVNoob rf rf_read_rf_12", false,-1, 63,0);
+        tracep->declQuad(c+53,"RVNoob rf rf_read_rf_13", false,-1, 63,0);
+        tracep->declQuad(c+55,"RVNoob rf rf_read_rf_14", false,-1, 63,0);
+        tracep->declQuad(c+57,"RVNoob rf rf_read_rf_15", false,-1, 63,0);
+        tracep->declQuad(c+59,"RVNoob rf rf_read_rf_16", false,-1, 63,0);
+        tracep->declQuad(c+61,"RVNoob rf rf_read_rf_17", false,-1, 63,0);
+        tracep->declQuad(c+63,"RVNoob rf rf_read_rf_18", false,-1, 63,0);
+        tracep->declQuad(c+65,"RVNoob rf rf_read_rf_19", false,-1, 63,0);
+        tracep->declQuad(c+67,"RVNoob rf rf_read_rf_20", false,-1, 63,0);
+        tracep->declQuad(c+69,"RVNoob rf rf_read_rf_21", false,-1, 63,0);
+        tracep->declQuad(c+71,"RVNoob rf rf_read_rf_22", false,-1, 63,0);
+        tracep->declQuad(c+73,"RVNoob rf rf_read_rf_23", false,-1, 63,0);
+        tracep->declQuad(c+75,"RVNoob rf rf_read_rf_24", false,-1, 63,0);
+        tracep->declQuad(c+77,"RVNoob rf rf_read_rf_25", false,-1, 63,0);
+        tracep->declQuad(c+79,"RVNoob rf rf_read_rf_26", false,-1, 63,0);
+        tracep->declQuad(c+81,"RVNoob rf rf_read_rf_27", false,-1, 63,0);
+        tracep->declQuad(c+83,"RVNoob rf rf_read_rf_28", false,-1, 63,0);
+        tracep->declQuad(c+85,"RVNoob rf rf_read_rf_29", false,-1, 63,0);
+        tracep->declQuad(c+87,"RVNoob rf rf_read_rf_30", false,-1, 63,0);
+        tracep->declQuad(c+89,"RVNoob rf rf_read_rf_31", false,-1, 63,0);
+        tracep->declQuad(c+29,"RVNoob rf rf_0", false,-1, 63,0);
+        tracep->declQuad(c+31,"RVNoob rf rf_1", false,-1, 63,0);
+        tracep->declQuad(c+33,"RVNoob rf rf_2", false,-1, 63,0);
+        tracep->declQuad(c+35,"RVNoob rf rf_3", false,-1, 63,0);
+        tracep->declQuad(c+37,"RVNoob rf rf_4", false,-1, 63,0);
+        tracep->declQuad(c+39,"RVNoob rf rf_5", false,-1, 63,0);
+        tracep->declQuad(c+41,"RVNoob rf rf_6", false,-1, 63,0);
+        tracep->declQuad(c+43,"RVNoob rf rf_7", false,-1, 63,0);
+        tracep->declQuad(c+45,"RVNoob rf rf_8", false,-1, 63,0);
+        tracep->declQuad(c+47,"RVNoob rf rf_9", false,-1, 63,0);
+        tracep->declQuad(c+22,"RVNoob rf rf_10", false,-1, 63,0);
+        tracep->declQuad(c+49,"RVNoob rf rf_11", false,-1, 63,0);
+        tracep->declQuad(c+51,"RVNoob rf rf_12", false,-1, 63,0);
+        tracep->declQuad(c+53,"RVNoob rf rf_13", false,-1, 63,0);
+        tracep->declQuad(c+55,"RVNoob rf rf_14", false,-1, 63,0);
+        tracep->declQuad(c+57,"RVNoob rf rf_15", false,-1, 63,0);
+        tracep->declQuad(c+59,"RVNoob rf rf_16", false,-1, 63,0);
+        tracep->declQuad(c+61,"RVNoob rf rf_17", false,-1, 63,0);
+        tracep->declQuad(c+63,"RVNoob rf rf_18", false,-1, 63,0);
+        tracep->declQuad(c+65,"RVNoob rf rf_19", false,-1, 63,0);
+        tracep->declQuad(c+67,"RVNoob rf rf_20", false,-1, 63,0);
+        tracep->declQuad(c+69,"RVNoob rf rf_21", false,-1, 63,0);
+        tracep->declQuad(c+71,"RVNoob rf rf_22", false,-1, 63,0);
+        tracep->declQuad(c+73,"RVNoob rf rf_23", false,-1, 63,0);
+        tracep->declQuad(c+75,"RVNoob rf rf_24", false,-1, 63,0);
+        tracep->declQuad(c+77,"RVNoob rf rf_25", false,-1, 63,0);
+        tracep->declQuad(c+79,"RVNoob rf rf_26", false,-1, 63,0);
+        tracep->declQuad(c+81,"RVNoob rf rf_27", false,-1, 63,0);
+        tracep->declQuad(c+83,"RVNoob rf rf_28", false,-1, 63,0);
+        tracep->declQuad(c+85,"RVNoob rf rf_29", false,-1, 63,0);
+        tracep->declQuad(c+87,"RVNoob rf rf_30", false,-1, 63,0);
+        tracep->declQuad(c+89,"RVNoob rf rf_31", false,-1, 63,0);
+        tracep->declQuad(c+196,"RVNoob rf rdata1", false,-1, 63,0);
+        tracep->declQuad(c+29,"RVNoob rf rf_read rf_0", false,-1, 63,0);
+        tracep->declQuad(c+31,"RVNoob rf rf_read rf_1", false,-1, 63,0);
+        tracep->declQuad(c+33,"RVNoob rf rf_read rf_2", false,-1, 63,0);
+        tracep->declQuad(c+35,"RVNoob rf rf_read rf_3", false,-1, 63,0);
+        tracep->declQuad(c+37,"RVNoob rf rf_read rf_4", false,-1, 63,0);
+        tracep->declQuad(c+39,"RVNoob rf rf_read rf_5", false,-1, 63,0);
+        tracep->declQuad(c+41,"RVNoob rf rf_read rf_6", false,-1, 63,0);
+        tracep->declQuad(c+43,"RVNoob rf rf_read rf_7", false,-1, 63,0);
+        tracep->declQuad(c+45,"RVNoob rf rf_read rf_8", false,-1, 63,0);
+        tracep->declQuad(c+47,"RVNoob rf rf_read rf_9", false,-1, 63,0);
+        tracep->declQuad(c+22,"RVNoob rf rf_read rf_10", false,-1, 63,0);
+        tracep->declQuad(c+49,"RVNoob rf rf_read rf_11", false,-1, 63,0);
+        tracep->declQuad(c+51,"RVNoob rf rf_read rf_12", false,-1, 63,0);
+        tracep->declQuad(c+53,"RVNoob rf rf_read rf_13", false,-1, 63,0);
+        tracep->declQuad(c+55,"RVNoob rf rf_read rf_14", false,-1, 63,0);
+        tracep->declQuad(c+57,"RVNoob rf rf_read rf_15", false,-1, 63,0);
+        tracep->declQuad(c+59,"RVNoob rf rf_read rf_16", false,-1, 63,0);
+        tracep->declQuad(c+61,"RVNoob rf rf_read rf_17", false,-1, 63,0);
+        tracep->declQuad(c+63,"RVNoob rf rf_read rf_18", false,-1, 63,0);
+        tracep->declQuad(c+65,"RVNoob rf rf_read rf_19", false,-1, 63,0);
+        tracep->declQuad(c+67,"RVNoob rf rf_read rf_20", false,-1, 63,0);
+        tracep->declQuad(c+69,"RVNoob rf rf_read rf_21", false,-1, 63,0);
+        tracep->declQuad(c+71,"RVNoob rf rf_read rf_22", false,-1, 63,0);
+        tracep->declQuad(c+73,"RVNoob rf rf_read rf_23", false,-1, 63,0);
+        tracep->declQuad(c+75,"RVNoob rf rf_read rf_24", false,-1, 63,0);
+        tracep->declQuad(c+77,"RVNoob rf rf_read rf_25", false,-1, 63,0);
+        tracep->declQuad(c+79,"RVNoob rf rf_read rf_26", false,-1, 63,0);
+        tracep->declQuad(c+81,"RVNoob rf rf_read rf_27", false,-1, 63,0);
+        tracep->declQuad(c+83,"RVNoob rf rf_read rf_28", false,-1, 63,0);
+        tracep->declQuad(c+85,"RVNoob rf rf_read rf_29", false,-1, 63,0);
+        tracep->declQuad(c+87,"RVNoob rf rf_read rf_30", false,-1, 63,0);
+        tracep->declQuad(c+89,"RVNoob rf rf_read rf_31", false,-1, 63,0);
         {int i; for (i=0; i<32; i++) {
-                tracep->declQuad(c+88+i*2,"RVNoob rf rf_read rf", true,(i+0), 63,0);}}
-        tracep->declQuad(c+166,"RVNoob exe io_src1", false,-1, 63,0);
+                tracep->declQuad(c+91+i*2,"RVNoob rf rf_read rf", true,(i+0), 63,0);}}
+        tracep->declQuad(c+169,"RVNoob exe io_src1", false,-1, 63,0);
         tracep->declQuad(c+1,"RVNoob exe io_imm", false,-1, 63,0);
-        tracep->declQuad(c+21,"RVNoob exe io_pc", false,-1, 63,0);
-        tracep->declQuad(c+23,"RVNoob exe io_snpc", false,-1, 63,0);
-        tracep->declQuad(c+5,"RVNoob exe io_gp_out", false,-1, 63,0);
-        tracep->declQuad(c+168,"RVNoob exe io_dnpc", false,-1, 63,0);
-        tracep->declBit(c+162,"RVNoob exe io_add_en", false,-1);
+        tracep->declQuad(c+24,"RVNoob exe io_pc", false,-1, 63,0);
+        tracep->declQuad(c+26,"RVNoob exe io_snpc", false,-1, 63,0);
+        tracep->declQuad(c+6,"RVNoob exe io_gp_out", false,-1, 63,0);
+        tracep->declQuad(c+8,"RVNoob exe io_dnpc", false,-1, 63,0);
+        tracep->declBit(c+165,"RVNoob exe io_add_en", false,-1);
         tracep->declBit(c+4,"RVNoob exe io_alu_src1_mux", false,-1);
-        tracep->declBit(c+163,"RVNoob exe io_exe_out_mux", false,-1);
-        tracep->declBit(c+164,"RVNoob exe io_dnpc_mux", false,-1);
-        tracep->declBit(c+165,"RVNoob exe io_dnpc_0b0", false,-1);
-        tracep->declQuad(c+195,"RVNoob exe alu_src1", false,-1, 63,0);
-        tracep->declQuad(c+15,"RVNoob exe alu_out", false,-1, 63,0);
-        tracep->declQuad(c+17,"RVNoob exe io_dnpc_hi", false,-1, 62,0);
-        tracep->declBit(c+197,"RVNoob exe io_dnpc_lo", false,-1);
-        tracep->declBit(c+152,"RVNoob U_ebreak clk", false,-1);
-        tracep->declBus(c+156,"RVNoob U_ebreak inst", false,-1, 31,0);
-        tracep->declQuad(c+19,"RVNoob U_ebreak a0", false,-1, 63,0);
-        tracep->declBit(c+25,"RVNoob U_ebreak ebreak", false,-1);
+        tracep->declBit(c+166,"RVNoob exe io_exe_out_mux", false,-1);
+        tracep->declBit(c+167,"RVNoob exe io_dnpc_mux", false,-1);
+        tracep->declBit(c+168,"RVNoob exe io_dnpc_0b0", false,-1);
+        tracep->declQuad(c+198,"RVNoob exe alu_src1", false,-1, 63,0);
+        tracep->declQuad(c+18,"RVNoob exe alu_out", false,-1, 63,0);
+        tracep->declQuad(c+20,"RVNoob exe io_dnpc_hi", false,-1, 62,0);
+        tracep->declBit(c+200,"RVNoob exe io_dnpc_lo", false,-1);
+        tracep->declQuad(c+171,"RVNoob dpi_npc npc", false,-1, 63,0);
+        tracep->declBit(c+155,"RVNoob U_ebreak clk", false,-1);
+        tracep->declBus(c+159,"RVNoob U_ebreak inst", false,-1, 31,0);
+        tracep->declQuad(c+22,"RVNoob U_ebreak a0", false,-1, 63,0);
+        tracep->declBit(c+28,"RVNoob U_ebreak ebreak", false,-1);
     }
 }
 
@@ -280,112 +282,114 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
         tracep->fullBit(oldp+3,(vlSelf->RVNoob__DOT__idu_io_wen));
         tracep->fullBit(oldp+4,(((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                  | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))));
-        tracep->fullQData(oldp+5,(vlSelf->RVNoob__DOT__exe_io_gp_out),64);
-        tracep->fullBit(oldp+7,(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi));
-        tracep->fullBit(oldp+8,(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
-        tracep->fullCData(oldp+9,(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo),6);
-        tracep->fullSData(oldp+10,(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo),13);
-        tracep->fullCData(oldp+11,(vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo),8);
-        tracep->fullCData(oldp+12,(vlSelf->RVNoob__DOT__idu__DOT__immJ_lo_lo_lo),5);
-        tracep->fullQData(oldp+13,(vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1),44);
-        tracep->fullQData(oldp+15,(vlSelf->RVNoob__DOT__exe__DOT__alu_out),64);
-        tracep->fullQData(oldp+17,((vlSelf->RVNoob__DOT__exe__DOT__alu_out 
+        tracep->fullBit(oldp+5,(vlSelf->RVNoob__DOT__idu_io_pc_mux));
+        tracep->fullQData(oldp+6,(vlSelf->RVNoob__DOT__exe_io_gp_out),64);
+        tracep->fullQData(oldp+8,(vlSelf->RVNoob__DOT__exe_io_dnpc),64);
+        tracep->fullBit(oldp+10,(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi));
+        tracep->fullBit(oldp+11,(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
+        tracep->fullCData(oldp+12,(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo),6);
+        tracep->fullSData(oldp+13,(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo),13);
+        tracep->fullCData(oldp+14,(vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo),8);
+        tracep->fullCData(oldp+15,(vlSelf->RVNoob__DOT__idu__DOT__immJ_lo_lo_lo),5);
+        tracep->fullQData(oldp+16,(vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1),44);
+        tracep->fullQData(oldp+18,(vlSelf->RVNoob__DOT__exe__DOT__alu_out),64);
+        tracep->fullQData(oldp+20,((vlSelf->RVNoob__DOT__exe__DOT__alu_out 
                                     >> 1U)),63);
-        tracep->fullQData(oldp+19,(vlSelf->RVNoob__DOT__rf__DOT__rf_10),64);
-        tracep->fullQData(oldp+21,(vlSelf->RVNoob__DOT__pc),64);
-        tracep->fullQData(oldp+23,((4ULL + vlSelf->RVNoob__DOT__pc)),64);
-        tracep->fullBit(oldp+25,(vlSelf->RVNoob__DOT__U_ebreak_ebreak));
-        tracep->fullQData(oldp+26,(vlSelf->RVNoob__DOT__rf__DOT__rf_0),64);
-        tracep->fullQData(oldp+28,(vlSelf->RVNoob__DOT__rf__DOT__rf_1),64);
-        tracep->fullQData(oldp+30,(vlSelf->RVNoob__DOT__rf__DOT__rf_2),64);
-        tracep->fullQData(oldp+32,(vlSelf->RVNoob__DOT__rf__DOT__rf_3),64);
-        tracep->fullQData(oldp+34,(vlSelf->RVNoob__DOT__rf__DOT__rf_4),64);
-        tracep->fullQData(oldp+36,(vlSelf->RVNoob__DOT__rf__DOT__rf_5),64);
-        tracep->fullQData(oldp+38,(vlSelf->RVNoob__DOT__rf__DOT__rf_6),64);
-        tracep->fullQData(oldp+40,(vlSelf->RVNoob__DOT__rf__DOT__rf_7),64);
-        tracep->fullQData(oldp+42,(vlSelf->RVNoob__DOT__rf__DOT__rf_8),64);
-        tracep->fullQData(oldp+44,(vlSelf->RVNoob__DOT__rf__DOT__rf_9),64);
-        tracep->fullQData(oldp+46,(vlSelf->RVNoob__DOT__rf__DOT__rf_11),64);
-        tracep->fullQData(oldp+48,(vlSelf->RVNoob__DOT__rf__DOT__rf_12),64);
-        tracep->fullQData(oldp+50,(vlSelf->RVNoob__DOT__rf__DOT__rf_13),64);
-        tracep->fullQData(oldp+52,(vlSelf->RVNoob__DOT__rf__DOT__rf_14),64);
-        tracep->fullQData(oldp+54,(vlSelf->RVNoob__DOT__rf__DOT__rf_15),64);
-        tracep->fullQData(oldp+56,(vlSelf->RVNoob__DOT__rf__DOT__rf_16),64);
-        tracep->fullQData(oldp+58,(vlSelf->RVNoob__DOT__rf__DOT__rf_17),64);
-        tracep->fullQData(oldp+60,(vlSelf->RVNoob__DOT__rf__DOT__rf_18),64);
-        tracep->fullQData(oldp+62,(vlSelf->RVNoob__DOT__rf__DOT__rf_19),64);
-        tracep->fullQData(oldp+64,(vlSelf->RVNoob__DOT__rf__DOT__rf_20),64);
-        tracep->fullQData(oldp+66,(vlSelf->RVNoob__DOT__rf__DOT__rf_21),64);
-        tracep->fullQData(oldp+68,(vlSelf->RVNoob__DOT__rf__DOT__rf_22),64);
-        tracep->fullQData(oldp+70,(vlSelf->RVNoob__DOT__rf__DOT__rf_23),64);
-        tracep->fullQData(oldp+72,(vlSelf->RVNoob__DOT__rf__DOT__rf_24),64);
-        tracep->fullQData(oldp+74,(vlSelf->RVNoob__DOT__rf__DOT__rf_25),64);
-        tracep->fullQData(oldp+76,(vlSelf->RVNoob__DOT__rf__DOT__rf_26),64);
-        tracep->fullQData(oldp+78,(vlSelf->RVNoob__DOT__rf__DOT__rf_27),64);
-        tracep->fullQData(oldp+80,(vlSelf->RVNoob__DOT__rf__DOT__rf_28),64);
-        tracep->fullQData(oldp+82,(vlSelf->RVNoob__DOT__rf__DOT__rf_29),64);
-        tracep->fullQData(oldp+84,(vlSelf->RVNoob__DOT__rf__DOT__rf_30),64);
-        tracep->fullQData(oldp+86,(vlSelf->RVNoob__DOT__rf__DOT__rf_31),64);
-        tracep->fullQData(oldp+88,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0]),64);
-        tracep->fullQData(oldp+90,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[1]),64);
-        tracep->fullQData(oldp+92,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[2]),64);
-        tracep->fullQData(oldp+94,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[3]),64);
-        tracep->fullQData(oldp+96,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[4]),64);
-        tracep->fullQData(oldp+98,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[5]),64);
-        tracep->fullQData(oldp+100,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[6]),64);
-        tracep->fullQData(oldp+102,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[7]),64);
-        tracep->fullQData(oldp+104,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[8]),64);
-        tracep->fullQData(oldp+106,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[9]),64);
-        tracep->fullQData(oldp+108,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[10]),64);
-        tracep->fullQData(oldp+110,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[11]),64);
-        tracep->fullQData(oldp+112,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[12]),64);
-        tracep->fullQData(oldp+114,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[13]),64);
-        tracep->fullQData(oldp+116,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[14]),64);
-        tracep->fullQData(oldp+118,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[15]),64);
-        tracep->fullQData(oldp+120,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[16]),64);
-        tracep->fullQData(oldp+122,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[17]),64);
-        tracep->fullQData(oldp+124,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[18]),64);
-        tracep->fullQData(oldp+126,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[19]),64);
-        tracep->fullQData(oldp+128,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[20]),64);
-        tracep->fullQData(oldp+130,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[21]),64);
-        tracep->fullQData(oldp+132,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[22]),64);
-        tracep->fullQData(oldp+134,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[23]),64);
-        tracep->fullQData(oldp+136,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[24]),64);
-        tracep->fullQData(oldp+138,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[25]),64);
-        tracep->fullQData(oldp+140,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[26]),64);
-        tracep->fullQData(oldp+142,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[27]),64);
-        tracep->fullQData(oldp+144,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[28]),64);
-        tracep->fullQData(oldp+146,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[29]),64);
-        tracep->fullQData(oldp+148,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[30]),64);
-        tracep->fullQData(oldp+150,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[31]),64);
-        tracep->fullBit(oldp+152,(vlSelf->clock));
-        tracep->fullBit(oldp+153,(vlSelf->reset));
-        tracep->fullQData(oldp+154,(vlSelf->io_pc),64);
-        tracep->fullIData(oldp+156,(vlSelf->io_inst),32);
-        tracep->fullQData(oldp+157,(vlSelf->io_res),64);
-        tracep->fullBit(oldp+159,(vlSelf->io_ebreak));
-        tracep->fullCData(oldp+160,((0x1fU & (vlSelf->io_inst 
+        tracep->fullQData(oldp+22,(vlSelf->RVNoob__DOT__rf__DOT__rf_10),64);
+        tracep->fullQData(oldp+24,(vlSelf->RVNoob__DOT__pc),64);
+        tracep->fullQData(oldp+26,((4ULL + vlSelf->RVNoob__DOT__pc)),64);
+        tracep->fullBit(oldp+28,(vlSelf->RVNoob__DOT__U_ebreak_ebreak));
+        tracep->fullQData(oldp+29,(vlSelf->RVNoob__DOT__rf__DOT__rf_0),64);
+        tracep->fullQData(oldp+31,(vlSelf->RVNoob__DOT__rf__DOT__rf_1),64);
+        tracep->fullQData(oldp+33,(vlSelf->RVNoob__DOT__rf__DOT__rf_2),64);
+        tracep->fullQData(oldp+35,(vlSelf->RVNoob__DOT__rf__DOT__rf_3),64);
+        tracep->fullQData(oldp+37,(vlSelf->RVNoob__DOT__rf__DOT__rf_4),64);
+        tracep->fullQData(oldp+39,(vlSelf->RVNoob__DOT__rf__DOT__rf_5),64);
+        tracep->fullQData(oldp+41,(vlSelf->RVNoob__DOT__rf__DOT__rf_6),64);
+        tracep->fullQData(oldp+43,(vlSelf->RVNoob__DOT__rf__DOT__rf_7),64);
+        tracep->fullQData(oldp+45,(vlSelf->RVNoob__DOT__rf__DOT__rf_8),64);
+        tracep->fullQData(oldp+47,(vlSelf->RVNoob__DOT__rf__DOT__rf_9),64);
+        tracep->fullQData(oldp+49,(vlSelf->RVNoob__DOT__rf__DOT__rf_11),64);
+        tracep->fullQData(oldp+51,(vlSelf->RVNoob__DOT__rf__DOT__rf_12),64);
+        tracep->fullQData(oldp+53,(vlSelf->RVNoob__DOT__rf__DOT__rf_13),64);
+        tracep->fullQData(oldp+55,(vlSelf->RVNoob__DOT__rf__DOT__rf_14),64);
+        tracep->fullQData(oldp+57,(vlSelf->RVNoob__DOT__rf__DOT__rf_15),64);
+        tracep->fullQData(oldp+59,(vlSelf->RVNoob__DOT__rf__DOT__rf_16),64);
+        tracep->fullQData(oldp+61,(vlSelf->RVNoob__DOT__rf__DOT__rf_17),64);
+        tracep->fullQData(oldp+63,(vlSelf->RVNoob__DOT__rf__DOT__rf_18),64);
+        tracep->fullQData(oldp+65,(vlSelf->RVNoob__DOT__rf__DOT__rf_19),64);
+        tracep->fullQData(oldp+67,(vlSelf->RVNoob__DOT__rf__DOT__rf_20),64);
+        tracep->fullQData(oldp+69,(vlSelf->RVNoob__DOT__rf__DOT__rf_21),64);
+        tracep->fullQData(oldp+71,(vlSelf->RVNoob__DOT__rf__DOT__rf_22),64);
+        tracep->fullQData(oldp+73,(vlSelf->RVNoob__DOT__rf__DOT__rf_23),64);
+        tracep->fullQData(oldp+75,(vlSelf->RVNoob__DOT__rf__DOT__rf_24),64);
+        tracep->fullQData(oldp+77,(vlSelf->RVNoob__DOT__rf__DOT__rf_25),64);
+        tracep->fullQData(oldp+79,(vlSelf->RVNoob__DOT__rf__DOT__rf_26),64);
+        tracep->fullQData(oldp+81,(vlSelf->RVNoob__DOT__rf__DOT__rf_27),64);
+        tracep->fullQData(oldp+83,(vlSelf->RVNoob__DOT__rf__DOT__rf_28),64);
+        tracep->fullQData(oldp+85,(vlSelf->RVNoob__DOT__rf__DOT__rf_29),64);
+        tracep->fullQData(oldp+87,(vlSelf->RVNoob__DOT__rf__DOT__rf_30),64);
+        tracep->fullQData(oldp+89,(vlSelf->RVNoob__DOT__rf__DOT__rf_31),64);
+        tracep->fullQData(oldp+91,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0]),64);
+        tracep->fullQData(oldp+93,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[1]),64);
+        tracep->fullQData(oldp+95,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[2]),64);
+        tracep->fullQData(oldp+97,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[3]),64);
+        tracep->fullQData(oldp+99,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[4]),64);
+        tracep->fullQData(oldp+101,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[5]),64);
+        tracep->fullQData(oldp+103,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[6]),64);
+        tracep->fullQData(oldp+105,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[7]),64);
+        tracep->fullQData(oldp+107,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[8]),64);
+        tracep->fullQData(oldp+109,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[9]),64);
+        tracep->fullQData(oldp+111,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[10]),64);
+        tracep->fullQData(oldp+113,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[11]),64);
+        tracep->fullQData(oldp+115,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[12]),64);
+        tracep->fullQData(oldp+117,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[13]),64);
+        tracep->fullQData(oldp+119,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[14]),64);
+        tracep->fullQData(oldp+121,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[15]),64);
+        tracep->fullQData(oldp+123,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[16]),64);
+        tracep->fullQData(oldp+125,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[17]),64);
+        tracep->fullQData(oldp+127,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[18]),64);
+        tracep->fullQData(oldp+129,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[19]),64);
+        tracep->fullQData(oldp+131,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[20]),64);
+        tracep->fullQData(oldp+133,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[21]),64);
+        tracep->fullQData(oldp+135,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[22]),64);
+        tracep->fullQData(oldp+137,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[23]),64);
+        tracep->fullQData(oldp+139,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[24]),64);
+        tracep->fullQData(oldp+141,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[25]),64);
+        tracep->fullQData(oldp+143,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[26]),64);
+        tracep->fullQData(oldp+145,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[27]),64);
+        tracep->fullQData(oldp+147,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[28]),64);
+        tracep->fullQData(oldp+149,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[29]),64);
+        tracep->fullQData(oldp+151,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[30]),64);
+        tracep->fullQData(oldp+153,(vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[31]),64);
+        tracep->fullBit(oldp+155,(vlSelf->clock));
+        tracep->fullBit(oldp+156,(vlSelf->reset));
+        tracep->fullQData(oldp+157,(vlSelf->io_pc),64);
+        tracep->fullIData(oldp+159,(vlSelf->io_inst),32);
+        tracep->fullQData(oldp+160,(vlSelf->io_res),64);
+        tracep->fullBit(oldp+162,(vlSelf->io_ebreak));
+        tracep->fullCData(oldp+163,((0x1fU & (vlSelf->io_inst 
                                               >> 7U))),5);
-        tracep->fullCData(oldp+161,((0x1fU & (vlSelf->io_inst 
+        tracep->fullCData(oldp+164,((0x1fU & (vlSelf->io_inst 
                                               >> 0xfU))),5);
-        tracep->fullBit(oldp+162,(((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+        tracep->fullBit(oldp+165,(((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                      | (0x17U == (0x7fU 
                                                   & vlSelf->io_inst))) 
                                     | (0x6fU == (0x7fU 
                                                  & vlSelf->io_inst))) 
                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))));
-        tracep->fullBit(oldp+163,(((0x6fU == (0x7fU 
+        tracep->fullBit(oldp+166,(((0x6fU == (0x7fU 
                                               & vlSelf->io_inst)) 
                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))));
-        tracep->fullBit(oldp+164,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr) 
+        tracep->fullBit(oldp+167,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr) 
                                     | (0x17U == (0x7fU 
                                                  & vlSelf->io_inst))) 
                                    | (0x6fU == (0x7fU 
                                                 & vlSelf->io_inst)))));
-        tracep->fullBit(oldp+165,((IData)((0x67U == 
+        tracep->fullBit(oldp+168,((IData)((0x67U == 
                                            (0x707fU 
                                             & vlSelf->io_inst)))));
-        tracep->fullQData(oldp+166,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+        tracep->fullQData(oldp+169,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                       | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
                                       ? ((0x1fU == 
                                           (0x1fU & 
@@ -419,36 +423,23 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                     ? vlSelf->RVNoob__DOT__rf__DOT__rf_27
                                                     : vlSelf->RVNoob__DOT__rf__DOT___GEN_57)))))
                                       : 0ULL)),64);
-        tracep->fullQData(oldp+168,(((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr) 
-                                       | (0x17U == 
-                                          (0x7fU & vlSelf->io_inst))) 
-                                      | (0x6fU == (0x7fU 
-                                                   & vlSelf->io_inst)))
-                                      ? ((0xfffffffffffffffeULL 
-                                          & vlSelf->RVNoob__DOT__exe__DOT__alu_out) 
-                                         | (QData)((IData)(
-                                                           (1U 
-                                                            & ((~ (IData)(
-                                                                          (0x67U 
-                                                                           == 
-                                                                           (0x707fU 
-                                                                            & vlSelf->io_inst)))) 
-                                                               & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_out))))))
-                                      : vlSelf->RVNoob__DOT__idu_io_imm)),64);
-        tracep->fullCData(oldp+170,((0x7fU & vlSelf->io_inst)),7);
-        tracep->fullCData(oldp+171,((7U & (vlSelf->io_inst 
+        tracep->fullQData(oldp+171,(((IData)(vlSelf->RVNoob__DOT__idu_io_pc_mux)
+                                      ? vlSelf->RVNoob__DOT__exe_io_dnpc
+                                      : (4ULL + vlSelf->RVNoob__DOT__pc))),64);
+        tracep->fullCData(oldp+173,((0x7fU & vlSelf->io_inst)),7);
+        tracep->fullCData(oldp+174,((7U & (vlSelf->io_inst 
                                            >> 0xcU))),3);
-        tracep->fullBit(oldp+172,((0x17U == (0x7fU 
+        tracep->fullBit(oldp+175,((0x17U == (0x7fU 
                                              & vlSelf->io_inst))));
-        tracep->fullBit(oldp+173,((0x37U == (0x7fU 
+        tracep->fullBit(oldp+176,((0x37U == (0x7fU 
                                              & vlSelf->io_inst))));
-        tracep->fullBit(oldp+174,((0x6fU == (0x7fU 
+        tracep->fullBit(oldp+177,((0x6fU == (0x7fU 
                                              & vlSelf->io_inst))));
-        tracep->fullBit(oldp+175,(((0x17U == (0x7fU 
+        tracep->fullBit(oldp+178,(((0x17U == (0x7fU 
                                               & vlSelf->io_inst)) 
                                    | (0x37U == (0x7fU 
                                                 & vlSelf->io_inst)))));
-        tracep->fullIData(oldp+176,(((0x2000000U & 
+        tracep->fullIData(oldp+179,(((0x2000000U & 
                                       (vlSelf->io_inst 
                                        >> 6U)) | ((0x1000000U 
                                                    & (vlSelf->io_inst 
@@ -471,7 +462,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                  | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo) 
                                                                      << 0xdU) 
                                                                     | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo)))))))))),26);
-        tracep->fullQData(oldp+177,((((QData)((IData)(
+        tracep->fullQData(oldp+180,((((QData)((IData)(
                                                       (vlSelf->io_inst 
                                                        >> 0x1fU))) 
                                       << 0x33U) | (
@@ -528,7 +519,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                                 | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo) 
                                                                                 << 0xdU) 
                                                                                 | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo))))))))))))))))))))),52);
-        tracep->fullQData(oldp+179,((((QData)((IData)(
+        tracep->fullQData(oldp+182,((((QData)((IData)(
                                                       (vlSelf->io_inst 
                                                        >> 0x1fU))) 
                                       << 0x3fU) | (
@@ -593,7 +584,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                                 << 0xcU) 
                                                                                 | (vlSelf->io_inst 
                                                                                 >> 0x14U)))))))))))))))))))))),64);
-        tracep->fullSData(oldp+181,(((0x8000U & (vlSelf->io_inst 
+        tracep->fullSData(oldp+184,(((0x8000U & (vlSelf->io_inst 
                                                  >> 0x10U)) 
                                      | ((0x4000U & 
                                          (vlSelf->io_inst 
@@ -617,7 +608,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                            & (vlSelf->io_inst 
                                                               >> 0x17U)) 
                                                           | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo)))))))))),16);
-        tracep->fullIData(oldp+182,(((0x80000000U & vlSelf->io_inst) 
+        tracep->fullIData(oldp+185,(((0x80000000U & vlSelf->io_inst) 
                                      | ((0x40000000U 
                                          & (vlSelf->io_inst 
                                             >> 1U)) 
@@ -666,7 +657,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                                 & (vlSelf->io_inst 
                                                                                 >> 0x17U)) 
                                                                                 | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo))))))))))))))))))),32);
-        tracep->fullQData(oldp+183,((((QData)((IData)(
+        tracep->fullQData(oldp+186,((((QData)((IData)(
                                                       ((0x80000000U 
                                                         & vlSelf->io_inst) 
                                                        | ((0x40000000U 
@@ -720,7 +711,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                       << 0x20U) | (QData)((IData)(
                                                                   (0xfffff000U 
                                                                    & vlSelf->io_inst))))),64);
-        tracep->fullSData(oldp+185,(((0x200U & (vlSelf->io_inst 
+        tracep->fullSData(oldp+188,(((0x200U & (vlSelf->io_inst 
                                                 >> 0x16U)) 
                                      | ((0x100U & (vlSelf->io_inst 
                                                    >> 0x17U)) 
@@ -747,7 +738,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                  >> 0x1eU)) 
                                                              | (vlSelf->io_inst 
                                                                 >> 0x1fU))))))))))),10);
-        tracep->fullSData(oldp+186,(((0x400U & (vlSelf->io_inst 
+        tracep->fullSData(oldp+189,(((0x400U & (vlSelf->io_inst 
                                                 >> 0x15U)) 
                                      | ((0x200U & (vlSelf->io_inst 
                                                    >> 0x16U)) 
@@ -764,7 +755,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                      & (vlSelf->io_inst 
                                                         >> 0x1aU)) 
                                                     | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immJ_lo_lo_lo)))))))),11);
-        tracep->fullIData(oldp+187,(((0x100000U & (vlSelf->io_inst 
+        tracep->fullIData(oldp+190,(((0x100000U & (vlSelf->io_inst 
                                                    >> 0xbU)) 
                                      | ((0x80000U & 
                                          (vlSelf->io_inst 
@@ -812,13 +803,13 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                                 >> 0x1eU)) 
                                                                                 | (vlSelf->io_inst 
                                                                                 >> 0x1fU)))))))))))))))))),21);
-        tracep->fullCData(oldp+188,((0xffU & (vlSelf->io_inst 
+        tracep->fullCData(oldp+191,((0xffU & (vlSelf->io_inst 
                                               >> 0xcU))),8);
-        tracep->fullBit(oldp+189,((1U & (vlSelf->io_inst 
+        tracep->fullBit(oldp+192,((1U & (vlSelf->io_inst 
                                          >> 0x14U))));
-        tracep->fullSData(oldp+190,((0x3ffU & (vlSelf->io_inst 
+        tracep->fullSData(oldp+193,((0x3ffU & (vlSelf->io_inst 
                                                >> 0x15U))),10);
-        tracep->fullQData(oldp+191,(((vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 
+        tracep->fullQData(oldp+194,(((vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 
                                       << 0x14U) | (QData)((IData)(
                                                                   ((0xff000U 
                                                                     & vlSelf->io_inst) 
@@ -828,7 +819,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                                       | (0x7feU 
                                                                          & (vlSelf->io_inst 
                                                                             >> 0x14U)))))))),64);
-        tracep->fullQData(oldp+193,(((0x1fU == (0x1fU 
+        tracep->fullQData(oldp+196,(((0x1fU == (0x1fU 
                                                 & (vlSelf->io_inst 
                                                    >> 0xfU)))
                                       ? vlSelf->RVNoob__DOT__rf__DOT__rf_31
@@ -856,7 +847,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                        >> 0xfU)))
                                                    ? vlSelf->RVNoob__DOT__rf__DOT__rf_27
                                                    : vlSelf->RVNoob__DOT__rf__DOT___GEN_57)))))),64);
-        tracep->fullQData(oldp+195,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+        tracep->fullQData(oldp+198,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                       | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
                                       ? (((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                           | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
@@ -894,7 +885,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                      ? vlSelf->RVNoob__DOT__rf__DOT__rf_27
                                                      : vlSelf->RVNoob__DOT__rf__DOT___GEN_57)))))
                                           : 0ULL) : vlSelf->RVNoob__DOT__pc)),64);
-        tracep->fullBit(oldp+197,((1U & ((~ (IData)(
+        tracep->fullBit(oldp+200,((1U & ((~ (IData)(
                                                     (0x67U 
                                                      == 
                                                      (0x707fU 

@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "conf.h"
-#include <macro.h>
+#include "macro.h"
 #include <stdio.h>
 
 #ifdef CONFIG_TARGET_AM

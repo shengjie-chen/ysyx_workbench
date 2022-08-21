@@ -19,6 +19,16 @@ VL_INLINE_OPT void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(ID
     inst_change(a__Vcvt);
 }
 
+extern "C" void npc_change(const svLogicVecVal* a);
+
+VL_INLINE_OPT void VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(QData/*63:0*/ a) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+        VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit\n"); );
+    // Body
+    svLogicVecVal a__Vcvt[2];
+    for (size_t a__Vidx = 0; a__Vidx < 1; ++a__Vidx) VL_SET_SVLV_Q(64, a__Vcvt + 2 * a__Vidx, a);
+    npc_change(a__Vcvt);
+}
+
 extern "C" void npc_ebreak();
 
 VL_INLINE_OPT void VRVNoob___024unit____Vdpiimwrap_npc_ebreak_TOP____024unit() {

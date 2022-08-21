@@ -15,10 +15,17 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) 
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__1\n"); );
+    // Variables
+    QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_1;
     // Body
     VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(vlSelf->io_inst);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_addi = (IData)(
                                                       (0x13U 
+                                                       == 
+                                                       (0x707fU 
+                                                        & vlSelf->io_inst)));
+    vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr = (IData)(
+                                                      (0x67U 
                                                        == 
                                                        (0x707fU 
                                                         & vlSelf->io_inst)));
@@ -72,35 +79,31 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) 
                                                               >> 0x1eU)) 
                                                           | (vlSelf->io_inst 
                                                              >> 0x1fU))))));
-    vlSelf->RVNoob__DOT__idu__DOT___io_imm_T_1 = ((
-                                                   (0x17U 
-                                                    == 
-                                                    (0x7fU 
-                                                     & vlSelf->io_inst)) 
-                                                   | (0x37U 
-                                                      == 
-                                                      (0x7fU 
-                                                       & vlSelf->io_inst)))
-                                                   ? 
-                                                  (((QData)((IData)(
-                                                                    ((0x80000000U 
-                                                                      & vlSelf->io_inst) 
-                                                                     | ((0x40000000U 
-                                                                         & (vlSelf->io_inst 
-                                                                            >> 1U)) 
-                                                                        | ((0x20000000U 
-                                                                            & (vlSelf->io_inst 
-                                                                               >> 2U)) 
-                                                                           | ((0x10000000U 
-                                                                               & (vlSelf->io_inst 
-                                                                                >> 3U)) 
-                                                                              | ((0x8000000U 
-                                                                                & (vlSelf->io_inst 
+    RVNoob__DOT__idu__DOT___io_imm_T_1 = (((0x17U == 
+                                            (0x7fU 
+                                             & vlSelf->io_inst)) 
+                                           | (0x37U 
+                                              == (0x7fU 
+                                                  & vlSelf->io_inst)))
+                                           ? (((QData)((IData)(
+                                                               ((0x80000000U 
+                                                                 & vlSelf->io_inst) 
+                                                                | ((0x40000000U 
+                                                                    & (vlSelf->io_inst 
+                                                                       >> 1U)) 
+                                                                   | ((0x20000000U 
+                                                                       & (vlSelf->io_inst 
+                                                                          >> 2U)) 
+                                                                      | ((0x10000000U 
+                                                                          & (vlSelf->io_inst 
+                                                                             >> 3U)) 
+                                                                         | ((0x8000000U 
+                                                                             & (vlSelf->io_inst 
                                                                                 >> 4U)) 
-                                                                                | ((0x4000000U 
+                                                                            | ((0x4000000U 
                                                                                 & (vlSelf->io_inst 
                                                                                 >> 5U)) 
-                                                                                | ((0x2000000U 
+                                                                               | ((0x2000000U 
                                                                                 & (vlSelf->io_inst 
                                                                                 >> 6U)) 
                                                                                 | ((0x1000000U 
@@ -133,11 +136,11 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) 
                                                                                 & (vlSelf->io_inst 
                                                                                 >> 0x17U)) 
                                                                                 | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo)))))))))))))))))))) 
-                                                    << 0x20U) 
-                                                   | (QData)((IData)(
-                                                                     (0xfffff000U 
-                                                                      & vlSelf->io_inst))))
-                                                   : 0ULL);
+                                               << 0x20U) 
+                                              | (QData)((IData)(
+                                                                (0xfffff000U 
+                                                                 & vlSelf->io_inst))))
+                                           : 0ULL);
     vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 = (
                                                    ((QData)((IData)(
                                                                     (vlSelf->io_inst 
@@ -260,6 +263,88 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) 
                                                                     & (vlSelf->io_inst 
                                                                        >> 0x19U)) 
                                                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo))))))));
+    vlSelf->RVNoob__DOT__idu_io_imm = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+                                          | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
+                                          ? (((QData)((IData)(
+                                                              (vlSelf->io_inst 
+                                                               >> 0x1fU))) 
+                                              << 0x3fU) 
+                                             | (((QData)((IData)(
+                                                                 (vlSelf->io_inst 
+                                                                  >> 0x1fU))) 
+                                                 << 0x3eU) 
+                                                | (((QData)((IData)(
+                                                                    (vlSelf->io_inst 
+                                                                     >> 0x1fU))) 
+                                                    << 0x3dU) 
+                                                   | (((QData)((IData)(
+                                                                       (vlSelf->io_inst 
+                                                                        >> 0x1fU))) 
+                                                       << 0x3cU) 
+                                                      | (((QData)((IData)(
+                                                                          (vlSelf->io_inst 
+                                                                           >> 0x1fU))) 
+                                                          << 0x3bU) 
+                                                         | (((QData)((IData)(
+                                                                             (vlSelf->io_inst 
+                                                                              >> 0x1fU))) 
+                                                             << 0x3aU) 
+                                                            | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                << 0x39U) 
+                                                               | (((QData)((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo)) 
+                                                                   << 0x33U) 
+                                                                  | (((QData)((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo)) 
+                                                                      << 0x26U) 
+                                                                     | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                         << 0x25U) 
+                                                                        | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                            << 0x24U) 
+                                                                           | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                               << 0x23U) 
+                                                                              | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                                << 0x22U) 
+                                                                                | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                                << 0x21U) 
+                                                                                | (((QData)((IData)(
+                                                                                (vlSelf->io_inst 
+                                                                                >> 0x1fU))) 
+                                                                                << 0x20U) 
+                                                                                | (QData)((IData)(
+                                                                                ((0x80000000U 
+                                                                                & vlSelf->io_inst) 
+                                                                                | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo) 
+                                                                                << 0x19U) 
+                                                                                | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo) 
+                                                                                << 0xcU) 
+                                                                                | (vlSelf->io_inst 
+                                                                                >> 0x14U)))))))))))))))))))))
+                                          : 0ULL) | RVNoob__DOT__idu__DOT___io_imm_T_1) 
+                                       | ((0x6fU == 
+                                           (0x7fU & vlSelf->io_inst))
+                                           ? ((vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 
+                                               << 0x14U) 
+                                              | (QData)((IData)(
+                                                                ((0xff000U 
+                                                                  & vlSelf->io_inst) 
+                                                                 | ((0x800U 
+                                                                     & (vlSelf->io_inst 
+                                                                        >> 9U)) 
+                                                                    | (0x7feU 
+                                                                       & (vlSelf->io_inst 
+                                                                          >> 0x14U)))))))
+                                           : 0ULL));
 }
 
 void VRVNoob___024unit____Vdpiimwrap_npc_ebreak_TOP____024unit();
@@ -280,6 +365,10 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
     } else {
         vlSelf->RVNoob__DOT__U_ebreak_ebreak = 0U;
     }
+    vlSelf->RVNoob__DOT__pc = ((IData)(vlSelf->reset)
+                                ? 0x80000000ULL : ((IData)(vlSelf->RVNoob__DOT__idu_io_pc_mux)
+                                                    ? vlSelf->RVNoob__DOT__exe_io_dnpc
+                                                    : vlSelf->RVNoob__DOT__snpc));
     if (vlSelf->RVNoob__DOT__idu_io_wen) {
         vlSelf->RVNoob__DOT__rf__DOT__rf_31 = ((0x1fU 
                                                 == 
@@ -407,57 +496,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                     >> 7U)))
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_25);
-    } else {
-        vlSelf->RVNoob__DOT__rf__DOT__rf_31 = vlSelf->RVNoob__DOT__rf__DOT___GEN_30;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_30 = vlSelf->RVNoob__DOT__rf__DOT___GEN_29;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = vlSelf->RVNoob__DOT__rf__DOT___GEN_28;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_27 = vlSelf->RVNoob__DOT__rf__DOT___GEN_26;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_28 = vlSelf->RVNoob__DOT__rf__DOT___GEN_27;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_14 = vlSelf->RVNoob__DOT__rf__DOT___GEN_13;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_15 = vlSelf->RVNoob__DOT__rf__DOT___GEN_14;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_16 = vlSelf->RVNoob__DOT__rf__DOT___GEN_15;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_17 = vlSelf->RVNoob__DOT__rf__DOT___GEN_16;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_18 = vlSelf->RVNoob__DOT__rf__DOT___GEN_17;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_19 = vlSelf->RVNoob__DOT__rf__DOT___GEN_18;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_20 = vlSelf->RVNoob__DOT__rf__DOT___GEN_19;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_21 = vlSelf->RVNoob__DOT__rf__DOT___GEN_20;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = vlSelf->RVNoob__DOT__rf__DOT___GEN_21;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_23 = vlSelf->RVNoob__DOT__rf__DOT___GEN_22;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_24 = vlSelf->RVNoob__DOT__rf__DOT___GEN_23;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_25 = vlSelf->RVNoob__DOT__rf__DOT___GEN_24;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_26 = vlSelf->RVNoob__DOT__rf__DOT___GEN_25;
-    }
-    vlSelf->RVNoob__DOT__pc = ((IData)(vlSelf->reset)
-                                ? 0x80000000ULL : (
-                                                   ((0x6fU 
-                                                     == 
-                                                     (0x7fU 
-                                                      & vlSelf->io_inst)) 
-                                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
-                                                    ? 
-                                                   ((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr) 
-                                                      | (0x17U 
-                                                         == 
-                                                         (0x7fU 
-                                                          & vlSelf->io_inst))) 
-                                                     | (0x6fU 
-                                                        == 
-                                                        (0x7fU 
-                                                         & vlSelf->io_inst)))
-                                                     ? 
-                                                    ((0xfffffffffffffffeULL 
-                                                      & vlSelf->RVNoob__DOT__exe__DOT__alu_out) 
-                                                     | (QData)((IData)(
-                                                                       (1U 
-                                                                        & ((~ (IData)(
-                                                                                (0x67U 
-                                                                                == 
-                                                                                (0x707fU 
-                                                                                & vlSelf->io_inst)))) 
-                                                                           & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_out))))))
-                                                     : vlSelf->RVNoob__DOT__idu_io_imm)
-                                                    : vlSelf->RVNoob__DOT__snpc));
-    if (vlSelf->RVNoob__DOT__idu_io_wen) {
         vlSelf->RVNoob__DOT__rf__DOT__rf_0 = ((0U == 
                                                (0x1fU 
                                                 & (vlSelf->io_inst 
@@ -540,6 +578,24 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_12);
     } else {
+        vlSelf->RVNoob__DOT__rf__DOT__rf_31 = vlSelf->RVNoob__DOT__rf__DOT___GEN_30;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_30 = vlSelf->RVNoob__DOT__rf__DOT___GEN_29;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = vlSelf->RVNoob__DOT__rf__DOT___GEN_28;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_27 = vlSelf->RVNoob__DOT__rf__DOT___GEN_26;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_28 = vlSelf->RVNoob__DOT__rf__DOT___GEN_27;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_14 = vlSelf->RVNoob__DOT__rf__DOT___GEN_13;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_15 = vlSelf->RVNoob__DOT__rf__DOT___GEN_14;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_16 = vlSelf->RVNoob__DOT__rf__DOT___GEN_15;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_17 = vlSelf->RVNoob__DOT__rf__DOT___GEN_16;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_18 = vlSelf->RVNoob__DOT__rf__DOT___GEN_17;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_19 = vlSelf->RVNoob__DOT__rf__DOT___GEN_18;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_20 = vlSelf->RVNoob__DOT__rf__DOT___GEN_19;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_21 = vlSelf->RVNoob__DOT__rf__DOT___GEN_20;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = vlSelf->RVNoob__DOT__rf__DOT___GEN_21;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_23 = vlSelf->RVNoob__DOT__rf__DOT___GEN_22;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_24 = vlSelf->RVNoob__DOT__rf__DOT___GEN_23;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_25 = vlSelf->RVNoob__DOT__rf__DOT___GEN_24;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_26 = vlSelf->RVNoob__DOT__rf__DOT___GEN_25;
         vlSelf->RVNoob__DOT__rf__DOT__rf_0 = 0ULL;
         vlSelf->RVNoob__DOT__rf__DOT__rf_12 = vlSelf->RVNoob__DOT__rf__DOT___GEN_11;
         vlSelf->RVNoob__DOT__rf__DOT__rf_11 = vlSelf->RVNoob__DOT__rf__DOT___GEN_10;
@@ -564,6 +620,8 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_9)
                                             : vlSelf->RVNoob__DOT__rf__DOT___GEN_9);
+    vlSelf->RVNoob__DOT__snpc = (4ULL + vlSelf->RVNoob__DOT__pc);
+    vlSelf->io_pc = vlSelf->RVNoob__DOT__pc;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1fU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_31;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1eU] 
@@ -600,8 +658,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_25;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1aU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_26;
-    vlSelf->RVNoob__DOT__snpc = (4ULL + vlSelf->RVNoob__DOT__pc);
-    vlSelf->io_pc = vlSelf->RVNoob__DOT__pc;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_0;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xcU] 
@@ -632,6 +688,8 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_10;
 }
 
+void VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(QData/*63:0*/ a);
+
 VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
@@ -639,11 +697,9 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
     // Variables
     QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_44;
     // Body
-    vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr = (IData)(
-                                                      (0x67U 
-                                                       == 
-                                                       (0x707fU 
-                                                        & vlSelf->io_inst)));
+    vlSelf->RVNoob__DOT__idu_io_pc_mux = ((0x6fU == 
+                                           (0x7fU & vlSelf->io_inst)) 
+                                          | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
     if (vlSelf->reset) {
         vlSelf->RVNoob__DOT__rf__DOT___GEN_30 = 0x1fULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_29 = 0x1eULL;
@@ -675,7 +731,6 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
         vlSelf->RVNoob__DOT__rf__DOT___GEN_0 = 1ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = 6ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = 0xdULL;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_9 = 0xaULL;
     } else {
         vlSelf->RVNoob__DOT__rf__DOT___GEN_30 = vlSelf->RVNoob__DOT__rf__DOT__rf_31;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_29 = vlSelf->RVNoob__DOT__rf__DOT__rf_30;
@@ -707,8 +762,20 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
         vlSelf->RVNoob__DOT__rf__DOT___GEN_0 = vlSelf->RVNoob__DOT__rf__DOT__rf_1;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = vlSelf->RVNoob__DOT__rf__DOT__rf_6;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = vlSelf->RVNoob__DOT__rf__DOT__rf_13;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_9 = vlSelf->RVNoob__DOT__rf__DOT__rf_10;
     }
+    vlSelf->RVNoob__DOT__idu_io_wen = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+                                          | (0x17U 
+                                             == (0x7fU 
+                                                 & vlSelf->io_inst))) 
+                                         | (0x37U == 
+                                            (0x7fU 
+                                             & vlSelf->io_inst))) 
+                                        | (0x6fU == 
+                                           (0x7fU & vlSelf->io_inst))) 
+                                       | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
+    vlSelf->RVNoob__DOT__rf__DOT___GEN_9 = ((IData)(vlSelf->reset)
+                                             ? 0xaULL
+                                             : vlSelf->RVNoob__DOT__rf__DOT__rf_10);
     RVNoob__DOT__rf__DOT___GEN_44 = ((0xdU == (0x1fU 
                                                & (vlSelf->io_inst 
                                                   >> 0xfU)))
@@ -792,98 +859,6 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                                                >> 0xfU)))
                                                            ? vlSelf->RVNoob__DOT__rf__DOT__rf_1
                                                            : vlSelf->RVNoob__DOT__rf__DOT__rf_0)))))))))))));
-    vlSelf->RVNoob__DOT__idu_io_wen = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
-                                          | (0x17U 
-                                             == (0x7fU 
-                                                 & vlSelf->io_inst))) 
-                                         | (0x37U == 
-                                            (0x7fU 
-                                             & vlSelf->io_inst))) 
-                                        | (0x6fU == 
-                                           (0x7fU & vlSelf->io_inst))) 
-                                       | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
-    vlSelf->RVNoob__DOT__idu_io_imm = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
-                                          | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))
-                                          ? (((QData)((IData)(
-                                                              (vlSelf->io_inst 
-                                                               >> 0x1fU))) 
-                                              << 0x3fU) 
-                                             | (((QData)((IData)(
-                                                                 (vlSelf->io_inst 
-                                                                  >> 0x1fU))) 
-                                                 << 0x3eU) 
-                                                | (((QData)((IData)(
-                                                                    (vlSelf->io_inst 
-                                                                     >> 0x1fU))) 
-                                                    << 0x3dU) 
-                                                   | (((QData)((IData)(
-                                                                       (vlSelf->io_inst 
-                                                                        >> 0x1fU))) 
-                                                       << 0x3cU) 
-                                                      | (((QData)((IData)(
-                                                                          (vlSelf->io_inst 
-                                                                           >> 0x1fU))) 
-                                                          << 0x3bU) 
-                                                         | (((QData)((IData)(
-                                                                             (vlSelf->io_inst 
-                                                                              >> 0x1fU))) 
-                                                             << 0x3aU) 
-                                                            | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                << 0x39U) 
-                                                               | (((QData)((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo)) 
-                                                                   << 0x33U) 
-                                                                  | (((QData)((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo)) 
-                                                                      << 0x26U) 
-                                                                     | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                         << 0x25U) 
-                                                                        | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                            << 0x24U) 
-                                                                           | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                               << 0x23U) 
-                                                                              | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                                << 0x22U) 
-                                                                                | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                                << 0x21U) 
-                                                                                | (((QData)((IData)(
-                                                                                (vlSelf->io_inst 
-                                                                                >> 0x1fU))) 
-                                                                                << 0x20U) 
-                                                                                | (QData)((IData)(
-                                                                                ((0x80000000U 
-                                                                                & vlSelf->io_inst) 
-                                                                                | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo_lo) 
-                                                                                << 0x19U) 
-                                                                                | (((IData)(vlSelf->RVNoob__DOT__idu__DOT__immI_lo_lo) 
-                                                                                << 0xcU) 
-                                                                                | (vlSelf->io_inst 
-                                                                                >> 0x14U)))))))))))))))))))))
-                                          : 0ULL) | vlSelf->RVNoob__DOT__idu__DOT___io_imm_T_1) 
-                                       | ((0x6fU == 
-                                           (0x7fU & vlSelf->io_inst))
-                                           ? ((vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 
-                                               << 0x14U) 
-                                              | (QData)((IData)(
-                                                                ((0xff000U 
-                                                                  & vlSelf->io_inst) 
-                                                                 | ((0x800U 
-                                                                     & (vlSelf->io_inst 
-                                                                        >> 9U)) 
-                                                                    | (0x7feU 
-                                                                       & (vlSelf->io_inst 
-                                                                          >> 0x14U)))))))
-                                           : 0ULL));
     vlSelf->RVNoob__DOT__rf__DOT___GEN_57 = ((0x1aU 
                                               == (0x1fU 
                                                   & (vlSelf->io_inst 
@@ -1029,6 +1004,24 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                                     : vlSelf->RVNoob__DOT__pc) 
                                                   + vlSelf->RVNoob__DOT__idu_io_imm)
                                                : 0ULL);
+    vlSelf->RVNoob__DOT__exe_io_dnpc = ((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr) 
+                                          | (0x17U 
+                                             == (0x7fU 
+                                                 & vlSelf->io_inst))) 
+                                         | (0x6fU == 
+                                            (0x7fU 
+                                             & vlSelf->io_inst)))
+                                         ? ((0xfffffffffffffffeULL 
+                                             & vlSelf->RVNoob__DOT__exe__DOT__alu_out) 
+                                            | (QData)((IData)(
+                                                              (1U 
+                                                               & ((~ (IData)(
+                                                                             (0x67U 
+                                                                              == 
+                                                                              (0x707fU 
+                                                                               & vlSelf->io_inst)))) 
+                                                                  & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_out))))))
+                                         : vlSelf->RVNoob__DOT__idu_io_imm);
     vlSelf->RVNoob__DOT__exe_io_gp_out = (((0x6fU == 
                                             (0x7fU 
                                              & vlSelf->io_inst)) 
@@ -1036,6 +1029,12 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                            ? (4ULL 
                                               + vlSelf->RVNoob__DOT__pc)
                                            : vlSelf->RVNoob__DOT__exe__DOT__alu_out);
+    VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(
+                                                              ((IData)(vlSelf->RVNoob__DOT__idu_io_pc_mux)
+                                                                ? vlSelf->RVNoob__DOT__exe_io_dnpc
+                                                                : 
+                                                               (4ULL 
+                                                                + vlSelf->RVNoob__DOT__pc)));
     vlSelf->io_res = vlSelf->RVNoob__DOT__exe_io_gp_out;
 }
 
