@@ -122,6 +122,6 @@ enum { NPC_RUNNING,
 // extern NPCState npc_state;
 
 void sdb_mainloop();
-void set_gpr_ptr(const svOpenArrayHandle r);
+extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
 
 #endif
