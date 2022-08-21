@@ -4,7 +4,7 @@
 #ifdef CONFIG_FTRACE
 char *elf_file = NULL;
 FILE *ftrace_fp = NULL;
-char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-ftrace-log.txt";
+const char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-ftrace-log.txt";
 int ftrace_depth = 0;
 int ftrace_func_num;
 #define MAX_FUNC_NUM 100
