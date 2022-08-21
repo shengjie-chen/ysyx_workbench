@@ -116,3 +116,5 @@ enum { NPC_RUNNING,
 
 
 // extern NPCState npc_state;
+extern char *rl_gets();
+extern struct cmd_table[];

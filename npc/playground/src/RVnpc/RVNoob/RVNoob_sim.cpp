@@ -3,11 +3,12 @@
 #include "VRVNoob__Dpi.h"
 #include "conf.h"
 // #include "disasm.cc"
-#include "sdb.c"
+// #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
+#include "trace.c"
 
 // int add(int a, int b) { return a + b; }
 
@@ -122,7 +123,7 @@ int main(int argc, char **argv, char **env)
 
   bool sdb_en = 0;
   if (argc > 2) {
-    sdb_en = ~strcmp(*(argv + 2), "sdb");
+    sdb_en = ~strcmp(*(argv + 2), "sdb_y");
   }
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
