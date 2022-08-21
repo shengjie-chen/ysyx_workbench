@@ -1,3 +1,5 @@
+#ifndef __RVNPPB_H__
+#define __RVNPPB_H__
 #include "macro.h"
 #include <assert.h>
 #include <stdio.h>
@@ -118,3 +120,6 @@ enum { NPC_RUNNING,
 // extern NPCState npc_state;
 extern char *rl_gets();
 extern struct cmd_table[];
+#define NR_CMD ARRLEN(cmd_table)
+
+#endif

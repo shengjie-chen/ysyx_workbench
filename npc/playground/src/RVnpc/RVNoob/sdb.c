@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stddef.h>
 #include <string>
+#include "RVNoob.h"
 using namespace std;
 extern void one_clock();
 extern NPCState npc_state;
@@ -106,8 +107,6 @@ struct {
     // {"d", "Delete Watchpoint", cmd_d},
 
 };
-
-#define NR_CMD ARRLEN(cmd_table)
 
 static int cmd_help(char *args)
 {
