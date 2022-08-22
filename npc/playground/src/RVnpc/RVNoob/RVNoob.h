@@ -100,7 +100,7 @@ word_t pmem_read(paddr_t addr, int len)
 
 typedef struct {
   int state;
-  // vaddr_t halt_pc;
+  vaddr_t halt_pc;
   // uint32_t halt_ret;
 } NPCState;
 
@@ -109,11 +109,12 @@ typedef struct {
   vaddr_t *pc;
 } NPC_riscv64_CPU_state;
 
+typedef NPC_riscv64_CPU_state CPU_state;
 
 
 enum { NPC_RUNNING,
        NPC_STOP,
-       NPC_END /*, NPC_ABORT*/, NPC_QUIT };
+       NPC_END , NPC_ABORT, NPC_QUIT };
 
 
 // extern NPCState npc_state;

@@ -2,6 +2,7 @@
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 // #include "disasm.cc"
+#include "difftest.c"
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
@@ -14,7 +15,7 @@
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
-NPC_riscv64_CPU_state cpu_state;
+CPU_state cpu_state;
 
 void npc_ebreak()
 {
@@ -47,7 +48,6 @@ extern "C" void init_disasm(const char *triple);
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
-
 #endif
 
 VRVNoob *top = new VRVNoob;
@@ -91,7 +91,7 @@ void one_clock()
 #endif
 
 #ifdef CONFIG_DIFFTEST
-
+  difftest_step(top->io_pc, cpu_npc);
 #endif
 
   top->clock = 1;
@@ -110,7 +110,7 @@ int main(int argc, char **argv, char **env)
 
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
-  load_img();
+  long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
   init_disasm("riscv64-pc-linux-gnu");
@@ -136,31 +136,39 @@ int main(int argc, char **argv, char **env)
 
   // parse_args
   bool sdb_en = 0;
-  bool elf_en = 0;
-  bool diff_en = 0;
   if (argc > 2) {
     sdb_en = ~strcmp(*(argv + 2), "sdb_y");
-    if (argc > 3) {
-      elf_en = ~strncmp(*(argv + 3), "elf=", 4);
-      if (argc > 4) {
-        diff_en = ~strncmp(*(argv + 4), "diff=", 5);
-      }
-    }
   }
 
 #ifdef CONFIG_DIFFTEST
+  bool diff_en = 0;
+  if (argc > 4) {
+    diff_en = ~strncmp(*(argv + 4), "diff=", 5);
+  } else {
+    panic("check difftest file!\n")
+  }
   cpu_state.gpr = cpu_gpr;
   cpu_state.pc = &(top->io_pc);
-
+  if (diff_en) {
+    diff_file = *(argv + 4) + 5;
+    init_difftest(diff_file, img_size, 0, &cpu_state);
+  }
 #endif
 
 #ifdef CONFIG_FTRACE
+  bool elf_en = 0;
+  if (argc > 3) {
+    elf_en = ~strncmp(*(argv + 3), "elf=", 4);
+  } else {
+    panic("check elf file!\n")
+  }
   if (elf_en) {
     elf_file = *(argv + 3) + 4;
     printf("%s\n", elf_file);
     init_ftrace(elf_file);
   }
 #endif
+
   // printf("%s\n",*(argv + 2));
   // printf("%d\n",sdb_en);
   if (sdb_en) {
