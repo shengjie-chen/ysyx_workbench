@@ -43,6 +43,7 @@ VM_USER_LDLIBS = \
 	-O2 \
 	-fsanitize=address \
 	-pie \
+	-ldl \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \

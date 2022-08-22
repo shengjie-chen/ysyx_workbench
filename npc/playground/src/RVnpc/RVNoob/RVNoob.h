@@ -2,7 +2,7 @@
 #define __RVNOOB_H__
 #include "common.h"
 #include "verilated_dpi.h"
-#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/cpu/difftest/ref.c"
+//#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/cpu/difftest/ref.c"
 
 
 // typedef signed char __int8_t;
