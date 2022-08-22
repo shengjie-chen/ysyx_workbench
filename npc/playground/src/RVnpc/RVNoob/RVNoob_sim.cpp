@@ -90,14 +90,14 @@ void one_clock()
 
 #endif
 
-#ifdef CONFIG_DIFFTEST
-  difftest_step(cpu_state.pc, cpu_npc);
-#endif
-
   top->clock = 1;
   top->eval();
   tfp->dump(main_time);
   main_time++;
+
+#ifdef CONFIG_DIFFTEST
+  difftest_step(cpu_state.pc, cpu_npc);
+#endif
 }
 
 int main(int argc, char **argv, char **env)
