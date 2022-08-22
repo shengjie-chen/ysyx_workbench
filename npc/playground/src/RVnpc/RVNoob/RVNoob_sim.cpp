@@ -14,6 +14,9 @@
 vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
+NPC_riscv64_CPU_state cpu_state;
+cpu_state.gpr = cpu_gpr;
+cpu_state.pc = &(top->io_pc);
 
 void npc_ebreak()
 {

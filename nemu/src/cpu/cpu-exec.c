@@ -16,8 +16,10 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
+#ifdef CONFIG_IRINGBUF
 static char iringbuf[16][128];
 static int iringbuf_ptr = 0;
+#endif
 
 void device_update();
 
@@ -110,7 +112,7 @@ static void exec_once(Decode *s, vaddr_t pc)
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #endif
 
-  // #ifdef CONFIG_IRINGBUF
+#ifdef CONFIG_IRINGBUF
   char *ptr = iringbuf[iringbuf_ptr];
   if (nemu_state.state == NEMU_ABORT) {
     memcpy(ptr, " --> ", 5);
@@ -136,7 +138,7 @@ static void exec_once(Decode *s, vaddr_t pc)
     iringbuf_ptr++;
   }
   memset(iringbuf[iringbuf_ptr], 0, 128);
-  // #endif
+#endif
 }
 
 static void execute(uint64_t n)

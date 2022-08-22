@@ -2,6 +2,7 @@
 #define __RVNOOB_H__
 #include "common.h"
 #include "verilated_dpi.h"
+#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/cpu/difftest/ref.c"
 
 
 // typedef signed char __int8_t;
@@ -103,6 +104,15 @@ typedef struct {
   // vaddr_t halt_pc;
   // uint32_t halt_ret;
 } NPCState;
+
+#ifndef __NPC_CPU_STATE__
+#define __NPC_CPU_STATE__
+typedef struct {
+  word_t *gpr;
+  vaddr_t *pc;
+} NPC_riscv64_CPU_state;
+#endif
+
 
 enum { NPC_RUNNING,
        NPC_STOP,
