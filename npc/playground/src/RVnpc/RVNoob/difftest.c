@@ -58,13 +58,19 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
 {
   for (int i = 0; i < 32; i++) {
-    word_t npc_gpr = *(cpu_state.gpr + i);
-    word_t ref_gpr = *(ref_r->gpr + i);
-    if (npc_gpr != ref_gpr) {
+    if (cpu_state.gpr[i] != ref_r->gpr[i]) {
+      printf("!!!!!!!");
+      printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
+      printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
+      printf("!!!!!!!");
       return false;
     }
   }
   if (pc != ref_r->pc) {
+    printf("!!!!!!!");
+    printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
+    printf("ref.pc is " FMT_WORD "\n", ref->pc);
+    printf("!!!!!!!");
     return false;
   }
   return true;
