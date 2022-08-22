@@ -15,6 +15,15 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
+void refresh_gpr_pc()
+{
+  int i;
+  for (i = 0; i < 32; i++) {
+    cpu_state.gpr[i] = cpu_gpr[i];
+  }
+  cpu_state.pc = top->io_pc;
+}
+
 void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
 {
   assert(ref_so_file != NULL);
@@ -58,14 +67,14 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
       return false;
     }
   }
-  if (pc != *(ref_r->pc)) {
+  if (pc != ref_r->pc) {
     return false;
   }
   return true;
 }
 void isa_reg_display()
 {
-  printf("cpu.pc is " FMT_WORD "\n", *(cpu_state.pc));
+  printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
   int i;
   for (i = 0; i < 32; i++) {
     printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
@@ -108,14 +117,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc)
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
+  refresh_gpr_pc();
   checkregs(&ref_r, pc);
 }
 
-void refresh_gpr_pc()
-{
-  int i;
-  for (i = 0; i < 32; i++) {
-    cpu_state.gpr[i] = cpu_gpr[i];
-  }
-  cpu_state.pc = top->io_pc;
-}

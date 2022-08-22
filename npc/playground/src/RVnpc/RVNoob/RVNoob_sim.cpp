@@ -91,7 +91,7 @@ void one_clock()
 #endif
 
 #ifdef CONFIG_DIFFTEST
-  difftest_step(*(cpu_state.pc), cpu_npc);
+  difftest_step(cpu_state.pc, cpu_npc);
 #endif
 
   top->clock = 1;
@@ -147,8 +147,7 @@ int main(int argc, char **argv, char **env)
   } else {
     panic("check difftest file!\n")
   }
-  cpu_state.gpr = cpu_gpr;
-  cpu_state.pc = &(top->io_pc);
+  refresh_gpr_pc();
   if (diff_en) {
     diff_file = *(argv + 4) + 5;
     init_difftest(diff_file, img_size, 0, &cpu_state);
