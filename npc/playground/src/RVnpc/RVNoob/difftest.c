@@ -45,14 +45,23 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
 {
+  printf("error\n");
   for (int i = 0; i < 32; i++) {
+    printf("error\n");
+
     if (*(cpu_state.gpr + i) != *(ref_r->gpr + i)) {
+      printf("error\n");
+
       return false;
     }
   }
+  printf("error\n");
+
   if (pc != *(ref_r->pc)) {
+    printf("error\n");
     return false;
   }
+  printf("error\n");
   return true;
 }
 void isa_reg_display()
