@@ -110,3 +110,12 @@ void difftest_step(vaddr_t pc, vaddr_t npc)
 
   checkregs(&ref_r, pc);
 }
+
+void refresh_gpr_pc()
+{
+  int i;
+  for (i = 0; i < 32; i++) {
+    cpu_state.gpr[i] = cpu_gpr[i];
+  }
+  cpu_state.pc = top->io_pc;
+}

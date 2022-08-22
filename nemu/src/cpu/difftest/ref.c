@@ -5,7 +5,7 @@
 
 struct diff_context_t {
   word_t gpr[32];
-  vaddr_t *pc;
+  vaddr_t pc;
 };
 
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
@@ -24,13 +24,13 @@ void difftest_regcpy(void *dut, bool direction)
     struct diff_context_t *ctx = (struct diff_context_t *)dut;
     for (int i = 0; i < 32; i++) {
       ctx->gpr[i] = cpu.gpr[i];
-      *(ctx->pc) = cpu.pc;
+      ctx->pc = cpu.pc;
     }
   } else if (direction == DIFFTEST_TO_REF) {
     struct diff_context_t *ctx = (struct diff_context_t *)dut;
     for (int i = 0; i < 32; i++) {
       cpu.gpr[i] = ctx->gpr[i];
-      cpu.pc = *(ctx->pc);
+      cpu.pc = ctx->pc;
     }
   }
 }
