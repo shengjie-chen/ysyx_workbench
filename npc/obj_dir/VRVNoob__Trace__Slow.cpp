@@ -370,9 +370,8 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                               >> 7U))),5);
         tracep->fullCData(oldp+162,((0x1fU & (vlSelf->io_inst 
                                               >> 0xfU))),5);
-        tracep->fullBit(oldp+163,(((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
-                                     | (0x17U == (0x7fU 
-                                                  & vlSelf->io_inst))) 
+        tracep->fullBit(oldp+163,((((0x17U == (0x7fU 
+                                               & vlSelf->io_inst)) 
                                     | (0x6fU == (0x7fU 
                                                  & vlSelf->io_inst))) 
                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))));
