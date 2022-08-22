@@ -69,7 +69,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
   if (pc != ref_r->pc) {
     printf("!!!!!!!");
     printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
-    printf("ref.pc is " FMT_WORD "\n", ref->pc);
+    printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
     printf("!!!!!!!");
     return false;
   }
