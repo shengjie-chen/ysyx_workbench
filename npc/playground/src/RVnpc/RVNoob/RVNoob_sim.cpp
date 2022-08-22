@@ -15,8 +15,6 @@ vluint64_t main_time = 0;
 const vluint64_t sim_time = 100;
 NPCState npc_state;
 NPC_riscv64_CPU_state cpu_state;
-cpu_state.gpr = cpu_gpr;
-cpu_state.pc = &(top->io_pc);
 
 void npc_ebreak()
 {
@@ -92,6 +90,10 @@ void one_clock()
 
 #endif
 
+#ifdef CONFIG_DIFFTEST
+
+#endif
+
   top->clock = 1;
   top->eval();
   tfp->dump(main_time);
@@ -131,15 +133,26 @@ int main(int argc, char **argv, char **env)
     main_time++;
   }
   top->reset = 0;
+
   // parse_args
   bool sdb_en = 0;
   bool elf_en = 0;
+  bool diff_en = 0;
   if (argc > 2) {
     sdb_en = ~strcmp(*(argv + 2), "sdb_y");
     if (argc > 3) {
       elf_en = ~strncmp(*(argv + 3), "elf=", 4);
+      if (argc > 4) {
+        diff_en = ~strncmp(*(argv + 4), "diff=", 5);
+      }
     }
   }
+
+#ifdef CONFIG_DIFFTEST
+  cpu_state.gpr = cpu_gpr;
+  cpu_state.pc = &(top->io_pc);
+
+#endif
 
 #ifdef CONFIG_FTRACE
   if (elf_en) {

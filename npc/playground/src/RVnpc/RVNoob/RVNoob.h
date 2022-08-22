@@ -25,8 +25,7 @@
 //#define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
 #define CONFIG_RT_CHECK 1
 
-#define RESET_VECTOR (CONFIG_MBASE + CONFIG_PC_RESET_OFFSET)
-#define CONFIG_PC_RESET_OFFSET 0x0
+
 //#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
 
 char *img_file = NULL;
@@ -105,13 +104,11 @@ typedef struct {
   // uint32_t halt_ret;
 } NPCState;
 
-#ifndef __NPC_CPU_STATE__
-#define __NPC_CPU_STATE__
 typedef struct {
   word_t *gpr;
   vaddr_t *pc;
 } NPC_riscv64_CPU_state;
-#endif
+
 
 
 enum { NPC_RUNNING,
