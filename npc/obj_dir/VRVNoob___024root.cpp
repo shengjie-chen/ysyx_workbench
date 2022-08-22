@@ -11,10 +11,10 @@
 
 void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a);
 
-VL_INLINE_OPT void VRVNoob___024root___combo__TOP__1(VRVNoob___024root* vlSelf) {
+VL_INLINE_OPT void VRVNoob___024root___combo__TOP__2(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__1\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___combo__TOP__2\n"); );
     // Variables
     QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_1;
     // Body
@@ -384,13 +384,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                     >> 7U)))
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_29);
-        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = ((0x1dU 
-                                                == 
-                                                (0x1fU 
-                                                 & (vlSelf->io_inst 
-                                                    >> 7U)))
-                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
-                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_28);
         vlSelf->RVNoob__DOT__rf__DOT__rf_27 = ((0x1bU 
                                                 == 
                                                 (0x1fU 
@@ -405,6 +398,20 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                     >> 7U)))
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_27);
+        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = ((0x1dU 
+                                                == 
+                                                (0x1fU 
+                                                 & (vlSelf->io_inst 
+                                                    >> 7U)))
+                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
+                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_28);
+        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = ((0x16U 
+                                                == 
+                                                (0x1fU 
+                                                 & (vlSelf->io_inst 
+                                                    >> 7U)))
+                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
+                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_21);
         vlSelf->RVNoob__DOT__rf__DOT__rf_14 = ((0xeU 
                                                 == 
                                                 (0x1fU 
@@ -461,13 +468,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                     >> 7U)))
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_20);
-        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = ((0x16U 
-                                                == 
-                                                (0x1fU 
-                                                 & (vlSelf->io_inst 
-                                                    >> 7U)))
-                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
-                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_21);
         vlSelf->RVNoob__DOT__rf__DOT__rf_23 = ((0x17U 
                                                 == 
                                                 (0x1fU 
@@ -496,12 +496,13 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                     >> 7U)))
                                                 ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                 : vlSelf->RVNoob__DOT__rf__DOT___GEN_25);
-        vlSelf->RVNoob__DOT__rf__DOT__rf_0 = ((0U == 
-                                               (0x1fU 
-                                                & (vlSelf->io_inst 
-                                                   >> 7U)))
-                                               ? vlSelf->RVNoob__DOT__exe_io_gp_out
-                                               : 0ULL);
+        vlSelf->RVNoob__DOT__rf__DOT__rf_13 = ((0xdU 
+                                                == 
+                                                (0x1fU 
+                                                 & (vlSelf->io_inst 
+                                                    >> 7U)))
+                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
+                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_12);
         vlSelf->RVNoob__DOT__rf__DOT__rf_12 = ((0xcU 
                                                 == 
                                                 (0x1fU 
@@ -534,6 +535,12 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                    >> 7U)))
                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_6);
+        vlSelf->RVNoob__DOT__rf__DOT__rf_6 = ((6U == 
+                                               (0x1fU 
+                                                & (vlSelf->io_inst 
+                                                   >> 7U)))
+                                               ? vlSelf->RVNoob__DOT__exe_io_gp_out
+                                               : vlSelf->RVNoob__DOT__rf__DOT___GEN_5);
         vlSelf->RVNoob__DOT__rf__DOT__rf_5 = ((5U == 
                                                (0x1fU 
                                                 & (vlSelf->io_inst 
@@ -564,25 +571,13 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
                                                    >> 7U)))
                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_0);
-        vlSelf->RVNoob__DOT__rf__DOT__rf_6 = ((6U == 
-                                               (0x1fU 
-                                                & (vlSelf->io_inst 
-                                                   >> 7U)))
-                                               ? vlSelf->RVNoob__DOT__exe_io_gp_out
-                                               : vlSelf->RVNoob__DOT__rf__DOT___GEN_5);
-        vlSelf->RVNoob__DOT__rf__DOT__rf_13 = ((0xdU 
-                                                == 
-                                                (0x1fU 
-                                                 & (vlSelf->io_inst 
-                                                    >> 7U)))
-                                                ? vlSelf->RVNoob__DOT__exe_io_gp_out
-                                                : vlSelf->RVNoob__DOT__rf__DOT___GEN_12);
     } else {
         vlSelf->RVNoob__DOT__rf__DOT__rf_31 = vlSelf->RVNoob__DOT__rf__DOT___GEN_30;
         vlSelf->RVNoob__DOT__rf__DOT__rf_30 = vlSelf->RVNoob__DOT__rf__DOT___GEN_29;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = vlSelf->RVNoob__DOT__rf__DOT___GEN_28;
         vlSelf->RVNoob__DOT__rf__DOT__rf_27 = vlSelf->RVNoob__DOT__rf__DOT___GEN_26;
         vlSelf->RVNoob__DOT__rf__DOT__rf_28 = vlSelf->RVNoob__DOT__rf__DOT___GEN_27;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_29 = vlSelf->RVNoob__DOT__rf__DOT___GEN_28;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = vlSelf->RVNoob__DOT__rf__DOT___GEN_21;
         vlSelf->RVNoob__DOT__rf__DOT__rf_14 = vlSelf->RVNoob__DOT__rf__DOT___GEN_13;
         vlSelf->RVNoob__DOT__rf__DOT__rf_15 = vlSelf->RVNoob__DOT__rf__DOT___GEN_14;
         vlSelf->RVNoob__DOT__rf__DOT__rf_16 = vlSelf->RVNoob__DOT__rf__DOT___GEN_15;
@@ -591,24 +586,22 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         vlSelf->RVNoob__DOT__rf__DOT__rf_19 = vlSelf->RVNoob__DOT__rf__DOT___GEN_18;
         vlSelf->RVNoob__DOT__rf__DOT__rf_20 = vlSelf->RVNoob__DOT__rf__DOT___GEN_19;
         vlSelf->RVNoob__DOT__rf__DOT__rf_21 = vlSelf->RVNoob__DOT__rf__DOT___GEN_20;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_22 = vlSelf->RVNoob__DOT__rf__DOT___GEN_21;
         vlSelf->RVNoob__DOT__rf__DOT__rf_23 = vlSelf->RVNoob__DOT__rf__DOT___GEN_22;
         vlSelf->RVNoob__DOT__rf__DOT__rf_24 = vlSelf->RVNoob__DOT__rf__DOT___GEN_23;
         vlSelf->RVNoob__DOT__rf__DOT__rf_25 = vlSelf->RVNoob__DOT__rf__DOT___GEN_24;
         vlSelf->RVNoob__DOT__rf__DOT__rf_26 = vlSelf->RVNoob__DOT__rf__DOT___GEN_25;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_0 = 0ULL;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_13 = vlSelf->RVNoob__DOT__rf__DOT___GEN_12;
         vlSelf->RVNoob__DOT__rf__DOT__rf_12 = vlSelf->RVNoob__DOT__rf__DOT___GEN_11;
         vlSelf->RVNoob__DOT__rf__DOT__rf_11 = vlSelf->RVNoob__DOT__rf__DOT___GEN_10;
         vlSelf->RVNoob__DOT__rf__DOT__rf_9 = vlSelf->RVNoob__DOT__rf__DOT___GEN_8;
         vlSelf->RVNoob__DOT__rf__DOT__rf_8 = vlSelf->RVNoob__DOT__rf__DOT___GEN_7;
         vlSelf->RVNoob__DOT__rf__DOT__rf_7 = vlSelf->RVNoob__DOT__rf__DOT___GEN_6;
+        vlSelf->RVNoob__DOT__rf__DOT__rf_6 = vlSelf->RVNoob__DOT__rf__DOT___GEN_5;
         vlSelf->RVNoob__DOT__rf__DOT__rf_5 = vlSelf->RVNoob__DOT__rf__DOT___GEN_4;
         vlSelf->RVNoob__DOT__rf__DOT__rf_4 = vlSelf->RVNoob__DOT__rf__DOT___GEN_3;
         vlSelf->RVNoob__DOT__rf__DOT__rf_3 = vlSelf->RVNoob__DOT__rf__DOT___GEN_2;
         vlSelf->RVNoob__DOT__rf__DOT__rf_2 = vlSelf->RVNoob__DOT__rf__DOT___GEN_1;
         vlSelf->RVNoob__DOT__rf__DOT__rf_1 = vlSelf->RVNoob__DOT__rf__DOT___GEN_0;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_6 = vlSelf->RVNoob__DOT__rf__DOT___GEN_5;
-        vlSelf->RVNoob__DOT__rf__DOT__rf_13 = vlSelf->RVNoob__DOT__rf__DOT___GEN_12;
     }
     vlSelf->io_ebreak = vlSelf->RVNoob__DOT__U_ebreak_ebreak;
     vlSelf->RVNoob__DOT__rf__DOT__rf_10 = ((IData)(vlSelf->RVNoob__DOT__idu_io_wen)
@@ -626,12 +619,14 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_31;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1eU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_30;
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1dU] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_29;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1bU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_27;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1cU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_28;
+    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1dU] 
+        = vlSelf->RVNoob__DOT__rf__DOT__rf_29;
+    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x16U] 
+        = vlSelf->RVNoob__DOT__rf__DOT__rf_22;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xeU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_14;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xfU] 
@@ -648,8 +643,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_20;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x15U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_21;
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x16U] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_22;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x17U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_23;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x18U] 
@@ -658,8 +651,8 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_25;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0x1aU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_26;
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0U] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_0;
+    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xdU] 
+        = vlSelf->RVNoob__DOT__rf__DOT__rf_13;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xcU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_12;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xbU] 
@@ -670,6 +663,8 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_8;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[7U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_7;
+    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[6U] 
+        = vlSelf->RVNoob__DOT__rf__DOT__rf_6;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[5U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_5;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[4U] 
@@ -680,10 +675,6 @@ VL_INLINE_OPT void VRVNoob___024root___sequent__TOP__3(VRVNoob___024root* vlSelf
         = vlSelf->RVNoob__DOT__rf__DOT__rf_2;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[1U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_1;
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[6U] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_6;
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xdU] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_13;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0xaU] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_10;
 }
@@ -703,9 +694,10 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
     if (vlSelf->reset) {
         vlSelf->RVNoob__DOT__rf__DOT___GEN_30 = 0x1fULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_29 = 0x1eULL;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_28 = 0x1dULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_26 = 0x1bULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_27 = 0x1cULL;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_28 = 0x1dULL;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_21 = 0x16ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_13 = 0xeULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_14 = 0xfULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_15 = 0x10ULL;
@@ -714,29 +706,29 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
         vlSelf->RVNoob__DOT__rf__DOT___GEN_18 = 0x13ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_19 = 0x14ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_20 = 0x15ULL;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_21 = 0x16ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_22 = 0x17ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_23 = 0x18ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_24 = 0x19ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_25 = 0x1aULL;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = 0xdULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_11 = 0xcULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_10 = 0xbULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_8 = 9ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_7 = 8ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_6 = 7ULL;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = 6ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_4 = 5ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_3 = 4ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_2 = 3ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_1 = 2ULL;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_0 = 1ULL;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = 6ULL;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = 0xdULL;
     } else {
         vlSelf->RVNoob__DOT__rf__DOT___GEN_30 = vlSelf->RVNoob__DOT__rf__DOT__rf_31;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_29 = vlSelf->RVNoob__DOT__rf__DOT__rf_30;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_28 = vlSelf->RVNoob__DOT__rf__DOT__rf_29;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_26 = vlSelf->RVNoob__DOT__rf__DOT__rf_27;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_27 = vlSelf->RVNoob__DOT__rf__DOT__rf_28;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_28 = vlSelf->RVNoob__DOT__rf__DOT__rf_29;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_21 = vlSelf->RVNoob__DOT__rf__DOT__rf_22;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_13 = vlSelf->RVNoob__DOT__rf__DOT__rf_14;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_14 = vlSelf->RVNoob__DOT__rf__DOT__rf_15;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_15 = vlSelf->RVNoob__DOT__rf__DOT__rf_16;
@@ -745,23 +737,22 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
         vlSelf->RVNoob__DOT__rf__DOT___GEN_18 = vlSelf->RVNoob__DOT__rf__DOT__rf_19;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_19 = vlSelf->RVNoob__DOT__rf__DOT__rf_20;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_20 = vlSelf->RVNoob__DOT__rf__DOT__rf_21;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_21 = vlSelf->RVNoob__DOT__rf__DOT__rf_22;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_22 = vlSelf->RVNoob__DOT__rf__DOT__rf_23;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_23 = vlSelf->RVNoob__DOT__rf__DOT__rf_24;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_24 = vlSelf->RVNoob__DOT__rf__DOT__rf_25;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_25 = vlSelf->RVNoob__DOT__rf__DOT__rf_26;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = vlSelf->RVNoob__DOT__rf__DOT__rf_13;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_11 = vlSelf->RVNoob__DOT__rf__DOT__rf_12;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_10 = vlSelf->RVNoob__DOT__rf__DOT__rf_11;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_8 = vlSelf->RVNoob__DOT__rf__DOT__rf_9;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_7 = vlSelf->RVNoob__DOT__rf__DOT__rf_8;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_6 = vlSelf->RVNoob__DOT__rf__DOT__rf_7;
+        vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = vlSelf->RVNoob__DOT__rf__DOT__rf_6;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_4 = vlSelf->RVNoob__DOT__rf__DOT__rf_5;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_3 = vlSelf->RVNoob__DOT__rf__DOT__rf_4;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_2 = vlSelf->RVNoob__DOT__rf__DOT__rf_3;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_1 = vlSelf->RVNoob__DOT__rf__DOT__rf_2;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_0 = vlSelf->RVNoob__DOT__rf__DOT__rf_1;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_5 = vlSelf->RVNoob__DOT__rf__DOT__rf_6;
-        vlSelf->RVNoob__DOT__rf__DOT___GEN_12 = vlSelf->RVNoob__DOT__rf__DOT__rf_13;
     }
     vlSelf->RVNoob__DOT__idu_io_wen = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
                                           | (0x17U 
@@ -858,7 +849,7 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                                             & (vlSelf->io_inst 
                                                                >> 0xfU)))
                                                            ? vlSelf->RVNoob__DOT__rf__DOT__rf_1
-                                                           : vlSelf->RVNoob__DOT__rf__DOT__rf_0)))))))))))));
+                                                           : 0ULL)))))))))))));
     vlSelf->RVNoob__DOT__rf__DOT___GEN_57 = ((0x1aU 
                                               == (0x1fU 
                                                   & (vlSelf->io_inst 
@@ -1043,7 +1034,7 @@ void VRVNoob___024root___eval(VRVNoob___024root* vlSelf) {
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___eval\n"); );
     // Body
-    VRVNoob___024root___combo__TOP__1(vlSelf);
+    VRVNoob___024root___combo__TOP__2(vlSelf);
     vlSelf->__Vm_traceActivity[1U] = 1U;
     if (((IData)(vlSelf->clock) & (~ (IData)(vlSelf->__Vclklast__TOP__clock)))) {
         VRVNoob___024root___sequent__TOP__3(vlSelf);

@@ -30,14 +30,15 @@ VRVNoob___024root::~VRVNoob___024root() {
 void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a);
 void VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(QData/*63:0*/ a);
 
-void VRVNoob___024root___settle__TOP__2(VRVNoob___024root* vlSelf) {
+void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___settle__TOP__2\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___settle__TOP__1\n"); );
     // Variables
     QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_1;
     QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_44;
     // Body
+    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0U] = 0ULL;
     VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(vlSelf->io_inst);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_addi = (IData)(
                                                       (0x13U 
@@ -165,8 +166,6 @@ void VRVNoob___024root___settle__TOP__2(VRVNoob___024root* vlSelf) {
         vlSelf->RVNoob__DOT__rf__DOT___GEN_29 = vlSelf->RVNoob__DOT__rf__DOT__rf_30;
         vlSelf->RVNoob__DOT__rf__DOT___GEN_30 = vlSelf->RVNoob__DOT__rf__DOT__rf_31;
     }
-    vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[0U] 
-        = vlSelf->RVNoob__DOT__rf__DOT__rf_0;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[1U] 
         = vlSelf->RVNoob__DOT__rf__DOT__rf_1;
     vlSelf->RVNoob__DOT__rf__DOT__rf_read__DOT__rf[2U] 
@@ -314,7 +313,7 @@ void VRVNoob___024root___settle__TOP__2(VRVNoob___024root* vlSelf) {
                                                             & (vlSelf->io_inst 
                                                                >> 0xfU)))
                                                            ? vlSelf->RVNoob__DOT__rf__DOT__rf_1
-                                                           : vlSelf->RVNoob__DOT__rf__DOT__rf_0)))))))))))));
+                                                           : 0ULL)))))))))))));
     vlSelf->RVNoob__DOT__idu_io_pc_mux = ((0x6fU == 
                                            (0x7fU & vlSelf->io_inst)) 
                                           | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
@@ -797,7 +796,7 @@ void VRVNoob___024root___eval_settle(VRVNoob___024root* vlSelf) {
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRVNoob___024root___eval_settle\n"); );
     // Body
-    VRVNoob___024root___settle__TOP__2(vlSelf);
+    VRVNoob___024root___settle__TOP__1(vlSelf);
     vlSelf->__Vm_traceActivity[2U] = 1U;
     vlSelf->__Vm_traceActivity[1U] = 1U;
     vlSelf->__Vm_traceActivity[0U] = 1U;
@@ -835,7 +834,6 @@ void VRVNoob___024root___ctor_var_reset(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__idu__DOT__immU_lo_lo = VL_RAND_RESET_I(8);
     vlSelf->RVNoob__DOT__idu__DOT__immJ_lo_lo_lo = VL_RAND_RESET_I(5);
     vlSelf->RVNoob__DOT__idu__DOT__immJ_hi_hi_1 = VL_RAND_RESET_Q(44);
-    vlSelf->RVNoob__DOT__rf__DOT__rf_0 = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__rf__DOT__rf_1 = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__rf__DOT__rf_2 = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__rf__DOT__rf_3 = VL_RAND_RESET_Q(64);

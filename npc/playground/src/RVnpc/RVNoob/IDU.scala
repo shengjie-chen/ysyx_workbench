@@ -77,7 +77,7 @@ class IDU extends Module {
   )
 
   // control
-  io.add_en := rvi_addi || rvi_auipc || rvi_jal || rvi_jalr
+  io.add_en :=  rvi_auipc || rvi_jal || rvi_jalr
   io.wen := rvi_addi || rvi_auipc || rvi_lui || rvi_jal || rvi_jalr
   io.ren1 := type_I || type_R || type_S || type_B
   io.ren2 := type_S || type_R || type_B

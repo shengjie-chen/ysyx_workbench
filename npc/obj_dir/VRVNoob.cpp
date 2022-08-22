@@ -64,7 +64,7 @@ static void _eval_initial_loop(VRVNoob__Syms* __restrict vlSymsp) {
             Verilated::debug(1);
             __Vchange = VRVNoob___024root___change_request(&(vlSymsp->TOP));
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/RVNoob.v", 733, "",
+            VL_FATAL_MT("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/RVNoob.v", 720, "",
                 "Verilated model didn't DC converge\n"
                 "- See https://verilator.org/warn/DIDNOTCONVERGE");
         } else {
@@ -95,7 +95,7 @@ void VRVNoob::eval_step() {
             Verilated::debug(1);
             __Vchange = VRVNoob___024root___change_request(&(vlSymsp->TOP));
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/RVNoob.v", 733, "",
+            VL_FATAL_MT("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/RVNoob.v", 720, "",
                 "Verilated model didn't converge\n"
                 "- See https://verilator.org/warn/DIDNOTCONVERGE");
         } else {

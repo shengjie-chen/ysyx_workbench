@@ -47,7 +47,6 @@ VL_MODULE(VRVNoob___024root) {
         QData/*63:0*/ RVNoob__DOT__pc;
         QData/*63:0*/ RVNoob__DOT__snpc;
         QData/*43:0*/ RVNoob__DOT__idu__DOT__immJ_hi_hi_1;
-        QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_0;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_1;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_2;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_3;
@@ -96,9 +95,9 @@ VL_MODULE(VRVNoob___024root) {
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_14;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_15;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_16;
+        QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_17;
     };
     struct {
-        QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_17;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_18;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_19;
         QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_20;
