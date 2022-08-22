@@ -1,9 +1,12 @@
 #include "RVNoob.h"
+#include "VRVNoob.h"
 #include "common.h"
 #include "dlfcn.h"
 
 extern CPU_state cpu_state;
 extern NPCState npc_state;
+extern uint64_t *cpu_gpr;
+extern VRVNoob *top;
 
 char *diff_file = NULL;
 
@@ -120,4 +123,3 @@ void difftest_step(vaddr_t pc, vaddr_t npc)
   refresh_gpr_pc();
   checkregs(&ref_r, pc);
 }
-
