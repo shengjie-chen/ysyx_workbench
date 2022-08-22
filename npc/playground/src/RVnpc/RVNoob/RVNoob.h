@@ -105,7 +105,7 @@ typedef struct {
 } NPCState;
 
 typedef struct {
-  word_t *gpr;
+  word_t gpr[32];
   vaddr_t *pc;
 } NPC_riscv64_CPU_state;
 
