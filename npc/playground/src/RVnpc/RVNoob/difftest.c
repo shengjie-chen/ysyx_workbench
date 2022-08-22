@@ -23,10 +23,10 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
   handle = dlopen(ref_so_file, RTLD_LAZY);
   assert(handle);
 
-  ref_difftest_memcpy = (void (*)(paddr_t, void*, size_t, bool))dlsym(handle, "difftest_memcpy");
+  ref_difftest_memcpy = (void (*)(paddr_t, void *, size_t, bool))dlsym(handle, "difftest_memcpy");
   assert(ref_difftest_memcpy);
 
-  ref_difftest_regcpy = (void (*)(void*, bool))dlsym(handle, "difftest_regcpy");
+  ref_difftest_regcpy = (void (*)(void *, bool))dlsym(handle, "difftest_regcpy");
   assert(ref_difftest_regcpy);
 
   ref_difftest_exec = (void (*)(uint64_t))dlsym(handle, "difftest_exec");
@@ -46,7 +46,7 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
 {
   for (int i = 0; i < 32; i++) {
-    if (cpu_state.gpr[i] != *(ref_r->gpr+i)) {
+    if (*(cpu_state.gpr + i) != *(ref_r->gpr + i)) {
       return false;
     }
   }
