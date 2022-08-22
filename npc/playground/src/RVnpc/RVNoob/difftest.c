@@ -59,18 +59,18 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
 {
   for (int i = 0; i < 32; i++) {
     if (cpu_state.gpr[i] != ref_r->gpr[i]) {
-      printf("!!!!!!!");
+      printf("!!!!!!!\n");
       printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
       printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
-      printf("!!!!!!!");
+      printf("!!!!!!!\n");
       return false;
     }
   }
   if (pc != ref_r->pc) {
-    printf("!!!!!!!");
+    printf("!!!!!!!\n");
     printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
     printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
-    printf("!!!!!!!");
+    printf("!!!!!!!\n");
     return false;
   }
   return true;
