@@ -96,7 +96,7 @@ void one_clock()
   main_time++;
 
 #ifdef CONFIG_DIFFTEST
-  difftest_step(cpu_state.pc, cpu_npc);
+  difftest_step(top->io_pc, cpu_npc);
 #endif
 }
 
