@@ -102,7 +102,7 @@ sim_npc_vcd_without_regen_gdb:
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
 	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  -LDFLAGS -g -CFLAGS -g
-	gdb $(BIN_VCD) -args $(IMG) $(ARGS)
+	gdb $(BIN_VCD) --args $(IMG) $(ARGS)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 #$(abspath $(OBJ_DIR)/disasm.o)
 test:
