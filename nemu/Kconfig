@@ -143,6 +143,10 @@ config FTRACE
   bool "Enable ftrace"
   default n 
 
+config IRINGBUF
+  bool "Enable iringbuf"
+  default n 
+
 menu "Testing and Debugging"
 
 
