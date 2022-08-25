@@ -3,51 +3,121 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 
-class IDU extends Module {
+
+class IDU extends Module with ALU_op with function{
   val io = IO(new Bundle {
     val inst = Input(UInt(32.W))
-    val imm  = Output(UInt(64.W))
+    val imm = Output(UInt(64.W))
     // gpr
-    val wen  = Output(Bool())
-    val rd   = Output(UInt(5.W))
+    val wen = Output(Bool())
+    val rd = Output(UInt(5.W))
     val ren1 = Output(Bool())
     val ren2 = Output(Bool())
-    val rs1  = Output(UInt(5.W))
-    val rs2  = Output(UInt(5.W))
+    val rs1 = Output(UInt(5.W))
+    val rs2 = Output(UInt(5.W))
     // control
-    val add_en       = Output(Bool())
     val alu_src1_mux = Output(Bool())
     val alu_src2_mux = Output(Bool())
     val exe_out_mux  = Output(Bool())
     val dnpc_mux     = Output(Bool())
     val pc_mux       = Output(Bool())
     val dnpc_0b0     = Output(Bool())
+    val dir_out_mux  = Output(Bool())
+    val alu_op       = Output(UInt(4.W))
+
   })
   val dpi_inst = Module(new DpiInst)
   dpi_inst.io.inst <> io.inst
 
   val opcode = Wire(UInt(7.W))
-  val fun3   = Wire(UInt(3.W))
+  val fun3 = Wire(UInt(3.W))
+  val fun7 = Wire(UInt(7.W))
   opcode := io.inst(6, 0)
-  fun3   := io.inst(14, 12)
+  fun3 := io.inst(14, 12)
+  fun7 := io.inst(31, 25)
 
-  io.rd  := io.inst(11, 7)
+  io.rd := io.inst(11, 7)
   io.rs1 := io.inst(19, 15)
   io.rs2 := io.inst(24, 20)
 
   // inst
-  val rvi_addi  = opcode === "b0010011".U && fun3 === "b000".U
-  val rvi_auipc = opcode === "b0010111".U
+  // rv32i
   val rvi_lui   = opcode === "b0110111".U
+  val rvi_auipc = opcode === "b0010111".U
   val rvi_jal   = opcode === "b1101111".U
   val rvi_jalr  = opcode === "b1100111".U && fun3 === "b000".U
+  val rvi_beq   = opcode === "b1100011".U && fun3 === "b000".U // !!!
+  //  val rvi_bne   = opcode === "b1100011".U && fun3 === "b001".U
+  //  val rvi_blt   = opcode === "b1100011".U && fun3 === "b100".U
+  //  val rvi_bge   = opcode === "b1100011".U && fun3 === "b101".U
+  //  val rvi_bltu  = opcode === "b1100011".U && fun3 === "b110".U
+  //  val rvi_bgeu  = opcode === "b1100011".U && fun3 === "b111".U
+  //  val rvi_lb    = opcode === "b0000011".U && fun3 === "b000".U
+  //  val rvi_lh    = opcode === "b0000011".U && fun3 === "b001".U
+  //  val rvi_lw    = opcode === "b0000011".U && fun3 === "b010".U
+  //  val rvi_lbu   = opcode === "b0000011".U && fun3 === "b100".U
+  //  val rvi_lhu   = opcode === "b0000011".U && fun3 === "b101".U
+  //  val rvi_sb    = opcode === "b0100011".U && fun3 === "b000".U
+  //  val rvi_sh    = opcode === "b0100011".U && fun3 === "b001".U
+  //  val rvi_sw    = opcode === "b0100011".U && fun3 === "b010".U
+  val rvi_addi = opcode === "b0010011".U && fun3 === "b000".U
+  //  val rvi_slti  = opcode === "b0010011".U && fun3 === "b010".U
+  //  val rvi_sltiu = opcode === "b0010011".U && fun3 === "b011".U
+  //  val rvi_xori  = opcode === "b0010011".U && fun3 === "b100".U
+  //  val rvi_ori   = opcode === "b0010011".U && fun3 === "b110".U
+  //  val rvi_andi  = opcode === "b0010011".U && fun3 === "b111".U
+  val rvi_add = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0000000".U
+  val rvi_sub = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0100000".U
+  val rvi_sll = opcode === "0110011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_slt = opcode === "0110011".U && fun3 === "b010".U && fun7 === "b0000000".U
+  val rvi_sltu = opcode === "0110011".U && fun3 === "b011".U && fun7 === "b0000000".U
+  val rvi_xor = opcode === "0110011".U && fun3 === "b100".U && fun7 === "b0000000".U
+  val rvi_srl = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sra = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  val rvi_or = opcode === "0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
+  val rvi_and = opcode === "0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
+  // rv64i
+  //  val rvi_lwu   = opcode === "b0000011".U && fun3 === "b110".U
+  //  val rvi_ld    = opcode === "b0000011".U && fun3 === "b011".U
+  //  val rvi_sd    = opcode === "b0100011".U && fun3 === "b011".U
+  val rvi_slli = opcode === "0010011".U && fun3 === "b001".U && fun7(6, 1) === "b000000".U
+  val rvi_srli = opcode === "0010011".U && fun3 === "b101".U && fun7(6, 1) === "b000000".U
+  val rvi_srai = opcode === "0010011".U && fun3 === "b101".U && fun7(6, 1) === "b010000".U
+  val rvi_addiw = opcode === "0011011".U && fun3 === "b000".U
+  val rvi_slliw = opcode === "0011011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_srliw = opcode === "0011011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sraiw = opcode === "0011011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  val rvi_addw = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0000000".U
+  val rvi_subw = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0100000".U
+  val rvi_sllw = opcode === "0111011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_srlw = opcode === "0111011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sraw = opcode === "0111011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  // rv32M
+  val rvm_mul     = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0000001".U
+  val rvm_mulh    = opcode === "0110011".U && fun3 === "b001".U && fun7 === "b0000001".U
+  val rvm_mulhsu  = opcode === "0110011".U && fun3 === "b010".U && fun7 === "b0000001".U
+  val rvm_mulhu   = opcode === "0110011".U && fun3 === "b011".U && fun7 === "b0000001".U
+  val rvm_div     = opcode === "0110011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_divu    = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0000001".U
+  val rvm_rem     = opcode === "0110011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_remu    = opcode === "0110011".U && fun3 === "b111".U && fun7 === "b0000001".U
+  // rv64M
+  val rvm_mulw    = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0000001".U
+  val rvm_divw    = opcode === "0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_divuw   = opcode === "0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_remw    = opcode === "0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_remuw   = opcode === "0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
 
-  val type_I = rvi_addi || rvi_jalr // TYPE_I addi
+
+  // inst type
+  val type_I =
+    rvi_addi || rvi_jalr || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw // TYPE_I addi
   val type_U = rvi_auipc || rvi_lui // TYPE_U auipc
   val type_S = 0.B // TYPE_S
   val type_J = rvi_jal // TYPE_J
-  val type_R = 0.B // TYPE_R
-  val type_B = 0.B // TYPE_B
+  val type_R =
+    rvi_add || rvi_sub || rvi_sll || rvi_slt || rvi_sltu || rvi_xor || rvi_srl || rvi_sra || rvi_or || rvi_and // TYPE_R
+  val type_B = rvi_beq // TYPE_B
 
   // imm
   val immI = Wire(UInt(64.W))
@@ -56,10 +126,6 @@ class IDU extends Module {
   val immJ = Wire(UInt(64.W))
   val immB = Wire(UInt(64.W))
 
-  // 区部分指令inst_p,将最高位符号位扩展，扩展的位数根据低比特有效值有多少位valid_bit决定
-  // 返回扩展出来的部分
-  def sext(inst_p: UInt, valid_bit: Int, left_shift: Int = 0): UInt =
-    VecInit(Seq.fill(64 - valid_bit - left_shift)(inst_p(inst_p.getWidth - 1))).asUInt()
 
   immI := Cat(sext(io.inst(31, 20), 12), io.inst(31, 20))
   immU := Cat(sext(io.inst(31, 12), 20, 12), io.inst(31, 12), 0.U(12.W))
@@ -77,16 +143,45 @@ class IDU extends Module {
   )
 
   // control
-  io.add_en       := rvi_addi || rvi_auipc || rvi_jal || rvi_jalr
-  io.wen          := rvi_addi || rvi_auipc || rvi_lui || rvi_jal || rvi_jalr
-  io.ren1         := type_I || type_R || type_S || type_B
-  io.ren2         := type_S || type_R || type_B
+  // ALU的功能控制
+  io.alu_op := MuxCase(
+    op_other,
+    Array(
+      (rvi_addi || rvi_auipc || rvi_jal || rvi_jalr || rvi_add || rvi_addiw || rvi_addw) -> op_add,
+      (rvi_sub || rvi_subw) -> op_sub,
+      (rvi_slt) -> op_slt,
+      (rvi_sll || rvi_slli || rvi_slliw || rvi_sllw) -> op_sll,
+      (rvi_srl || rvi_srli || rvi_srliw || rvi_srlw) -> op_srl,
+      (rvi_sra || rvi_srai || rvi_sraiw || rvi_sraw) -> op_sra,
+      (rvi_xor) -> op_xor,
+      (rvi_or) -> op_or,
+      (rvi_and) -> op_and
+    )
+  )
+  // exe输出和写rf的端口 是ALU的输出则为0
+  io.exe_out_mux := rvi_jal || rvi_jalr
+  // exe写rf端口不是ALU输出时，是src2则为1,snpc则为0
+  io.dir_out_mux := rvi_lui
+
+  // npc为dnpc则为1 snpc则为0                  ！ 为1时才考虑后面
+  io.pc_mux := rvi_jal || rvi_jalr // 出现pc=的指令
+  // dnpc的值为加法器的（处理后）输出则为1         ！ 为1时才考虑后面
+  io.dnpc_mux := rvi_jalr || rvi_jal
+  // dnpc的值是加法之后需要&-1处理的则为1
+  io.dnpc_0b0 := rvi_jalr
+
+  // 是否写寄存器文件
+  io.wen := type_R || type_I || type_J || type_U
+  io.ren1 := type_I || type_R || type_S || type_B
+  io.ren2 := type_S || type_R || type_B
   io.alu_src1_mux := type_I || type_R || type_S || type_B
   io.alu_src2_mux := type_S || type_R || type_B
-  io.exe_out_mux  := rvi_jal || rvi_jalr
-  io.dnpc_mux     := rvi_jalr || rvi_auipc || rvi_jal
-  io.dnpc_0b0     := rvi_jalr
-  io.pc_mux       := rvi_jal || rvi_jalr // 出现pc=的指令
+
+
+  // control check
+  assert(!(io.dnpc_0b0 && !io.dnpc_mux), "dnpc_0b0->dnpc_mux dependence error!\n")
+  assert(!(io.dnpc_mux && !io.pc_mux), "dnpc_mux->pc_mux dependence error!\n")
+
 }
 
 class DpiInst extends BlackBox with HasBlackBoxInline {
@@ -109,3 +204,5 @@ class DpiInst extends BlackBox with HasBlackBoxInline {
   )
 
 }
+
+

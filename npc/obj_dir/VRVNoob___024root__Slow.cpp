@@ -682,10 +682,11 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
                                                                        & (vlSelf->io_inst 
                                                                           >> 0x14U)))))))
                                            : 0ULL));
-    vlSelf->RVNoob__DOT__exe__DOT__alu_out = ((((0x17U 
-                                                 == 
-                                                 (0x7fU 
-                                                  & vlSelf->io_inst)) 
+    vlSelf->RVNoob__DOT__exe__DOT__alu_out = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+                                                 | (0x17U 
+                                                    == 
+                                                    (0x7fU 
+                                                     & vlSelf->io_inst))) 
                                                 | (0x6fU 
                                                    == 
                                                    (0x7fU 

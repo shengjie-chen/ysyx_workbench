@@ -939,10 +939,11 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                                                  >> 0xfU)))
                                                              ? vlSelf->RVNoob__DOT__rf__DOT__rf_14
                                                              : RVNoob__DOT__rf__DOT___GEN_44)))))))))))));
-    vlSelf->RVNoob__DOT__exe__DOT__alu_out = ((((0x17U 
-                                                 == 
-                                                 (0x7fU 
-                                                  & vlSelf->io_inst)) 
+    vlSelf->RVNoob__DOT__exe__DOT__alu_out = (((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+                                                 | (0x17U 
+                                                    == 
+                                                    (0x7fU 
+                                                     & vlSelf->io_inst))) 
                                                 | (0x6fU 
                                                    == 
                                                    (0x7fU 

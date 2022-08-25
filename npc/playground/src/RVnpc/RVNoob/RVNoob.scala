@@ -38,12 +38,12 @@ class RVNoob extends Module {
   exe.io.imm <> idu.io.imm
   exe.io.pc <> pc
   exe.io.snpc <> snpc
-  exe.io.add_en <> idu.io.add_en
   exe.io.alu_src1_mux <> idu.io.alu_src1_mux
   exe.io.alu_src2_mux <> idu.io.alu_src2_mux
   exe.io.exe_out_mux <> idu.io.exe_out_mux
   exe.io.dnpc_mux <> idu.io.dnpc_mux
   exe.io.dnpc_0b0 <> idu.io.dnpc_0b0
+  exe.io.alu_op <> idu.io.alu_op
 
   io.res <> exe.io.gp_out
 

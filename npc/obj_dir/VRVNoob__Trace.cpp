@@ -120,8 +120,9 @@ void VRVNoob___024root__traceChgSub0(VRVNoob___024root* vlSelf, VerilatedVcd* tr
                                              >> 7U))),5);
         tracep->chgCData(oldp+161,((0x1fU & (vlSelf->io_inst 
                                              >> 0xfU))),5);
-        tracep->chgBit(oldp+162,((((0x17U == (0x7fU 
-                                              & vlSelf->io_inst)) 
+        tracep->chgBit(oldp+162,(((((IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_addi) 
+                                    | (0x17U == (0x7fU 
+                                                 & vlSelf->io_inst))) 
                                    | (0x6fU == (0x7fU 
                                                 & vlSelf->io_inst))) 
                                   | (IData)(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr))));
