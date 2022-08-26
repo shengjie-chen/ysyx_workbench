@@ -98,19 +98,19 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
         and -> (alu_src1 & alu_src2),
         mul -> (alu_src1 * alu_src2),
         div -> (alu_src1 / alu_src2),
-        rem -> (alu_src1 % alu_src2),
-        mulh -> ((alu_src1 * alu_src2)(127, 64)),
-        mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)),
-        mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64)),
-        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
-        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
-        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
-        rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
-        remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()),
-        remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
-        srlw -> (alu_src1(31, 0) >> alu_src2),
-        sraw -> (alu_src1(31, 0).asSInt() >> alu_src2).asUInt(),
-        sllw -> (alu_src1 << alu_src2)
+//        rem -> (alu_src1 % alu_src2),
+//        mulh -> ((alu_src1 * alu_src2)(127, 64)),
+//        mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)),
+//        mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64)),
+//        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
+//        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
+//        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
+//        rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
+//        remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()),
+//        remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
+//        srlw -> (alu_src1(31, 0) >> alu_src2),
+//        sraw -> (alu_src1(31, 0).asSInt() >> alu_src2).asUInt(),
+//        sllw -> (alu_src1 << alu_src2)
       )
     )
 
