@@ -35,13 +35,13 @@ class EXE extends Module {
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 }
 
-class ALU extends Module with ALU_op with function {
+class ALU extends Module with ALU_op with function with RVNoobConfig {
   val io = IO(new Bundle {
-    val src1   = Input(UInt(64.W))
-    val src2   = Input(UInt(64.W))
+    val src1   = Input(UInt(xlen.W))
+    val src2   = Input(UInt(xlen.W))
     val ctrl   = Input(new ALUCtrlIO)
-    val result = Output(UInt(64.W))
-    val B_en = Output(Bool())
+    val result = Output(UInt(xlen.W))
+    val B_en   = Output(Bool())
   })
   val add = io.ctrl.alu_op === op_add
   val sub = io.ctrl.alu_op === op_sub
@@ -115,7 +115,7 @@ class ALU extends Module with ALU_op with function {
     )
 
   val judge = Module(new Judge)
-  judge.io.alu_res <> Mux((add && sub),add_res,alu_res)
+  judge.io.alu_res <> Mux((add && sub), add_res, alu_res)
   judge.io.judge_op <> io.ctrl.judge_op
   judge.io.B_en <> io.B_en
 
@@ -126,7 +126,7 @@ class ALU extends Module with ALU_op with function {
 class Judge extends Module with RVNoobConfig with Judge_op with function {
   val io = IO(new Bundle {
     val alu_res  = Input(UInt(65.W))
-    val judge_op = Input(UInt(judge_op_width.W))
+    val judge_op = Input(UInt(jdg_op_w.W))
     val new_res  = Output(UInt(64.W))
     val B_en     = Output(Bool())
   })
@@ -153,8 +153,8 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
 
 class ALUCtrlIO extends Bundle with RVNoobConfig {
   val judge_mux = Bool()
-  val judge_op  = UInt(judge_op_width.W)
-  val alu_op    = UInt(alu_op_width.W)
+  val judge_op  = UInt(jdg_op_w.W)
+  val alu_op    = UInt(alu_op_w.W)
 }
 
 class EXECtrlIO extends ALUCtrlIO with RVNoobConfig {
@@ -167,5 +167,8 @@ class EXECtrlIO extends ALUCtrlIO with RVNoobConfig {
 
 object EXEGen extends App {
   (new chisel3.stage.ChiselStage)
-    .execute(args, Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new EXE())))
+    .execute(
+      Array("--target-dir", "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob"),
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new EXE()))
+    )
 }

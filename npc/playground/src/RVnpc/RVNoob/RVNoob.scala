@@ -1,7 +1,7 @@
 package RVnpc.RVNoob
 
 import chisel3._
-import chisel3.util.HasBlackBoxInline
+import chisel3.util._
 class RVNoob extends Module {
   val io = IO(new Bundle {
     val pc     = Output(UInt(64.W))
@@ -10,18 +10,22 @@ class RVNoob extends Module {
     val ebreak = Output(Bool())
 //    override val prefix
   })
-  val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
-  val snpc = Wire(UInt(64.W))
+  val pc          = RegInit(0x80000000L.U(64.W)) //2147483648
+  val snpc        = Wire(UInt(64.W))
+  val dnpc        = Wire(UInt(64.W))
+  val npc_add_res = Wire(UInt(64.W))
 
   val idu = Module(new IDU)
   val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
 
-  snpc  := pc + 4.U
-  pc    := Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
-  io.pc := pc
+  npc_add_res := idu.io.imm + Mux(idu.io.dnpc_jalr, rf.rdata1, pc)
+  snpc        := pc + 4.U
+  dnpc        := Mux(idu.io.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
+  pc          := Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
+  io.pc       := pc
   val dpi_npc = Module(new DpiNpc)
-  dpi_npc.io.npc <> Mux(idu.io.pc_mux, exe.io.dnpc, snpc)
+  dpi_npc.io.npc <> Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
 
   idu.io.inst := io.inst
 
@@ -38,12 +42,7 @@ class RVNoob extends Module {
   exe.io.imm <> idu.io.imm
   exe.io.pc <> pc
   exe.io.snpc <> snpc
-  exe.io.alu_src1_mux <> idu.io.alu_src1_mux
-  exe.io.alu_src2_mux <> idu.io.alu_src2_mux
-  exe.io.exe_out_mux <> idu.io.exe_out_mux
-  exe.io.dnpc_mux <> idu.io.dnpc_mux
-  exe.io.dnpc_0b0 <> idu.io.dnpc_0b0
-  exe.io.alu_op <> idu.io.alu_op
+  exe.io.ctrl <> idu.io.exe_ctrl
 
   io.res <> exe.io.gp_out
 
@@ -63,7 +62,8 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val npc = Input(UInt(64.W))
   })
-  setInline("DpiNpc.v",
+  setInline(
+    "DpiNpc.v",
     """
       |import "DPI-C" function void npc_change(input logic [63:0] a);
       |module DpiNpc(input [63:0] npc);
@@ -71,6 +71,7 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
       | always @* npc_change(npc);
       |
       |endmodule
-            """.stripMargin)
+            """.stripMargin
+  )
 
 }

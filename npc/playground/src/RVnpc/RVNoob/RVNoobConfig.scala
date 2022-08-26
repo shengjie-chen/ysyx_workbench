@@ -3,8 +3,10 @@ package RVnpc.RVNoob
 import chisel3._
 
 trait RVNoobConfig {
-  val alu_op_width = 5 //alu_op_width
-  val judge_op_width = 3 //judge_op_width
+  val alu_op_w = 5 //alu_op_width
+  val jdg_op_w = 3 //judge_op_width
+  val xlen = 64
+  val inst_w = 32
 
 }
 
