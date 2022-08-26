@@ -77,14 +77,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
 
   // 这里巨大优化空间，但等到后面再说
   alu_src1 := io.src1
-  alu_src2 := MuxCase(
-    io.src2,
-    Array(
-      sub -> ((~io.src2).asUInt() + 1.U),
-      (sll || srl || sra) -> io.src2(5, 0),
-      (sllw || srlw || sraw) -> io.src2(4, 0)
-    )
-  )
+  alu_src2 := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
   add_res := alu_src1 +& alu_src2
 
   val alu_res = Wire(UInt(64.W))
@@ -93,9 +86,9 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
       0.U,
       Array(
         (add && sub) -> add_res(63, 0),
-        sll -> (alu_src1 << alu_src2),
-        srl -> (alu_src1 >> alu_src2),
-        sra -> (alu_src1.asSInt() >> alu_src2).asUInt(),
+        sll -> (alu_src1 << alu_src2(5, 0)),
+        srl -> (alu_src1 >> alu_src2(5, 0)),
+        sra -> (alu_src1.asSInt() >> alu_src2(5, 0)).asUInt(),
         xor -> (alu_src1 ^ alu_src2),
         or -> (alu_src1 | alu_src2),
         and -> (alu_src1 & alu_src2),
@@ -111,9 +104,9 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
         rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
         remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
         remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
-        srlw -> (alu_src1(31, 0) >> alu_src2),
-        sraw -> (alu_src1(31, 0).asSInt() >> alu_src2).asUInt(),
-        sllw -> (alu_src1 << alu_src2)
+        srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
+        sraw -> (alu_src1(31, 0).asSInt() >> alu_src2(4, 0)).asUInt(),
+        sllw -> (alu_src1 << alu_src2(4, 0))
       )
     )
 
