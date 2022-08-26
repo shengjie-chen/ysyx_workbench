@@ -61,47 +61,47 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val rvi_xori = opcode === "b0010011".U && fun3 === "b100".U
   val rvi_ori = opcode === "b0010011".U && fun3 === "b110".U
   val rvi_andi = opcode === "b0010011".U && fun3 === "b111".U
-  val rvi_add = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0000000".U
-  val rvi_sub = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0100000".U
-  val rvi_sll = opcode === "0110011".U && fun3 === "b001".U && fun7 === "b0000000".U
-  val rvi_slt = opcode === "0110011".U && fun3 === "b010".U && fun7 === "b0000000".U
-  val rvi_sltu = opcode === "0110011".U && fun3 === "b011".U && fun7 === "b0000000".U
-  val rvi_xor = opcode === "0110011".U && fun3 === "b100".U && fun7 === "b0000000".U
-  val rvi_srl = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0000000".U
-  val rvi_sra = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
-  val rvi_or = opcode === "0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
-  val rvi_and = opcode === "0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
+  val rvi_add = opcode === "b0110011".U && fun3 === "b000".U && fun7 === "b0000000".U
+  val rvi_sub = opcode === "b0110011".U && fun3 === "b000".U && fun7 === "b0100000".U
+  val rvi_sll = opcode === "b0110011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_slt = opcode === "b0110011".U && fun3 === "b010".U && fun7 === "b0000000".U
+  val rvi_sltu = opcode === "b0110011".U && fun3 === "b011".U && fun7 === "b0000000".U
+  val rvi_xor = opcode === "b0110011".U && fun3 === "b100".U && fun7 === "b0000000".U
+  val rvi_srl = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sra = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  val rvi_or = opcode === "b0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
+  val rvi_and = opcode === "b0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
   // rv64i
   //  val rvi_lwu   = opcode === "b0000011".U && fun3 === "b110".U
   //  val rvi_ld    = opcode === "b0000011".U && fun3 === "b011".U
   //  val rvi_sd    = opcode === "b0100011".U && fun3 === "b011".U
-  val rvi_slli = opcode === "0010011".U && fun3 === "b001".U && fun7(6, 1) === "b000000".U
-  val rvi_srli = opcode === "0010011".U && fun3 === "b101".U && fun7(6, 1) === "b000000".U
-  val rvi_srai = opcode === "0010011".U && fun3 === "b101".U && fun7(6, 1) === "b010000".U
-  val rvi_addiw = opcode === "0011011".U && fun3 === "b000".U
-  val rvi_slliw = opcode === "0011011".U && fun3 === "b001".U && fun7 === "b0000000".U
-  val rvi_srliw = opcode === "0011011".U && fun3 === "b101".U && fun7 === "b0000000".U
-  val rvi_sraiw = opcode === "0011011".U && fun3 === "b101".U && fun7 === "b0100000".U
-  val rvi_addw = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0000000".U
-  val rvi_subw = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0100000".U
-  val rvi_sllw = opcode === "0111011".U && fun3 === "b001".U && fun7 === "b0000000".U
-  val rvi_srlw = opcode === "0111011".U && fun3 === "b101".U && fun7 === "b0000000".U
-  val rvi_sraw = opcode === "0111011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  val rvi_slli = opcode === "b0010011".U && fun3 === "b001".U && fun7(6, 1) === "b000000".U
+  val rvi_srli = opcode === "b0010011".U && fun3 === "b101".U && fun7(6, 1) === "b000000".U
+  val rvi_srai = opcode === "b0010011".U && fun3 === "b101".U && fun7(6, 1) === "b010000".U
+  val rvi_addiw = opcode === "b0011011".U && fun3 === "b000".U
+  val rvi_slliw = opcode === "b0011011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_srliw = opcode === "b0011011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sraiw = opcode === "b0011011".U && fun3 === "b101".U && fun7 === "b0100000".U
+  val rvi_addw = opcode === "b0111011".U && fun3 === "b000".U && fun7 === "b0000000".U
+  val rvi_subw = opcode === "b0111011".U && fun3 === "b000".U && fun7 === "b0100000".U
+  val rvi_sllw = opcode === "b0111011".U && fun3 === "b001".U && fun7 === "b0000000".U
+  val rvi_srlw = opcode === "b0111011".U && fun3 === "b101".U && fun7 === "b0000000".U
+  val rvi_sraw = opcode === "b0111011".U && fun3 === "b101".U && fun7 === "b0100000".U
   // rv32M
-  val rvm_mul = opcode === "0110011".U && fun3 === "b000".U && fun7 === "b0000001".U
-  val rvm_mulh = opcode === "0110011".U && fun3 === "b001".U && fun7 === "b0000001".U
-  val rvm_mulhsu = opcode === "0110011".U && fun3 === "b010".U && fun7 === "b0000001".U
-  val rvm_mulhu = opcode === "0110011".U && fun3 === "b011".U && fun7 === "b0000001".U
-  val rvm_div = opcode === "0110011".U && fun3 === "b100".U && fun7 === "b0000001".U
-  val rvm_divu = opcode === "0110011".U && fun3 === "b101".U && fun7 === "b0000001".U
-  val rvm_rem = opcode === "0110011".U && fun3 === "b110".U && fun7 === "b0000001".U
-  val rvm_remu = opcode === "0110011".U && fun3 === "b111".U && fun7 === "b0000001".U
+  val rvm_mul    = opcode === "b0110011".U && fun3 === "b000".U && fun7 === "b0000001".U
+  val rvm_mulh   = opcode === "b0110011".U && fun3 === "b001".U && fun7 === "b0000001".U
+  val rvm_mulhsu = opcode === "b0110011".U && fun3 === "b010".U && fun7 === "b0000001".U
+  val rvm_mulhu  = opcode === "b0110011".U && fun3 === "b011".U && fun7 === "b0000001".U
+  val rvm_div    = opcode === "b0110011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_divu   = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0000001".U
+  val rvm_rem    = opcode === "b0110011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_remu   = opcode === "b0110011".U && fun3 === "b111".U && fun7 === "b0000001".U
   // rv64M
-  val rvm_mulw = opcode === "0111011".U && fun3 === "b000".U && fun7 === "b0000001".U
-  val rvm_divw = opcode === "0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
-  val rvm_divuw = opcode === "0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
-  val rvm_remw = opcode === "0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
-  val rvm_remuw = opcode === "0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_mulw =  opcode === "b0111011".U && fun3 === "b000".U && fun7 === "b0000001".U
+  val rvm_divw =  opcode === "b0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_divuw = opcode === "b0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_remw =  opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_remuw = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
 
   // inst type
   val type_I =
