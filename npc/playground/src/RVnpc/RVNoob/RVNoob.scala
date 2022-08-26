@@ -20,7 +20,7 @@ class RVNoob extends Module {
   val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
 
-  npc_add_src1 := Mux(idu.io.dnpc_jalr, rf.rdata1, pc)
+  npc_add_src1 := Mux(idu.io.dnpc_jalr, rf.io.rdata1, pc)
   npc_add_res := npc_add_src1 + idu.io.imm
   snpc        := pc + 4.U
   dnpc        := Mux(idu.io.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
