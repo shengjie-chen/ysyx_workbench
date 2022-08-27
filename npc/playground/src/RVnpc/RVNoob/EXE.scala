@@ -93,7 +93,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
     MuxCase(
       0.U,
       Array(
-        (add && sub) -> add_res(63, 0),
+        (add || sub) -> add_res(63, 0),
         sll -> (alu_src1 << alu_src2(5, 0)),
         srl -> (alu_src1 >> alu_src2(5, 0)),
         sra -> (alu_src1.asSInt() >> alu_src2(5, 0)).asUInt(),

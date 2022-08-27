@@ -40,25 +40,59 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     CData/*0:0*/ RVNoob__DOT__idu__DOT___rvi_add_T_2;
     CData/*0:0*/ RVNoob__DOT__idu__DOT___rvi_srl_T_2;
     CData/*0:0*/ RVNoob__DOT__idu__DOT___rvi_addw_T_2;
-    VlWide<3>/*95:0*/ __Vtemp2;
-    VlWide<3>/*95:0*/ __Vtemp3;
-    VlWide<3>/*95:0*/ __Vtemp4;
-    VlWide<6>/*191:0*/ __Vtemp7;
-    VlWide<6>/*191:0*/ __Vtemp8;
-    VlWide<4>/*127:0*/ __Vtemp10;
-    VlWide<4>/*127:0*/ __Vtemp12;
-    VlWide<4>/*127:0*/ __Vtemp13;
-    VlWide<4>/*127:0*/ __Vtemp14;
-    VlWide<4>/*127:0*/ __Vtemp15;
-    VlWide<4>/*127:0*/ __Vtemp16;
-    VlWide<4>/*127:0*/ __Vtemp17;
-    VlWide<4>/*127:0*/ __Vtemp18;
-    VlWide<4>/*127:0*/ __Vtemp19;
-    VlWide<4>/*127:0*/ __Vtemp20;
-    VlWide<4>/*127:0*/ __Vtemp21;
-    VlWide<4>/*127:0*/ __Vtemp22;
-    VlWide<4>/*127:0*/ __Vtemp23;
-    VlWide<4>/*127:0*/ __Vtemp24;
+    VlWide<4>/*127:0*/ RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13;
+    VlWide<3>/*94:0*/ RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71;
+    VlWide<4>/*127:0*/ RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82;
+    VlWide<4>/*127:0*/ __Vtemp1;
+    VlWide<4>/*127:0*/ __Vtemp2;
+    VlWide<4>/*127:0*/ __Vtemp3;
+    VlWide<3>/*95:0*/ __Vtemp5;
+    VlWide<3>/*95:0*/ __Vtemp6;
+    VlWide<3>/*95:0*/ __Vtemp7;
+    VlWide<3>/*95:0*/ __Vtemp8;
+    VlWide<3>/*95:0*/ __Vtemp9;
+    VlWide<3>/*95:0*/ __Vtemp10;
+    VlWide<3>/*95:0*/ __Vtemp11;
+    VlWide<3>/*95:0*/ __Vtemp12;
+    VlWide<3>/*95:0*/ __Vtemp13;
+    VlWide<3>/*95:0*/ __Vtemp33;
+    VlWide<3>/*95:0*/ __Vtemp34;
+    VlWide<3>/*95:0*/ __Vtemp35;
+    VlWide<4>/*127:0*/ __Vtemp37;
+    VlWide<4>/*127:0*/ __Vtemp38;
+    VlWide<4>/*127:0*/ __Vtemp39;
+    VlWide<4>/*127:0*/ __Vtemp40;
+    VlWide<3>/*95:0*/ __Vtemp41;
+    VlWide<3>/*95:0*/ __Vtemp42;
+    VlWide<3>/*95:0*/ __Vtemp43;
+    VlWide<4>/*127:0*/ __Vtemp44;
+    VlWide<4>/*127:0*/ __Vtemp45;
+    VlWide<4>/*127:0*/ __Vtemp46;
+    VlWide<3>/*95:0*/ __Vtemp47;
+    VlWide<5>/*159:0*/ __Vtemp50;
+    VlWide<5>/*159:0*/ __Vtemp51;
+    VlWide<3>/*95:0*/ __Vtemp53;
+    VlWide<5>/*159:0*/ __Vtemp54;
+    VlWide<5>/*159:0*/ __Vtemp55;
+    VlWide<5>/*159:0*/ __Vtemp56;
+    VlWide<3>/*95:0*/ __Vtemp58;
+    VlWide<3>/*95:0*/ __Vtemp61;
+    VlWide<3>/*95:0*/ __Vtemp62;
+    VlWide<3>/*95:0*/ __Vtemp64;
+    VlWide<3>/*95:0*/ __Vtemp65;
+    VlWide<3>/*95:0*/ __Vtemp66;
+    VlWide<3>/*95:0*/ __Vtemp67;
+    VlWide<3>/*95:0*/ __Vtemp68;
+    VlWide<3>/*95:0*/ __Vtemp80;
+    VlWide<4>/*127:0*/ __Vtemp81;
+    VlWide<6>/*191:0*/ __Vtemp93;
+    VlWide<6>/*191:0*/ __Vtemp94;
+    VlWide<4>/*127:0*/ __Vtemp96;
+    VlWide<4>/*127:0*/ __Vtemp98;
+    VlWide<4>/*127:0*/ __Vtemp99;
+    VlWide<4>/*127:0*/ __Vtemp100;
+    VlWide<4>/*127:0*/ __Vtemp101;
+    VlWide<4>/*127:0*/ __Vtemp102;
     QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_5;
     QData/*63:0*/ RVNoob__DOT__idu__DOT___io_imm_T_7;
     QData/*63:0*/ RVNoob__DOT__rf__DOT___GEN_44;
@@ -1805,15 +1839,288 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
         = ((2U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
             ? (1ULL + (~ vlSelf->RVNoob__DOT__exe__DOT__alu_io_src2))
             : vlSelf->RVNoob__DOT__exe__DOT__alu_io_src2);
-    VL_EXTEND_WQ(65,64, __Vtemp2, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
-    VL_EXTEND_WQ(65,64, __Vtemp3, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
-    VL_ADD_W(3, __Vtemp4, __Vtemp2, __Vtemp3);
+    VL_EXTEND_WQ(128,64, __Vtemp1, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    VL_EXTEND_WQ(128,64, __Vtemp2, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+    VL_MUL_W(4, __Vtemp3, __Vtemp1, __Vtemp2);
+    RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[0U] 
+        = __Vtemp3[0U];
+    RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[1U] 
+        = __Vtemp3[1U];
+    RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[2U] 
+        = __Vtemp3[2U];
+    RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[3U] 
+        = __Vtemp3[3U];
+    VL_EXTEND_WQ(95,33, __Vtemp5, (0x1ffffffffULL & 
+                                   VL_DIVS_QQQ(33, 
+                                               (0x1ffffffffULL 
+                                                & VL_EXTENDS_QI(33,32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1))), 
+                                               (0x1ffffffffULL 
+                                                & VL_EXTENDS_QI(33,32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))))));
+    VL_EXTEND_WI(95,32, __Vtemp6, VL_DIV_III(32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)));
+    VL_EXTEND_WQ(95,64, __Vtemp7, VL_MODDIVS_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WI(95,32, __Vtemp8, VL_MODDIVS_III(32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)));
+    VL_EXTEND_WI(95,32, __Vtemp9, VL_MODDIV_III(32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)));
+    VL_EXTEND_WI(95,32, __Vtemp10, ((IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1) 
+                                    >> (0x1fU & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
+    VL_EXTEND_WI(95,32, __Vtemp11, VL_SHIFTRS_III(32,32,5, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), 
+                                                  (0x1fU 
+                                                   & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
+    VL_EXTEND_WQ(95,64, __Vtemp12, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    VL_SHIFTL_WWI(95,95,5, __Vtemp13, __Vtemp12, (0x1fU 
+                                                  & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)));
+    if ((0x10U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))) {
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[0U] 
+            = __Vtemp5[0U];
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[1U] 
+            = __Vtemp5[1U];
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[2U] 
+            = (0x7fffffffU & __Vtemp5[2U]);
+    } else {
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[0U] 
+            = ((0x11U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp6[0U] : ((0x12U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                   ? __Vtemp7[0U] : 
+                                  ((0x13U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp8[0U] : 
+                                   ((0x14U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp9[0U]
+                                     : ((0x15U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                         ? __Vtemp10[0U]
+                                         : ((0x16U 
+                                             == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                             ? __Vtemp11[0U]
+                                             : ((0x17U 
+                                                 == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                 ? 
+                                                __Vtemp13[0U]
+                                                 : 0U)))))));
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[1U] 
+            = ((0x11U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp6[1U] : ((0x12U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                   ? __Vtemp7[1U] : 
+                                  ((0x13U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp8[1U] : 
+                                   ((0x14U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp9[1U]
+                                     : ((0x15U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                         ? __Vtemp10[1U]
+                                         : ((0x16U 
+                                             == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                             ? __Vtemp11[1U]
+                                             : ((0x17U 
+                                                 == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                 ? 
+                                                __Vtemp13[1U]
+                                                 : 0U)))))));
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[2U] 
+            = (0x7fffffffU & ((0x11U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                               ? __Vtemp6[2U] : ((0x12U 
+                                                  == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                  ? 
+                                                 __Vtemp7[2U]
+                                                  : 
+                                                 ((0x13U 
+                                                   == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                   ? 
+                                                  __Vtemp8[2U]
+                                                   : 
+                                                  ((0x14U 
+                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                    ? 
+                                                   __Vtemp9[2U]
+                                                    : 
+                                                   ((0x15U 
+                                                     == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                     ? 
+                                                    __Vtemp10[2U]
+                                                     : 
+                                                    ((0x16U 
+                                                      == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                      ? 
+                                                     __Vtemp11[2U]
+                                                      : 
+                                                     ((0x17U 
+                                                       == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                       ? 
+                                                      __Vtemp13[2U]
+                                                       : 0U))))))));
+    }
+    VL_EXTEND_WQ(65,64, __Vtemp33, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    VL_EXTEND_WQ(65,64, __Vtemp34, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+    VL_ADD_W(3, __Vtemp35, __Vtemp33, __Vtemp34);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
-        = __Vtemp4[0U];
+        = __Vtemp35[0U];
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[1U] 
-        = __Vtemp4[1U];
+        = __Vtemp35[1U];
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[2U] 
-        = (1U & __Vtemp4[2U]);
+        = (1U & __Vtemp35[2U]);
+    VL_EXTEND_WQ(128,64, __Vtemp37, VL_SHIFTRS_QQI(64,64,6, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, 
+                                                   (0x3fU 
+                                                    & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
+    VL_EXTEND_WQ(128,64, __Vtemp38, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
+                                     ^ vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WQ(128,64, __Vtemp39, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
+                                     | vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WQ(128,64, __Vtemp40, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
+                                     & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WQ(95,64, __Vtemp41, VL_DIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WQ(95,64, __Vtemp42, VL_MODDIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+    VL_EXTEND_WQ(95,64, __Vtemp43, (((QData)((IData)(
+                                                     RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[3U])) 
+                                     << 0x20U) | (QData)((IData)(
+                                                                 RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[2U]))));
+    VL_EXTENDS_WQ(128,64, __Vtemp44, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    VL_EXTENDS_WQ(128,64, __Vtemp45, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+    VL_MULS_WWW(128,128,128, __Vtemp46, __Vtemp44, __Vtemp45);
+    VL_EXTEND_WQ(95,64, __Vtemp47, (((QData)((IData)(
+                                                     __Vtemp46[3U])) 
+                                     << 0x20U) | (QData)((IData)(
+                                                                 __Vtemp46[2U]))));
+    VL_EXTENDS_WQ(129,64, __Vtemp50, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    __Vtemp51[0U] = __Vtemp50[0U];
+    __Vtemp51[1U] = __Vtemp50[1U];
+    __Vtemp51[2U] = __Vtemp50[2U];
+    __Vtemp51[3U] = __Vtemp50[3U];
+    __Vtemp51[4U] = (1U & __Vtemp50[4U]);
+    VL_EXTEND_WQ(65,64, __Vtemp53, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+    VL_EXTENDS_WW(129,65, __Vtemp54, __Vtemp53);
+    __Vtemp55[0U] = __Vtemp54[0U];
+    __Vtemp55[1U] = __Vtemp54[1U];
+    __Vtemp55[2U] = __Vtemp54[2U];
+    __Vtemp55[3U] = __Vtemp54[3U];
+    __Vtemp55[4U] = (1U & __Vtemp54[4U]);
+    VL_MULS_WWW(129,129,129, __Vtemp56, __Vtemp51, __Vtemp55);
+    VL_EXTEND_WQ(95,64, __Vtemp58, (((QData)((IData)(
+                                                     __Vtemp56[3U])) 
+                                     << 0x20U) | (QData)((IData)(
+                                                                 __Vtemp56[2U]))));
+    VL_EXTENDS_WQ(65,64, __Vtemp61, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    __Vtemp62[0U] = __Vtemp61[0U];
+    __Vtemp62[1U] = __Vtemp61[1U];
+    __Vtemp62[2U] = (1U & __Vtemp61[2U]);
+    VL_EXTENDS_WQ(65,64, __Vtemp64, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+    __Vtemp65[0U] = __Vtemp64[0U];
+    __Vtemp65[1U] = __Vtemp64[1U];
+    __Vtemp65[2U] = (1U & __Vtemp64[2U]);
+    VL_DIVS_WWW(65, __Vtemp66, __Vtemp62, __Vtemp65);
+    __Vtemp67[0U] = __Vtemp66[0U];
+    __Vtemp67[1U] = __Vtemp66[1U];
+    __Vtemp67[2U] = (1U & __Vtemp66[2U]);
+    VL_EXTEND_WW(95,65, __Vtemp68, __Vtemp67);
+    if ((0xaU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))) {
+        __Vtemp80[0U] = __Vtemp41[0U];
+        __Vtemp80[1U] = __Vtemp41[1U];
+        __Vtemp80[2U] = __Vtemp41[2U];
+    } else {
+        __Vtemp80[0U] = ((0xbU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                          ? __Vtemp42[0U] : ((0xcU 
+                                              == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                              ? __Vtemp43[0U]
+                                              : ((0xdU 
+                                                  == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                  ? 
+                                                 __Vtemp47[0U]
+                                                  : 
+                                                 ((0xeU 
+                                                   == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                   ? 
+                                                  __Vtemp58[0U]
+                                                   : 
+                                                  ((0xfU 
+                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                    ? 
+                                                   __Vtemp68[0U]
+                                                    : 
+                                                   RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[0U])))));
+        __Vtemp80[1U] = ((0xbU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                          ? __Vtemp42[1U] : ((0xcU 
+                                              == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                              ? __Vtemp43[1U]
+                                              : ((0xdU 
+                                                  == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                  ? 
+                                                 __Vtemp47[1U]
+                                                  : 
+                                                 ((0xeU 
+                                                   == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                   ? 
+                                                  __Vtemp58[1U]
+                                                   : 
+                                                  ((0xfU 
+                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                    ? 
+                                                   __Vtemp68[1U]
+                                                    : 
+                                                   RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[1U])))));
+        __Vtemp80[2U] = ((0xbU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                          ? __Vtemp42[2U] : ((0xcU 
+                                              == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                              ? __Vtemp43[2U]
+                                              : ((0xdU 
+                                                  == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                  ? 
+                                                 __Vtemp47[2U]
+                                                  : 
+                                                 ((0xeU 
+                                                   == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                   ? 
+                                                  __Vtemp58[2U]
+                                                   : 
+                                                  ((0xfU 
+                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                    ? 
+                                                   __Vtemp68[2U]
+                                                    : 
+                                                   RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[2U])))));
+    }
+    VL_EXTEND_WW(128,95, __Vtemp81, __Vtemp80);
+    if ((5U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))) {
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[0U] 
+            = __Vtemp37[0U];
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[1U] 
+            = __Vtemp37[1U];
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[2U] 
+            = __Vtemp37[2U];
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[3U] 
+            = __Vtemp37[3U];
+    } else {
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[0U] 
+            = ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp38[0U] : ((7U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp39[0U]
+                                    : ((8U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                        ? __Vtemp40[0U]
+                                        : ((9U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                            ? RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[0U]
+                                            : __Vtemp81[0U]))));
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[1U] 
+            = ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp38[1U] : ((7U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp39[1U]
+                                    : ((8U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                        ? __Vtemp40[1U]
+                                        : ((9U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                            ? RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[1U]
+                                            : __Vtemp81[1U]))));
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[2U] 
+            = ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp38[2U] : ((7U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp39[2U]
+                                    : ((8U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                        ? __Vtemp40[2U]
+                                        : ((9U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                            ? RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[2U]
+                                            : __Vtemp81[2U]))));
+        RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[3U] 
+            = ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                ? __Vtemp38[3U] : ((7U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                    ? __Vtemp39[3U]
+                                    : ((8U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                        ? __Vtemp40[3U]
+                                        : ((9U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                            ? RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_13[3U]
+                                            : __Vtemp81[3U]))));
+    }
     if (vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem) {
         VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata);
         vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
@@ -1822,16 +2129,16 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
         vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t = 0ULL;
     }
     if (vlSelf->RVNoob__DOT__idu__DOT__type_S) {
-        VL_EXTEND_WQ(191,64, __Vtemp7, vlSelf->RVNoob__DOT__rf_io_rdata2);
-        VL_SHIFTL_WWI(191,191,7, __Vtemp8, __Vtemp7, 
+        VL_EXTEND_WQ(191,64, __Vtemp93, vlSelf->RVNoob__DOT__rf_io_rdata2);
+        VL_SHIFTL_WWI(191,191,7, __Vtemp94, __Vtemp93, 
                       (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                 << 3U)));
         VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_dpi_TOP(0ULL, 
                                                                                 (((QData)((IData)(
-                                                                                __Vtemp8[1U])) 
+                                                                                __Vtemp94[1U])) 
                                                                                 << 0x20U) 
                                                                                 | (QData)((IData)(
-                                                                                __Vtemp8[0U]))), 
+                                                                                __Vtemp94[0U]))), 
                                                                                 ((3U 
                                                                                 == (IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_zero_ex_op))
                                                                                  ? 0xffU
@@ -1864,140 +2171,51 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
                                                                                 & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))
                                                                                  : 0xffU)))))));
     }
-    VL_EXTEND_WQ(128,64, __Vtemp10, (((QData)((IData)(
+    VL_EXTEND_WQ(128,64, __Vtemp96, (((QData)((IData)(
                                                       vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[1U])) 
                                       << 0x20U) | (QData)((IData)(
                                                                   vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U]))));
-    VL_EXTEND_WQ(127,64, __Vtemp12, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
-    VL_SHIFTL_WWI(127,127,6, __Vtemp13, __Vtemp12, 
+    VL_EXTEND_WQ(127,64, __Vtemp98, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+    VL_SHIFTL_WWI(127,127,6, __Vtemp99, __Vtemp98, 
                   (0x3fU & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)));
-    __Vtemp14[0U] = __Vtemp13[0U];
-    __Vtemp14[1U] = __Vtemp13[1U];
-    __Vtemp14[2U] = __Vtemp13[2U];
-    __Vtemp14[3U] = (0x7fffffffU & __Vtemp13[3U]);
-    VL_EXTEND_WW(128,127, __Vtemp15, __Vtemp14);
-    VL_EXTEND_WQ(128,64, __Vtemp16, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
-                                     >> (0x3fU & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
-    VL_EXTEND_WQ(128,64, __Vtemp17, VL_SHIFTRS_QQI(64,64,6, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, 
-                                                   (0x3fU 
-                                                    & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
-    VL_EXTEND_WQ(128,64, __Vtemp18, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
-                                     ^ vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
-    VL_EXTEND_WQ(128,64, __Vtemp19, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
-                                     | vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
-    VL_EXTEND_WQ(128,64, __Vtemp20, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
-                                     & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
-    VL_EXTEND_WQ(128,64, __Vtemp21, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
-    VL_EXTEND_WQ(128,64, __Vtemp22, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
-    VL_MUL_W(4, __Vtemp23, __Vtemp21, __Vtemp22);
-    VL_EXTEND_WQ(128,64, __Vtemp24, ((0xaU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                      ? VL_DIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)
-                                      : ((0xbU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                          ? VL_MODDIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)
-                                          : 0ULL)));
+    __Vtemp100[0U] = __Vtemp99[0U];
+    __Vtemp100[1U] = __Vtemp99[1U];
+    __Vtemp100[2U] = __Vtemp99[2U];
+    __Vtemp100[3U] = (0x7fffffffU & __Vtemp99[3U]);
+    VL_EXTEND_WW(128,127, __Vtemp101, __Vtemp100);
+    VL_EXTEND_WQ(128,64, __Vtemp102, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
+                                      >> (0x3fU & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
     if (((1U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op)) 
          & (2U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op)))) {
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[0U] 
-            = __Vtemp10[0U];
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[1U] 
-            = __Vtemp10[1U];
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[2U] 
-            = __Vtemp10[2U];
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[3U] 
-            = __Vtemp10[3U];
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[0U] 
+            = __Vtemp96[0U];
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[1U] 
+            = __Vtemp96[1U];
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[2U] 
+            = __Vtemp96[2U];
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[3U] 
+            = __Vtemp96[3U];
     } else {
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[0U] 
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[0U] 
             = ((3U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                ? __Vtemp15[0U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                    ? __Vtemp16[0U]
-                                    : ((5U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                        ? __Vtemp17[0U]
-                                        : ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                            ? __Vtemp18[0U]
-                                            : ((7U 
-                                                == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                ? __Vtemp19[0U]
-                                                : (
-                                                   (8U 
-                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                    ? 
-                                                   __Vtemp20[0U]
-                                                    : 
-                                                   ((9U 
-                                                     == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                     ? 
-                                                    __Vtemp23[0U]
-                                                     : 
-                                                    __Vtemp24[0U])))))));
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[1U] 
+                ? __Vtemp101[0U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp102[0U]
+                                     : RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[0U]));
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[1U] 
             = ((3U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                ? __Vtemp15[1U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                    ? __Vtemp16[1U]
-                                    : ((5U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                        ? __Vtemp17[1U]
-                                        : ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                            ? __Vtemp18[1U]
-                                            : ((7U 
-                                                == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                ? __Vtemp19[1U]
-                                                : (
-                                                   (8U 
-                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                    ? 
-                                                   __Vtemp20[1U]
-                                                    : 
-                                                   ((9U 
-                                                     == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                     ? 
-                                                    __Vtemp23[1U]
-                                                     : 
-                                                    __Vtemp24[1U])))))));
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[2U] 
+                ? __Vtemp101[1U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp102[1U]
+                                     : RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[1U]));
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[2U] 
             = ((3U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                ? __Vtemp15[2U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                    ? __Vtemp16[2U]
-                                    : ((5U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                        ? __Vtemp17[2U]
-                                        : ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                            ? __Vtemp18[2U]
-                                            : ((7U 
-                                                == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                ? __Vtemp19[2U]
-                                                : (
-                                                   (8U 
-                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                    ? 
-                                                   __Vtemp20[2U]
-                                                    : 
-                                                   ((9U 
-                                                     == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                     ? 
-                                                    __Vtemp23[2U]
-                                                     : 
-                                                    __Vtemp24[2U])))))));
-        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[3U] 
+                ? __Vtemp101[2U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp102[2U]
+                                     : RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[2U]));
+        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[3U] 
             = ((3U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                ? __Vtemp15[3U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                    ? __Vtemp16[3U]
-                                    : ((5U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                        ? __Vtemp17[3U]
-                                        : ((6U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                            ? __Vtemp18[3U]
-                                            : ((7U 
-                                                == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                ? __Vtemp19[3U]
-                                                : (
-                                                   (8U 
-                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                    ? 
-                                                   __Vtemp20[3U]
-                                                    : 
-                                                   ((9U 
-                                                     == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                     ? 
-                                                    __Vtemp23[3U]
-                                                     : 
-                                                    __Vtemp24[3U])))))));
+                ? __Vtemp101[3U] : ((4U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                     ? __Vtemp102[3U]
+                                     : RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_82[3U]));
     }
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge_io_old_res 
         = ((IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem)
@@ -2006,9 +2224,9 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
                                                >> (0x38U 
                                                    & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                       << 3U)))
-                : 0ULL) : (((QData)((IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[1U])) 
+                : 0ULL) : (((QData)((IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[1U])) 
                             << 0x20U) | (QData)((IData)(
-                                                        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[0U]))));
+                                                        vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[0U]))));
     VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(
                                                               ((1U 
                                                                 & ((IData)(vlSelf->RVNoob__DOT__idu_io_pc_mux) 
@@ -2434,10 +2652,10 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
                                                                       & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[2U])))
                                                    : vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT___io_new_res_T_154)
                                                : (((QData)((IData)(
-                                                                   vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[1U])) 
+                                                                   vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[1U])) 
                                                    << 0x20U) 
                                                   | (QData)((IData)(
-                                                                    vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25[0U])))));
+                                                                    vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[0U])))));
     vlSelf->io_res = vlSelf->RVNoob__DOT__exe_io_gp_out;
 }
 
@@ -2647,7 +2865,7 @@ void VRVNoob___024root___ctor_var_reset(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge_io_old_res = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2 = VL_RAND_RESET_Q(64);
     VL_RAND_RESET_W(65, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res);
-    VL_RAND_RESET_W(128, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_25);
+    VL_RAND_RESET_W(128, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo = VL_RAND_RESET_I(8);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_lo_1 = VL_RAND_RESET_I(6);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_1 = VL_RAND_RESET_I(12);
