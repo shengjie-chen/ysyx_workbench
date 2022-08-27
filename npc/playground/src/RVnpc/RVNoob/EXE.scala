@@ -89,11 +89,11 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   add_res     := alu_src1 +& alu_src2
   io.mem_addr := add_res(63, 0)
 
-  // alu type
-  val alu_base = add || sub || sll || srl || sra || xor || or || and
-  val alu_m    = mul || div || rem
-  val alu_mh   = mulh || mulhs || mulhsu
-  val alu_div  = divs
+//  // alu type
+//  val alu_base = add || sub || sll || srl || sra || xor || or || and
+//  val alu_m    = mul || div || rem
+//  val alu_mh   = mulh || mulhs || mulhsu
+//  val alu_div  = divs
   val alu_res  = Wire(UInt(xlen.W))
 
   val alu_div_res = Wire(UInt(xlen.W))
