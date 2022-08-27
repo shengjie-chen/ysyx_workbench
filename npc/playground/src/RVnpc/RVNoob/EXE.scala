@@ -103,6 +103,24 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
     Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
   )
 
+  val alu_mul_res = Wire(UInt(xlen.W))
+  alu_mul_res := Mux(
+    mulhsu || mulhs,
+    Mux(
+      mulhsu,
+      ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
+      ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt()
+    ),
+    Mux(mulh, ((alu_src1 * alu_src2)(127, 64)), (alu_src1 * alu_src2))
+  )
+
+  val alu_rem_res = Wire(UInt(xlen.W))
+  alu_rem_res := Mux(
+    remw || remsw,
+    Mux(remw, (alu_src1(31, 0) % alu_src2(31, 0)), (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt()),
+    Mux(rems, (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(), (alu_src1 % alu_src2))
+  )
+
   alu_res := MuxCase(
     0.U,
     Array(
@@ -113,22 +131,24 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
       xor -> (alu_src1 ^ alu_src2),
       or -> (alu_src1 | alu_src2),
       and -> (alu_src1 & alu_src2),
-      mul -> (alu_src1 * alu_src2),
-//        div -> (alu_src1 / alu_src2),
-      rem -> (alu_src1 % alu_src2),
-      mulh -> ((alu_src1 * alu_src2)(127, 64)),
-      mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
-      mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
-//        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
-//        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
-//        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
+      (mul || mulh || mulhs || mulhsu) -> alu_mul_res,
       (div || divs || divw || divsw) -> alu_div_res,
-      rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
-      remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
-      remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
+      (rem || rems || remw || remsw) -> alu_rem_res,
       srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
       sraw -> (alu_src1(31, 0).asSInt() >> alu_src2(4, 0)).asUInt(),
       sllw -> (alu_src1 << alu_src2(4, 0))
+      //      mul -> (alu_src1 * alu_src2),
+//        div -> (alu_src1 / alu_src2),
+//      rem -> (alu_src1 % alu_src2),
+//      mulh -> ((alu_src1 * alu_src2)(127, 64)),
+//      mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
+//      mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
+//        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
+//        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
+//        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
+//      rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
+//      remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
+//      remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
     )
   )
 

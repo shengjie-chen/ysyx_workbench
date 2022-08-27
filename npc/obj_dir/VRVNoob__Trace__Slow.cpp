@@ -490,14 +490,14 @@ void VRVNoob___024root__traceFullTop0(void* voidSelf, VerilatedVcd* tracep) {
 void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* tracep) {
     if (false && vlSelf) {}  // Prevent unused
     VRVNoob__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VlWide<6>/*191:0*/ __Vtemp212;
-    VlWide<6>/*191:0*/ __Vtemp213;
+    VlWide<6>/*191:0*/ __Vtemp210;
+    VlWide<6>/*191:0*/ __Vtemp211;
+    VlWide<3>/*95:0*/ __Vtemp214;
     VlWide<3>/*95:0*/ __Vtemp216;
-    VlWide<3>/*95:0*/ __Vtemp218;
+    VlWide<3>/*95:0*/ __Vtemp217;
     VlWide<3>/*95:0*/ __Vtemp219;
+    VlWide<3>/*95:0*/ __Vtemp220;
     VlWide<3>/*95:0*/ __Vtemp221;
-    VlWide<3>/*95:0*/ __Vtemp222;
-    VlWide<3>/*95:0*/ __Vtemp223;
     VlWide<3>/*95:0*/ __Vtemp224;
     vluint32_t* const oldp = tracep->oldp(vlSymsp->__Vm_baseCode);
     if (false && oldp) {}  // Prevent unused
@@ -591,14 +591,14 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                              & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))
                                                          : 0xffU))))))),8);
         tracep->fullQData(oldp+33,(vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t),64);
-        VL_EXTEND_WQ(191,64, __Vtemp212, vlSelf->RVNoob__DOT__rf_io_rdata2);
-        VL_SHIFTL_WWI(191,191,7, __Vtemp213, __Vtemp212, 
+        VL_EXTEND_WQ(191,64, __Vtemp210, vlSelf->RVNoob__DOT__rf_io_rdata2);
+        VL_SHIFTL_WWI(191,191,7, __Vtemp211, __Vtemp210, 
                       (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                 << 3U)));
         tracep->fullQData(oldp+35,((((QData)((IData)(
-                                                     __Vtemp213[1U])) 
+                                                     __Vtemp211[1U])) 
                                      << 0x20U) | (QData)((IData)(
-                                                                 __Vtemp213[0U])))),64);
+                                                                 __Vtemp211[0U])))),64);
         tracep->fullCData(oldp+37,((7U & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])),3);
         tracep->fullBit(oldp+38,(vlSelf->RVNoob__DOT__idu__DOT__rvi_beq));
         tracep->fullBit(oldp+39,(vlSelf->RVNoob__DOT__idu__DOT__rvi_bne));
@@ -717,54 +717,48 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
         tracep->fullBit(oldp+143,((0x17U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))));
         tracep->fullQData(oldp+144,(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2),64);
         tracep->fullWData(oldp+146,(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res),65);
-        VL_EXTEND_WQ(65,64, __Vtemp216, VL_DIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
-        VL_EXTENDS_WQ(65,64, __Vtemp218, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
-        __Vtemp219[0U] = __Vtemp218[0U];
-        __Vtemp219[1U] = __Vtemp218[1U];
-        __Vtemp219[2U] = (1U & __Vtemp218[2U]);
-        VL_EXTENDS_WQ(65,64, __Vtemp221, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
-        __Vtemp222[0U] = __Vtemp221[0U];
-        __Vtemp222[1U] = __Vtemp221[1U];
-        __Vtemp222[2U] = (1U & __Vtemp221[2U]);
-        VL_DIVS_WWW(65, __Vtemp223, __Vtemp219, __Vtemp222);
+        VL_EXTEND_WQ(65,64, __Vtemp214, VL_DIV_QQQ(64, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2));
+        VL_EXTENDS_WQ(65,64, __Vtemp216, vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1);
+        __Vtemp217[0U] = __Vtemp216[0U];
+        __Vtemp217[1U] = __Vtemp216[1U];
+        __Vtemp217[2U] = (1U & __Vtemp216[2U]);
+        VL_EXTENDS_WQ(65,64, __Vtemp219, vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2);
+        __Vtemp220[0U] = __Vtemp219[0U];
+        __Vtemp220[1U] = __Vtemp219[1U];
+        __Vtemp220[2U] = (1U & __Vtemp219[2U]);
+        VL_DIVS_WWW(65, __Vtemp221, __Vtemp217, __Vtemp220);
         VL_EXTEND_WQ(65,33, __Vtemp224, (0x1ffffffffULL 
-                                         & ((0x10U 
+                                         & ((0x11U 
                                              == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                             ? VL_DIVS_QQQ(33, 
+                                             ? (QData)((IData)(
+                                                               VL_DIV_III(32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))))
+                                             : VL_DIVS_QQQ(33, 
                                                            (0x1ffffffffULL 
                                                             & VL_EXTENDS_QI(33,32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1))), 
                                                            (0x1ffffffffULL 
-                                                            & VL_EXTENDS_QI(33,32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))))
-                                             : (QData)((IData)(
-                                                               ((0x11U 
-                                                                 == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
-                                                                 ? 
-                                                                VL_DIV_III(32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1), (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))
-                                                                 : 0U))))));
+                                                            & VL_EXTENDS_QI(33,32, (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2)))))));
         tracep->fullQData(oldp+149,((((QData)((IData)(
-                                                      ((0xaU 
-                                                        == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                      ((IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_div_res_T)
                                                         ? 
-                                                       __Vtemp216[1U]
-                                                        : 
-                                                       ((0xfU 
+                                                       ((0xaU 
                                                          == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
                                                          ? 
-                                                        __Vtemp223[1U]
+                                                        __Vtemp214[1U]
                                                          : 
-                                                        __Vtemp224[1U])))) 
+                                                        __Vtemp221[1U])
+                                                        : 
+                                                       __Vtemp224[1U]))) 
                                       << 0x20U) | (QData)((IData)(
-                                                                  ((0xaU 
-                                                                    == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
+                                                                  ((IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_div_res_T)
                                                                     ? 
-                                                                   __Vtemp216[0U]
-                                                                    : 
-                                                                   ((0xfU 
+                                                                   ((0xaU 
                                                                      == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))
                                                                      ? 
-                                                                    __Vtemp223[0U]
+                                                                    __Vtemp214[0U]
                                                                      : 
-                                                                    __Vtemp224[0U])))))),64);
+                                                                    __Vtemp221[0U])
+                                                                    : 
+                                                                   __Vtemp224[0U]))))),64);
         tracep->fullQData(oldp+151,((((QData)((IData)(
                                                       vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71[1U])) 
                                       << 0x20U) | (QData)((IData)(
