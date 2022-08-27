@@ -11,7 +11,7 @@ class IFM extends Module with RVNoobConfig {
     val pmem_ctrl = Input(new PmemCtrlIO)
   })
 
-  val daddr = io.data_addr & (~0x7.U).asUInt()
+  val daddr = io.data_addr & (~0x7.U(64.W)).asUInt()
   val shift = Wire(UInt(3.W))
   val rdata = Wire(UInt(xlen.W))
   val wdata = Wire(UInt(xlen.W))
