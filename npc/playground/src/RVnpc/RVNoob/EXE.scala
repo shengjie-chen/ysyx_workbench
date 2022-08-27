@@ -119,7 +119,8 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
     )
 
   val judge = Module(new Judge)
-  judge.io.alu_res <> Mux(io.ctrl.old_val_mux, io.mem_data, Mux((add && sub), add_res, alu_res))
+  judge.io.less <> add_res(64)
+  judge.io.old_res <> Mux(io.ctrl.old_val_mux, io.mem_data, alu_res )
   judge.io.judge_op <> io.ctrl.judge_op
   judge.io.B_en <> io.B_en
 
@@ -129,32 +130,33 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
 
 class Judge extends Module with RVNoobConfig with Judge_op with function {
   val io = IO(new Bundle {
-    val alu_res  = Input(UInt(65.W))
+    val less     = Input(Bool())
+    val old_res  = Input(UInt(64.W))
     val judge_op = Input(UInt(jdg_op_w.W))
     val new_res  = Output(UInt(64.W))
     val B_en     = Output(Bool())
   })
-  val zero = io.alu_res(63, 0) === 0.U
+  val zero = io.old_res === 0.U
   io.B_en := MuxCase(
     0.B,
     Array(
       (io.judge_op === jop_beq) -> zero,
       (io.judge_op === jop_bne) -> !zero,
-      (io.judge_op === jop_blt) -> io.alu_res(64),
-      (io.judge_op === jop_bge) -> (!io.alu_res(64) || zero)
+      (io.judge_op === jop_blt) -> io.less,
+      (io.judge_op === jop_bge) -> (!io.less || zero)
     )
   )
 
   io.new_res := MuxCase(
-    io.alu_res,
+    io.old_res,
     Array(
-      (io.judge_op === jop_slt) -> io.alu_res(64).asUInt(),
-      (io.judge_op === jop_sextw) -> sext_64(io.alu_res(31, 0)),
-      (io.judge_op === jop_sexthw) -> sext_64(io.alu_res(15, 0)),
-      (io.judge_op === jop_sextb) -> sext_64(io.alu_res(7, 0)),
-      (io.judge_op === jop_uextw) -> uext_64(io.alu_res(31, 0)),
-      (io.judge_op === jop_uexthw) -> uext_64(io.alu_res(15, 0)),
-      (io.judge_op === jop_uextb) -> uext_64(io.alu_res(7, 0))
+      (io.judge_op === jop_slt) -> io.less.asUInt(),
+      (io.judge_op === jop_sextw) -> sext_64(io.old_res(31, 0)),
+      (io.judge_op === jop_sexthw) -> sext_64(io.old_res(15, 0)),
+      (io.judge_op === jop_sextb) -> sext_64(io.old_res(7, 0)),
+      (io.judge_op === jop_uextw) -> uext_64(io.old_res(31, 0)),
+      (io.judge_op === jop_uexthw) -> uext_64(io.old_res(15, 0)),
+      (io.judge_op === jop_uextb) -> uext_64(io.old_res(7, 0))
     )
   )
 

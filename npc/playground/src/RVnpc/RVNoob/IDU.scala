@@ -140,7 +140,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   // control
   // ALU的功能控制
   io.exe_ctrl.alu_op := MuxCase(
-    DontCare,
+    op_x,
     Array(
       (rvi_auipc || rvi_addi || rvi_add || rvi_addiw || rvi_addw || rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld || type_S) -> op_add,
       (rvi_beq || rvi_bne || rvi_blt || rvi_bge || rvi_bltu || rvi_bgeu || rvi_slti || rvi_sltiu || rvi_sub || rvi_slt || rvi_sltu || rvi_subw) -> op_sub,
@@ -179,7 +179,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val jpg_uextb  = rvi_lbu
   io.exe_ctrl.judge_mux := jpg_slt || jpg_sextw || io.pmem_ctrl.r_pmem
   io.exe_ctrl.judge_op := MuxCase(
-    DontCare,
+    jop_x,
     Array(
       rvi_beq -> jop_beq,
       rvi_bne -> jop_bne,
