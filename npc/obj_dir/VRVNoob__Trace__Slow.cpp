@@ -421,7 +421,7 @@ void VRVNoob___024root__traceInitSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
         tracep->declBit(c+132,"RVNoob exe alu mulh", false,-1);
         tracep->declBit(c+133,"RVNoob exe alu mulhs", false,-1);
         tracep->declBit(c+134,"RVNoob exe alu mulhsu", false,-1);
-        tracep->declBit(c+135,"RVNoob exe alu alu_div", false,-1);
+        tracep->declBit(c+135,"RVNoob exe alu divs", false,-1);
         tracep->declBit(c+136,"RVNoob exe alu divsw", false,-1);
         tracep->declBit(c+137,"RVNoob exe alu divw", false,-1);
         tracep->declBit(c+138,"RVNoob exe alu rems", false,-1);
