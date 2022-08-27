@@ -146,7 +146,7 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
   )
 
   io.new_res := MuxCase(
-    0.U,
+    io.alu_res,
     Array(
       (io.judge_op === jop_slt) -> io.alu_res(64).asUInt(),
       (io.judge_op === jop_sextw) -> sext_64(io.alu_res(31, 0)),

@@ -177,7 +177,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val jpg_uextw  = rvi_lwu
   val jpg_uexthw = rvi_lhu
   val jpg_uextb  = rvi_lbu
-  io.exe_ctrl.judge_mux := jpg_slt || jpg_sextw
+  io.exe_ctrl.judge_mux := jpg_slt || jpg_sextw || io.pmem_ctrl.r_pmem
   io.exe_ctrl.judge_op := MuxCase(
     DontCare,
     Array(
@@ -194,7 +194,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
       jpg_uextb -> jop_uextb
     )
   )
-
+  io.exe_ctrl.old_val_mux := io.pmem_ctrl.r_pmem
   io.pmem_ctrl.r_pmem := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld
     io.pmem_ctrl.w_pmem := type_S
     io.pmem_ctrl.zero_ex_op := MuxCase(
