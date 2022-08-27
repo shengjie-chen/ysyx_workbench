@@ -216,7 +216,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   io.ren1                  := type_I || type_R || type_S || type_B
   io.ren2                  := type_S || type_R || type_B
   io.exe_ctrl.alu_src1_mux := type_U
-  io.exe_ctrl.alu_src2_mux := type_I || type_S
+  io.exe_ctrl.alu_src2_mux := type_I || type_S || type_U
 
   // control check
   //  assert(!(io.dnpc_0b0 && !io.dnpc_mux), "dnpc_0b0->dnpc_mux dependence error!\n")
