@@ -88,9 +88,25 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   alu_src2    := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
   add_res     := alu_src1 +& alu_src2
   io.mem_addr := add_res(63,0)
+
+  // alu type
+  val alu_base = add || sub || sll || srl || sra || xor || or || and
+  val alu_m = mul || div || rem
+  val alu_mh = mulh || mulhs || mulhsu
+  val alu_div = divs
   val alu_res = Wire(UInt(xlen.W))
-  alu_res :=
-    MuxCase(
+
+  val alu_div_res = Wire(UInt(xlen.W))
+  alu_div_res := MuxCase(
+    0.U,
+    Array(
+      div -> (alu_src1 / alu_src2),
+      divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
+      divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
+      divw -> (alu_src1(31, 0) / alu_src2(31, 0))
+    )
+  )
+  alu_res := MuxCase(
       0.U,
       Array(
         (add || sub) -> add_res(63, 0),
@@ -101,14 +117,15 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
         or -> (alu_src1 | alu_src2),
         and -> (alu_src1 & alu_src2),
         mul -> (alu_src1 * alu_src2),
-        div -> (alu_src1 / alu_src2),
+//        div -> (alu_src1 / alu_src2),
         rem -> (alu_src1 % alu_src2),
         mulh -> ((alu_src1 * alu_src2)(127, 64)),
         mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
         mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
-        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
-        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
-        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
+//        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
+//        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
+//        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
+        (div || divs || divw || divsw) -> alu_div_res,
         rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
         remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
         remw -> (alu_src1(31, 0) % alu_src2(31, 0)),

@@ -2186,7 +2186,7 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     VL_EXTEND_WQ(128,64, __Vtemp102, (vlSelf->RVNoob__DOT__exe__DOT__alu_io_src1 
                                       >> (0x3fU & (IData)(vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2))));
     if (((1U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op)) 
-         & (2U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op)))) {
+         | (2U == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op)))) {
         vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[0U] 
             = __Vtemp96[0U];
         vlSelf->RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85[1U] 
