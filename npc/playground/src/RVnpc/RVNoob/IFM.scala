@@ -12,7 +12,7 @@ class IFM extends Module with RVNoobConfig {
   })
 
   val daddr = io.data_addr & (~0x7.U).asUInt()
-  val shift = io.data_addr & 0x7.U
+  val shift = Wire(UInt(3.W))
   val rdata = Wire(UInt(xlen.W))
   val wdata = Wire(UInt(xlen.W))
   val wmask = Wire(UInt(8.W))
@@ -37,7 +37,7 @@ class IFM extends Module with RVNoobConfig {
   dpi_pmem.io.r_pmem <> io.pmem_ctrl.r_pmem
   dpi_pmem.io.w_pmem <> io.pmem_ctrl.w_pmem
 
-
+  shift :=  io.data_addr
   io.rdata := (rdata >> (shift * 8.U))
   wdata    := (io.wdata << (shift * 8.U))
   wmask := MuxCase(
