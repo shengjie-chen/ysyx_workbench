@@ -34,7 +34,7 @@ void VRVNoob___024root__traceChgSub0(VRVNoob___024root* vlSelf, VerilatedVcd* tr
             tracep->chgQData(oldp+4,(((0x3fU >= (0x38U 
                                                  & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                     << 3U)))
-                                       ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+                                       ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
                                           >> (0x38U 
                                               & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                  << 3U)))
@@ -116,7 +116,7 @@ void VRVNoob___024root__traceChgSub0(VRVNoob___024root* vlSelf, VerilatedVcd* tr
                                                                (7U 
                                                                 & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))
                                                             : 0xffU))))))),8);
-            tracep->chgQData(oldp+32,(vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata),64);
+            tracep->chgQData(oldp+32,(vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t),64);
             VL_EXTEND_WQ(191,64, __Vtemp86, vlSelf->RVNoob__DOT__rf_io_rdata2);
             VL_SHIFTL_WWI(191,191,7, __Vtemp87, __Vtemp86, 
                           (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 

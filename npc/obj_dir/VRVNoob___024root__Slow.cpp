@@ -1816,8 +1816,10 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
         = (1U & __Vtemp4[2U]);
     if (vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem) {
         VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata);
-        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
             = vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata;
+    } else {
+        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t = 0ULL;
     }
     if (vlSelf->RVNoob__DOT__idu__DOT__type_S) {
         VL_EXTEND_WQ(191,64, __Vtemp7, vlSelf->RVNoob__DOT__rf_io_rdata2);
@@ -2000,7 +2002,7 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge_io_old_res 
         = ((IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem)
             ? ((0x3fU >= (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
-                                   << 3U))) ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+                                   << 3U))) ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
                                                >> (0x38U 
                                                    & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                       << 3U)))
@@ -2500,7 +2502,7 @@ void VRVNoob___024root___ctor_var_reset(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__pc = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__npc_add_res = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__snpc = VL_RAND_RESET_Q(64);
-    vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata = VL_RAND_RESET_Q(64);
+    vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t = VL_RAND_RESET_Q(64);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr = VL_RAND_RESET_I(1);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_beq = VL_RAND_RESET_I(1);
     vlSelf->RVNoob__DOT__idu__DOT__rvi_bne = VL_RAND_RESET_I(1);

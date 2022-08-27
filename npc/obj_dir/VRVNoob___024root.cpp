@@ -2180,8 +2180,10 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
         = (1U & __Vtemp44[2U]);
     if (vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem) {
         VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata);
-        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
             = vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata;
+    } else {
+        vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t = 0ULL;
     }
     if (vlSelf->RVNoob__DOT__idu__DOT__type_S) {
         VL_EXTEND_WQ(191,64, __Vtemp47, vlSelf->RVNoob__DOT__rf_io_rdata2);
@@ -2364,7 +2366,7 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge_io_old_res 
         = ((IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem)
             ? ((0x3fU >= (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
-                                   << 3U))) ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+                                   << 3U))) ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
                                                >> (0x38U 
                                                    & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                       << 3U)))

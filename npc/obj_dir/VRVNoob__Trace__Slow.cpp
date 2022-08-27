@@ -126,6 +126,7 @@ void VRVNoob___024root__traceInitSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
         tracep->declQuad(c+35,"RVNoob ifm dpi_pmem wdata", false,-1, 63,0);
         tracep->declBit(c+8,"RVNoob ifm dpi_pmem r_pmem", false,-1);
         tracep->declBit(c+9,"RVNoob ifm dpi_pmem w_pmem", false,-1);
+        tracep->declQuad(c+33,"RVNoob ifm dpi_pmem rdata_t", false,-1, 63,0);
         tracep->declBus(c+289,"RVNoob idu io_inst", false,-1, 31,0);
         tracep->declQuad(c+10,"RVNoob idu io_imm", false,-1, 63,0);
         tracep->declBit(c+12,"RVNoob idu io_wen", false,-1);
@@ -490,7 +491,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
         tracep->fullQData(oldp+5,(((0x3fU >= (0x38U 
                                               & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                                  << 3U)))
-                                    ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata 
+                                    ? (vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
                                        >> (0x38U & 
                                            (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                             << 3U)))
@@ -569,7 +570,7 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                                             (7U 
                                                              & vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))
                                                          : 0xffU))))))),8);
-        tracep->fullQData(oldp+33,(vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem_rdata),64);
+        tracep->fullQData(oldp+33,(vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t),64);
         VL_EXTEND_WQ(191,64, __Vtemp82, vlSelf->RVNoob__DOT__rf_io_rdata2);
         VL_SHIFTL_WWI(191,191,7, __Vtemp83, __Vtemp82, 
                       (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 

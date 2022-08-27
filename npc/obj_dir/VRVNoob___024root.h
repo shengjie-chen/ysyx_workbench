@@ -125,7 +125,7 @@ VL_MODULE(VRVNoob___024root) {
         QData/*63:0*/ RVNoob__DOT__pc;
         QData/*63:0*/ RVNoob__DOT__npc_add_res;
         QData/*63:0*/ RVNoob__DOT__snpc;
-        QData/*63:0*/ RVNoob__DOT__ifm__DOT__dpi_pmem_rdata;
+        QData/*63:0*/ RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t;
         QData/*43:0*/ RVNoob__DOT__idu__DOT__immJ_hi_hi_1;
         QData/*50:0*/ RVNoob__DOT__idu__DOT__immB_hi_hi_hi_1;
         QData/*63:0*/ RVNoob__DOT__rf__DOT__rf_1;
