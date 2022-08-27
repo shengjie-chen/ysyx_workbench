@@ -100,7 +100,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   val alu_div_res = Wire(UInt(xlen.W))
   alu_div_res := Mux(
     div || divs,
-    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt())(63,0).asUInt()),
+    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
     Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
   )
 
