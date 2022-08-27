@@ -32,6 +32,9 @@ class VRVNoob__Syms final : public VerilatedSyms {
     VRVNoob___024root              TOP;
     VRVNoob___024unit              TOP____024unit;
 
+    // SCOPE NAMES
+    VerilatedScope __Vscope_RVNoob__ifm;
+
     // CONSTRUCTORS
     VRVNoob__Syms(VerilatedContext* contextp, const char* namep, VRVNoob* modelp);
     ~VRVNoob__Syms();

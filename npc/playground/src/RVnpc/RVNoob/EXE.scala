@@ -87,7 +87,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   alu_src1    := io.src1
   alu_src2    := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
   add_res     := alu_src1 +& alu_src2
-  io.mem_addr := add_res
+  io.mem_addr := add_res(63,0)
   val alu_res = Wire(UInt(64.W))
   alu_res :=
     MuxCase(

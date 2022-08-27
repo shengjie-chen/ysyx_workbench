@@ -27,6 +27,8 @@ VRVNoob__Syms::VRVNoob__Syms(VerilatedContext* contextp, const char* namep,VRVNo
     // Setup each module's pointer back to symbol table (for public functions)
     TOP.__Vconfigure(this, true);
     TOP____024unit.__Vconfigure(this, true);
+    // Setup scopes
+    __Vscope_RVNoob__ifm.configure(this, name(), "RVNoob.ifm", "ifm", -12, VerilatedScope::SCOPE_OTHER);
     // Setup export functions
     for (int __Vfinal=0; __Vfinal<2; __Vfinal++) {
     }
