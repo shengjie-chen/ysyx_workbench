@@ -74,7 +74,7 @@ sim_vcd: verilog
 
 IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 # sdb itrace mtrace ftrace
-SDB=sdb_y
+SDB=sdb_y  # 跳过sdb则改为sdb_n
 ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so
 DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
