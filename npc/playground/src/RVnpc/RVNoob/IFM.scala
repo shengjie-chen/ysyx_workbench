@@ -38,8 +38,8 @@ class IFM extends Module with RVNoobConfig {
   dpi_pmem.io.w_pmem <> io.pmem_ctrl.w_pmem
 
 
-  io.rdata := (rdata >> (shift * 8))
-  wdata    := (io.wdata << (shift * 8))
+  io.rdata := (rdata >> (shift * 8.U))
+  wdata    := (io.wdata << (shift * 8.U))
   wmask := MuxCase(
     "b11111111".U,
     Array(
