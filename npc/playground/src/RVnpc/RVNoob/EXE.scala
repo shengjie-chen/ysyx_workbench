@@ -106,7 +106,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
         mulh -> ((alu_src1 * alu_src2)(127, 64)),
         mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
         mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
-        divs -> (alu_src1.asSInt() / alu_src2.asSInt())(63,0).asUInt(),
+        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
         divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
         divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
         rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),

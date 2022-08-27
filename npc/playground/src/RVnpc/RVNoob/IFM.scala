@@ -79,9 +79,9 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
       |  input longint waddr, input longint wdata, input byte wmask);
       |//wire [63:0] rdata;
       |always @(*) begin
-      |if(r_pmem)
+      |if(r_pmem == 1)
       |  pmem_read(raddr, rdata);
-      |if(w_pmem)
+      |if(w_pmem == 1)
       |  pmem_write(waddr, wdata, wmask);
       |end
       |
