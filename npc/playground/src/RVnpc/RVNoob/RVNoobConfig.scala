@@ -1,16 +1,18 @@
 package RVnpc.RVNoob
 
 import chisel3._
+import chisel3.util._
 
 trait RVNoobConfig {
   val alu_op_w = 5 //alu_op_width
-  val jdg_op_w = 3 //judge_op_width
+  val jdg_op_w = 4 //judge_op_width
   val xlen = 64
   val inst_w = 32
 
 }
 
 trait ALU_op {
+  //  val sNone :: sOne1 :: sTwo1s :: Nil = Enum(3)
   val op_x = 0.U
   // + -
   val op_add = 1.U
@@ -47,6 +49,8 @@ trait ALU_op {
 }
 
 trait Judge_op {
+  //    val jop_x :: sOne1 :: sTwo1s :: Nil = Enum(3)
+
   val jop_x = 0.U
   // B
   val jop_beq = 1.U
@@ -55,8 +59,15 @@ trait Judge_op {
   val jop_bge = 4.U
   // set
   val jop_slt = 5.U
-  // sextw
+  // sext
   val jop_sextw = 6.U
+  val jop_sexthw = 7.U
+  val jop_sextb = 8.U
+  // uext
+  val jop_uextw = 9.U
+  val jop_uexthw = 10.U
+  val jop_uextb = 11.U
+
 }
 
 trait function {
@@ -65,4 +76,17 @@ trait function {
   //sext(io.inst(31, 20), 12) 代表inst信号的部分中31bit为符号位，返回52bit(64-12)的全0或全1
   def sext(inst_p: UInt, valid_bit: Int, left_shift: Int = 0): UInt =
     VecInit(Seq.fill(64 - valid_bit - left_shift)(inst_p(inst_p.getWidth - 1))).asUInt()
+
+  def sext_64(inst_p: UInt): UInt = {
+    Cat(sext(inst_p,inst_p.getWidth),inst_p)
+  }
+
+  def uext(inst_p: UInt, valid_bit: Int, left_shift: Int = 0): UInt =
+    VecInit(Seq.fill(64 - valid_bit - left_shift)(0.B)).asUInt()
+
+  def uext_64(inst_p: UInt): UInt = {
+    Cat(uext(inst_p,inst_p.getWidth),inst_p)
+  }
+
+
 }

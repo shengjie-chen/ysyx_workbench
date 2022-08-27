@@ -42,6 +42,23 @@ extern "C" void npc_change(const svLogicVecVal *r)
   cpu_npc = *(vaddr_t *)(r);
 }
 
+extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
+{
+  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
+  *rdata = pmem_read(raddr & ~0x7ull, 8);
+}
+extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
+{
+  // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
+  // `wmask`中每比特表示`wdata`中1个字节的掩码,
+  // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
+  for (int i = 0; i < 8; i++) {
+    if ((wmask >> i) & 1 == 1) {
+      pmem_write((raddr & ~0x7ull) + i, 1, data >> (8 * i))
+    }
+  }
+}
+
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern "C" void init_disasm(const char *triple);
 
