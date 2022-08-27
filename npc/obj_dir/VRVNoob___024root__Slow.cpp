@@ -2106,7 +2106,13 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
                                                 : RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_36[2U])))));
     }
     if (vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem) {
-        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata);
+        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi_TOP(
+                                                                                (0xfffffffffffffff8ULL 
+                                                                                & (((QData)((IData)(
+                                                                                vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[1U])) 
+                                                                                << 0x20U) 
+                                                                                | (QData)((IData)(
+                                                                                vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))), vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata);
         vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
             = vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata;
     } else {
@@ -2117,7 +2123,13 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
         VL_SHIFTL_WWI(191,191,7, __Vtemp81, __Vtemp80, 
                       (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                 << 3U)));
-        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_dpi_TOP(0ULL, 
+        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_dpi_TOP(
+                                                                                (0xfffffffffffffff8ULL 
+                                                                                & (((QData)((IData)(
+                                                                                vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[1U])) 
+                                                                                << 0x20U) 
+                                                                                | (QData)((IData)(
+                                                                                vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U])))), 
                                                                                 (((QData)((IData)(
                                                                                 __Vtemp81[1U])) 
                                                                                 << 0x20U) 

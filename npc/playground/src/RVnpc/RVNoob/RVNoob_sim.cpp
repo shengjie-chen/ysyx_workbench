@@ -52,7 +52,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
-  printf("waddr is %016x\n",waddr);
+  // printf("waddr is %016x\n",waddr);
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
      pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
