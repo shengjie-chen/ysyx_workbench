@@ -546,8 +546,9 @@ void VRVNoob___024root__traceFullSub0(VRVNoob___024root* vlSelf, VerilatedVcd* t
                                   | (IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem))));
         tracep->fullCData(oldp+16,(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_judge_op),4);
         tracep->fullCData(oldp+17,(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op),5);
-        tracep->fullBit(oldp+18,(((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
-                                  | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S))));
+        tracep->fullBit(oldp+18,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
+                                   | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S)) 
+                                  | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_U))));
         tracep->fullBit(oldp+19,(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
         tracep->fullBit(oldp+20,(vlSelf->RVNoob__DOT__idu_io_pc_mux));
         tracep->fullQData(oldp+21,(vlSelf->RVNoob__DOT__exe_io_gp_out),64);

@@ -74,8 +74,9 @@ void VRVNoob___024root__traceChgSub0(VRVNoob___024root* vlSelf, VerilatedVcd* tr
                                      | (IData)(vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem))));
             tracep->chgCData(oldp+15,(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_judge_op),4);
             tracep->chgCData(oldp+16,(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op),5);
-            tracep->chgBit(oldp+17,(((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
-                                     | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S))));
+            tracep->chgBit(oldp+17,((((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
+                                      | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S)) 
+                                     | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_U))));
             tracep->chgBit(oldp+18,(vlSelf->RVNoob__DOT__idu__DOT__rvi_jalr));
             tracep->chgBit(oldp+19,(vlSelf->RVNoob__DOT__idu_io_pc_mux));
             tracep->chgQData(oldp+20,(vlSelf->RVNoob__DOT__exe_io_gp_out),64);

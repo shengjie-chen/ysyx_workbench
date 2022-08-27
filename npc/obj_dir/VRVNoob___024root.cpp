@@ -2189,8 +2189,10 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
                                           ? vlSelf->RVNoob__DOT__rf_io_rdata1
                                           : vlSelf->RVNoob__DOT__pc) 
                                         + vlSelf->RVNoob__DOT__idu_io_imm);
-    vlSelf->RVNoob__DOT__exe__DOT__alu_io_src2 = (((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
-                                                   | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S))
+    vlSelf->RVNoob__DOT__exe__DOT__alu_io_src2 = ((
+                                                   ((IData)(vlSelf->RVNoob__DOT__idu__DOT__type_I) 
+                                                    | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_S)) 
+                                                   | (IData)(vlSelf->RVNoob__DOT__idu__DOT__type_U))
                                                    ? vlSelf->RVNoob__DOT__idu_io_imm
                                                    : vlSelf->RVNoob__DOT__rf_io_rdata2);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__alu_src2 

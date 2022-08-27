@@ -1,7 +1,8 @@
 package RVnpc.RVNoob
 
 import chisel3._
-import chisel3.util.{Cat, MuxCase}
+import chisel3.util.{Cat, HasBlackBoxInline, MuxCase}
+import firrtl.transforms.BlackBoxInlineAnno
 
 class EXE extends Module with RVNoobConfig {
   val io = IO(new Bundle {
@@ -99,9 +100,10 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   val alu_div_res = Wire(UInt(xlen.W))
   alu_div_res := Mux(
     div || divs,
-    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
+    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt())(63,0).asUInt()),
     Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
   )
+
 
   val alu_mul_res = Wire(UInt(xlen.W))
   alu_mul_res := Mux(
@@ -195,6 +197,36 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
   )
 
 }
+
+//class Div extends BlackBox with HasBlackBoxInline with RVNoobConfig {
+//  val io = IO(new Bundle{
+//    val div = Input(Bool())
+//    val divs = Input(Bool())
+//    val divv = Input(Bool())
+//    val divvw = Input(Bool())
+//    val alu_src1 = Input(UInt(xlen.W))
+//    val alu_src2 = Input(UInt(xlen.W))
+//    val alu_div_res = Output(UInt(xlen.W))
+//  })
+//  setInline(
+//    "Div.v",
+//    """
+//      |module Div(input [31:0] inst);
+//      |
+//      | //initial set_inst_ptr(inst);
+//      |
+//      | always @* inst_change(inst);
+//      |
+//      |endmodule
+//            """.stripMargin
+//  )
+//
+//  //  alu_div_res := Mux(
+//  //    div || divs,
+//  //    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
+//  //    Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
+//  //  )
+//}
 
 object EXEGen extends App {
   (new chisel3.stage.ChiselStage)

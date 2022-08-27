@@ -28,3 +28,20 @@ always@(posedge clk) begin
 end
 
 endmodule
+
+
+  //  alu_div_res := Mux(
+  //    div || divs,
+  //    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
+  //    Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
+  //  )
+// module Div(input div ,    divs ,                 divv ,                 divvw,
+// input [63:0] alu_src1,
+// input [63:0] alu_src2,
+// output [63:0] alu_div_res
+// );
+//
+// assign alu_div_res = div || divs ?
+// (div ? )
+//
+// endmodule
