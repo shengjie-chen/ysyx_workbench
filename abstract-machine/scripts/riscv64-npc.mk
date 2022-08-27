@@ -23,8 +23,8 @@ image: $(IMAGE).elf
 
 run: image
 	# $(MAKE) -C $(NPC_HOME) sim_npc_vcd IMG=$(IMAGE).bin
-	# $(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen IMG=$(IMAGE).bin
-	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen_gtk IMG=$(IMAGE).bin
+	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen IMG=$(IMAGE).bin
+	# $(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen_gtk IMG=$(IMAGE).bin SDB=sdb_n
 
 
 # gdb: image
