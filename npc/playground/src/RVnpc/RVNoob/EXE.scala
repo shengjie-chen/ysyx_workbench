@@ -87,57 +87,54 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
   alu_src1    := io.src1
   alu_src2    := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
   add_res     := alu_src1 +& alu_src2
-  io.mem_addr := add_res(63,0)
+  io.mem_addr := add_res(63, 0)
 
   // alu type
   val alu_base = add || sub || sll || srl || sra || xor || or || and
-  val alu_m = mul || div || rem
-  val alu_mh = mulh || mulhs || mulhsu
-  val alu_div = divs
-  val alu_res = Wire(UInt(xlen.W))
+  val alu_m    = mul || div || rem
+  val alu_mh   = mulh || mulhs || mulhsu
+  val alu_div  = divs
+  val alu_res  = Wire(UInt(xlen.W))
 
   val alu_div_res = Wire(UInt(xlen.W))
-  alu_div_res := MuxCase(
+  alu_div_res := Mux(
+    div || divs,
+    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
+    Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
+  )
+
+  alu_res := MuxCase(
     0.U,
     Array(
-      div -> (alu_src1 / alu_src2),
-      divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
-      divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
-      divw -> (alu_src1(31, 0) / alu_src2(31, 0))
-    )
-  )
-  alu_res := MuxCase(
-      0.U,
-      Array(
-        (add || sub) -> add_res(63, 0),
-        sll -> (alu_src1 << alu_src2(5, 0)),
-        srl -> (alu_src1 >> alu_src2(5, 0)),
-        sra -> (alu_src1.asSInt() >> alu_src2(5, 0)).asUInt(),
-        xor -> (alu_src1 ^ alu_src2),
-        or -> (alu_src1 | alu_src2),
-        and -> (alu_src1 & alu_src2),
-        mul -> (alu_src1 * alu_src2),
+      (add || sub) -> add_res(63, 0),
+      sll -> (alu_src1 << alu_src2(5, 0)),
+      srl -> (alu_src1 >> alu_src2(5, 0)),
+      sra -> (alu_src1.asSInt() >> alu_src2(5, 0)).asUInt(),
+      xor -> (alu_src1 ^ alu_src2),
+      or -> (alu_src1 | alu_src2),
+      and -> (alu_src1 & alu_src2),
+      mul -> (alu_src1 * alu_src2),
 //        div -> (alu_src1 / alu_src2),
-        rem -> (alu_src1 % alu_src2),
-        mulh -> ((alu_src1 * alu_src2)(127, 64)),
-        mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
-        mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
+      rem -> (alu_src1 % alu_src2),
+      mulh -> ((alu_src1 * alu_src2)(127, 64)),
+      mulhs -> ((alu_src1.asSInt() * alu_src2.asSInt())(127, 64)).asUInt(),
+      mulhsu -> ((alu_src1.asSInt() * alu_src2)(127, 64).asUInt()),
 //        divs -> (alu_src1.asSInt() / alu_src2.asSInt()).asUInt(),
 //        divsw -> (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt(),
 //        divw -> (alu_src1(31, 0) / alu_src2(31, 0)),
-        (div || divs || divw || divsw) -> alu_div_res,
-        rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
-        remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
-        remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
-        srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
-        sraw -> (alu_src1(31, 0).asSInt() >> alu_src2(4, 0)).asUInt(),
-        sllw -> (alu_src1 << alu_src2(4, 0))
-      )
+      (div || divs || divw || divsw) -> alu_div_res,
+      rems -> (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(),
+      remsw -> (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt(),
+      remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
+      srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
+      sraw -> (alu_src1(31, 0).asSInt() >> alu_src2(4, 0)).asUInt(),
+      sllw -> (alu_src1 << alu_src2(4, 0))
     )
+  )
 
   val judge = Module(new Judge)
   judge.io.less <> add_res(64)
-  judge.io.old_res <> Mux(io.ctrl.old_val_mux, io.mem_data, alu_res )
+  judge.io.old_res <> Mux(io.ctrl.old_val_mux, io.mem_data, alu_res)
   judge.io.judge_op <> io.ctrl.judge_op
   judge.io.B_en <> io.B_en
 
@@ -178,8 +175,6 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
   )
 
 }
-
-
 
 object EXEGen extends App {
   (new chisel3.stage.ChiselStage)

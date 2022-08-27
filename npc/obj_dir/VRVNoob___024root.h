@@ -117,7 +117,7 @@ VL_MODULE(VRVNoob___024root) {
         SData/*11:0*/ RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_1;
         SData/*13:0*/ RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_2;
         VlWide<3>/*64:0*/ RVNoob__DOT__exe__DOT__alu__DOT__add_res;
-        VlWide<4>/*127:0*/ RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_85;
+        VlWide<4>/*127:0*/ RVNoob__DOT__exe__DOT__alu__DOT___alu_res_T_71;
         QData/*63:0*/ RVNoob__DOT__idu_io_imm;
         QData/*63:0*/ RVNoob__DOT__rf_io_rdata1;
         QData/*63:0*/ RVNoob__DOT__rf_io_rdata2;
