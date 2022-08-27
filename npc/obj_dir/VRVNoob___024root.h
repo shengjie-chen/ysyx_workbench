@@ -204,7 +204,7 @@ VL_MODULE(VRVNoob___024root) {
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clock;
-    QData/*63:0*/ __Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata;
+    QData/*63:0*/ __Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata;
     VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
 
     // INTERNAL VARIABLES

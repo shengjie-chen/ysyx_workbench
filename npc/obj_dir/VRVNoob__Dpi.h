@@ -20,9 +20,9 @@ extern "C" {
     // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/Ebreak.v:2:30
     extern void npc_ebreak();
     // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/DpiPmem.v:11:30
-    extern void pmem_read(long long raddr, long long* rdata);
+    extern void pmem_read_dpi(long long raddr, long long* rdata);
     // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/Verilog_Gen/DpiPmem.v:13:30
-    extern void pmem_write(long long waddr, long long wdata, char wmask);
+    extern void pmem_write_dpi(long long waddr, long long wdata, char wmask);
     // DPI import at /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/RF_read.v:1:30
     extern void set_gpr_ptr(const svOpenArrayHandle a);
 

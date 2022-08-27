@@ -54,7 +54,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
-      pmem_write((raddr & ~0x7ull) + i, 1, data >> (8 * i))
+      pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i))
     }
   }
 }

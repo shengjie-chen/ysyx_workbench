@@ -28,8 +28,8 @@ VRVNoob___024root::~VRVNoob___024root() {
 }
 
 void VRVNoob___024unit____Vdpiimwrap_inst_change_TOP____024unit(IData/*31:0*/ a);
-void VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_TOP(QData/*63:0*/ raddr, QData/*63:0*/ &rdata);
-void VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_TOP(QData/*63:0*/ waddr, QData/*63:0*/ wdata, CData/*7:0*/ wmask);
+void VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi_TOP(QData/*63:0*/ raddr, QData/*63:0*/ &rdata);
+void VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_dpi_TOP(QData/*63:0*/ waddr, QData/*63:0*/ wdata, CData/*7:0*/ wmask);
 void VRVNoob___024unit____Vdpiimwrap_npc_change_TOP____024unit(QData/*63:0*/ a);
 
 void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
@@ -1815,9 +1815,9 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[2U] 
         = (1U & __Vtemp4[2U]);
     if (vlSelf->RVNoob__DOT__idu_io_pmem_ctrl_r_pmem) {
-        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata);
+        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi_TOP(0ULL, vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata);
         vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t 
-            = vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata;
+            = vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata;
     } else {
         vlSelf->RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__rdata_t = 0ULL;
     }
@@ -1826,7 +1826,7 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
         VL_SHIFTL_WWI(191,191,7, __Vtemp8, __Vtemp7, 
                       (0x38U & (vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__add_res[0U] 
                                 << 3U)));
-        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_TOP(0ULL, 
+        VRVNoob___024root____Vdpiimwrap_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_write_dpi_TOP(0ULL, 
                                                                                 (((QData)((IData)(
                                                                                 __Vtemp8[1U])) 
                                                                                 << 0x20U) 
@@ -2654,7 +2654,7 @@ void VRVNoob___024root___ctor_var_reset(VRVNoob___024root* vlSelf) {
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_lo_2 = VL_RAND_RESET_I(7);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT__io_new_res_lo_lo_2 = VL_RAND_RESET_I(14);
     vlSelf->RVNoob__DOT__exe__DOT__alu__DOT__judge__DOT___io_new_res_T_154 = VL_RAND_RESET_Q(64);
-    vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read__0__rdata = 0;
+    vlSelf->__Vtask_RVNoob__DOT__ifm__DOT__dpi_pmem__DOT__pmem_read_dpi__0__rdata = 0;
     for (int __Vi0=0; __Vi0<3; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = VL_RAND_RESET_I(1);
     }

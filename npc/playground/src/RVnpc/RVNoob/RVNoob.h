@@ -91,12 +91,26 @@ word_t host_read(void *addr, int len)
   }
 }
 
+void host_write(void *addr, int len, word_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+    IFDEF(CONFIG_ISA64, case 8: *(uint64_t *)addr = data; return);
+    IFDEF(CONFIG_RT_CHECK, default: assert(0));
+  }
+}
+
 word_t pmem_read(paddr_t addr, int len)
 {
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
 
+void pmem_write(paddr_t addr, int len, word_t data)
+{
+  host_write(guest_to_host(addr), len, data);
+}
 
 typedef struct {
   int state;
