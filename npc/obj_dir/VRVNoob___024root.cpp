@@ -1278,6 +1278,7 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
     VlWide<3>/*95:0*/ __Vtemp172;
     VlWide<3>/*95:0*/ __Vtemp173;
     VlWide<3>/*95:0*/ __Vtemp174;
+    VlWide<3>/*95:0*/ __Vtemp175;
     VlWide<3>/*95:0*/ __Vtemp176;
     VlWide<3>/*95:0*/ __Vtemp188;
     VlWide<4>/*127:0*/ __Vtemp189;
@@ -2379,10 +2380,10 @@ VL_INLINE_OPT void VRVNoob___024root___combo__TOP__5(VRVNoob___024root* vlSelf) 
     __Vtemp173[1U] = __Vtemp172[1U];
     __Vtemp173[2U] = (1U & __Vtemp172[2U]);
     VL_DIVS_WWW(65, __Vtemp174, __Vtemp170, __Vtemp173);
-    VL_EXTEND_WQ(95,64, __Vtemp176, (((QData)((IData)(
-                                                      __Vtemp174[1U])) 
-                                      << 0x20U) | (QData)((IData)(
-                                                                  __Vtemp174[0U]))));
+    __Vtemp175[0U] = __Vtemp174[0U];
+    __Vtemp175[1U] = __Vtemp174[1U];
+    __Vtemp175[2U] = (1U & __Vtemp174[2U]);
+    VL_EXTEND_WW(95,65, __Vtemp176, __Vtemp175);
     if ((0xaU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))) {
         __Vtemp188[0U] = __Vtemp149[0U];
         __Vtemp188[1U] = __Vtemp149[1U];

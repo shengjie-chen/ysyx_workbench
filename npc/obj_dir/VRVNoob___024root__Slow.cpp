@@ -81,6 +81,7 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     VlWide<3>/*95:0*/ __Vtemp64;
     VlWide<3>/*95:0*/ __Vtemp65;
     VlWide<3>/*95:0*/ __Vtemp66;
+    VlWide<3>/*95:0*/ __Vtemp67;
     VlWide<3>/*95:0*/ __Vtemp68;
     VlWide<3>/*95:0*/ __Vtemp80;
     VlWide<4>/*127:0*/ __Vtemp81;
@@ -2002,10 +2003,10 @@ void VRVNoob___024root___settle__TOP__1(VRVNoob___024root* vlSelf) {
     __Vtemp65[1U] = __Vtemp64[1U];
     __Vtemp65[2U] = (1U & __Vtemp64[2U]);
     VL_DIVS_WWW(65, __Vtemp66, __Vtemp62, __Vtemp65);
-    VL_EXTEND_WQ(95,64, __Vtemp68, (((QData)((IData)(
-                                                     __Vtemp66[1U])) 
-                                     << 0x20U) | (QData)((IData)(
-                                                                 __Vtemp66[0U]))));
+    __Vtemp67[0U] = __Vtemp66[0U];
+    __Vtemp67[1U] = __Vtemp66[1U];
+    __Vtemp67[2U] = (1U & __Vtemp66[2U]);
+    VL_EXTEND_WW(95,65, __Vtemp68, __Vtemp67);
     if ((0xaU == (IData)(vlSelf->RVNoob__DOT__idu_io_exe_ctrl_alu_op))) {
         __Vtemp80[0U] = __Vtemp41[0U];
         __Vtemp80[1U] = __Vtemp41[1U];
