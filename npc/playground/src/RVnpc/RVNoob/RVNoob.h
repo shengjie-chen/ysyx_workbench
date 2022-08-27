@@ -112,6 +112,10 @@ void pmem_write(paddr_t addr, int len, word_t data)
   host_write(guest_to_host(addr), len, data);
 }
 
+bool in_pmem(paddr_t addr) {
+  return (addr >= CONFIG_MBASE) && (addr - CONFIG_MSIZE < (paddr_t)CONFIG_MBASE);
+}
+
 typedef struct {
   int state;
   vaddr_t halt_pc;

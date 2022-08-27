@@ -42,10 +42,20 @@ extern "C" void npc_change(const svLogicVecVal *r)
   cpu_npc = *(vaddr_t *)(r);
 }
 
+#ifdef CONFIG_MTRACE
+extern FILE *mtrace_fp;
+#endif
+
 extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
 {
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-  *rdata = pmem_read(raddr & ~0x7ull, 8);
+  if (likely(in_pmem(raddr))) {
+    *rdata = pmem_read(raddr & ~0x7ull, 8);
+#ifdef CONFIG_MTRACE
+    fprintf(mtrace_fp, "read  pmem ## addr: %x", raddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%016lx \n", *rdata);
+#endif
+  }
 }
 extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
 {
@@ -55,9 +65,14 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
   // printf("waddr is %016x\n",waddr);
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
-     pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
+      pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
     }
   }
+#ifdef CONFIG_MTRACE
+  fprintf(mtrace_fp, "write pmem ## addr: %x", waddr & ~0x7ull);
+  fprintf(mtrace_fp, " -> 0x%016lx ", wdata);
+  fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
+#endif
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
@@ -81,6 +96,9 @@ void one_clock()
 
 #ifdef CONFIG_FTRACE
   ftrace_call_ret(cpu_inst, top->io_pc, cpu_npc);
+#endif
+#ifdef CONFIG_MTRACE
+  mtrace_fp = fopen(mtrace_file, "w");
 #endif
 
 #ifdef CONFIG_ITRACE

@@ -1,6 +1,12 @@
 #include "common.h"
 #include <elf.h>
 
+#ifdef CONFIG_MTRACE
+char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-mtrace-log.txt";
+FILE *mtrace_fp = NULL;
+#endif
+
+
 #ifdef CONFIG_FTRACE
 char *elf_file = NULL;
 FILE *ftrace_fp = NULL;
