@@ -52,8 +52,8 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
-    fprintf(mtrace_fp, "read  pmem ## addr: %x", raddr & ~0x7ull);
-    fprintf(mtrace_fp, " -> 0x%016lx \n", *rdata);
+    fprintf(mtrace_fp, "read  pmem ## addr: %llx", raddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
 #endif
   }
 }

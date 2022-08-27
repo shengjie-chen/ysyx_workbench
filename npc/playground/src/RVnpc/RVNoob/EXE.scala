@@ -95,7 +95,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
 //  val alu_m    = mul || div || rem
 //  val alu_mh   = mulh || mulhs || mulhsu
 //  val alu_div  = divs
-  val alu_res  = Wire(UInt(xlen.W))
+  val alu_res = Wire(UInt(xlen.W))
 
   val alu_div_res = Wire(UInt(xlen.W))
   alu_div_res := Mux(
@@ -103,7 +103,6 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
     Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
     Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
   )
-
 
   val alu_mul_res = Wire(UInt(xlen.W))
   alu_mul_res := Mux(
@@ -154,8 +153,17 @@ class ALU extends Module with ALU_op with function with RVNoobConfig {
     )
   )
 
+  val less = Wire(Bool())
+  when(io.src1(63) && !io.src2(63)) {
+    less := 1.B
+  }.elsewhen(!io.src1(63) && io.src2(63)) {
+    less := 0.B
+  }.otherwise {
+    less := add_res(63)
+  }
+
   val judge = Module(new Judge)
-  judge.io.less <> add_res(64)
+  judge.io.less <> less
   judge.io.old_res <> Mux(io.ctrl.old_val_mux, io.mem_data, alu_res)
   judge.io.judge_op <> io.ctrl.judge_op
   judge.io.B_en <> io.B_en
