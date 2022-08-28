@@ -9,6 +9,7 @@ int int2char(int d, char *out);
 
 int printf(const char *fmt, ...)
 {
+  putch('u');
   char out[128];
   va_list ap;
   va_start(ap, fmt);
