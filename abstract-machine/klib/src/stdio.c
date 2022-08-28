@@ -5,45 +5,25 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+int int2char(int d, char *out);
+
 int printf(const char *fmt, ...)
 {
-  panic("Not implemented");
+  char out[128];
+  va_list ap;
+  va_start(ap, fmt);
+  int j = vsprintf(out, fmt, ap);
+  va_end(ap);
+  if (j >= 0) {
+    for (int i = 0; i < j; i++) {
+      putch(out[i]);
+    }
+  }
+  return j;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap)
 {
-  panic("Not implemented");
-}
-
-int int2char(int d, char *out)
-{
-  int count = 0;
-  int n = d;
-  char m[10];
-  if (d < 0) {
-    *out++ = '-';
-    n = -d;
-  }
-  while (n != 0) {
-    m[count] = n % 10 + 48;
-    n /= 10;
-    ++count;
-  }
-  int i;
-  for (i = 0; i < count; i++) {
-    *(out + i) = m[count - i - 1];
-  }
-  if (d < 0) {
-    return count + 1;
-  } else {
-    return count;
-  }
-}
-
-int sprintf(char *out, const char *fmt, ...)
-{
-  va_list ap;
-  va_start(ap, fmt);
   int i = 0; // fmt
   int j = 0; // out
   while (fmt[i] != '\0') {
@@ -89,6 +69,39 @@ int sprintf(char *out, const char *fmt, ...)
     i++;
   }
   out[j] = '\0';
+  return j;
+}
+
+int int2char(int d, char *out)
+{
+  int count = 0;
+  int n = d;
+  char m[10];
+  if (d < 0) {
+    *out++ = '-';
+    n = -d;
+  }
+  while (n != 0) {
+    m[count] = n % 10 + 48;
+    n /= 10;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  if (d < 0) {
+    return count + 1;
+  } else {
+    return count;
+  }
+}
+
+int sprintf(char *out, const char *fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  int j = vsprintf(out, fmt, ap);
   va_end(ap);
   return j;
 }
