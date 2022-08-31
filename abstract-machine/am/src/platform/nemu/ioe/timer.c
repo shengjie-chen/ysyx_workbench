@@ -1,15 +1,14 @@
 #include <am.h>
 #include <nemu.h>
-#define CONFIG_RTC_MMIO 0xa0000048
 
 static uint64_t boot_time;
 
 void __am_timer_init() {
-  boot_time = (uint64_t)inl(CONFIG_RTC_MMIO) | (((uint64_t)inl(CONFIG_RTC_MMIO+4))<<32);
+  boot_time = (uint64_t)inl(RTC_ADDR) | (((uint64_t)inl(RTC_ADDR+4))<<32);
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uint64_t now = (uint64_t)inl(CONFIG_RTC_MMIO) | (((uint64_t)inl(CONFIG_RTC_MMIO+4))<<32);
+  uint64_t now = (uint64_t)inl(RTC_ADDR) | (((uint64_t)inl(RTC_ADDR+4))<<32);
   uptime->us = now - boot_time;
 }
 
