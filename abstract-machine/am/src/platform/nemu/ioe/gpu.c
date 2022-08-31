@@ -44,6 +44,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
       }
     }
   } else {
+    outl(SYNC_ADDR, 1);
     if (ctl->pixels != NULL) {
       uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
       uint32_t *color_buf = ctl->pixels;
@@ -53,7 +54,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
         }
       }
     }
-    outl(SYNC_ADDR, 1);
   }
 }
 
