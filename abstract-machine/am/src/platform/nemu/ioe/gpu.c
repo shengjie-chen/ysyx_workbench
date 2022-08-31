@@ -29,21 +29,27 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
 {
   if (!ctl->sync) {
-    int x1, x2, y1, y2;
-    x1 = ctl->x;
-    y1 = ctl->y;
-    x2 = x1 + ctl->w;
-    y2 = y1 + ctl->h;
-    printf("x1 = %d, y1 = %d\n", x1, y1);
-    printf("x2 = %d, y2 = %d\n", x2, y2);
+    // int x1, x2, y1, y2;
+    // x1 = ctl->x;
+    // y1 = ctl->y;
+    // x2 = x1 + ctl->w;
+    // y2 = y1 + ctl->h;
+    int x, y, w, h;
+    x = ctl->x;
+    y = ctl->y;
+    w = ctl->w;
+    h = ctl->h;
+    uint32_t *color_buf = ctl->pixels;
+    // printf("x1 = %d, y1 = %d\n", x1, y1);
+    // printf("x2 = %d, y2 = %d\n", x2, y2);
     int i, j;
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-    for (i = 0; i < height; i++) {
-      for (j = 0; j < width; j++) {
-        if ((j == x1) || (j == x2) || (i == y1) || (i == y2)) {
-          *(fb + i * width + j) = 0x00ff0000;
-          // printf("i = %d, j = %d\n", i, j);
-        }
+    for (i = 0; i < h; i++) {
+      for (j = 0; j < w; j++) {
+
+        *(fb + (i + y) * width + j + x) = color_buf[i * w + j];
+        // printf("i = %d, j = %d\n", i, j);
+
         // else {
         //   *(fb + i * width + j) = 0x00000000;
         // }
