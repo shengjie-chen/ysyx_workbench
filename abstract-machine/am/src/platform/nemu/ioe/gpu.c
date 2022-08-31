@@ -44,12 +44,14 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
       }
     }
   } else {
-    // for (int i = 0; i < height; i++) {
-    //   for (int j = 0; j < width; j++) {
-    //     *(fb + i * width + j) = color_buf[i * width + j];
-    //   }
-    // }
     outl(SYNC_ADDR, 1);
+    uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+    uint32_t *color_buf = ctl->pixels;
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        *(fb + i * width + j) = color_buf[i * width + j];
+      }
+    }
   }
 }
 
