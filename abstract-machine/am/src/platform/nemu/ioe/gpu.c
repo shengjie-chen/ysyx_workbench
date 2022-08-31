@@ -42,8 +42,17 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
         *(fb + (i + y) * width + j + x) = color_buf[i * w + j];
       }
     }
+  } 
+  // else {
+  //   uint32_t *color_buf = ctl->pixels;
+  //   for (i = 0; i < height; i++) {
+  //     for (j = 0; j < width; j++) {
+  //       *(fb + i * width + j) = color_buf[i * width + j];
+  //     }
+  //   }
+  // }
     outl(SYNC_ADDR, 1);
-  }
+
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status)
