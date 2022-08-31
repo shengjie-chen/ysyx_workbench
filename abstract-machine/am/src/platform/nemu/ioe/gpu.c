@@ -28,7 +28,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
 {
-  if (ctl->sync) {
+  if (!ctl->sync) {
     int x1, x2, y1, y2;
     x1 = ctl->x;
     y1 = ctl->y;
