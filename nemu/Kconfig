@@ -119,33 +119,7 @@ config CC_ASAN
   default n
 endmenu
 
-config WATCHPOINT
-  bool "Enable watchpoint function"
-  default n
 
-config CHECK_EXPR
-  bool "Enable check expr function when init"
-  default n
-
-config BATCH_MODE
-  bool "Enable batch mode to skip c and q"
-  default n  
-
-config SAVE_TEMPS
-  bool "Enable -save-temps in cflags"
-  default n 
-
-config MTRACE
-  bool "Enable mtrace"
-  default n 
-
-config FTRACE
-  bool "Enable ftrace"
-  default n 
-
-config IRINGBUF
-  bool "Enable iringbuf"
-  default n 
 
 menu "Testing and Debugging"
 
@@ -173,6 +147,26 @@ config ITRACE_COND
   depends on ITRACE
   string "Only trace instructions when the condition is true"
   default "true"
+
+config MTRACE
+  depends on TRACE
+  bool "Enable mtrace"
+  default n 
+
+config FTRACE
+  depends on TRACE
+  bool "Enable ftrace"
+  default n 
+
+config IRINGBUF
+  depends on TRACE
+  bool "Enable iringbuf"
+  default n 
+
+config DTRACE
+  depends on TRACE
+  bool "Enable dtrace"
+  default n 
 
 
 config DIFFTEST
@@ -214,6 +208,22 @@ config DIFFTEST_REF_NAME
   default "kvm" if DIFFTEST_REF_KVM
   default "spike" if DIFFTEST_REF_SPIKE
   default "none"
+
+config WATCHPOINT
+  bool "Enable watchpoint function"
+  default n
+
+config CHECK_EXPR
+  bool "Enable check expr function when init"
+  default n
+
+config BATCH_MODE
+  bool "Enable batch mode to skip c and q"
+  default n  
+
+config SAVE_TEMPS
+  bool "Enable -save-temps in cflags"
+  default n 
 endmenu
 
 if MODE_SYSTEM

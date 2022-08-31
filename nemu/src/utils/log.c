@@ -9,6 +9,11 @@ char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-lo
 FILE *mtrace_fp = NULL;
 #endif
 
+#ifdef CONFIG_DTRACE
+char *dtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-dtrace-log.txt";
+FILE *dtrace_fp = NULL;
+#endif
+
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
 char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-ftrace-log.txt";
