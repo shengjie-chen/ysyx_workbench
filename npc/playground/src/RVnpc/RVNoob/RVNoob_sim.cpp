@@ -72,7 +72,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   // printf("waddr is %016x\n",waddr);
   if (waddr == SERIAL_PORT) {
-    printf("%c",(char)wdata);
+    printf("%c", (char)wdata);
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "write serial ## addr: %llx", waddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
@@ -80,7 +80,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 #endif
     return;
   }
-  
+
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
       pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
