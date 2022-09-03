@@ -55,7 +55,6 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 verilog:
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
-#	echo $(GEN_DIR)
 	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
@@ -85,7 +84,7 @@ sim_npc_vcd: verilog
 	sed -i '1i\/* verilator lint_off WIDTH */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让erilator避免检查div处的错误
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
+	verilator --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
