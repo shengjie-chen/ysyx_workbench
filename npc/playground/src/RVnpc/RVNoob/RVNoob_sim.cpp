@@ -48,6 +48,11 @@ extern FILE *mtrace_fp;
 
 extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
 {
+  if(raddr == RTC_ADDR) {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    *rdata = now.tv_sec * 1000000 + now.tv_usec;
+  }
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
@@ -63,6 +68,9 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   // printf("waddr is %016x\n",waddr);
+  if(waddr == SERIAL_PORT){
+    printf("%s\n",wdata);
+  }
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
       pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
