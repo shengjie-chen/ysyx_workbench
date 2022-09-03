@@ -29,6 +29,7 @@ class IFM extends Module with RVNoobConfig {
     }
   }
   val dpi_pmem = Module(new DpiPmem)
+  dpi_pmem.io.clk <> clock
   dpi_pmem.io.raddr <> daddr
   dpi_pmem.io.waddr <> daddr
   dpi_pmem.io.wmask <> wmask
@@ -53,7 +54,7 @@ class IFM extends Module with RVNoobConfig {
 
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
-    val clk   = Input(Clock)
+    val clk   = Input(Clock())
     val raddr = Input(UInt(xlen.W))
     val waddr = Input(UInt(xlen.W))
     val wmask = Input(UInt((xlen / 8).W))
