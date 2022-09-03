@@ -29,7 +29,6 @@ class IFM extends Module with RVNoobConfig {
     }
   }
   val dpi_pmem = Module(new DpiPmem)
-  dpi_pmem.io.clk <> clock
   dpi_pmem.io.raddr <> daddr
   dpi_pmem.io.waddr <> daddr
   dpi_pmem.io.wmask <> wmask
@@ -54,7 +53,6 @@ class IFM extends Module with RVNoobConfig {
 
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
-    val clk   = Input(Clock())
     val raddr = Input(UInt(xlen.W))
     val waddr = Input(UInt(xlen.W))
     val wmask = Input(UInt((xlen / 8).W))
@@ -67,7 +65,6 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
     "DpiPmem.v",
     """
       |module DpiPmem(
-      |input clk,
       |input [63:0] raddr,
       |input [63:0] waddr,
       |input [7:0] wmask,
@@ -81,14 +78,19 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
       |import "DPI-C" function void pmem_write_dpi(
       |  input longint waddr, input longint wdata, input byte wmask);
       |reg [63:0] rdata_t;
-      |always @(posedge clk) begin
-      |   if(r_pmem == 1'b1)
-      |     pmem_read_dpi(raddr, rdata_t);
-      |   else
-      |     rdata_t = 64'd0;
-      |   if(w_pmem == 1'b1)
-      |     pmem_write_dpi(waddr, wdata, wmask);
+      |
+      |always @(r_pmem) begin
+      |  if(r_pmem == 1'b1)
+      |    pmem_read_dpi(raddr, rdata_t);
+      |  else
+      |    rdata_t = 64'd0;
       |end
+      |
+      |always @(w_pmem) begin
+      |  if(w_pmem == 1'b1)
+      |    pmem_write_dpi(waddr, wdata, wmask);
+      |end
+      |
       |assign rdata = rdata_t;
       |
       |endmodule
