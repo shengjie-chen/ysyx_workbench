@@ -55,6 +55,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 #endif
     return;
   }
+
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
@@ -79,6 +80,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 #endif
     return;
   }
+  
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
       pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
