@@ -6,6 +6,7 @@
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
+#include <sys/time.h>
 #include "trace.c"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
