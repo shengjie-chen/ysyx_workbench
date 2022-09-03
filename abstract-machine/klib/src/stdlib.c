@@ -40,6 +40,7 @@ void *malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   if (first == 0) {
     addr = (void *)ROUNDUP(heap.start, 8);
+    first = 1;
   }
   size = (size_t)ROUNDUP(size, 8);
   char *old = addr;
