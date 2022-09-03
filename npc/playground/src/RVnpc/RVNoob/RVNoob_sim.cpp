@@ -53,6 +53,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
     fprintf(mtrace_fp, "read  rtc ## addr: %llx", raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
 #endif
+    return;
   }
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
@@ -75,6 +76,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
     fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
 #endif
+    return;
   }
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
