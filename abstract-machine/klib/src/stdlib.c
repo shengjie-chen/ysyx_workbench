@@ -31,7 +31,7 @@ int atoi(const char *nptr) {
   return x;
 }
 
-static char *addr;
+static char *addr_alloc;
 static int first = 0;
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
@@ -39,14 +39,14 @@ void *malloc(size_t size) {
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   if (first == 0) {
-    addr = (void *)ROUNDUP(heap.start, 8);
+    addr_alloc = (void *)ROUNDUP(heap.start, 8);
     first = 1;
   }
   size = (size_t)ROUNDUP(size, 8);
-  char *old = addr;
-  addr += size;
-  assert((uintptr_t)heap.start <= (uintptr_t)addr && (uintptr_t)addr < (uintptr_t)heap.end);
-  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr; p++) {
+  char *old = addr_alloc;
+  addr_alloc += size;
+  assert((uintptr_t)heap.start <= (uintptr_t)addr_alloc && (uintptr_t)addr_alloc < (uintptr_t)heap.end);
+  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr_alloc; p++) {
     *p = 0;
   }
   return old;
