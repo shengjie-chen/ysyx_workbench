@@ -64,13 +64,14 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 #endif
   }
 }
+
 extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   // printf("waddr is %016x\n",waddr);
   if (waddr == SERIAL_PORT) {
-    printf("write serial\n");
+    printf("%c",(char)wdata);
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "write serial ## addr: %llx", waddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
