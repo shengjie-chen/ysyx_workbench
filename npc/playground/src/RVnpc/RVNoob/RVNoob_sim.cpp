@@ -6,10 +6,10 @@
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
-#include <sys/time.h>
 #include "trace.c"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
+#include <sys/time.h>
 
 // int add(int a, int b) { return a + b; }
 
@@ -18,8 +18,7 @@ const vluint64_t sim_time = 100000;
 NPCState npc_state;
 CPU_state cpu_state;
 
-void npc_ebreak()
-{
+void npc_ebreak() {
   npc_state.state = NPC_END;
   printf("!!!!!! npc ebreak !!!!!!\n");
 }
@@ -31,15 +30,13 @@ void npc_ebreak()
 // }
 
 uint32_t cpu_inst;
-extern "C" void inst_change(const svLogicVecVal *r)
-{
+extern "C" void inst_change(const svLogicVecVal *r) {
   cpu_inst = *(uint32_t *)(r);
   // printf("inst : %x\n", cpu_inst);
 }
 
 uint32_t cpu_npc;
-extern "C" void npc_change(const svLogicVecVal *r)
-{
+extern "C" void npc_change(const svLogicVecVal *r) {
   cpu_npc = *(vaddr_t *)(r);
 }
 
@@ -47,12 +44,15 @@ extern "C" void npc_change(const svLogicVecVal *r)
 extern FILE *mtrace_fp;
 #endif
 
-extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
-{
-  if(raddr == RTC_ADDR) {
+extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
+  if (raddr == RTC_ADDR) {
     struct timeval now;
     gettimeofday(&now, NULL);
     *rdata = now.tv_sec * 1000000 + now.tv_usec;
+#ifdef CONFIG_MTRACE
+    fprintf(mtrace_fp, "read  rtc ## addr: %llx", raddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
+#endif
   }
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
@@ -63,14 +63,18 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata)
 #endif
   }
 }
-extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask)
-{
+extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   // printf("waddr is %016x\n",waddr);
-  if(waddr == SERIAL_PORT){
+  if (waddr == SERIAL_PORT) {
     printf("write serial\n");
+#ifdef CONFIG_MTRACE
+    fprintf(mtrace_fp, "write serial ## addr: %llx", waddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
+    fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
+#endif
   }
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
@@ -95,8 +99,7 @@ FILE *itrace_fp;
 VRVNoob *top = new VRVNoob;
 VerilatedVcdC *tfp = new VerilatedVcdC;
 
-void one_clock()
-{
+void one_clock() {
   top->clock = 0;
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
@@ -145,8 +148,7 @@ void one_clock()
 #endif
 }
 
-int main(int argc, char **argv, char **env)
-{
+int main(int argc, char **argv, char **env) {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
 
