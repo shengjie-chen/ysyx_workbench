@@ -40,7 +40,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
     int i, j;
     for (i = 0; i < h; i++) {
       for (j = 0; j < w; j++) {
-        *(fb + (y - h + i) * width + j + x - w) = color_buf[i * w + j];
+        *(fb + (i + y) * width + j + x) = color_buf[i * w + j];
       }
     }
   } else {
