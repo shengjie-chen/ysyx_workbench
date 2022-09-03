@@ -114,9 +114,6 @@ void one_clock() {
 #ifdef CONFIG_FTRACE
   ftrace_call_ret(cpu_inst, top->io_pc, cpu_npc);
 #endif
-#ifdef CONFIG_MTRACE
-  mtrace_fp = fopen(mtrace_file, "w");
-#endif
 
 #ifdef CONFIG_ITRACE
   memset(logbuf, 0, 128);
@@ -167,6 +164,9 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_ITRACE
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+#endif
+#ifdef CONFIG_MTRACE
+  mtrace_fp = fopen(mtrace_file, "w");
 #endif
 
   npc_state.state = NPC_RUNNING;
