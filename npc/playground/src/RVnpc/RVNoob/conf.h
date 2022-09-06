@@ -3,7 +3,7 @@
 
 #define BIGPROGRAM
 #ifdef BIGPROGRAM
-#define BIGPROGRAMTEST
+// #define BIGPROGRAMTEST
 #endif
 
 #ifndef BIGPROGRAM
