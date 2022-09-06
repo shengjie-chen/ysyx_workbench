@@ -5,6 +5,7 @@
 // #define CONFIG_FTRACE
 #define CONFIG_DIFFTEST
 // #define CONFIG_MTRACE
+#define CONFIG_DUMPVCD
 
 #define CONFIG_ISA64 1
 #define CONFIG_MSIZE 0x8000000

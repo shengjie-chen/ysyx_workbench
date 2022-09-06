@@ -115,7 +115,9 @@ void one_clock() {
   top->clock = 0;
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
-  // tfp->dump(main_time);
+#ifdef CONFIG_DUMPVCD
+  tfp->dump(main_time);
+#endif
   main_time++;
 
 #ifdef CONFIG_FTRACE
@@ -149,7 +151,9 @@ void one_clock() {
 
   top->clock = 1;
   top->eval();
-  // tfp->dump(main_time);
+#ifdef CONFIG_DUMPVCD
+  tfp->dump(main_time);
+#endif
   main_time++;
 
 #ifdef CONFIG_DIFFTEST
