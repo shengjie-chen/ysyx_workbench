@@ -155,7 +155,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_
 
   val less = Wire(Bool())
   when(io.ctrl.judge_op === jop_sltu) {
-    less := !add_res(64)
+    less := Mux(io.src2===0.U,add_res(64),!add_res(64))
   }.otherwise {
     when(io.src1(63) && !io.src2(63)) { // s1- s2+  -
       less := 1.B
