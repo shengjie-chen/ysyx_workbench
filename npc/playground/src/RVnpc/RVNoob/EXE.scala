@@ -195,6 +195,7 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
     io.old_res,
     Array(
       (io.judge_op === jop_slt) -> io.less.asUInt(),
+      (io.judge_op === jop_sltu) -> (!io.less).asUInt(),
       (io.judge_op === jop_sextw) -> sext_64(io.old_res(31, 0)),
       (io.judge_op === jop_sexthw) -> sext_64(io.old_res(15, 0)),
       (io.judge_op === jop_sextb) -> sext_64(io.old_res(7, 0)),

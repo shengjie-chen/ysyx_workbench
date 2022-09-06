@@ -59,6 +59,7 @@ trait Judge_op {
   val jop_bge = 4.U
   // set
   val jop_slt = 5.U
+  val jop_sltu = 12.U
   // sext
   val jop_sextw = 6.U
   val jop_sexthw = 7.U
