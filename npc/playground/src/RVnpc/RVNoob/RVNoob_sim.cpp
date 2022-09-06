@@ -116,7 +116,8 @@ void one_clock() {
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
 #ifdef CONFIG_DUMPVCD
-  tfp->dump(main_time);
+  if (main_time > CONFIG_DUMPSTART)
+    tfp->dump(main_time);
 #endif
   main_time++;
 
@@ -152,7 +153,8 @@ void one_clock() {
   top->clock = 1;
   top->eval();
 #ifdef CONFIG_DUMPVCD
-  tfp->dump(main_time);
+  if (main_time > CONFIG_DUMPSTART)
+    tfp->dump(main_time);
 #endif
   main_time++;
 
