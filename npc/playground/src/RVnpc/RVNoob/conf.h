@@ -2,6 +2,9 @@
 #define __MACRO_CONF__
 
 #define BIGPROGRAM
+#ifdef BIGPROGRAM
+#define BIGPROGRAMTEST
+#endif
 
 #ifndef BIGPROGRAM
 #define CONFIG_ITRACE
@@ -11,10 +14,13 @@
 #define CONFIG_DUMPSTART 0
 #endif
 
-#ifdef BIGPROGRAM
-#define CONFIG_DIFFTEST
+#ifdef BIGPROGRAMTEST
 #define CONFIG_DUMPVCD
 #define CONFIG_DUMPSTART 3200000
+#endif
+
+#ifdef BIGPROGRAM
+#define CONFIG_DIFFTEST
 #endif
 
 #define CONFIG_ISA64 1

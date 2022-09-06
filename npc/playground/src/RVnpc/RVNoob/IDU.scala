@@ -178,7 +178,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val jpg_uextw = rvi_lwu
   val jpg_uexthw = rvi_lhu
   val jpg_uextb = rvi_lbu
-  io.exe_ctrl.judge_mux := jpg_slt || jpg_sextw || io.pmem_ctrl.r_pmem
+  io.exe_ctrl.judge_mux := jpg_slt || jpg_sltu || jpg_sextw || io.pmem_ctrl.r_pmem
   io.exe_ctrl.judge_op := MuxCase(
     jop_x,
     Array(
