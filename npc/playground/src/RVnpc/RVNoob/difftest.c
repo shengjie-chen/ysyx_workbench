@@ -53,7 +53,7 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
   ref_difftest_regcpy(cpu, DIFFTEST_TO_REF);
 }
 
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
+bool isa_difftest_checkregs(CPU_state *ref_r) {
   for (int i = 0; i < 32; i++) {
     if (cpu_state.gpr[i] != ref_r->gpr[i]) {
       printf("!!!!!!!\n");
@@ -63,7 +63,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       return false;
     }
   }
-  if (pc != ref_r->pc) {
+  if (cpu_state.pc != ref_r->pc) {
     printf("!!!!!!!\n");
     printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
     printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
@@ -83,10 +83,11 @@ void isa_reg_display(CPU_state *ref) {
 }
 
 void checkregs(CPU_state *ref, vaddr_t pc) {
-  if (!isa_difftest_checkregs(ref, pc)) {
+  if (!isa_difftest_checkregs(ref)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = pc;
     printf("diff test fail!!\n");
+    printf("error inst is " FMT_WORD "\n", pc);
     isa_reg_display(ref);
   }
 }

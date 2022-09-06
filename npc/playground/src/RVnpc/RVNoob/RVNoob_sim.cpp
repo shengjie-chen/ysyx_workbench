@@ -111,6 +111,7 @@ VRVNoob *top = new VRVNoob;
 VerilatedVcdC *tfp = new VerilatedVcdC;
 
 void one_clock() {
+  vaddr_t pc = top->io_pc;
   top->clock = 0;
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
@@ -152,7 +153,7 @@ void one_clock() {
   main_time++;
 
 #ifdef CONFIG_DIFFTEST
-  difftest_step(top->io_pc, cpu_npc);
+  difftest_step(pc, cpu_npc);
 #endif
 }
 
