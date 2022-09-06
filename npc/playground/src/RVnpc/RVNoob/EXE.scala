@@ -154,19 +154,24 @@ class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_
   )
 
   val less = Wire(Bool())
-  when(io.ctrl.judge_op === jop_slt) {
-    when(io.src1(63) && !io.src2(63)) {
+  when(io.ctrl.judge_op === jop_sltu) {
+    less := !add_res(64)
+  }.otherwise {
+    when(io.src1(63) && !io.src2(63)) { // s1- s2+  -
       less := 1.B
-    }.elsewhen(!io.src1(63) && io.src2(63)) {
+    }.elsewhen(!io.src1(63) && io.src2(63)) {// s1+ s2- +
       less := 0.B
     }.otherwise {
       less := add_res(63)
     }
-  }.elsewhen(io.ctrl.judge_op === jop_sltu) {
-    less := add_res(63)
-  }.otherwise {
-    less := DontCare
   }
+//      when(io.src1(63) && !io.src2(63)) {
+//        less := 1.B
+//      }.elsewhen(!io.src1(63) && io.src2(63)) {
+//        less := 0.B
+//      }.otherwise {
+//        less := add_res(63)
+//      }
 
   val judge = Module(new Judge)
   judge.io.less <> less
@@ -201,6 +206,8 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
     io.old_res,
     Array(
       ((io.judge_op === jop_slt) || (io.judge_op === jop_sltu)) -> io.less.asUInt(),
+//      (io.judge_op === jop_slt) -> io.less.asUInt(),
+//      (io.judge_op === jop_sltu) -> ((!io.less)&&(!zero)).asUInt(),
       (io.judge_op === jop_sextw) -> sext_64(io.old_res(31, 0)),
       (io.judge_op === jop_sexthw) -> sext_64(io.old_res(15, 0)),
       (io.judge_op === jop_sextb) -> sext_64(io.old_res(7, 0)),
