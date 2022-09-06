@@ -18,8 +18,7 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
-void refresh_gpr_pc()
-{
+void refresh_gpr_pc() {
   int i;
   for (i = 0; i < 32; i++) {
     cpu_state.gpr[i] = cpu_gpr[i];
@@ -27,8 +26,7 @@ void refresh_gpr_pc()
   cpu_state.pc = top->io_pc;
 }
 
-void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
-{
+void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
   assert(ref_so_file != NULL);
 
   void *handle;
@@ -55,8 +53,7 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu)
   ref_difftest_regcpy(cpu, DIFFTEST_TO_REF);
 }
 
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
-{
+bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for (int i = 0; i < 32; i++) {
     if (cpu_state.gpr[i] != ref_r->gpr[i]) {
       printf("!!!!!!!\n");
@@ -75,8 +72,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
   }
   return true;
 }
-void isa_reg_display(CPU_state *ref)
-{
+void isa_reg_display(CPU_state *ref) {
   printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
   printf("ref.pc is " FMT_WORD "\n", ref->pc);
   int i;
@@ -86,8 +82,7 @@ void isa_reg_display(CPU_state *ref)
   }
 }
 
-void checkregs(CPU_state *ref, vaddr_t pc)
-{
+void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = pc;
@@ -96,8 +91,9 @@ void checkregs(CPU_state *ref, vaddr_t pc)
   }
 }
 
-void difftest_step(vaddr_t pc, vaddr_t npc)
-{
+static bool is_skip_ref = false;
+
+void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
 
   // if (skip_dut_nr_inst > 0) {
@@ -113,16 +109,21 @@ void difftest_step(vaddr_t pc, vaddr_t npc)
   //   return;
   // }
 
-  // if (is_skip_ref) {
-  //   // to skip the checking of an instruction, just copy the reg state to reference design
-  //   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-  //   is_skip_ref = false;
-  //   return;
-  // }
+  if (is_skip_ref) {
+    // to skip the checking of an instruction, just copy the reg state to reference design
+    refresh_gpr_pc();
+    ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF);
+    is_skip_ref = false;
+    return;
+  }
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
   refresh_gpr_pc();
   checkregs(&ref_r, pc);
+}
+
+void difftest_skip_ref() {
+  is_skip_ref = true;
 }

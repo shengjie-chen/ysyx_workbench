@@ -53,6 +53,9 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
     fprintf(mtrace_fp, "read  rtc ## addr: %llx", raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
 #endif
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
     return;
   }
 
