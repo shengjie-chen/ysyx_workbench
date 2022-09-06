@@ -81,6 +81,9 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
     fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
 #endif
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
     return;
   }
 
