@@ -3,7 +3,7 @@
 
 #define BIGPROGRAM
 #ifdef BIGPROGRAM
-// #define BIGPROGRAMTEST
+// #define BIGPROGRAMDEBUG
 #endif
 
 #ifndef BIGPROGRAM
@@ -14,7 +14,7 @@
 #define CONFIG_DUMPSTART 0
 #endif
 
-#ifdef BIGPROGRAMTEST
+#ifdef BIGPROGRAMDEBUG
 #define CONFIG_DUMPVCD
 #define CONFIG_DUMPSTART 3200000
 #endif
