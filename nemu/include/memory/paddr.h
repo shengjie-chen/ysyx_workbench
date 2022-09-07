@@ -6,12 +6,18 @@
 #define RESET_VECTOR (CONFIG_MBASE + CONFIG_PC_RESET_OFFSET)
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
-uint8_t* guest_to_host(paddr_t paddr);
+uint8_t *guest_to_host(paddr_t paddr);
 /* convert the host virtual address in NEMU to guest physical address in the guest program */
 paddr_t host_to_guest(uint8_t *haddr);
 
 static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MSIZE < (paddr_t)CONFIG_MBASE);
+}
+
+#define MMIO_MBASE 0xa0000000
+#define MMIO_MEND 0xa0001000
+static inline bool in_mmio(paddr_t addr) {
+  return (addr >= MMIO_MBASE) && (addr < MMIO_MEND);
 }
 
 word_t paddr_read(paddr_t addr, int len);
