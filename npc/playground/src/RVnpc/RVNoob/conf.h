@@ -15,8 +15,9 @@
 #endif
 
 #ifdef BIGPROGRAMDEBUG
+// 1M --> 1.6GB
 #define CONFIG_DUMPVCD
-#define CONFIG_DUMPSTART 10000000
+#define CONFIG_DUMPSTART 11500000
 #endif
 
 #ifdef BIGPROGRAM
