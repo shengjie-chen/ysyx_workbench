@@ -198,7 +198,7 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
       (io.judge_op === jop_beq) -> zero,
       (io.judge_op === jop_bne) -> !zero,
       ((io.judge_op === jop_blt) || (io.judge_op === jop_bltu)) -> io.less,
-      ((io.judge_op === jop_bge) || (io.judge_op === jop_bgeu)) -> (!io.less || zero)//!io.less
+      ((io.judge_op === jop_bge) || (io.judge_op === jop_bgeu)) -> !io.less//(!io.less || zero)
     )
   )
 
