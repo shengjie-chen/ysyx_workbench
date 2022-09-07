@@ -152,9 +152,9 @@ class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_
 //      remw -> (alu_src1(31, 0) % alu_src2(31, 0)),
     )
   )
-
+  val u_less = (io.ctrl.judge_op === jop_sltu) || (io.ctrl.judge_op === jop_bgeu) || (io.ctrl.judge_op === jop_bltu)
   val less = Wire(Bool())
-  when(io.ctrl.judge_op === jop_sltu) {
+  when(u_less) {
     less := Mux(io.src2===0.U,add_res(64),!add_res(64))
   }.otherwise {
     when(io.src1(63) && !io.src2(63)) { // s1- s2+  -
@@ -197,8 +197,8 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
     Array(
       (io.judge_op === jop_beq) -> zero,
       (io.judge_op === jop_bne) -> !zero,
-      (io.judge_op === jop_blt) -> io.less,
-      (io.judge_op === jop_bge) -> (!io.less || zero)
+      ((io.judge_op === jop_blt) || (io.judge_op === jop_bltu)) -> io.less,
+      ((io.judge_op === jop_bge) || (io.judge_op === jop_bgeu)) -> (!io.less || zero)//!io.less
     )
   )
 

@@ -57,6 +57,8 @@ trait Judge_op {
   val jop_bne = 2.U
   val jop_blt = 3.U
   val jop_bge = 4.U
+  val jop_bltu = 13.U
+  val jop_bgeu = 14.U
   // set
   val jop_slt = 5.U
   val jop_sltu = 12.U
