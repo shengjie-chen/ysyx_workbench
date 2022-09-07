@@ -83,11 +83,11 @@ word_t paddr_read(paddr_t addr, int len)
 #endif
     return pmem_read(addr, len);
   }
-  #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
-    if(in_mmio(addr)){
-      difftest_skip_ref();
-    }
-  #endif
+  // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
+  //   if(in_mmio(addr)){
+  //     difftest_skip_ref();
+  //   }
+  // #endif
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, " -> addr is out of bound!\n");
