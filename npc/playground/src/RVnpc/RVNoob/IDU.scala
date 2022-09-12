@@ -100,7 +100,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   // rv64M
   val rvm_mulw  = opcode === "b0111011".U && fun3 === "b000".U && fun7 === "b0000001".U
   val rvm_divw  = opcode === "b0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
-  val rvm_divuw = opcode === "b0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
+  val rvm_divuw = opcode === "b0111011".U && fun3 === "b101".U && fun7 === "b0000001".U
   val rvm_remw  = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
   val rvm_remuw = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
 
