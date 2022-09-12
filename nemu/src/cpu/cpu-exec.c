@@ -17,7 +17,8 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 #ifdef CONFIG_IRINGBUF
-static char iringbuf[16][128];
+#define IRBUF_DEPTH 16
+static char iringbuf[IRBUF_DEPTH][128];
 static int iringbuf_ptr = 0;
 #endif
 
@@ -44,12 +45,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     FILE *iringbuf_fp = fopen(iringbuf_file, "w");
     Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
     int i;
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < IRBUF_DEPTH; i++) {
       fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
       // printf("%s\n", iringbuf[i]);
     }
   } else {
-    if (iringbuf_ptr == 15) {
+    if (iringbuf_ptr == (IRBUF_DEPTH-1)) {
       iringbuf_ptr = 0;
     } else {
       iringbuf_ptr++;

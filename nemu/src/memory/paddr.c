@@ -15,31 +15,44 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 extern FILE *mtrace_fp;
 #endif
 
-uint8_t *guest_to_host(paddr_t paddr)
-{
+uint8_t *guest_to_host(paddr_t paddr) {
   return pmem + paddr - CONFIG_MBASE;
 }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-static word_t pmem_read(paddr_t addr, int len)
-{
+static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
+#ifdef CONFIG_MTRACE
+  switch (len) {
+  case 1:
+    fprintf(mtrace_fp, " -> 0x%02lx \n", ret);
+    break;
+  case 2:
+    fprintf(mtrace_fp, " -> 0x%04lx \n", ret);
+    break;
+  case 4:
+    fprintf(mtrace_fp, " -> 0x%08lx \n", ret);
+    break;
+    IFDEF(CONFIG_ISA64, case 8
+          : fprintf(mtrace_fp, " -> 0x%016lx \n", ret);
+          break);
+    IFDEF(CONFIG_RT_CHECK, default
+          : assert(0));
+  }
+#endif
   return ret;
 }
 
-static void pmem_write(paddr_t addr, int len, word_t data)
-{
+static void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
 }
 
-static void out_of_bound(paddr_t addr)
-{
+static void out_of_bound(paddr_t addr) {
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
         addr, (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1, cpu.pc);
 }
 
-void init_mem()
-{
+void init_mem() {
 #if defined(CONFIG_PMEM_MALLOC)
   pmem = malloc(CONFIG_MSIZE);
   assert(pmem);
@@ -55,32 +68,11 @@ void init_mem()
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
 
-word_t paddr_read(paddr_t addr, int len)
-{
+word_t paddr_read(paddr_t addr, int len) {
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, "read  pmem ## addr: %x", addr);
 #endif
   if (likely(in_pmem(addr))) {
-#ifdef CONFIG_MTRACE
-    word_t mem_value = pmem_read(addr, len);
-    switch (len) {
-    case 1:
-      fprintf(mtrace_fp, " -> 0x%02lx \n", mem_value);
-      break;
-    case 2:
-      fprintf(mtrace_fp, " -> 0x%04lx \n", mem_value);
-      break;
-    case 4:
-      fprintf(mtrace_fp, " -> 0x%08lx \n", mem_value);
-      break;
-      IFDEF(CONFIG_ISA64, case 8
-            : fprintf(mtrace_fp, " -> 0x%016lx \n", mem_value);
-            break);
-      IFDEF(CONFIG_RT_CHECK, default
-            : assert(0));
-    }
-    return mem_value;
-#endif
     return pmem_read(addr, len);
   }
   // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
@@ -96,8 +88,7 @@ word_t paddr_read(paddr_t addr, int len)
   return 0;
 }
 
-void paddr_write(paddr_t addr, int len, word_t data)
-{
+void paddr_write(paddr_t addr, int len, word_t data) {
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, "write pmem ## addr: %x", addr);
 #endif
