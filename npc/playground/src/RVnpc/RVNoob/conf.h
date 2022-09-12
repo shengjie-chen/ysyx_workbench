@@ -21,7 +21,7 @@
 #endif
 
 #ifdef BIGPROGRAM
-#define CONFIG_DIFFTEST
+// #define CONFIG_DIFFTEST
 #endif
 
 #define CONFIG_ISA64 1
