@@ -46,6 +46,32 @@ static word_t pmem_read(paddr_t addr, int len) {
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
+#ifdef CONFIG_MTRACE
+  fprintf(mtrace_fp, "write pmem ## addr: %x", addr);
+
+  word_t mem_value;
+  word_t *mem_value_ptr = &mem_value;
+  switch (len) {
+  case 1:
+    *(uint8_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%02lx \n", *mem_value_ptr);
+    break;
+  case 2:
+    *(uint16_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%04lx \n", *mem_value_ptr);
+    break;
+  case 4:
+    *(uint32_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%08lx \n", *mem_value_ptr);
+    break;
+    IFDEF(CONFIG_ISA64, case 8
+          : *(uint64_t *)mem_value_ptr = data;
+          fprintf(mtrace_fp, " -> 0x%016lx \n", *mem_value_ptr);
+          break);
+    IFDEF(CONFIG_RT_CHECK, default
+          : assert(0));
+  }
+#endif
 }
 
 static void out_of_bound(paddr_t addr) {
@@ -87,34 +113,8 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-#ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, "write pmem ## addr: %x", addr);
-#endif
+
   if (likely(in_pmem(addr))) {
-#ifdef CONFIG_MTRACE
-    word_t mem_value;
-    word_t *mem_value_ptr = &mem_value;
-    switch (len) {
-    case 1:
-      *(uint8_t *)mem_value_ptr = data;
-      fprintf(mtrace_fp, " -> 0x%02lx \n", *mem_value_ptr);
-      break;
-    case 2:
-      *(uint16_t *)mem_value_ptr = data;
-      fprintf(mtrace_fp, " -> 0x%04lx \n", *mem_value_ptr);
-      break;
-    case 4:
-      *(uint32_t *)mem_value_ptr = data;
-      fprintf(mtrace_fp, " -> 0x%08lx \n", *mem_value_ptr);
-      break;
-      IFDEF(CONFIG_ISA64, case 8
-            : *(uint64_t *)mem_value_ptr = data;
-            fprintf(mtrace_fp, " -> 0x%016lx \n", *mem_value_ptr);
-            break);
-      IFDEF(CONFIG_RT_CHECK, default
-            : assert(0));
-    }
-#endif
     pmem_write(addr, len, data);
     return;
   }

@@ -51,4 +51,29 @@ word_t mmio_read(paddr_t addr, int len) {
 
 void mmio_write(paddr_t addr, int len, word_t data) {
   map_write(addr, len, data, fetch_mmio_map(addr));
+#ifdef CONFIG_MTRACE
+  fprintf(mtrace_fp, "write mmio ## addr: %x", addr);
+  word_t mem_value;
+  word_t *mem_value_ptr = &mem_value;
+  switch (len) {
+  case 1:
+    *(uint8_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%02lx \n", *mem_value_ptr);
+    break;
+  case 2:
+    *(uint16_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%04lx \n", *mem_value_ptr);
+    break;
+  case 4:
+    *(uint32_t *)mem_value_ptr = data;
+    fprintf(mtrace_fp, " -> 0x%08lx \n", *mem_value_ptr);
+    break;
+    IFDEF(CONFIG_ISA64, case 8
+          : *(uint64_t *)mem_value_ptr = data;
+          fprintf(mtrace_fp, " -> 0x%016lx \n", *mem_value_ptr);
+          break);
+    IFDEF(CONFIG_RT_CHECK, default
+          : assert(0));
+  }
+#endif
 }
