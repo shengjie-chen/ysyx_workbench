@@ -23,8 +23,7 @@ static int iringbuf_ptr = 0;
 
 void device_update();
 
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
-{
+static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
@@ -34,6 +33,31 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+#ifdef CONFIG_IRINGBUF
+
+  if (nemu_state.state == NEMU_ABORT) {
+    char *ptr = iringbuf[iringbuf_ptr];
+    memcpy(ptr, " --> ", 5);
+
+    char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
+    FILE *iringbuf_fp = fopen(iringbuf_file, "w");
+    Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
+    int i;
+    for (i = 0; i < 16; i++) {
+      fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
+      // printf("%s\n", iringbuf[i]);
+    }
+  } else {
+    if (iringbuf_ptr == 15) {
+      iringbuf_ptr = 0;
+    } else {
+      iringbuf_ptr++;
+    }
+    memset(iringbuf[iringbuf_ptr], 0, 128);
+  }
+#endif
+
 #ifdef CONFIG_WATCHPOINT
   check_watchpoint();
 #endif
@@ -47,8 +71,7 @@ extern char symname[MAX_FUNC_NUM][20];
 extern vaddr_t symaddr[MAX_FUNC_NUM];
 extern vaddr_t symaddr_end[MAX_FUNC_NUM];
 extern FILE *ftrace_fp;
-static void ftrace_call_ret(Decode *s, vaddr_t pc)
-{
+static void ftrace_call_ret(Decode *s, vaddr_t pc) {
   // printf("djfa;d");
   // if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
   //   return;
@@ -81,8 +104,7 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc)
 }
 #endif
 
-static void exec_once(Decode *s, vaddr_t pc)
-{
+static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
@@ -114,35 +136,16 @@ static void exec_once(Decode *s, vaddr_t pc)
 
 #ifdef CONFIG_IRINGBUF
   char *ptr = iringbuf[iringbuf_ptr];
-  if (nemu_state.state == NEMU_ABORT) {
-    memcpy(ptr, " --> ", 5);
-  } else {
-    memcpy(ptr, "     ", 5);
-  }
+
+  memcpy(ptr, "     ", 5);
+
   ptr += 5;
   memcpy(ptr, s->logbuf, 123);
 
-  if (nemu_state.state == NEMU_ABORT) {
-    char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
-    FILE *iringbuf_fp = fopen(iringbuf_file, "w");
-    Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
-    int i;
-    for (i = 0; i < 16; i++) {
-      fprintf(iringbuf_fp, "%s\n", iringbuf[i]);
-      // printf("%s\n", iringbuf[i]);
-    }
-  }
-  if (iringbuf_ptr == 15) {
-    iringbuf_ptr = 0;
-  } else {
-    iringbuf_ptr++;
-  }
-  memset(iringbuf[iringbuf_ptr], 0, 128);
 #endif
 }
 
-static void execute(uint64_t n)
-{
+static void execute(uint64_t n) {
   Decode s;
   for (; n > 0; n--) {
     exec_once(&s, cpu.pc);
@@ -154,8 +157,7 @@ static void execute(uint64_t n)
   }
 }
 
-static void statistic()
-{
+static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%ld", "%'ld")
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
@@ -166,15 +168,13 @@ static void statistic()
     Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-void assert_fail_msg()
-{
+void assert_fail_msg() {
   isa_reg_display();
   statistic();
 }
 
 /* Simulate how the CPU works. */
-void cpu_exec(uint64_t n)
-{
+void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
   case NEMU_END:
