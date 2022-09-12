@@ -62,7 +62,6 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
     break;
   case 4:
     *(uint32_t *)mem_value_ptr = data;
-    fprintf(mtrace_fp, "\n 1 \n");
     fprintf(mtrace_fp, " -> 0x%08x \n", *(uint32_t *)mem_value_ptr);
     break;
     IFDEF(CONFIG_ISA64, case 8
