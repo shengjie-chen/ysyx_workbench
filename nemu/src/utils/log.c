@@ -178,6 +178,9 @@ void init_log(const char *log_file)
 #ifdef CONFIG_DTRACE
   dtrace_fp = fopen(dtrace_file, "w");
 #endif
+#ifdef CONFIG_ETRACE
+  etrace_fp = fopen(etrace_file, "w");
+#endif
 }
 
 bool log_enable()

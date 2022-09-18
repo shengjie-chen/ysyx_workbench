@@ -3,6 +3,9 @@
 
 #include <common.h>
 
+#ifdef CONFIG_ETRACE
+extern FILE *etrace_fp;
+#endif
 
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < 32));
