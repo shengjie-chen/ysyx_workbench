@@ -7,12 +7,15 @@
 
 int int2char(int d, char *out);
 
-int printf(const char *fmt, ...)
-{
-  char out[128];
+#define MAX_LEN_PRINT 10240
+int printf(const char *fmt, ...) {
+  char out[MAX_LEN_PRINT];
   va_list ap;
   va_start(ap, fmt);
   int j = vsprintf(out, fmt, ap);
+  if (j > MAX_LEN_PRINT) {
+    printf("printf char array out of bounds, change macro!\n");
+  }
   va_end(ap);
   if (j >= 0) {
     for (int i = 0; i < j; i++) {
@@ -22,8 +25,7 @@ int printf(const char *fmt, ...)
   return j;
 }
 
-int vsprintf(char *out, const char *fmt, va_list ap)
-{
+int vsprintf(char *out, const char *fmt, va_list ap) {
   int i = 0; // fmt
   int j = 0; // out
   while (fmt[i] != '\0') {
@@ -72,8 +74,7 @@ int vsprintf(char *out, const char *fmt, va_list ap)
   return j;
 }
 
-int int2char(int d, char *out)
-{
+int int2char(int d, char *out) {
   int count = 0;
   int n = d;
   char m[10];
@@ -97,8 +98,7 @@ int int2char(int d, char *out)
   }
 }
 
-int sprintf(char *out, const char *fmt, ...)
-{
+int sprintf(char *out, const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
   int j = vsprintf(out, fmt, ap);
@@ -106,13 +106,11 @@ int sprintf(char *out, const char *fmt, ...)
   return j;
 }
 
-int snprintf(char *out, size_t n, const char *fmt, ...)
-{
+int snprintf(char *out, size_t n, const char *fmt, ...) {
   panic("Not implemented");
 }
 
-int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
-{
+int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
 }
 
