@@ -1,5 +1,5 @@
 #include <isa.h>
-#include </home/jiexxpu/ysyx/ysyx-workbench/nemu/src/isa/riscv64/local-include/reg.h>
+#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/isa/riscv64/local-include/reg.h"
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
@@ -7,8 +7,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    */
   cpu.csr[2] = epc;
   cpu.csr[3] = NO;
-  cpu.pc = cpu.csr[1];
-  return 0;
+  return cpu.csr[1];
 }
 
 word_t isa_query_intr() {
