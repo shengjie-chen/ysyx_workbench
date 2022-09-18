@@ -7,7 +7,10 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    */
 
 #ifdef CONFIG_ETRACE
-  fprintf(etrace_fp, " %s", "isa_raise_intr\n");
+  fprintf(etrace_fp, "*%s", "isa_raise_intr:\n");
+  fprintf(etrace_fp, "   mepc   write %lx\n", epc);
+  fprintf(etrace_fp, "   mcause write %lx\n", NO);
+  fprintf(etrace_fp, "   mtvec  read  %lx to dnpc\n", cpu.csr[1]);
 #endif
   cpu.csr[2] = epc;
   cpu.csr[3] = NO;

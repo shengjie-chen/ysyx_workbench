@@ -91,6 +91,7 @@ static int decode_exec(Decode *s) {
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
+  word_t zimm = BITS(INSTPAT_INST(s), 19, 15);
 #define INSTPAT_MATCH(s, name, type, ... /* body */)             \
   {                                                              \
     decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
@@ -138,7 +139,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and, R, R(dest) = src1 & src2);
   // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence  , I, R(dest) = Mr(src1 + src2, 8));
   // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence.i, I, R(dest) = Mr(src1 + src2, 8));
-  INSTPAT("000000000000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(1, s->pc));
+  INSTPAT("000000000000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(11, s->pc));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
 
   // RV64I
@@ -179,11 +180,14 @@ static int decode_exec(Decode *s) {
   INSTPAT("???????????? ????? 010 ????? 11100 11", csrrs, I, R(dest) = CSRs(src2); CSRs(src2) = R(dest) | src1);
   INSTPAT("???????????? ????? 001 ????? 11100 11", csrrw, I, R(dest) = CSRs(src2); CSRs(src2) = src1);
   INSTPAT("???????????? ????? 011 ????? 11100 11", csrrc, I, R(dest) = CSRs(src2); CSRs(src2) = R(dest) & ~src1);
+  INSTPAT("???????????? ????? 110 ????? 11100 11", csrrsi, I, R(dest) = CSRs(src2); CSRs(src2) = R(dest) | zimm);
+  INSTPAT("???????????? ????? 101 ????? 11100 11", csrrwi, I, R(dest) = CSRs(src2); CSRs(src2) = zimm);
+  INSTPAT("???????????? ????? 111 ????? 11100 11", csrrci, I, R(dest) = CSRs(src2); CSRs(src2) = R(dest) & ~zimm);
 
   // Privileged
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R, s->dnpc = CSRs(0x341) + 4;
 #ifdef CONFIG_ETRACE
-          fprintf(etrace_fp, " %s", "mret\n");
+          fprintf(etrace_fp, "*%s", "mret\n");
 #endif
   ); // some func wait to add
 
