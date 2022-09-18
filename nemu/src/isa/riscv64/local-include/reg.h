@@ -3,6 +3,7 @@
 
 #include <common.h>
 
+
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < 32));
   return idx;
@@ -27,6 +28,24 @@ static inline int csr_idx(word_t addr) {
   default:
     panic("csr addr %lx is invalid\n",addr);
   }
+
+#ifdef CONFIG_ETRACE
+  fprintf(etrace_fp, "CSRs  ");
+  switch (addr) {
+  case 0:
+    fprintf(etrace_fp, " %s", "mstatus:\n");
+    break;
+  case 1:
+    fprintf(etrace_fp, " %s", "mtvec  :\n");
+    break;
+  case 2:
+    fprintf(etrace_fp, " %s", "mepc   :\n");
+    break;
+  case 3:
+    fprintf(etrace_fp, " %s", "mcause :\n");
+    break;
+  }
+#endif
 }
 
 #endif

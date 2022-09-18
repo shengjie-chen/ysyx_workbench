@@ -14,6 +14,11 @@ char *dtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-dtrace-lo
 FILE *dtrace_fp = NULL;
 #endif
 
+#ifdef CONFIG_ETRACE
+char *etrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-etrace-log.txt";
+FILE *etrace_fp = NULL;
+#endif
+
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
 char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-ftrace-log.txt";
