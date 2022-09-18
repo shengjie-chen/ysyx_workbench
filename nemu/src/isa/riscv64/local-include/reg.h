@@ -22,16 +22,6 @@ static inline const char *reg_name(int idx, int width) {
 #define CSRs(i) (cpu.csr[csr_idx(i)])
 
 static inline int csr_idx(word_t addr) {
-  switch (addr) {
-  // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
-  case 0x300:    return 0; break;
-  case 0x305:    return 1; break;
-  case 0x341:    return 2; break;
-  case 0x342:    return 3; break;
-  default:
-    panic("csr addr %lx is invalid\n",addr);
-  }
-
 #ifdef CONFIG_ETRACE
   fprintf(etrace_fp, "CSRs  ");
   switch (addr) {
@@ -49,6 +39,18 @@ static inline int csr_idx(word_t addr) {
     break;
   }
 #endif
+  
+  switch (addr) {
+  // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
+  case 0x300:    return 0; break;
+  case 0x305:    return 1; break;
+  case 0x341:    return 2; break;
+  case 0x342:    return 3; break;
+  default:
+    panic("csr addr %lx is invalid\n",addr);
+  }
+
+
 }
 
 #endif
