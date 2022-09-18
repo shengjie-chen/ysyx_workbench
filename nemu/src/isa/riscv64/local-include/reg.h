@@ -25,16 +25,16 @@ static inline int csr_idx(word_t addr) {
 #ifdef CONFIG_ETRACE
   fprintf(etrace_fp, "CSRs  ");
   switch (addr) {
-  case 0:
+  case 0x300:
     fprintf(etrace_fp, " %s", "mstatus:\n");
     break;
-  case 1:
+  case 0x305:
     fprintf(etrace_fp, " %s", "mtvec  :\n");
     break;
-  case 2:
+  case 0x341:
     fprintf(etrace_fp, " %s", "mepc   :\n");
     break;
-  case 3:
+  case 0x342:
     fprintf(etrace_fp, " %s", "mcause :\n");
     break;
   }
