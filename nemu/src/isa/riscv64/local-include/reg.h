@@ -10,9 +10,23 @@ static inline int check_reg_idx(int idx) {
 
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 
-static inline const char* reg_name(int idx, int width) {
-  extern const char* regs[];
+static inline const char *reg_name(int idx, int width) {
+  extern const char *regs[];
   return regs[check_reg_idx(idx)];
+}
+
+#define CSRs(i) (cpu.csr[csr_idx(i)])
+
+static inline int csr_idx(word_t addr) {
+  switch (addr) {
+  // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
+  case 0x300:    return 0;
+  case 0x305:    return 1;
+  case 0x341:    return 2;
+  case 0x342:    return 3;
+  default:
+    panic("csr is invalid\n");
+  }
 }
 
 #endif

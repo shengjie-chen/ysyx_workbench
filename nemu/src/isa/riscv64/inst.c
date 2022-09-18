@@ -85,24 +85,6 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
 }
 
 #define XLEN 64
-// get top 64bits of 64x64 mul result
-// static uint64_t mul_top64(uint64_t x, uint64_t y)
-// {
-//   uint64_t a = x >> 32, b = x & 0xffffffff;
-//   uint64_t c = y >> 32, d = y & 0xffffffff;
-
-//   uint64_t ac = a * c;
-//   uint64_t bc = b * c;
-//   uint64_t ad = a * d;
-//   uint64_t bd = b * d;
-
-//   uint64_t mid34 = (bd >> 32) + (bc & 0xffffffff) + (ad & 0xffffffff);
-
-//   uint64_t upper64 = ac + (bc >> 32) + (ad >> 32) + (mid34 >> 32);
-//   //  uint64_t lower64 = (mid34 << 32) | (bd & 0xffffffff);
-
-//   return upper64;
-// }
 
 static int decode_exec(Decode *s) {
   word_t dest = 0, src1 = 0, src2 = 0;
@@ -156,7 +138,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and, R, R(dest) = src1 & src2);
   // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence  , I, R(dest) = Mr(src1 + src2, 8));
   // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence.i, I, R(dest) = Mr(src1 + src2, 8));
-  // INSTPAT("??????? ????? ????? 011 00000 11100 11", ecall  , I, R(dest) = Mr(src1 + src2, 8));
+  INSTPAT("000000000000 00000 000 00000 11100 11", ecall  , I, isa_raise_intr(0,cpu.pc));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
 
   // RV64I
@@ -192,6 +174,10 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw, R, R(dest) = SEXT((BITS((src1), 31, 0) / BITS((src2), 31, 0)), 32));
   INSTPAT("0000001 ????? ????? 110 ????? 01110 11", remw, R, R(dest) = SEXT(((signed)SEXT(src1, 32) % (signed)SEXT(src2, 32)), 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw, R, R(dest) = SEXT((BITS((src1), 31, 0) % BITS((src2), 31, 0)), 32));
+
+  // CSR
+  INSTPAT("???????????? ????? 010 ????? 11100 11", csrrs, I, word_t t = CSRs(src2);CSRs(src2)=t|src1;R(dest)=t);
+
 
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv, N, INV(s->pc));
   INSTPAT_END();
