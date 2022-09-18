@@ -25,7 +25,7 @@ static inline int csr_idx(word_t addr) {
   case 0x341:    return 2;
   case 0x342:    return 3;
   default:
-    panic("csr is invalid\n");
+    panic("csr addr %lx is invalid\n",addr);
   }
 }
 
