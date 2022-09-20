@@ -3,7 +3,7 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 
-class IDU extends Module with ALU_op with Judge_op with function with RVNoobConfig {
+class IDU extends Module with IDU_op with function with RVNoobConfig {
   val io = IO(new Bundle {
     val inst = Input(UInt(inst_w.W))
     val imm  = Output(UInt(xlen.W))
@@ -17,6 +17,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
     // control
     val exe_ctrl  = Output(new EXECtrlIO)
     val pmem_ctrl = Output(new PmemCtrlIO)
+    val csr_ctrl  = Output(new CsrCtrlIO)
     val dnpc_jalr = Output(Bool())
     val pc_mux    = Output(Bool())
   })
@@ -72,6 +73,13 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val rvi_sra   = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
   val rvi_or    = opcode === "b0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
   val rvi_and   = opcode === "b0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
+  val rvi_ecall  = io.inst === "b00000000000000000000000001110011".U
+  val rvi_csrrs  = opcode === "b1110011".U && fun3 === "b010".U   // csr
+  val rvi_csrrw  = opcode === "b1110011".U && fun3 === "b001".U
+  val rvi_csrrc  = opcode === "b1110011".U && fun3 === "b011".U
+  val rvi_csrrsi = opcode === "b1110011".U && fun3 === "b110".U
+  val rvi_csrrwi = opcode === "b1110011".U && fun3 === "b101".U
+  val rvi_csrrci = opcode === "b1110011".U && fun3 === "b111".U
   // rv64i
   val rvi_lwu   = opcode === "b0000011".U && fun3 === "b110".U
   val rvi_ld    = opcode === "b0000011".U && fun3 === "b011".U
@@ -103,23 +111,18 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   val rvm_divuw = opcode === "b0111011".U && fun3 === "b101".U && fun7 === "b0000001".U
   val rvm_remw  = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
   val rvm_remuw = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
-  // csr
-  val csr_ecall = io.inst === "b00000000000000000000000001110011".U
-  val csr_csrrs = io.inst === opcode === "b1110011".U && fun3 === "b010".U
-  val csr_csrrw = io.inst === opcode === "b1110011".U && fun3 === "b001".U
-  val csr_csrrc = io.inst === opcode === "b1110011".U && fun3 === "b011".U
-  val csr_mret = io.inst === "b00110000001000000000000001110011".U
 
-
+  // privileged
+  val pri_mret   = io.inst === "b00110000001000000000000001110011".U
 
   // inst type
   val type_I =
-    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.pmem_ctrl.r_pmem // TYPE_I addi
+    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.pmem_ctrl.r_pmem || io.csr_ctrl.csr_en || rvi_ecall// TYPE_I addi
   val type_U = rvi_lui || rvi_auipc // TYPE_U auipc
   val type_S = rvi_sb || rvi_sh || rvi_sw || rvi_sd // TYPE_S
   val type_J = rvi_jal // TYPE_J
   val type_R =
-    rvi_add || rvi_sub || rvi_sll || rvi_slt || rvi_sltu || rvi_xor || rvi_srl || rvi_sra || rvi_or || rvi_and || rvi_addw || rvi_subw || rvi_sllw || rvi_srlw || rvi_sraw || rvm_mul || rvm_mulh || rvm_mulhsu || rvm_mulhu || rvm_div || rvm_divu || rvm_rem || rvm_remu || rvm_mulw || rvm_divw || rvm_divuw || rvm_remw || rvm_remuw // TYPE_R
+    rvi_add || rvi_sub || rvi_sll || rvi_slt || rvi_sltu || rvi_xor || rvi_srl || rvi_sra || rvi_or || rvi_and || rvi_addw || rvi_subw || rvi_sllw || rvi_srlw || rvi_sraw || rvm_mul || rvm_mulh || rvm_mulhsu || rvm_mulhu || rvm_div || rvm_divu || rvm_rem || rvm_remu || rvm_mulw || rvm_divw || rvm_divuw || rvm_remw || rvm_remuw || pri_mret// TYPE_R
   val type_B =
     rvi_beq || rvi_bne || rvi_blt || rvi_bge || rvi_bltu || rvi_bgeu // TYPE_B
 
@@ -207,7 +210,7 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
     )
   )
   io.exe_ctrl.old_val_mux := io.pmem_ctrl.r_pmem
-  io.pmem_ctrl.r_pmem     := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld
+  io.pmem_ctrl.r_pmem     := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
   io.pmem_ctrl.w_pmem     := type_S
   io.pmem_ctrl.zero_ex_op := MuxCase(
     DontCare,
@@ -228,6 +231,22 @@ class IDU extends Module with ALU_op with Judge_op with function with RVNoobConf
   io.ren2                  := type_S || type_R || type_B
   io.exe_ctrl.alu_src1_mux := type_U
   io.exe_ctrl.alu_src2_mux := type_I || type_S || type_U
+
+  io.csr_ctrl.csr := MuxCase(
+    csr_x,
+    Array(
+      rvi_csrrs -> csr_rs,
+      rvi_csrrw -> csr_rw,
+      rvi_csrrc -> csr_rc,
+      rvi_csrrsi -> csr_rsi,
+      rvi_csrrwi -> csr_rwi,
+      rvi_csrrci -> csr_rci
+    )
+  )
+  io.csr_ctrl.mret := pri_mret
+  io.csr_ctrl.ecall := rvi_ecall
+  io.csr_ctrl.csr_en := io.csr_ctrl.csr.orR
+
 
   // control check
   //  assert(!(io.dnpc_0b0 && !io.dnpc_mux), "dnpc_0b0->dnpc_mux dependence error!\n")
@@ -277,4 +296,11 @@ class PmemCtrlIO extends Bundle with RVNoobConfig {
   val r_pmem     = Bool()
   val w_pmem     = Bool()
 
+}
+
+class CsrCtrlIO extends Bundle with RVNoobConfig {
+  val ecall = Bool()
+  val mret  = Bool()
+  val csr   = UInt(3.W)
+  val csr_en = Bool()   // all csr reg inst
 }

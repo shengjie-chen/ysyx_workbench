@@ -17,7 +17,7 @@ class RF_read(
 class RegisterFile(
   val ADDR_WIDTH: Int = 5,
   val DATA_WIDTH: Int = 64)
-    extends Module {
+    extends Module with RVNoobConfig {
   val io = IO(new Bundle {
     val wen    = Input(Bool())
     val wdata  = Input(UInt(DATA_WIDTH.W))
@@ -29,6 +29,9 @@ class RegisterFile(
     val raddr1 = Input(UInt(ADDR_WIDTH.W))
     val raddr2 = Input(UInt(ADDR_WIDTH.W))
     val a0     = Output(UInt(DATA_WIDTH.W))
+    val csr_rdata = Input(UInt(DATA_WIDTH.W))
+    val csr_en = Input(Bool())
+    val dest_rdata = Output(UInt(DATA_WIDTH.W))
   })
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
@@ -51,8 +54,10 @@ class RegisterFile(
 
   // write reg
   when(io.wen) {
-    rf(io.waddr) := io.wdata
+    rf(io.waddr) := Mux(io.csr_en,io.csr_rdata,io.wdata)
   }
+
+  io.dest_rdata := Mux(io.csr_en,rf(io.waddr),0.U)
 
   io.a0 := rf(10)
   rf(0) := 0.U

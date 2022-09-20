@@ -19,7 +19,7 @@ static inline const char *reg_name(int idx, int width) {
   return regs[check_reg_idx(idx)];
 }
 
-#define CSRs(i) (cpu.csr[csr_idx(i)])
+#define CSRs(i) (cpu.csr[csr_idx(BITS(i,11,0))])
 
 static inline int csr_idx(word_t addr) {
 #ifdef CONFIG_ETRACE
