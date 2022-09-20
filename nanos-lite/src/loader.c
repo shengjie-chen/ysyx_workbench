@@ -28,15 +28,14 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // 读取 head 到elf_head
   ramdisk_read(&elf_head, 0, sizeof(Elf_Ehdr));
   // 判断elf文件类型 machine
-    // 判断elf文件类型
-  if (elf_head->e_ident[0] != 0x7F ||
-      elf_head->e_ident[1] != 'E' ||
-      elf_head->e_ident[2] != 'L' ||
-      elf_head->e_ident[3] != 'F') {
-    panic("Not a ELF file\n");
-  }
+  // if (elf_head->e_ident[0] != 0x7F ||
+  //     elf_head->e_ident[1] != 'E' ||
+  //     elf_head->e_ident[2] != 'L' ||
+  //     elf_head->e_ident[3] != 'F') {
+  //   panic("Not a ELF file\n");
+  // }
   // assert(*(uint32_t *)elf_head->e_ident == 0x464c457f);
-  assert(elf_head->e_machine == EXPECT_TYPE);
+  // assert(elf_head->e_machine == EXPECT_TYPE);
 
   uintptr_t entry = 0;
   Elf_Phdr *elf_seg;
