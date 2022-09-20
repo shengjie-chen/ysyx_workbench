@@ -6,6 +6,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int int2char(int d, char *out);
+int uint2char(uint32_t d, char *out);
 
 #define MAX_LEN_PRINT 10240
 int printf(const char *fmt, ...) {
@@ -67,6 +68,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       j--;
       break;
     }
+    case 'p': // 得到一个address
+    {
+      int pp;
+      pp = (uint32_t)va_arg(ap, uint32_t);
+      count = uint2char(pp, &out[j]);
+      j += count;
+      break;
+    }
     }
     i++;
   }
@@ -98,6 +107,21 @@ int int2char(int d, char *out) {
   }
 }
 
+int uint2char(uint32_t d, char *out) {
+  int count = 0;
+  uint32_t n = d;
+  char m[10];
+  while (n != 0) {
+    m[count] = n % 10 + 48;
+    n /= 10;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  return count;
+}
 
 int sprintf(char *out, const char *fmt, ...) {
   va_list ap;
