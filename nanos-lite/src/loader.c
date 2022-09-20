@@ -48,7 +48,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
         entry = elf_seg.p_vaddr;
         j++;
       }
-      memcpy((void *)elf_seg.p_vaddr, elf_head.e_phoff + (&ramdisk_start), elf_seg.p_filesz);
+      memcpy((void *)elf_seg.p_vaddr, elf_seg.p_offset + (&ramdisk_start), elf_seg.p_filesz);
       memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
     }
   }
