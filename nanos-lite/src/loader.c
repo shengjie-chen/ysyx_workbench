@@ -23,10 +23,11 @@ extern uint8_t ramdisk_start;
 extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  Elf_Ehdr *elf_head;
+  Elf_Ehdr elf_head;
 
   // 读取 head 到elf_head
   ramdisk_read(&elf_head, 0, sizeof(Elf_Ehdr));
+
   // 判断elf文件类型 machine
   // if (elf_head->e_ident[0] != 0x7F ||
   //     elf_head->e_ident[1] != 'E' ||
@@ -34,21 +35,21 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   //     elf_head->e_ident[3] != 'F') {
   //   panic("Not a ELF file\n");
   // }
-  // assert(*(uint32_t *)elf_head->e_ident == 0x464c457f);
-  // assert(elf_head->e_machine == EXPECT_TYPE);
+  assert(*(uint32_t *)elf_head.e_ident == 0x464c457f);
+  assert(elf_head.e_machine == EXPECT_TYPE);
 
   uintptr_t entry = 0;
-  Elf_Phdr *elf_seg;
+  Elf_Phdr elf_seg;
   int j = 0;
-  for (int i = 0; i < elf_head->e_phnum; i++) {
-    ramdisk_read(&elf_seg, elf_head->e_phoff + i * elf_head->e_phentsize, sizeof(Elf_Phdr));
-    if (elf_seg->p_type == PT_LOAD) {
+  for (int i = 0; i < elf_head.e_phnum; i++) {
+    ramdisk_read(&elf_seg, elf_head.e_phoff + i * elf_head.e_phentsize, sizeof(Elf_Phdr));
+    if (elf_seg.p_type == PT_LOAD) {
       if (j == 0) {
-        entry = elf_seg->p_vaddr;
+        entry = elf_seg.p_vaddr;
         j++;
       }
-      memcpy((void *)elf_seg->p_vaddr, elf_head->e_phoff + (&ramdisk_start), elf_seg->p_filesz);
-      memset((void *)(elf_seg->p_vaddr + elf_seg->p_filesz), 0, elf_seg->p_memsz - elf_seg->p_filesz);
+      memcpy((void *)elf_seg.p_vaddr, elf_head.e_phoff + (&ramdisk_start), elf_seg.p_filesz);
+      memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
     }
   }
   return entry;
