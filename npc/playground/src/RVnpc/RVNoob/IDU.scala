@@ -222,7 +222,7 @@ class IDU extends Module with IDU_op with function with RVNoobConfig {
     )
   )
 
-  io.pc_mux    := rvi_jal || rvi_jalr // 出现pc=的指令
+  io.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret// 出现pc=的指令
   io.dnpc_jalr := rvi_jalr
 
   // 是否写寄存器文件
