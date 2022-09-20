@@ -31,12 +31,12 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   val csr_wdata = MuxCase(
     0.U,
     Array(
-      (io.csr_ctrl.csr === csr_rw) -> io.dest_rdata,
+      (io.csr_ctrl.csr === csr_rw) -> io.rdata1,
       (io.csr_ctrl.csr === csr_rwi) -> io.zimm,
-      (io.csr_ctrl.csr === csr_rs) -> (io.dest_rdata | io.rdata1),
-      (io.csr_ctrl.csr === csr_rsi) -> (io.dest_rdata | io.zimm),
-      (io.csr_ctrl.csr === csr_rc) -> (io.dest_rdata & (~io.rdata1).asUInt()),
-      (io.csr_ctrl.csr === csr_rci) -> (io.dest_rdata & (~io.zimm).asUInt())
+      (io.csr_ctrl.csr === csr_rs) -> (csr(csr_addr) | io.rdata1),
+      (io.csr_ctrl.csr === csr_rsi) -> (csr(csr_addr) | io.zimm),
+      (io.csr_ctrl.csr === csr_rc) -> (csr(csr_addr) & (~io.rdata1).asUInt()),
+      (io.csr_ctrl.csr === csr_rci) -> (csr(csr_addr) & (~io.zimm).asUInt())
     )
   )
   when(io.csr_ctrl.csr_en){
