@@ -19,18 +19,24 @@ class RVNoob extends Module {
   val idu = Module(new IDU)
   val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
+  val csr = Module(new CSR)
 
   npc_add_res := Mux(idu.io.dnpc_jalr, rf.io.rdata1, pc) + idu.io.imm
-  snpc        := pc + 4.U
-  dnpc        := Mux(idu.io.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
-  pc          := Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
-  io.pc       := pc
+  snpc        := Mux(idu.io.csr_ctrl.mret, csr.io.mepc, pc) + 4.U
+  dnpc := Mux(
+    idu.io.csr_ctrl.ecall,
+    csr.io.mtvec,
+    Mux(idu.io.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
+  )
+  pc    := Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
+  io.pc := pc
   val dpi_npc = Module(new DpiNpc)
   dpi_npc.io.npc <> Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
 
   ifm.io.pmem_ctrl <> idu.io.pmem_ctrl
   ifm.io.wdata <> rf.io.rdata2
   ifm.io.data_addr <> exe.io.mem_addr
+
   idu.io.inst := io.inst
 
   rf.io.wen <> idu.io.wen
@@ -40,6 +46,8 @@ class RVNoob extends Module {
   rf.io.ren2 <> idu.io.ren2
   rf.io.raddr1 <> idu.io.rs1
   rf.io.raddr2 <> idu.io.rs2
+  rf.io.csr_rdata <> csr.io.csr_rdata
+  rf.io.csr_en <> idu.io.csr_ctrl.csr_en
 
   exe.io.src1 <> rf.io.rdata1
   exe.io.src2 <> rf.io.rdata2
@@ -48,6 +56,14 @@ class RVNoob extends Module {
   exe.io.snpc <> snpc
   exe.io.ctrl <> idu.io.exe_ctrl
   exe.io.mem_data <> ifm.io.rdata
+
+  csr.io.csr_ctrl <> idu.io.csr_ctrl
+  csr.io.pc <> pc
+  csr.io.csr_addr <> idu.io.imm(11, 0)
+  csr.io.mcause <> 11.U
+  csr.io.zimm <> idu.io.rs1
+  csr.io.rdata1 <> rf.io.rdata1
+  csr.io.dest_rdata <> rf.io.dest_rdata
 
   io.res <> exe.io.gp_out
 

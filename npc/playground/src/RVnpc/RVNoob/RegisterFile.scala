@@ -24,14 +24,17 @@ class RegisterFile(
     val waddr  = Input(UInt(ADDR_WIDTH.W))
     val ren1   = Input(Bool())
     val ren2   = Input(Bool())
-    val rdata1 = Output(UInt(DATA_WIDTH.W))
-    val rdata2 = Output(UInt(DATA_WIDTH.W))
     val raddr1 = Input(UInt(ADDR_WIDTH.W))
     val raddr2 = Input(UInt(ADDR_WIDTH.W))
-    val a0     = Output(UInt(DATA_WIDTH.W))
     val csr_rdata = Input(UInt(DATA_WIDTH.W))
     val csr_en = Input(Bool())
+
+    val rdata1 = Output(UInt(DATA_WIDTH.W))
+    val rdata2 = Output(UInt(DATA_WIDTH.W))
     val dest_rdata = Output(UInt(DATA_WIDTH.W))
+
+    val a0     = Output(UInt(DATA_WIDTH.W))
+
   })
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
