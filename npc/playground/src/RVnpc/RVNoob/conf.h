@@ -1,9 +1,9 @@
 #ifndef __MACRO_CONF__
 #define __MACRO_CONF__
 
-#define BIGPROGRAM
+// #define BIGPROGRAM
 #ifdef BIGPROGRAM
-// #define BIGPROGRAMDEBUG
+#define BIGPROGRAMDEBUG
 #endif
 
 #ifndef BIGPROGRAM
