@@ -13,7 +13,7 @@ void do_syscall(Context *c) {
     c->GPRx = 0;
     break;
   case SYS_exit:
-    printf("%x\n", a[1]);
+    printf("%x\n", 0);
     // asm volatile ("ebreak");
     halt(a[1]);
     break;
