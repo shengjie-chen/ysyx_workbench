@@ -48,6 +48,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     }
   }
   entry = elf_head.e_entry;
+  printf("%d\n",entry);
   return entry;
 }
 
