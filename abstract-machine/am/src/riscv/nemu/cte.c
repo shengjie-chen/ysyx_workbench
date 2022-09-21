@@ -11,7 +11,7 @@ Context *__am_irq_handle(Context *c) {
     case 11: {
       register intptr_t type asm("a7");
       printf("%d\n", type);
-      asm volatile("ebreak");
+      asm volatile("sret");
 
       if (type == SYS_exit) {
         ev.event = EVENT_SYSCALL;
