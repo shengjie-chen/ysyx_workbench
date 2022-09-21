@@ -10,10 +10,10 @@ Context *__am_irq_handle(Context *c) {
     switch (c->mcause) {
     case 11: {
       register intptr_t type asm("a7");
-      if (type == SYS_yield) {
-        ev.event = EVENT_SYSCALL;
-      } else
+      if (type == -1) {
         ev.event = EVENT_YIELD;
+      } else
+        ev.event = EVENT_SYSCALL;
     } break;
     default:
       ev.event = EVENT_ERROR;
