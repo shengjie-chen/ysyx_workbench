@@ -10,9 +10,11 @@ Context *__am_irq_handle(Context *c) {
     switch (c->mcause) {
     case 11: {
       register intptr_t type asm("a7");
-      if (type == SYS_exit)
+      printf("%d", type);
+
+      if (type == SYS_exit) {
         ev.event = EVENT_SYSCALL;
-      else
+      } else
         ev.event = EVENT_YIELD;
     } break;
     default:
