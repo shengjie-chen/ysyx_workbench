@@ -54,7 +54,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       dd = (int)va_arg(ap, int);
       if (dd == 0) {
         count = 1;
-        out[j] = 0;
+        out[j] = 48;
       } else {
         count = int2char(dd, &out[j]);
       }
@@ -67,7 +67,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       xx = (uint32_t)va_arg(ap, uint32_t);
       if (xx == 0) {
         count = 1;
-        out[j] = 0;
+        out[j] = 48;
       } else {
         count = hex2char(xx, &out[j]);
       }
@@ -93,7 +93,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       pp = (uint32_t)va_arg(ap, uint32_t);
       if (pp == 0) {
         count = 1;
-        out[j] = 0;
+        out[j] = 48;
       } else {
         count = uint2char(pp, &out[j]);
       }
