@@ -10,10 +10,7 @@ Context *__am_irq_handle(Context *c) {
     switch (c->mcause) {
     case 11: {
       register intptr_t type asm("a7");
-      printf("%d\n", type);
-      asm volatile("sret");
-
-      if (type == SYS_exit) {
+      if (type == SYS_yield) {
         ev.event = EVENT_SYSCALL;
       } else
         ev.event = EVENT_YIELD;
