@@ -9,7 +9,7 @@ Context *__am_irq_handle(Context *c) {
     Event ev = {0};
     switch (c->mcause) {
     case 11: {
-      register intptr_t type asm("a7");
+      register intptr_t type asm("a7");// or use c->GPR1
       if (type == -1) {
         ev.event = EVENT_YIELD;
       } else
