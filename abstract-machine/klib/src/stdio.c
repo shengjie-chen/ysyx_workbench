@@ -7,6 +7,7 @@
 
 int int2char(int d, char *out);
 int uint2char(uint32_t d, char *out);
+int hex2char(uint32_t d, char *out);
 
 #define MAX_LEN_PRINT 10240
 int printf(const char *fmt, ...) {
@@ -52,6 +53,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       int dd;
       dd = (int)va_arg(ap, int);
       count = int2char(dd, &out[j]);
+      j += count;
+      break;
+    }
+    case 'x': // 得到一个0x数
+    {
+      int xx;
+      xx = (uint32_t)va_arg(ap, uint32_t);
+      count = hex2char(xx, &out[j]);
       j += count;
       break;
     }
@@ -114,6 +123,28 @@ int uint2char(uint32_t d, char *out) {
   while (n != 0) {
     m[count] = n % 10 + 48;
     n /= 10;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  return count;
+}
+
+int hex2char(uint32_t d, char *out) {
+  int count = 0;
+  uint32_t n = d;
+  char m[10];
+  while (n != 0) {
+    int x = n % 16;
+    if (x < 10) {
+      m[count] = x + 48;
+
+    } else {
+      m[count] = n % 16 + 55;
+    }
+    n /= 16;
     ++count;
   }
   int i;
