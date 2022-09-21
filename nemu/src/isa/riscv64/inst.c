@@ -189,6 +189,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R, s->dnpc = CSRs(0x341) + 4;
 #ifdef CONFIG_ETRACE
           fprintf(etrace_fp, "*%s", "mret\n");
+          fprintf(etrace_fp, "dnpc = %lx", s->dnpc);
 #endif
   ); // some func wait to add
 
