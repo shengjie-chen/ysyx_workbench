@@ -1,4 +1,5 @@
 #include <elf.h>
+#include <fs.h>
 #include <proc.h>
 
 #ifdef __LP64__
@@ -26,15 +27,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elf_head;
 
   // 读取 head 到elf_head
-  ramdisk_read(&elf_head, 0, sizeof(Elf_Ehdr));
+  // ramdisk_read(&elf_head, 0, sizeof(Elf_Ehdr));
+  int fd = fs_open(filename, 0, 0);
+  fs_read(fd, &elf_head, sizeof(Elf_Ehdr));
 
   // 判断elf文件类型 machine
-  // if (elf_head->e_ident[0] != 0x7F ||
-  //     elf_head->e_ident[1] != 'E' ||
-  //     elf_head->e_ident[2] != 'L' ||
-  //     elf_head->e_ident[3] != 'F') {
-  //   panic("Not a ELF file\n");
-  // }
   assert(*(uint32_t *)elf_head.e_ident == 0x464c457f);
   assert(elf_head.e_machine == EXPECT_TYPE);
 
@@ -49,9 +46,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   //     memset((void *)(elf_seg.p_vaddr + vaddr_offset + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
   //   }
   // }
+  fs_lseek(fd, elf_head.e_phoff, SEEK_CUR);
 
   for (int i = 0; i < elf_head.e_phnum; i++) {
-    ramdisk_read(&elf_seg, elf_head.e_phoff + i * elf_head.e_phentsize, sizeof(Elf_Phdr));
+    // ramdisk_read(&elf_seg, elf_head.e_phoff + i * elf_head.e_phentsize, sizeof(Elf_Phdr));
+    fs_read(fd, &elf_seg, sizeof(Elf_Phdr));
     if (elf_seg.p_type == PT_LOAD) {
       memcpy((void *)elf_seg.p_vaddr, elf_seg.p_offset + (&ramdisk_start), elf_seg.p_filesz);
       memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
