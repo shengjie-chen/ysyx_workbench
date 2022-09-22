@@ -1,6 +1,9 @@
 #include "syscall.h"
 #include <common.h>
 // #include <stdio.h>
+#ifdef CONFIG_STRACE
+extern void write_strace(uintptr_t *a);
+#endif
 
 // extern FILE *strace_fp;
 // extern void write_strace(uintptr_t *a);
@@ -12,10 +15,11 @@ void do_syscall(Context *c) {
   a[2] = c->GPR3;
   a[3] = c->GPR4;
 
-  // write_strace(a);
+#ifdef CONFIG_STRACE
+  write_strace(a);
   // printf("\n[  log  ]system call ! ");
   // printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
-
+#endif
   switch (a[0]) {
   case SYS_brk: {
     // printf("name : %s", "SYS_brk\n");
