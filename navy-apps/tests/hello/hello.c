@@ -12,8 +12,9 @@ int main() {
       printf("\n");
       printf("Hello World from Navy-apps for the %dth time!\n", i ++);
       j = 0;
-    }
     break;
+
+    }
   }
   return 0;
 }
