@@ -47,6 +47,7 @@ char *strncpy(char *dst, const char *src, size_t n)
   }
   while (i < n) {
     *pstr++ = 0;
+    i++;
   }
   return dst;
 }
