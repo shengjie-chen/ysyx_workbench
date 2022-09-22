@@ -13,10 +13,15 @@ void do_syscall(Context *c) {
   a[3] = c->GPR4;
 
   // write_strace(a);
-  printf("\nsystem call ! ");
-  printf("a0:%ld, a1:%ld, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
+  printf("\n[  log  ]system call ! ");
+  printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
 
   switch (a[0]) {
+  case SYS_brk: {
+    printf("name : %s", "SYS_brk\n");
+
+    c->GPRx = 0;
+  } break;
   case SYS_write: {
     printf("name : %s", "SYS_write\n");
     int i = 0;

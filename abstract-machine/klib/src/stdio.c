@@ -9,7 +9,8 @@ int int2char(int d, char *out);
 int uint2char(uint32_t d, char *out);
 int hex2char(uint32_t d, char *out);
 int lint2char(long int d, char *out);
-
+int lhex2char(uint64_t d, char *out) ;
+int luint2char(uint64_t d, char *out) ;
 
 #define MAX_LEN_PRINT 10240
 int printf(const char *fmt, ...) {
@@ -90,7 +91,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     case 'p': // 得到一个address
-    {
+    case 'u': {
       int pp;
       pp = (uint32_t)va_arg(ap, uint32_t);
       if (pp == 0) {
@@ -115,6 +116,31 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           out[j] = 48;
         } else {
           count = lint2char(dd, &out[j]);
+        }
+        j += count;
+        break;
+      }
+      case 'u': {
+        int pp;
+        pp = (uint64_t)va_arg(ap, uint64_t);
+        if (pp == 0) {
+          count = 1;
+          out[j] = 48;
+        } else {
+          count = luint2char(pp, &out[j]);
+        }
+        j += count;
+        break;
+      }
+      case 'x': // 得到一个0x数
+      {
+        int xx;
+        xx = (uint64_t)va_arg(ap, uint64_t);
+        if (xx == 0) {
+          count = 1;
+          out[j] = 48;
+        } else {
+          count = lhex2char(xx, &out[j]);
         }
         j += count;
         break;
@@ -196,6 +222,44 @@ int hex2char(uint32_t d, char *out) {
   int count = 0;
   uint32_t n = d;
   char m[10];
+  while (n != 0) {
+    int x = n % 16;
+    if (x < 10) {
+      m[count] = x + 48;
+
+    } else {
+      m[count] = n % 16 + 55;
+    }
+    n /= 16;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  return count;
+}
+
+int luint2char(uint64_t d, char *out) {
+  int count = 0;
+  uint64_t n = d;
+  char m[20];
+  while (n != 0) {
+    m[count] = n % 10 + 48;
+    n /= 10;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  return count;
+}
+
+int lhex2char(uint64_t d, char *out) {
+  int count = 0;
+  uint64_t n = d;
+  char m[20];
   while (n != 0) {
     int x = n % 16;
     if (x < 10) {
