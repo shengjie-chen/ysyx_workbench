@@ -69,9 +69,9 @@ int _write(int fd, void *buf, size_t count) {
   if (status == -1 || status > count) {
     _exit(1);
   } 
-  // else if (status < count) {
-  //   _write(fd, buf + status, count - status);
-  // }
+  else if (status < count) {
+    _write(fd, buf + status, count - status);
+  }
   // _exit(SYS_write);
   return 0;
 }
