@@ -68,15 +68,25 @@ int _write(int fd, void *buf, size_t count) {
   status = _syscall_(SYS_write, fd, (intptr_t)buf, count);
   if (status == -1 || status > count) {
     _exit(1);
-  } 
-  else if (status < count) {
+  } else if (status < count) {
     _write(fd, buf + status, count - status);
   }
   // _exit(SYS_write);
   return 0;
 }
 
+extern int _end;
+intptr_t pb = &_end;
+
 void *_sbrk(intptr_t increment) {
+  intptr_t pb_tmp, old_pb;
+  pb_tmp = pb + increment;
+  if (_syscall_(SYS_brk, increment, 0, 0) == 0) {
+    old_pb = pb;
+    pb = pb_tmp;
+    return old_pb;
+  }
+
   return (void *)-1;
 }
 

@@ -19,7 +19,7 @@ void do_syscall(Context *c) {
   switch (a[0]) {
   case SYS_brk: {
     printf("name : %s", "SYS_brk\n");
-
+    malloc(a[1]);
     c->GPRx = 0;
   } break;
   case SYS_write: {
