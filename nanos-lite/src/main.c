@@ -20,9 +20,9 @@ int main() {
 
   init_ramdisk();
 
-#ifdef CONFIG_STRACE
-  init_strace();
-#endif
+// #ifdef CONFIG_STRACE
+  // init_strace();
+// #endif
 #ifdef HAS_CTE
   init_irq();
 #endif
