@@ -11,9 +11,12 @@ Context *__am_irq_handle(Context *c) {
     case 11: {
       register intptr_t type asm("a7"); // or use c->GPR1
       if (type == -1) {
+        c->mepc += 4;
         ev.event = EVENT_YIELD;
-      } else
+      } else {
+        c->mepc += 4;
         ev.event = EVENT_SYSCALL;
+      }
     } break;
     default:
       ev.event = EVENT_ERROR;
