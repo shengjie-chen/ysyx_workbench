@@ -47,10 +47,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   //     memset((void *)(elf_seg.p_vaddr + vaddr_offset + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
   //   }
   // }
-  fs_lseek(fd, elf_head.e_phoff, SEEK_CUR);
 
   for (int i = 0; i < elf_head.e_phnum; i++) {
     // ramdisk_read(&elf_seg, elf_head.e_phoff + i * elf_head.e_phentsize, sizeof(Elf_Phdr));
+    fs_lseek(fd, elf_head.e_phoff + i * elf_head.e_phentsize, SEEK_SET);
     fs_read(fd, &elf_seg, sizeof(Elf_Phdr));
     if (elf_seg.p_type == PT_LOAD) {
       // memcpy((void *)elf_seg.p_vaddr, elf_seg.p_offset + (&ramdisk_start), elf_seg.p_filesz);
