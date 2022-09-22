@@ -33,6 +33,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
   // 判断elf文件类型 machine
   assert(*(uint32_t *)elf_head.e_ident == 0x464c457f);
+  // printf("%d\n",elf_head.e_machine);
   assert(elf_head.e_machine == EXPECT_TYPE);
 
   uintptr_t entry = 0;
@@ -56,6 +57,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
     }
   }
+
   entry = elf_head.e_entry;
   // printf("%x\n", entry);
   return entry;

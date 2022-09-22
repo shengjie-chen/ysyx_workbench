@@ -49,7 +49,6 @@ int fs_open(const char *pathname, int flags, int mode) {
     }
     i++;
   }
-  printf("%d",i);
   file_table[i].open_offset = 0;
   return i;
 }
@@ -86,7 +85,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
   if (len + file_table[fd].open_offset > file_table[fd].size) {
     panic("read file size overflow!\n");
   }
-  strncpy(buf, (void *)(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset), len);
+  memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
   fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
@@ -100,7 +99,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   if (len + file_table[fd].open_offset > file_table[fd].size) {
     panic("write file size overflow!\n");
   }
-  strncpy((void *)(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset), buf, len);
+  memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
   fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
