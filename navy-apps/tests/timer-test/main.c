@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
-#include "/home/jiexxpu/ysyx/ysyx-workbench/navy-apps/libs/libndl/include/NDL.h"
+#include "NDL.h"
+// #include "/home/jiexxpu/ysyx/ysyx-workbench/navy-apps/libs/libndl/include/NDL.h"
 
 // extern int _gettimeofday(struct timeval *tv, struct timezone *tz);
 
@@ -32,10 +33,10 @@
 int main() {
   uint32_t ct;
   uint32_t lt;
-  lt = NDL_GetTickks();
+  lt = NDL_GetTicks();
   int i = 0;
   while (1) {
-    ct = NDL_GetTickks();
+    ct = NDL_GetTicks();
     long int t_interval = ct - lt;
 
     if (t_interval > 500) {
