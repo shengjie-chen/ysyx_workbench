@@ -38,7 +38,7 @@ void do_syscall(Context *c) {
 
   case SYS_read: {
     printf("name : %s", "SYS_read\n");
-    c->GPRx = fs_read(a[1],(void *)a[2], a[3]);
+    c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
   } break;
   case SYS_write: {
     printf("name : %s", "SYS_write\n");
@@ -49,7 +49,7 @@ void do_syscall(Context *c) {
     //   }
     // }
     // c->GPRx = i;
-    c->GPRx = fs_write(a[1],(void *)a[2], a[3]);
+    c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
   } break;
 
   case SYS_close: {
@@ -57,8 +57,8 @@ void do_syscall(Context *c) {
     c->GPRx = fs_close(a[1]);
   } break;
   case SYS_lseek: {
-    printf("name : %s", "SYS_lseek\n");
-    c->GPRx = fs_lseek(a[1],a[2], a[3]);
+    c->GPRx = fs_lseek(a[1], a[2], a[3]);
+    printf("name : %s offset : %x", "SYS_lseek\n", c->GPRx);
   } break;
   case SYS_brk: {
     printf("name : %s", "SYS_brk\n");
