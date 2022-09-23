@@ -58,7 +58,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       fs_lseek(fd, elf_seg.p_offset, SEEK_SET);
       fs_read(fd, (void *)elf_seg.p_vaddr, elf_seg.p_filesz);
       printf("%x : ", elf_seg.p_vaddr);
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 16; i++) {
         printf("%c", *((char *)elf_seg.p_vaddr + i));
       }
       printf("\n");
