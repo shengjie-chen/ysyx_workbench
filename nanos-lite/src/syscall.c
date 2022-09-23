@@ -37,8 +37,8 @@ void do_syscall(Context *c) {
   } break;
 
   case SYS_read: {
-    printf("name : %s", "SYS_read\n");
     c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
+    printf("name : %s read data: %d\n", "SYS_read",c->GPRx);
   } break;
   case SYS_write: {
     printf("name : %s", "SYS_write\n");
