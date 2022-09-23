@@ -58,39 +58,42 @@ int fs_open(const char *pathname, int flags, int mode) {
 
 size_t
 fs_lseek(int fd, size_t offset, int whence) {
-  switch (whence) {
-  case SEEK_SET:
-    if (offset > file_table[fd].size) {
-      panic("lseek file size overflow!\n");
+  if (fd > 2) {
+    switch (whence) {
+    case SEEK_SET:
+      if (offset > file_table[fd].size) {
+        panic("lseek file size overflow!\n");
+      }
+      file_table[fd].open_offset = offset;
+      break;
+    case SEEK_CUR:
+      if (offset + file_table[fd].open_offset > file_table[fd].size) {
+        panic("lseek file size overflow!\n");
+      }
+      file_table[fd].open_offset += offset;
+      break;
+    case SEEK_END:
+      if (file_table[fd].size + file_table[fd].open_offset > file_table[fd].size) {
+        panic("lseek file size overflow!\n");
+      }
+      file_table[fd].open_offset = file_table[fd].size + offset;
+      break;
+    default:
+      panic("invalid whence!\n");
     }
-    file_table[fd].open_offset = offset;
-    break;
-  case SEEK_CUR:
-    if (offset + file_table[fd].open_offset > file_table[fd].size) {
-      panic("lseek file size overflow!\n");
-    }
-    file_table[fd].open_offset += offset;
-    break;
-  case SEEK_END:
-    if (file_table[fd].size + file_table[fd].open_offset > file_table[fd].size) {
-      panic("lseek file size overflow!\n");
-    }
-    file_table[fd].open_offset = file_table[fd].size + offset;
-    break;
-  default:
-    panic("invalid whence!\n");
   }
-
   return file_table[fd].open_offset;
 }
 
 size_t fs_read(int fd, void *buf, size_t len) {
-  if (len + file_table[fd].open_offset > file_table[fd].size) {
-    panic("read file size overflow!\n");
+  if (fd > 2) {
+    if (len + file_table[fd].open_offset > file_table[fd].size) {
+      panic("read file size overflow!\n");
+    }
+    ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+    // memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
+    fs_lseek(fd, len, SEEK_CUR);
   }
-  ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
-  // memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
-  fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
 
@@ -100,11 +103,19 @@ int fs_close(int fd) {
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if (len + file_table[fd].open_offset > file_table[fd].size) {
-    panic("write file size overflow!\n");
+  if (fd <= 2) {
+    if (fd > 0) {
+      for (int i = 0; i < len; i++) {
+        putch(*((char *)buf + i));
+      }
+    }
+  } else {
+    if (len + file_table[fd].open_offset > file_table[fd].size) {
+      panic("write file size overflow!\n");
+    }
+    ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+    // memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
+    fs_lseek(fd, len, SEEK_CUR);
   }
-  ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
-  // memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
-  fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
