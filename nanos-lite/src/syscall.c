@@ -58,7 +58,7 @@ void do_syscall(Context *c) {
   } break;
   case SYS_lseek: {
     c->GPRx = fs_lseek(a[1], a[2], a[3]);
-    printf("name : %s offset : %x", "SYS_lseek\n", c->GPRx);
+    printf("name : %s offset : %x\n", "SYS_lseek", c->GPRx);
   } break;
   case SYS_brk: {
     printf("name : %s", "SYS_brk\n");
