@@ -3,6 +3,9 @@
 typedef size_t (*ReadFn)(void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn)(const void *buf, size_t offset, size_t len);
 
+extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
+extern size_t ramdisk_write(const void *buf, size_t offset, size_t len);
+
 extern uint8_t ramdisk_start;
 typedef struct {
   char *name;
@@ -85,7 +88,8 @@ size_t fs_read(int fd, void *buf, size_t len) {
   if (len + file_table[fd].open_offset > file_table[fd].size) {
     panic("read file size overflow!\n");
   }
-  memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
+  ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+  // memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
   fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
@@ -99,7 +103,8 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   if (len + file_table[fd].open_offset > file_table[fd].size) {
     panic("write file size overflow!\n");
   }
-  memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
+  ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+  // memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
   fs_lseek(fd, len, SEEK_CUR);
   return len;
 }
