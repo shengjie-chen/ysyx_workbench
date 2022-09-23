@@ -4,8 +4,8 @@
 #include <time.h>
 
 int main() {
-  struct timeval *last_time;
-  struct timeval *curr_time;
+  struct timeval *last_time = {0};
+  struct timeval *curr_time = {0};
   _gettimeofday(last_time, NULL);
   int i = 0;
   while (1) {
