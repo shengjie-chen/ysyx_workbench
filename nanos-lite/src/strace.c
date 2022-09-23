@@ -1,5 +1,5 @@
-// #ifndef __STRACE__
-// #define __STRACE__
+// #ifndef __STRACE_H__
+// #define __STRACE_H__
 
 // #include <common.h>
 // #include <memory.h>
@@ -31,5 +31,9 @@
 //     break;
 //   default:;
 //   }
+// }
+
+// void printf_strace(uintptr_t *a) {
+
 // }
 // #endif
