@@ -15,7 +15,7 @@ int main() {
   while (1) {
     _gettimeofday(ct, NULL);
     long int t_interval = (ct->tv_sec - lt->tv_sec) * 1000 + (ct->tv_usec - lt->tv_usec);
-    printf("%d\n",t_interval);
+    // printf("%d\n",t_interval);
     if (t_interval > 500) {
       i++;
       printf("time pass more than 0.5s in %d time", i);
