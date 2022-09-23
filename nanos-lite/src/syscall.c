@@ -19,8 +19,11 @@ void do_syscall(Context *c) {
   // #ifdef CONFIG_STRACE
   // printf_strace(a);
   // write_strace(a);
-  printf("\n[  log  ]system call ! ");
-  printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
+
+
+  // printf("\n[  log  ]system call ! ");
+  // printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
+  
   // #endif
   switch (a[0]) {
   case SYS_exit:
@@ -70,7 +73,7 @@ void do_syscall(Context *c) {
     long int ms = io_read(AM_TIMER_UPTIME).us / 1000;
     *(long int *)a[1] = ms / 1000;
     *((long int *)a[1] + 1) = ms % 1000;
-    printf("name : %s, get time : %lds %ldms\n", "SYS_gettimeofday",*(long int *)a[1],*((long int *)a[1] + 1));
+    // printf("name : %s, get time : %lds %ldms\n", "SYS_gettimeofday",*(long int *)a[1],*((long int *)a[1] + 1));
     c->GPRx = 0;
   } break;
 
