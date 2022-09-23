@@ -24,6 +24,7 @@ int main() {
     if (j == 500) {
       printf("%ld\n", t_interval);
       printf("%lds %ldms\n", ct->tv_sec, ct->tv_usec);
+      j = 0;
     }
     if (t_interval > 500) {
       i++;
