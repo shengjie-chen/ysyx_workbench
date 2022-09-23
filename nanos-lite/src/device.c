@@ -1,21 +1,24 @@
 #include <common.h>
 
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
-# define MULTIPROGRAM_YIELD() yield()
+#define MULTIPROGRAM_YIELD() yield()
 #else
-# define MULTIPROGRAM_YIELD()
+#define MULTIPROGRAM_YIELD()
 #endif
 
 #define NAME(key) \
   [AM_KEY_##key] = #key,
 
 static const char *keyname[256] __attribute__((used)) = {
-  [AM_KEY_NONE] = "NONE",
-  AM_KEYS(NAME)
-};
+    [AM_KEY_NONE] = "NONE",
+    AM_KEYS(NAME)};
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+  int i;
+  for (i = 0; i < len; i++) {
+    putch(*((char *)buf + i));
+  }
+  return i;
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
