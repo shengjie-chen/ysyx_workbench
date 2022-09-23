@@ -88,7 +88,9 @@ fs_lseek(int fd, size_t offset, int whence) {
 size_t fs_read(int fd, void *buf, size_t len) {
   if (fd > 2) {
     if (len + file_table[fd].open_offset > file_table[fd].size) {
-      panic("read file size overflow!\n");
+      // panic("read file size overflow!\n");
+      printf("read file size overflow! sys will read less\n");
+      len = file_table[fd].size - file_table[fd].open_offset;
     }
     ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
     // memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
