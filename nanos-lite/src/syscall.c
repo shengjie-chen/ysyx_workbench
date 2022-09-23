@@ -15,6 +15,8 @@
 #define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
 #define IFDEF(macro, ...) MUXDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__)
 
+#define CONFIG_STRACE
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
