@@ -65,6 +65,13 @@ void do_syscall(Context *c) {
     malloc(a[1]);
     c->GPRx = 0;
   } break;
+  case SYS_gettimeofday: {
+    printf("name : %s", "SYS_gettimeofday\n");
+    long int ms = io_read(AM_TIMER_UPTIME).us / 1000;
+    *(long int *)a[1] = ms / 1000;
+    *((long int *)a[1] + 1) = ms % 1000;
+    c->GPRx = 0;
+  } break;
 
   default:
     panic("Unhandled syscall ID = %d", a[0]);
