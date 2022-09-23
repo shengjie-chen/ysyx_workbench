@@ -1,5 +1,6 @@
 #include "syscall.h"
 #include <common.h>
+#include "fs.h"
 // #include <stdio.h>
 // #ifdef CONFIG_STRACE
 // extern void write_strace(uintptr_t *a);
@@ -21,6 +22,10 @@ void do_syscall(Context *c) {
   printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
 // #endif
   switch (a[0]) {
+    case SYS_open: {
+    printf("name : %s", "SYS_open\n");
+    c->GPRx = fs_open((char *)a[1],0,0);
+  } break;
   case SYS_brk: {
     printf("name : %s", "SYS_brk\n");
     malloc(a[1]);
