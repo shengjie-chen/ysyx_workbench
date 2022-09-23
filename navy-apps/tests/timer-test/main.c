@@ -3,6 +3,9 @@
 #include <sys/time.h>
 #include <time.h>
 
+extern int _gettimeofday(struct timeval *tv, struct timezone *tz);
+
+
 int main() {
   struct timeval last_time, curr_time;
   struct timeval *ct;
