@@ -59,7 +59,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       printf("offset: %x\n", elf_seg.p_offset);
       fs_read(fd, (void *)elf_seg.p_vaddr, elf_seg.p_filesz);
       printf("%x : ", elf_seg.p_vaddr);
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < 9; i++) {
         printf("%c", *((char *)elf_seg.p_vaddr + i));
       }
       printf("\n");
