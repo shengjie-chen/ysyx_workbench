@@ -58,10 +58,10 @@ void do_syscall(Context *c) {
   } break;
   case SYS_lseek: {
     c->GPRx = fs_lseek(a[1], a[2], a[3]);
-    printf("name : %s, offset : %x\n", "SYS_lseek", c->GPRx);
+    printf("name : %s, offset : 0x%x\n", "SYS_lseek", c->GPRx);
   } break;
   case SYS_brk: {
-    printf("name : %s, malloc : %x\n", "SYS_brk", a[1]);
+    printf("name : %s, malloc : %d\n", "SYS_brk", a[1]);
     malloc(a[1]);
     c->GPRx = 0;
   } break;
