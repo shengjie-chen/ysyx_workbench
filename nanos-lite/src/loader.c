@@ -56,13 +56,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       // memcpy((void *)elf_seg.p_vaddr, elf_seg.p_offset + (&ramdisk_start), elf_seg.p_filesz);
       // memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
       fs_lseek(fd, elf_seg.p_offset, SEEK_SET);
-      printf("offset: %x\n", elf_seg.p_offset);
       fs_read(fd, (void *)elf_seg.p_vaddr, elf_seg.p_filesz);
-      printf("%x : ", elf_seg.p_vaddr);
-      for (int i = 0; i < 16; i++) {
-        printf("%x ", *((char *)elf_seg.p_vaddr + i));
-      }
-      printf("\n");
       memset((void *)(elf_seg.p_vaddr + elf_seg.p_filesz), 0, elf_seg.p_memsz - elf_seg.p_filesz);
     }
   }
