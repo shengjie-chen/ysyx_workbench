@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-extern int _gettimeofday(struct timeval *tv, struct timezone *tz);
+// extern int _gettimeofday(struct timeval *tv, struct timezone *tz);
 
 
 int main() {
@@ -13,10 +13,10 @@ int main() {
   ct = &curr_time;
   lt = &last_time;
   // printf("%p\n",last_time);
-  _gettimeofday(lt, NULL);
+  gettimeofday(lt, NULL);
   int i = 0;
   while (1) {
-    _gettimeofday(ct, NULL);
+    gettimeofday(ct, NULL);
     long int t_interval = (ct->tv_sec - lt->tv_sec) * 1000 + (ct->tv_usec - lt->tv_usec);
     // printf("%d\n",t_interval);
     if (t_interval > 500) {
