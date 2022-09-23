@@ -6,11 +6,11 @@
 // extern int _gettimeofday(struct timeval *tv, struct timezone *tz);
 
 int main() {
-  struct timeval last_time, curr_time;
+  // struct timeval last_time, curr_time;
   struct timeval *ct;
   struct timeval *lt;
-  ct = &curr_time;
-  lt = &last_time;
+  // ct = &curr_time;
+  // lt = &last_time;
   // printf("%p\n",last_time);
   gettimeofday(lt, NULL);
   int i = 0;
@@ -22,7 +22,8 @@ int main() {
     if (t_interval > 500) {
       i++;
       printf("time pass more than 0.5s in %d time\n", i);
-      last_time = curr_time;
+      // last_time = curr_time;
+      *lt = *ct;
     }
   }
   return 0;
