@@ -66,7 +66,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       fs_read(fd, (void *)(elf_seg.p_vaddr + elf_seg.p_filesz), elf_seg.p_memsz - elf_seg.p_filesz);
     }
   }
-
+  fs_close(fd);
   entry = elf_head.e_entry;
   // printf("%x\n", entry);
   return entry;
