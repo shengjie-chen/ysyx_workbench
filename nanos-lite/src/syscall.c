@@ -31,8 +31,9 @@ void do_syscall(Context *c) {
     break;
   case SYS_open: {
     printf("sys_id:%ld, path:%lx, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
-    printf("name : %s", "SYS_open\n");
     c->GPRx = fs_open((char *)a[1], 0, 0);
+    printf("name : %s, return fd : %d\n", "SYS_open", c->GPRx);
+
   } break;
 
   case SYS_read: {
@@ -66,7 +67,7 @@ void do_syscall(Context *c) {
     long int ms = io_read(AM_TIMER_UPTIME).us / 1000;
     *(long int *)a[1] = ms / 1000;
     *((long int *)a[1] + 1) = ms % 1000;
-    printf("name : %s, get time : %lds %ldms\n", "SYS_gettimeofday",*(long int *)a[1],*((long int *)a[1] + 1));
+    printf("name : %s, get time : %lds %ldms\n", "SYS_gettimeofday", *(long int *)a[1], *((long int *)a[1] + 1));
     c->GPRx = 0;
   } break;
 
