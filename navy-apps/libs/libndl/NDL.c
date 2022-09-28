@@ -24,16 +24,16 @@ int NDL_PollEvent(char *buf, int len) {
   int fp = open("/dev/events", O_RDONLY);
   if(fp != -1){
     printf("open file fail!\n");
-    return 1;
+    return 0;
   }
   int bytes;
   bytes = read(fp, buf, len);
   if (bytes == -1) {
     printf("ReadFailed.\n");
-    return 1;
+    return 0;
   }
   close(fp);
-  return 0;
+  return 1;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
