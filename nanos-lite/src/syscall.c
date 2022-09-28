@@ -2,12 +2,19 @@
 #include "fs.h"
 #include <common.h>
 // #include <stdio.h>
-// #ifdef CONFIG_STRACE
+#define CONFIG_STRACE
 // extern void write_strace(uintptr_t *a);
 // #endif
 
 // extern FILE *strace_fp;
 // extern void write_strace(uintptr_t *a);
+
+// #define IFDEF(macro, ...) #ifdef macro  __VA_ARGS__  #endif
+
+
+
+
+
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -20,22 +27,26 @@ void do_syscall(Context *c) {
   // printf_strace(a);
   // write_strace(a);
 
-
+#ifdef CONFIG_STRACE 
   printf("\n[  log  ]system call ! ");
-  printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
+#endif 
+
   
   // #endif
   switch (a[0]) {
   case SYS_exit:
+    printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
     printf("name : %s", "SYS_exit\n");
     halt(a[1]);
     break;
   case SYS_yield:
+    printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
     printf("name : %s", "SYS_yield\n");
     yield();
     c->GPRx = 0;
     break;
   case SYS_open: {
+    printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
     printf("name : %s", "SYS_open\n");
     c->GPRx = fs_open((char *)a[1], 0, 0);
   } break;
