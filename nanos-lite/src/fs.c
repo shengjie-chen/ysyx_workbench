@@ -6,6 +6,8 @@ typedef size_t (*WriteFn)(const void *buf, size_t offset, size_t len);
 extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 extern size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 extern size_t serial_write(const void *buf, size_t offset, size_t len);
+extern size_t events_read(void *buf, size_t offset, size_t len);
+extern size_t dispinfo_read(void *buf, size_t offset, size_t len);
 
 extern uint8_t ramdisk_start;
 typedef struct {
@@ -20,7 +22,10 @@ typedef struct {
 enum { FD_STDIN,
        FD_STDOUT,
        FD_STDERR,
-       FD_FB };
+       FD_EVENT,
+       FD_FB,
+       FP_DISPINFO
+       };
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -37,6 +42,9 @@ static Finfo file_table[] __attribute__((used)) = {
     [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
     [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
     [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
+    [FD_EVENT] = {"/dev/events", 0, 0, events_read, invalid_write},
+    [FD_FB] = {"/dev/fb", 0, 0, invalid_read, invalid_write},
+    [FP_DISPINFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
@@ -59,7 +67,7 @@ int fs_open(const char *pathname, int flags, int mode) {
 
 size_t
 fs_lseek(int fd, size_t offset, int whence) {
-  if (fd > 2) {
+  if (fd > FD_FB) {
     switch (whence) {
     case SEEK_SET:
       if (offset > file_table[fd].size) {

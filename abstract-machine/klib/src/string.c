@@ -4,13 +4,15 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-size_t strlen(const char *s)
-{
-  panic("Not implemented");
+size_t strlen(const char *s) {
+  size_t i = 0;
+  while (*(s + i) != 0) {
+    i++;
+  }
+  return i;
 }
 
-char *strcpy(char *dst, const char *src)
-{
+char *strcpy(char *dst, const char *src) {
   char *pstr = dst;
 
   if (sizeof(*dst) > 1) {
@@ -29,8 +31,7 @@ char *strcpy(char *dst, const char *src)
   }
 }
 
-char *strncpy(char *dst, const char *src, size_t n)
-{
+char *strncpy(char *dst, const char *src, size_t n) {
   char *pstr = dst;
 
   if (sizeof(*dst) > 1) {
@@ -52,8 +53,7 @@ char *strncpy(char *dst, const char *src, size_t n)
   return dst;
 }
 
-char *strcat(char *dst, const char *src)
-{
+char *strcat(char *dst, const char *src) {
   assert(dst != NULL && src != NULL);
 
   char *pstr = dst;
@@ -67,8 +67,7 @@ char *strcat(char *dst, const char *src)
   return dst;
 }
 
-int strcmp(const char *s1, const char *s2)
-{
+int strcmp(const char *s1, const char *s2) {
   int i = 0;
   int r;
   while (1) {
@@ -80,8 +79,7 @@ int strcmp(const char *s1, const char *s2)
   }
 }
 
-int strncmp(const char *s1, const char *s2, size_t n)
-{
+int strncmp(const char *s1, const char *s2, size_t n) {
   int i = 0;
   int r;
   while (i < n) {
@@ -94,8 +92,7 @@ int strncmp(const char *s1, const char *s2, size_t n)
   return 0;
 }
 
-void *memset(void *s, int c, size_t n)
-{
+void *memset(void *s, int c, size_t n) {
   int i;
   char *pstr = s;
   for (i = 0; i < n; i++) {
@@ -104,8 +101,7 @@ void *memset(void *s, int c, size_t n)
   return s;
 }
 
-void *memmove(void *dst, const void *src, size_t n)
-{
+void *memmove(void *dst, const void *src, size_t n) {
   panic("Not implemented");
   // int i = 0;
   // while (*(src + i) != '\0')
@@ -114,8 +110,7 @@ void *memmove(void *dst, const void *src, size_t n)
   //   *(dst + i) = *(src + i);
 }
 
-void *memcpy(void *out, const void *in, size_t n)
-{
+void *memcpy(void *out, const void *in, size_t n) {
   char *data = out;
   for (int i = 0; i < n; i++) {
     *(data + i) = *(char *)(in + i);
@@ -123,8 +118,7 @@ void *memcpy(void *out, const void *in, size_t n)
   return out;
 }
 
-int memcmp(const void *s1, const void *s2, size_t n)
-{
+int memcmp(const void *s1, const void *s2, size_t n) {
   int i = 0;
   int r;
   while (i < n) {

@@ -1,10 +1,13 @@
+#include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <time.h>
+#include <unistd.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -18,6 +21,15 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
+  int fp = open("/dev/events", O_RDONLY);
+  if(fp != -1){
+    printf("open file fail!\n");
+  }
+  int bytes;
+  bytes = read(fp, buf, len);
+  if (bytes == -1) {
+    printf("ReadFailed.\n");
+  }
   return 0;
 }
 
