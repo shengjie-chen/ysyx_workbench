@@ -21,8 +21,8 @@ void do_syscall(Context *c) {
   // write_strace(a);
 
 
-  // printf("\n[  log  ]system call ! ");
-  // printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
+  printf("\n[  log  ]system call ! ");
+  printf("a0:%ld, a1:%ld, a2:%lx, a3:%ld  ", a[0], a[1], a[2], a[3]);
   
   // #endif
   switch (a[0]) {
