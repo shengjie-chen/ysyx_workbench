@@ -1,12 +1,7 @@
 #include "syscall.h"
 #include "fs.h"
 #include <common.h>
-// #include <stdio.h>
-// extern void write_strace(uintptr_t *a);
-// #endif
-
-// extern FILE *strace_fp;
-// extern void write_strace(uintptr_t *a);
+// ctrl + H : printf -> //printf
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -33,7 +28,6 @@ void do_syscall(Context *c) {
     printf("sys_id:%ld, path:%lx, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
     c->GPRx = fs_open((char *)a[1], 0, 0);
     printf("name : %s, return fd : %d\n", "SYS_open", c->GPRx);
-
   } break;
 
   case SYS_read: {
@@ -43,8 +37,8 @@ void do_syscall(Context *c) {
   } break;
   case SYS_write: {
     printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
+    printf("name : %s, wirte usage:\n", "SYS_write");
     c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
-    printf("name : %s, transfor data num: %d\n", "SYS_write", c->GPRx);
   } break;
 
   case SYS_close: {
