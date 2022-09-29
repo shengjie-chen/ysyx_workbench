@@ -8,6 +8,7 @@
 // #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
