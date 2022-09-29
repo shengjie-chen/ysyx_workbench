@@ -33,6 +33,7 @@ int NDL_PollEvent(char *buf, int len) {
     printf("ReadFailed.\n");
     return 0;
   } else if (bytes == 0) {
+    close(fp);
     return 0;
   } else {
     close(fp);
