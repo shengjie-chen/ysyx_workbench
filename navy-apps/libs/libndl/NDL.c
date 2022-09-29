@@ -6,9 +6,9 @@
 // #include <sys/stat.h>
 // #include <sys/time.h>
 // #include <sys/types.h>
+#include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -23,7 +23,7 @@ uint32_t NDL_GetTicks() {
 
 int NDL_PollEvent(char *buf, int len) {
   int fp = open("/dev/events", O_RDONLY);
-  if(fp == -1){
+  if (fp == -1) {
     printf("open file fail!\n");
     return 0;
   }
@@ -32,9 +32,12 @@ int NDL_PollEvent(char *buf, int len) {
   if (bytes == -1) {
     printf("ReadFailed.\n");
     return 0;
+  } else {
+    close(fp);
+    return 1;
   }
-  close(fp);
-  return 1;
+
+  return 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
