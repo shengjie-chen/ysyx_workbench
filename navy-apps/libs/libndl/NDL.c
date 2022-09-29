@@ -32,12 +32,14 @@ int NDL_PollEvent(char *buf, int len) {
   if (bytes == -1) {
     printf("ReadFailed.\n");
     return 0;
+  } else if (bytes == 0) {
+    return 0;
   } else {
     close(fp);
     return 1;
   }
 
-  return 0;
+  // return 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
