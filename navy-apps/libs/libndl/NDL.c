@@ -22,29 +22,62 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  int fp = open("/dev/events", O_RDONLY);
-  if (fp == -1) {
+  int fd = open("/dev/events", O_RDONLY);
+  if (fd == -1) {
     printf("open file fail!\n");
     return 0;
   }
   int bytes;
-  bytes = read(fp, buf, len);
+  bytes = read(fd, buf, len);
   if (bytes == -1) {
     printf("ReadFailed.\n");
     return 0;
   } else if (bytes == 0) {
-    close(fp);
+    close(fd);
     return 0;
   } else {
-    close(fp);
+    close(fd);
     return 1;
   }
-
-  // return 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
   if (getenv("NWM_APP")) {
+    char pinfo[25];
+    int fd = open("/proc/dispinfo", O_RDONLY);
+    if (fd == -1) {
+      printf("open file fail!\n");
+      return 0;
+    }
+    read(fd, pinfo, 25);
+    int colon1, newline, colon2, null;
+    if (!memcmp(pinfo, "WIDTH :", 7)) {
+      colon1 = 6;
+    }
+    for (int i = colon1 + 1; i < 25; i++) {
+      if (pinfo[i] == "\n")
+        newline = i;
+      colon2 = newline + 7;
+      if (pinfo[i] == 0)
+        null = i;
+    }
+    int width = 0;
+    int height = 0;
+    for (int i = newline - 1; i > colon1; i--) {
+      int pow = 1;
+      for (int j = 0; j < newline - 1 - i; i++) {
+        pow = pow * 10;
+      }
+      width = width + (pinfo[i] - 48) * pow;
+    }
+    for (int i = null - 1; i > colon2; i--) {
+      int pow = 1;
+      for (int j = 0; j < newline - 1 - i; i++) {
+        pow = pow * 10;
+      }
+      height = height + (pinfo[i] - 48) * pow;
+    }
+    printf("screen width: %d, height: %d", width, height);
     int fbctl = 4;
     fbdev = 5;
     screen_w = *w;
