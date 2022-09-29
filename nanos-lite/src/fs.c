@@ -105,7 +105,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
     // memcpy(buf, &ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, len);
     fs_lseek(fd, len, SEEK_CUR);
   } else {
-    file_table[fd].read(buf, 0, len);
+    len = file_table[fd].read(buf, 0, len);
   }
   return len;
 }
