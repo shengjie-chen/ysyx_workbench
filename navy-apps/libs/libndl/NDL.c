@@ -42,7 +42,9 @@ int NDL_PollEvent(char *buf, int len) {
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
+  printf("1\n");
   if (getenv("NWM_APP")) {
+    printf("2\n");
     char pinfo[25];
     int fd = open("/proc/dispinfo", O_RDONLY);
     if (fd == -1) {
