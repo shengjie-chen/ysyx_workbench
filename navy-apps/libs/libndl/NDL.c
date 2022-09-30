@@ -79,6 +79,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     width = width + (pinfo[i] - 48) * pow;
   }
+  printf("width %d\n",width);
   for (int i = null - 1; i > colon2; i--) {
     int pow = 1;
     for (int j = 0; j < newline - 1 - i; i++) {
