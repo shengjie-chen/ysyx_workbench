@@ -57,8 +57,10 @@ void NDL_OpenCanvas(int *w, int *h) {
     if (pinfo[i] == "\n")
       newline = i;
     colon2 = newline + 7;
-    if (pinfo[i] == 0)
+    if (pinfo[i] == 0) {
       null = i;
+      break;
+    }
   }
   int width = 0;
   int height = 0;
