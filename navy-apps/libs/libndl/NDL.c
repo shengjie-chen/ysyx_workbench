@@ -49,6 +49,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     return 0;
   }
   read(fd, pinfo, 25);
+  printf("%s\n",pinfo);
   int colon1, newline, colon2, null;
   if (!memcmp(pinfo, "WIDTH :", 7)) {
     colon1 = 6;
