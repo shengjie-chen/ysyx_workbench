@@ -49,11 +49,13 @@ void NDL_OpenCanvas(int *w, int *h) {
     return 0;
   }
   read(fd, pinfo, 25);
-  printf("%s\n",pinfo);
+  printf("%s\n", pinfo);
   int colon1, newline, colon2, null;
   if (!memcmp(pinfo, "WIDTH :", 7)) {
+    printf("1\n");
     colon1 = 6;
   }
+  printf("1\n");
   for (int i = colon1 + 1; i < 25; i++) {
     if (pinfo[i] == "\n")
       newline = i;
