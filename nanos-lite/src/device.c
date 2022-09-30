@@ -53,6 +53,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   int2char(dis_h, info);
   strcat(pinfo, info);
   printf("%s\n", pinfo);
+  printf("%d\n", pinfo[10]);
   memcpy(buf, pinfo, 25);
   return 0;
 }
