@@ -45,6 +45,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   int dis_h = io_read(AM_GPU_CONFIG).height;
   char pinfo[25];
   char info[5];
+  printf("%d\n", pinfo[0]);
   strcat(pinfo, "WIDTH :");
   int2char(dis_w, info);
   strcat(pinfo, info);
