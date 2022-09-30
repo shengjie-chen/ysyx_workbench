@@ -52,6 +52,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   strcat(pinfo, "\nHEIGHT:");
   int2char(dis_h, info);
   strcat(pinfo, info);
+  printf("%s\n", pinfo);
   memcpy(buf, pinfo, 25);
   return 0;
 }

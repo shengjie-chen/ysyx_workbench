@@ -31,9 +31,9 @@ void do_syscall(Context *c) {
   } break;
 
   case SYS_read: {
-    //printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
+    // printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
     c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
-    //printf("name : %s, transfor data num: %d\n", "SYS_read", c->GPRx);
+    // printf("name : %s, transfor data num: %d\n", "SYS_read", c->GPRx);
   } break;
   case SYS_write: {
     //printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
