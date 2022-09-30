@@ -66,10 +66,6 @@ void NDL_OpenCanvas(int *w, int *h) {
       break;
     }
   }
-  printf("colon1 %d\n", colon1);
-  printf("newline %d\n", newline);
-  printf("colon2 %d\n", colon2);
-  printf("null %d\n", null);
   int width = 0;
   int height = 0;
   for (int i = newline - 1; i > colon1; i--) {
@@ -88,7 +84,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     height = height + (pinfo[i] - 48) * pow;
   }
 
-  printf("screen width: %d, height: %d", width, height);
+  printf("screen width: %d, height: %d\n", width, height);
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
