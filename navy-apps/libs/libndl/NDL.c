@@ -57,14 +57,16 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
   printf("1\n");
   for (int i = colon1 + 1; i < 25; i++) {
-    if (pinfo[i] == "\n")
+    if (pinfo[i] == "\n") {
       newline = i;
-    colon2 = newline + 7;
+      colon2 = newline + 7;
+    }
     if (pinfo[i] == 0) {
       null = i;
       break;
     }
   }
+  // printf("%d\n");
   int width = 0;
   int height = 0;
   for (int i = newline - 1; i > colon1; i--) {
