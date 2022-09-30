@@ -57,7 +57,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
   printf("1\n");
   for (int i = colon1 + 1; i < 25; i++) {
-    if (pinfo[i] == "\n") {
+    if (pinfo[i] == '\n') {
       newline = i;
       colon2 = newline + 7;
     }
