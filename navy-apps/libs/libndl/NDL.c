@@ -66,7 +66,10 @@ void NDL_OpenCanvas(int *w, int *h) {
       break;
     }
   }
-  // printf("%d\n");
+  printf("colon1 %d\n",colon1);
+  printf("newline %d\n",newline);
+  printf("colon2 %d\n",colon2);
+  printf("null %d\n",null);
   int width = 0;
   int height = 0;
   for (int i = newline - 1; i > colon1; i--) {
