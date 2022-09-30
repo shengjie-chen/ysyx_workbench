@@ -77,13 +77,11 @@ void NDL_OpenCanvas(int *w, int *h) {
     for (int j = 0; j < newline - 1 - i; j++) {
       pow = pow * 10;
     }
-    printf("pow %d\n", pow);
     width = width + (pinfo[i] - 48) * pow;
   }
-  printf("width %d\n", width);
   for (int i = null - 1; i > colon2; i--) {
     int pow = 1;
-    for (int j = 0; j < newline - 1 - i; j++) {
+    for (int j = 0; j < colon2 - 1 - i; j++) {
       pow = pow * 10;
     }
     height = height + (pinfo[i] - 48) * pow;
