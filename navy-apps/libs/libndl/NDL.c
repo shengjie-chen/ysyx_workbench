@@ -101,8 +101,8 @@ void NDL_OpenCanvas(int *w, int *h) {
 
   printf("screen width: %d, height: %d\n", width, height);
   printf("canvas width: %d, height: %d\n", *w, *h);
-  assert(*w < width);
-  assert(*h < height);
+  assert(*w <= width);
+  assert(*h <= height);
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
@@ -131,13 +131,18 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     printf("open file fail!\n");
     exit(1);
   }
-  printf("w:%d\n", w);
-  for (int i = 0; i < h; i++) {
-    lseek(fd, x + y * width + i * width, SEEK_SET);
-    write(fd, pixels + w * i, w);
-    // if (i == 1)
-      break;
-    // printf("%d: write offset %d\n", i, w * i);
+  // printf("w:%d\n", w);
+  if (w == width) {
+    assert(x == 0);
+    assert((h + y) <= height);
+    lseek(fd, y * width, SEEK_SET);
+    write(fd, pixels, w * h);
+  } else {
+    for (int i = 0; i < h; i++) {
+      lseek(fd, x + y * width + i * width, SEEK_SET);
+      write(fd, pixels + w * i, w);
+      // printf("%d: write offset %d\n", i, w * i);
+    }
   }
   close(fd);
 }
