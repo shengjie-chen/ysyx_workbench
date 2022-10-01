@@ -100,7 +100,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
   if (file_table[fd].read == NULL) {
     if (len + file_table[fd].open_offset > file_table[fd].size) {
       // panic("read file size overflow!\n");
-      printf("read from %d to %d, but file size is %d\n", file_table[fd].open_offset, len + file_table[fd].open_offset, file_table[fd].size);
+      printf("read from %d to %d, but file size is %d. ", file_table[fd].open_offset, len + file_table[fd].open_offset, file_table[fd].size);
       printf("read file size overflow! sys will read less\n");
       len = file_table[fd].size - file_table[fd].open_offset;
     }
