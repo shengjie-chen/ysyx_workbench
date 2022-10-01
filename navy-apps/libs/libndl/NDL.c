@@ -131,9 +131,12 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     printf("open file fail!\n");
     exit(1);
   }
+  printf("w:%d\n", w);
   for (int i = 0; i < h; i++) {
     lseek(fd, x + y * width + i * width, SEEK_SET);
     write(fd, pixels + w * i, w);
+    // if (i == 1)
+      break;
     // printf("%d: write offset %d\n", i, w * i);
   }
   close(fd);
