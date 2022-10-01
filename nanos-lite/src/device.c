@@ -68,7 +68,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   int cross_line = (pxl_num + flx) / screen_w;
   int llx = (pxl_num + flx - 1) % screen_w; // last line x
   int lly = cross_line + fly;               // last line y
-  printf("llx:%d, lly:%d\n", llx, lly);
+  printf("cross_line:%d,llx:%d, lly:%d\n", cross_line, llx, lly);
   if (cross_line == 0) {
     io_write(AM_GPU_FBDRAW, flx, fly, pxl, pxl_num, 1, true);
   } else {
