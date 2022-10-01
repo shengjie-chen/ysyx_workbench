@@ -52,33 +52,48 @@ void NDL_OpenCanvas(int *w, int *h) {
     exit(1);
   }
   read(fd, pinfo, 25);
-  int colon1, newline, colon2, null;
-  if (!memcmp(pinfo, "WIDTH :", 7)) {
-    colon1 = 6;
+  printf("%s\n", pinfo);
+  int colon1 = 0, colon2 = 0;
+  int num1_head = 0, num1_tail = 0, num2_head = 0, num2_tail = 0;
+  if (memcmp(pinfo, "WIDTH", 5)) {
+    exit(1);
   }
-  for (int i = colon1 + 1; i < 25; i++) {
-    if (pinfo[i] == '\n') {
-      newline = i;
-      colon2 = newline + 7;
+  for (int i = 5; i < 25; i++) {
+    if (pinfo[i] == ':') {
+      if (colon1 == 0) {
+        colon1 = i;
+      } else {
+        colon2 = i;
+      }
     }
-    if (pinfo[i] == 0) {
-      null = i;
-      break;
+    if (pinfo[i] >= 48 && pinfo[i] <= 57) {
+      if (colon2 == 0) {
+        if (num1_head == 0)
+          num1_head = i;
+        else
+          num1_tail = i;
+      } else {
+        if (num2_head == 0)
+          num2_head = i;
+        else
+          num2_tail = i;
+      }
     }
   }
+  // printf("num1_head = %d, num1_tail = %d, num2_head = %d, num2_tail = %d\n", num1_head, num1_tail, num2_head, num2_tail);
   width = 0;
   height = 0;
-  for (int i = newline - 1; i > colon1; i--) {
+  for (int i = num1_tail; i >= num1_head; i--) {
     int pow = 1;
-    for (int j = 0; j < newline - 1 - i; j++) {
+    for (int j = 0; j < num1_tail - i; j++) {
       pow = pow * 10;
     }
     width = width + (pinfo[i] - 48) * pow;
   }
 
-  for (int i = null - 1; i > colon2; i--) {
+  for (int i = num2_tail; i >= num2_head; i--) {
     int pow = 1;
-    for (int j = 0; j < null - 1 - i; j++) {
+    for (int j = 0; j < num2_tail - i; j++) {
       pow = pow * 10;
     }
     height = height + (pinfo[i] - 48) * pow;
