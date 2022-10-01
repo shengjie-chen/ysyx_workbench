@@ -62,17 +62,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     w = ctl->w;
     h = ctl->h;
     int i, j;
-    printf("4\n");
-    printf("x=%d,y=%d,w=%d,h=%d\n", x, y, w, h);
     for (i = 0; i < h; i++) {
       for (j = 0; j < w; j++) {
-        // printf("4\n");
-
         *(fb + (i + y) * width + j + x) = color_buf[i * w + j];
       }
     }
   }
-  printf("4\n");
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
