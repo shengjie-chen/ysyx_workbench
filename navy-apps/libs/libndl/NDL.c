@@ -135,8 +135,11 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   if (w == width) {
     assert(x == 0);
     assert((h + y) <= height);
+    printf("2\n");
     lseek(fd, (y * width) * 4, SEEK_SET);
+    printf("2\n");
     write(fd, pixels, w * h * 4);
+    printf("2\n");
   } else {
     for (int i = 0; i < h; i++) {
       lseek(fd, (x + y * width + i * width) * 4, SEEK_SET);
