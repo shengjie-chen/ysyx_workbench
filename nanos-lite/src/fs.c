@@ -126,7 +126,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
     // memcpy(&ramdisk_start + file_table[fd].disk_offset + file_table[fd].open_offset, buf, len);
     fs_lseek(fd, len, SEEK_CUR);
   } else {
-    file_table[fd].write(buf, file_table[fd].disk_offset, len);
+    file_table[fd].write(buf, file_table[fd].open_offset, len);
   }
   return len;
 }
