@@ -43,8 +43,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   int dis_w = io_read(AM_GPU_CONFIG).width;
   int dis_h = io_read(AM_GPU_CONFIG).height;
-  char pinfo[25]={0};
-  char info[5]={0};
+  char pinfo[25] = {0};
+  char info[5] = {0};
   strcat(pinfo, "WIDTH :");
   int2char(dis_w, info);
   strcat(pinfo, info);
@@ -57,7 +57,28 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+  int screen_w = io_read(AM_GPU_CONFIG).width;
+  // int screen_h = io_read(AM_GPU_CONFIG).height;
+  int flx = offset % screen_w; // first line x
+  int fly = offset / screen_w; // first line y
+  if (len % 4 != 0) {
+    printf("fb_write:not support divide pxl\n");
+  }
+  uint32_t *pxl = (uint32_t*)buf;
+  int pxl_num = len / 4;
+  int cross_line = (pxl_num + flx) / screen_w;
+  int llx = (pxl_num + flx - 1) % screen_w; // last line x
+  int lly = cross_line + fly;               // last line y
+  if (cross_line == 0) {
+    io_write(AM_GPU_FBDRAW, flx, fly, pxl, pxl_num, 1, true);
+  } else {
+    io_write(AM_GPU_FBDRAW, flx, fly, pxl, (screen_w - flx), 1, false);
+    if (cross_line != 1) {
+      io_write(AM_GPU_FBDRAW, 0, fly + 1, pxl + (screen_w - flx), screen_w, cross_line - 1, false);
+    }
+    io_write(AM_GPU_FBDRAW, 0, lly, pxl + (pxl_num - llx - 1), llx + 1, 1, true);
+  }
+  return len;
 }
 
 void init_device() {

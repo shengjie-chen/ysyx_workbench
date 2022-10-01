@@ -6,6 +6,7 @@
 // #include <sys/stat.h>
 // #include <sys/time.h>
 // #include <sys/types.h>
+#include <assert.h>
 #include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
@@ -41,21 +42,20 @@ int NDL_PollEvent(char *buf, int len) {
   }
 }
 
+int width;
+int height;
 void NDL_OpenCanvas(int *w, int *h) {
   char pinfo[25];
   int fd = open("/proc/dispinfo", O_RDONLY);
   if (fd == -1) {
     printf("open file fail!\n");
-    return 0;
+    exit(1);
   }
   read(fd, pinfo, 25);
-  printf("%s\n", pinfo);
   int colon1, newline, colon2, null;
   if (!memcmp(pinfo, "WIDTH :", 7)) {
-    printf("1\n");
     colon1 = 6;
   }
-  printf("1\n");
   for (int i = colon1 + 1; i < 25; i++) {
     if (pinfo[i] == '\n') {
       newline = i;
@@ -66,8 +66,8 @@ void NDL_OpenCanvas(int *w, int *h) {
       break;
     }
   }
-  int width = 0;
-  int height = 0;
+  width = 0;
+  height = 0;
   for (int i = newline - 1; i > colon1; i--) {
     int pow = 1;
     for (int j = 0; j < newline - 1 - i; j++) {
@@ -85,6 +85,8 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 
   printf("screen width: %d, height: %d\n", width, height);
+  assert(*w < width);
+  assert(*h < height);
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
@@ -108,6 +110,15 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  int fd = open("/dev/fb", O_WRONLY);
+  if (fd == -1) {
+    printf("open file fail!\n");
+    exit(1);
+  }
+  for (int i = 0; i < h; i++) {
+    lseek(fd, x + y * width + i * width, SEEK_SET);
+    write(fd, pixels + w * i, w * 4);
+  }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
