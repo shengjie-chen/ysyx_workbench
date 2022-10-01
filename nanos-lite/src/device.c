@@ -59,9 +59,10 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 size_t fb_write(const void *buf, size_t offset, size_t len) {
   // printf("offset:%d, len:%d\n",offset,len);
   int screen_w = io_read(AM_GPU_CONFIG).width;
+  size_t pxl_offset = offset / 4;
   // int screen_h = io_read(AM_GPU_CONFIG).height;
-  int flx = offset % screen_w; // first line x
-  int fly = offset / screen_w; // first line y
+  int flx = pxl_offset % screen_w; // first line x
+  int fly = pxl_offset / screen_w; // first line y
   int pxl_num = len / 4;
   uint32_t *pxl = (uint32_t *)buf;
   int cross_line = (pxl_num + flx) / screen_w;
