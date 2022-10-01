@@ -57,6 +57,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+  printf("offset:%d, len:%d\n",offset,len);
   int screen_w = io_read(AM_GPU_CONFIG).width;
   // int screen_h = io_read(AM_GPU_CONFIG).height;
   int flx = offset % screen_w; // first line x
