@@ -62,6 +62,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     w = ctl->w;
     h = ctl->h;
     int i, j;
+  printf("4\n");
+
     for (i = 0; i < h; i++) {
       for (j = 0; j < w; j++) {
         *(fb + (i + y) * width + j + x) = color_buf[i * w + j];
