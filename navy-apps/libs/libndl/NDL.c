@@ -135,12 +135,12 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   if (w == width) {
     assert(x == 0);
     assert((h + y) <= height);
-    lseek(fd, y * width, SEEK_SET);
-    write(fd, pixels, w * h);
+    lseek(fd, (y * width) * 4, SEEK_SET);
+    write(fd, pixels, w * h * 4);
   } else {
     for (int i = 0; i < h; i++) {
-      lseek(fd, x + y * width + i * width, SEEK_SET);
-      write(fd, pixels + w * i, w);
+      lseek(fd, (x + y * width + i * width) * 4, SEEK_SET);
+      write(fd, pixels + w * i, w * 4);
       // printf("%d: write offset %d\n", i, w * i);
     }
   }
