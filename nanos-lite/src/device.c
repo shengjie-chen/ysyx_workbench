@@ -83,6 +83,8 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
     }
     printf("3\n");
     io_write(AM_GPU_FBDRAW, 0, lly, pxl + (pxl_num - llx - 1), llx + 1, 1, true);
+    printf("3\n");
+
   }
   return len;
 }
