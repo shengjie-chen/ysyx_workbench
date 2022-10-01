@@ -85,6 +85,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 
   printf("screen width: %d, height: %d\n", width, height);
+  printf("canvas width: %d, height: %d\n", *w, *h);
   assert(*w < width);
   assert(*h < height);
   if (getenv("NWM_APP")) {
