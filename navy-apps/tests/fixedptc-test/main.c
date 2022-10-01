@@ -38,6 +38,15 @@ int main() {
   // printf("fixedpt floor function pass!\n");
   printf("1.2 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(1.2))));
   printf("1.2 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(1.2))));
-
+  printf("-1.2 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(-1.2))));
+  printf("-1.2 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-1.2))));
+  printf("4 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(4))));
+  printf("4 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(4))));
+  printf("-4 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(-4))));
+  printf("-4 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-4))));
+  printf("49.665 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(49.665))));
+  printf("49.665 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(49.665))));
+  printf("-49.665 floor result is %d\n", fixedpt_toint(fixedpt_floor(fixedpt_rconst(-49.665))));
+  printf("-49.665 ceil result is %d\n", fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-49.665))));
   return 0;
 }
