@@ -20,7 +20,6 @@ static SDL_Surface *slide = NULL;
 static int cur = 0;
 
 void render() {
-  printf("2\n");
   if (slide) {
     SDL_FreeSurface(slide);
   }
