@@ -111,7 +111,7 @@ void SDL_FreeSurface(SDL_Surface *s) {
     // printf("s->pixels:%lx\n",s->pixels);
     if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
       free(s->pixels);
-    // printf("s->pixels:%lx\n",s->pixels);
+    printf("s->pixels:%lx\n",s->pixels);
     free(s);
   }
 

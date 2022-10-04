@@ -21,7 +21,7 @@ static int cur = 0;
 
 void render() {
   if (slide) {
-      printf("s->pixels:%lx\n",slide->pixels);
+      // printf("s->pixels:%lx\n",slide->pixels);
 
     SDL_FreeSurface(slide);
   }
