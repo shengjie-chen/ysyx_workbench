@@ -33,9 +33,9 @@ int SDL_WaitEvent(SDL_Event *event) {
   if (NDL_PollEvent(buf, sizeof(buf))) {
     printf("receive event: %s\n", buf);
     event->type = (buf[1] == 'd') ? SDL_KEYDOWN : SDL_KEYUP;
-    printf("SDL_EventType: %d\n", buf);
+    printf("SDL_EventType: %d\n", event->type);
     event->key.keysym.sym =SDL_ConvertEvent(&buf[3]);
-    printf("SDL_Keys: %d\n", buf);
+    printf("SDL_Keys: %d\n", event->key.keysym.sym);
 
   }
   return 1;
