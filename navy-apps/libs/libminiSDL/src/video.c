@@ -87,6 +87,7 @@ void SDL_FreeSurface(SDL_Surface *s) {
   if (s != NULL) {
     if (s->format != NULL) {
       if (s->format->palette != NULL) {
+        printf("1\n");
         if (s->format->palette->colors != NULL) free(s->format->palette->colors);
         free(s->format->palette);
       }
