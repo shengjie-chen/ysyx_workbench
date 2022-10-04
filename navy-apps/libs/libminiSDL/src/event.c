@@ -31,7 +31,7 @@ static int SDL_ConvertEvent(char *key) {
 int SDL_WaitEvent(SDL_Event *event) {
   char buf[64];
   if (NDL_PollEvent(buf, sizeof(buf))) {
-    buf[strlen(buf) - 1] = 0;
+    // buf[strlen(buf) - 1] = 0;
     printf("receive event: %s\n", buf);
     printf("%c\n", buf[0]);
     event->type = (buf[1] == 'd') ? SDL_KEYDOWN : SDL_KEYUP;
