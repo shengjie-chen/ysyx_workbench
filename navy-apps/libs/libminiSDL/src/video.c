@@ -101,19 +101,15 @@ void SDL_FreeSurface(SDL_Surface *s) {
   if (s != NULL) {
     if (s->format != NULL) {
       if (s->format->palette != NULL) {
-        printf("1\n");
         if (s->format->palette->colors != NULL)
           free(s->format->palette->colors);
         free(s->format->palette);
       }
       free(s->format);
     }
-    printf("2\n");
-    if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
-      free(s->pixels);
-    printf("3\n");
-    
-    free(s);
+    // if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
+    //   free(s->pixels);
+    // free(s);
   }
 
 }
