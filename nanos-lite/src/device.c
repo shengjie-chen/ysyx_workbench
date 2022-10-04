@@ -36,6 +36,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     e_len = len;
   }
   memcpy(buf, event_str, e_len);
+  printf("event_str:%c\n",event_str[0]);
+  printf("buf:%c\n",((char *)buf)[0]);
 
   return e_len;
 }
