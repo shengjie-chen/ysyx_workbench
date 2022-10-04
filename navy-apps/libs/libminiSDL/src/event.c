@@ -41,6 +41,8 @@ int SDL_WaitEvent(SDL_Event *event) {
     printf("SDL_EventType: %d\n", event->type);
     event->key.keysym.sym = SDL_ConvertEvent(&buf[3]);
     printf("SDL_Keys: %d\n", event->key.keysym.sym);
+  } else {
+    event->type = SDL_USEREVENT;
   }
   return 1;
 }
