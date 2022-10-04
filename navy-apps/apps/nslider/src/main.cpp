@@ -40,6 +40,7 @@ void prev(int rep) {
 void next(int rep) {
   if (rep == 0) rep = 1;
   cur += rep;
+  printf("1\n");
   if (cur >= N) cur = N - 1;
   render();
 }
