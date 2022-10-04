@@ -17,7 +17,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 
 #define strdef(k) #k,
 
-char *key_str[] = {{"NONE", _KEYS(strdef)}};
+const char *key_str[] = {{"NONE", _KEYS(strdef)}};
 
 static int SDL_ConvertEvent(char *key) {
   printf("key:%s\n", key);
