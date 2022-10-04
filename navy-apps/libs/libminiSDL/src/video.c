@@ -56,7 +56,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
       }
     }
   }
-  SDL_UpdateRect(dst, 0, 0, 0, 0);
+  // SDL_UpdateRect(dst, 0, 0, 0, 0);
 
   // return 0;
 }
