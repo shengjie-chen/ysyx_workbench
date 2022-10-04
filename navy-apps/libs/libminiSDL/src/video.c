@@ -109,7 +109,7 @@ void SDL_FreeSurface(SDL_Surface *s) {
     }
     // if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
     //   free(s->pixels);
-    // free(s);
+    free(s);
   }
 
 }
