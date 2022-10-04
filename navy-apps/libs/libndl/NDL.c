@@ -125,26 +125,23 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
+static int fb_fd;
+
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  int fd = open("/dev/fb", O_WRONLY);
-  if (fd == -1) {
-    printf("open file fail!\n");
-    exit(1);
-  }
+
   // printf("w:%d\n", w);
   if (w == width) {
     assert(x == 0);
     assert((h + y) <= height);
-    lseek(fd, (y * width) * 4, SEEK_SET);
-    write(fd, pixels, w * h * 4);
+    lseek(fb_fd, (y * width) * 4, SEEK_SET);
+    write(fb_fd, pixels, w * h * 4);
   } else {
     for (int i = 0; i < h; i++) {
-      lseek(fd, (x + y * width + i * width) * 4, SEEK_SET);
-      write(fd, pixels + w * i, w * 4);
+      lseek(fb_fd, (x + y * width + i * width) * 4, SEEK_SET);
+      write(fb_fd, pixels + w * i, w * 4);
       // printf("%d: write offset %d\n", i, w * i);
     }
   }
-  close(fd);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
@@ -165,8 +162,14 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  fb_fd = open("/dev/fb", O_WRONLY);
+  if (fb_fd == -1) {
+    printf("open file fail!\n");
+    exit(1);
+  }
   return 0;
 }
 
 void NDL_Quit() {
+  close(fb_fd);
 }
