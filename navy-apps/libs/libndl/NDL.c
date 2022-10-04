@@ -52,7 +52,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     exit(1);
   }
   read(fd, pinfo, 25);
-  printf("%s\n", pinfo);
+  // printf("%s\n", pinfo);
   int colon1 = 0, colon2 = 0;
   int num1_head = 0, num1_tail = 0, num2_head = 0, num2_tail = 0;
   if (memcmp(pinfo, "WIDTH", 5)) {
@@ -99,8 +99,8 @@ void NDL_OpenCanvas(int *w, int *h) {
     height = height + (pinfo[i] - 48) * pow;
   }
 
-  printf("screen width: %d, height: %d\n", width, height);
-  printf("canvas width: %d, height: %d\n", *w, *h);
+  // printf("screen width: %d, height: %d\n", width, height);
+  // printf("canvas width: %d, height: %d\n", *w, *h);
   assert(*w <= width);
   assert(*h <= height);
   if (getenv("NWM_APP")) {

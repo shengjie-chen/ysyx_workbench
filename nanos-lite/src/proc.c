@@ -27,7 +27,8 @@ void init_proc() {
   Log("Initializing processes...");
 
   // load program here
-  naive_uload(NULL,"/bin/nslider");
+  naive_uload(NULL,"/bin/menu");
+  // naive_uload(NULL,"/bin/nslider");
   // naive_uload(NULL,"/bin/fixedptc-test");
   // naive_uload(NULL,"/bin/event-test");
   // naive_uload(NULL,"/bin/bmp-test");
