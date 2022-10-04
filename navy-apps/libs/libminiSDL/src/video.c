@@ -107,9 +107,9 @@ void SDL_FreeSurface(SDL_Surface *s) {
       }
       free(s->format);
     }
-    printf("s->pixels:%lx",s->pixels);
+    // printf("s->pixels:%lx",s->pixels);
     if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
-      free(s->pixels);
+      // free(s->pixels);
     free(s);
   }
 
