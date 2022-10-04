@@ -113,6 +113,8 @@ void SDL_FreeSurface(SDL_Surface *s) {
       free(s->pixels);
     free(s);
   }
+    printf("3\n");
+
 }
 
 SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
