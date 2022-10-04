@@ -20,12 +20,11 @@ int SDL_PollEvent(SDL_Event *ev) {
 const char *key_str[] = {"NONE", _KEYS(strdef)};
 
 static int SDL_ConvertEvent(char *key) {
-  printf("key:%s\n", key);
-  printf("key size:%d\n", sizeof(key_str) );
-  printf("key num:%d\n", sizeof(key_str) / sizeof(key_str[0]));
+  // printf("key:%s\n", key);
+  // printf("key size:%d\n", sizeof(key_str) );
+  // printf("key num:%d\n", sizeof(key_str) / sizeof(key_str[0]));
   for (int i = 0; i < sizeof(key_str) / sizeof(key_str[0]); i++) {
     if (strcmp(key, key_str[i]) == 0) {
-      printf("1\n");
       return i;
     }
   }
