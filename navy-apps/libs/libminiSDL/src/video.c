@@ -94,8 +94,6 @@ SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
                                         Rmask, Gmask, Bmask, Amask);
   assert(pitch == s->pitch);
   s->pixels = pixels;
-    printf("s->pixels:%lx\n",s->pixels);
-
   return s;
 }
 
