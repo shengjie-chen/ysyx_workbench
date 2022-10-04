@@ -21,12 +21,13 @@ static int cur = 0;
 
 void render() {
   if (slide) {
+      printf("s->pixels:%lx\n",slide->pixels);
+
     SDL_FreeSurface(slide);
   }
   char fname[256];
   sprintf(fname, path, cur);
   slide = SDL_LoadBMP(fname);
-      printf("s->pixels:%lx\n",slide->pixels);
 
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
