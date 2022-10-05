@@ -61,7 +61,7 @@ void do_syscall(Context *c) {
     long int us = io_read(AM_TIMER_UPTIME).us ;
     *(long int *)a[1] = us / 1000000;
     *((long int *)a[1] + 1) = us % 1000000;
-    printf("name : %s, get time : %lds %ldus\n", "SYS_gettimeofday", *(long int *)a[1], *((long int *)a[1] + 1));
+    // printf("name : %s, get time : %lds %ldus\n", "SYS_gettimeofday", *(long int *)a[1], *((long int *)a[1] + 1));
     c->GPRx = 0;
   } break;
 

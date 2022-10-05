@@ -37,7 +37,6 @@ int main() {
   int i = 0;
   while (1) {
     ct = NDL_GetTicks();
-    printf("ct:%ld, lt:%ld\n", ct, lt);
     long int t_interval = ct - lt;
 
     if (t_interval > 500) {
