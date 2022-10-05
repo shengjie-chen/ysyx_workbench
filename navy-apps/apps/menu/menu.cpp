@@ -69,8 +69,7 @@ static void clear_display(void) {
 
 int main(int argc, char *argv[], char *envp[]) {
   SDL_Init(0);
-  // screen = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
-  screen = SDL_SetVideoMode(400, 300, 32, SDL_HWSURFACE);
+  screen = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
 
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");

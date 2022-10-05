@@ -54,7 +54,6 @@ void refresh_terminal() {
     draw_ch(x * font->w, y * font->h, ' ', 0, color);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
     if (now - last > 500) {
-      printf("now:%ld last:%ld\n",now,last);
       flip = !flip;
       last = now;
     }

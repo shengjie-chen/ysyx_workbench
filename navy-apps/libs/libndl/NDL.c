@@ -18,7 +18,7 @@ static int screen_w = 0, screen_h = 0;
 uint32_t NDL_GetTicks() {
   struct timeval curr_time;
   gettimeofday(&curr_time, NULL);
-  uint32_t ms = curr_time.tv_sec * 1000 + curr_time.tv_usec/1000;
+  uint32_t ms = curr_time.tv_sec * 1000 + curr_time.tv_usec / 1000;
   return ms;
 }
 
@@ -45,64 +45,15 @@ int NDL_PollEvent(char *buf, int len) {
 int width;
 int height;
 void NDL_OpenCanvas(int *w, int *h) {
-  char pinfo[25];
-  int fd = open("/proc/dispinfo", O_RDONLY);
-  if (fd == -1) {
-    printf("open file fail!\n");
-    exit(1);
-  }
-  read(fd, pinfo, 25);
-  // printf("%s\n", pinfo);
-  int colon1 = 0, colon2 = 0;
-  int num1_head = 0, num1_tail = 0, num2_head = 0, num2_tail = 0;
-  if (memcmp(pinfo, "WIDTH", 5)) {
-    exit(1);
-  }
-  for (int i = 5; i < 25; i++) {
-    if (pinfo[i] == ':') {
-      if (colon1 == 0) {
-        colon1 = i;
-      } else {
-        colon2 = i;
-      }
-    }
-    if (pinfo[i] >= 48 && pinfo[i] <= 57) {
-      if (colon2 == 0) {
-        if (num1_head == 0)
-          num1_head = i;
-        else
-          num1_tail = i;
-      } else {
-        if (num2_head == 0)
-          num2_head = i;
-        else
-          num2_tail = i;
-      }
-    }
-  }
-  // printf("num1_head = %d, num1_tail = %d, num2_head = %d, num2_tail = %d\n", num1_head, num1_tail, num2_head, num2_tail);
-  width = 0;
-  height = 0;
-  for (int i = num1_tail; i >= num1_head; i--) {
-    int pow = 1;
-    for (int j = 0; j < num1_tail - i; j++) {
-      pow = pow * 10;
-    }
-    width = width + (pinfo[i] - 48) * pow;
-  }
 
-  for (int i = num2_tail; i >= num2_head; i--) {
-    int pow = 1;
-    for (int j = 0; j < num2_tail - i; j++) {
-      pow = pow * 10;
-    }
-    height = height + (pinfo[i] - 48) * pow;
-  }
-
-  // printf("screen width: %d, height: %d\n", width, height);
   // printf("canvas width: %d, height: %d\n", *w, *h);
   assert(*w <= width);
   assert(*h <= height);
+  if(*w ==0 && *h == 0){
+    *w = width;
+    *h = height;
+  }
+
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
@@ -167,6 +118,61 @@ int NDL_Init(uint32_t flags) {
     printf("open file fail!\n");
     exit(1);
   }
+  char pinfo[25];
+  int fd = open("/proc/dispinfo", O_RDONLY);
+  if (fd == -1) {
+    printf("open file fail!\n");
+    exit(1);
+  }
+  read(fd, pinfo, 25);
+  // printf("%s\n", pinfo);
+  int colon1 = 0, colon2 = 0;
+  int num1_head = 0, num1_tail = 0, num2_head = 0, num2_tail = 0;
+  if (memcmp(pinfo, "WIDTH", 5)) {
+    exit(1);
+  }
+  for (int i = 5; i < 25; i++) {
+    if (pinfo[i] == ':') {
+      if (colon1 == 0) {
+        colon1 = i;
+      } else {
+        colon2 = i;
+      }
+    }
+    if (pinfo[i] >= 48 && pinfo[i] <= 57) {
+      if (colon2 == 0) {
+        if (num1_head == 0)
+          num1_head = i;
+        else
+          num1_tail = i;
+      } else {
+        if (num2_head == 0)
+          num2_head = i;
+        else
+          num2_tail = i;
+      }
+    }
+  }
+  // printf("num1_head = %d, num1_tail = %d, num2_head = %d, num2_tail = %d\n", num1_head, num1_tail, num2_head, num2_tail);
+  width = 0;
+  height = 0;
+  for (int i = num1_tail; i >= num1_head; i--) {
+    int pow = 1;
+    for (int j = 0; j < num1_tail - i; j++) {
+      pow = pow * 10;
+    }
+    width = width + (pinfo[i] - 48) * pow;
+  }
+
+  for (int i = num2_tail; i >= num2_head; i--) {
+    int pow = 1;
+    for (int j = 0; j < num2_tail - i; j++) {
+      pow = pow * 10;
+    }
+    height = height + (pinfo[i] - 48) * pow;
+  }
+
+  // printf("screen width: %d, height: %d\n", width, height);
   return 0;
 }
 
