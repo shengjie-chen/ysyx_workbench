@@ -15,10 +15,14 @@ static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
+static uint32_t init_sec, init_usec;
+
 uint32_t NDL_GetTicks() {
   struct timeval curr_time;
   gettimeofday(&curr_time, NULL);
-  uint32_t ms = curr_time.tv_sec * 1000 + curr_time.tv_usec / 1000;
+  // printf("tv_sec: %ld,tv_usec: %ld\n",curr_time.tv_sec,curr_time.tv_usec);
+  uint32_t ms = (curr_time.tv_sec - init_sec) * 1000 + (curr_time.tv_usec - init_usec) / 1000;
+  // printf("NDL_GetTicks: %ld\n",ms);
   return ms;
 }
 
@@ -49,7 +53,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   // printf("canvas width: %d, height: %d\n", *w, *h);
   assert(*w <= width);
   assert(*h <= height);
-  if(*w ==0 && *h == 0){
+  if (*w == 0 && *h == 0) {
     *w = width;
     *h = height;
   }
@@ -172,6 +176,11 @@ int NDL_Init(uint32_t flags) {
     height = height + (pinfo[i] - 48) * pow;
   }
 
+  struct timeval curr_time;
+  gettimeofday(&curr_time, NULL);
+  // printf("tv_sec: %ld,tv_usec: %ld\n",curr_time.tv_sec,curr_time.tv_usec);
+  init_sec = curr_time.tv_sec;
+  init_usec = curr_time.tv_usec;
   // printf("screen width: %d, height: %d\n", width, height);
   return 0;
 }

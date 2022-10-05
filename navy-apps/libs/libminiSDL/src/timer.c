@@ -15,4 +15,10 @@ uint32_t SDL_GetTicks() {
 }
 
 void SDL_Delay(uint32_t ms) {
+  uint32_t cur, tar;
+  cur = SDL_GetTicks();
+  tar = cur + ms;
+  while (cur < tar) {
+    cur = SDL_GetTicks();
+  }
 }

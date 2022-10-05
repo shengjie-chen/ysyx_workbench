@@ -27,12 +27,8 @@ int SDL_PollEvent(SDL_Event *ev) {
   char buf[64];
   if (NDL_PollEvent(buf, sizeof(buf))) {
     buf[strlen(buf) - 1] = 0;
-    printf("receive event: %s\n", buf);
-    // printf("%c\n", buf[1]);
     ev->type = (buf[1] == 'd') ? SDL_KEYDOWN : SDL_KEYUP;
-    printf("SDL_EventType: %d\n", ev->type);
     ev->key.keysym.sym = SDL_ConvertEvent(&buf[3]);
-    printf("SDL_Keys: %d\n", ev->key.keysym.sym);
     return 1;
   }
   return 0;
