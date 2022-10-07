@@ -3,9 +3,10 @@
 #include <klib.h>
 #include <stdarg.h>
 
+int int2char(int d, char *out);
+
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-int int2char(int d, char *out);
 int uint2char(uint32_t d, char *out);
 int hex2char(uint32_t d, char *out);
 int lint2char(long int d, char *out);
@@ -154,30 +155,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   return j;
 }
 
-int int2char(int d, char *out) {
-  int count = 0;
-  int n = d;
-  char m[10];
-  if (d < 0) {
-    *out++ = '-';
-    n = -d;
-  }
-  while (n != 0) {
-    m[count] = n % 10 + 48;
-    n /= 10;
-    ++count;
-  }
-  int i;
-  for (i = 0; i < count; i++) {
-    *(out + i) = m[count - i - 1];
-  }
-  if (d < 0) {
-    return count + 1;
-  } else {
-    return count;
-  }
-}
-
 int lint2char(long int d, char *out) {
   int count = 0;
   int n = d;
@@ -295,3 +272,27 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 }
 
 #endif
+
+int int2char(int d, char *out) {
+  int count = 0;
+  int n = d;
+  char m[10];
+  if (d < 0) {
+    *out++ = '-';
+    n = -d;
+  }
+  while (n != 0) {
+    m[count] = n % 10 + 48;
+    n /= 10;
+    ++count;
+  }
+  int i;
+  for (i = 0; i < count; i++) {
+    *(out + i) = m[count - i - 1];
+  }
+  if (d < 0) {
+    return count + 1;
+  } else {
+    return count;
+  }
+}
