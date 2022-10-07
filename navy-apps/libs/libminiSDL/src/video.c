@@ -7,6 +7,10 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+
+  uint8_t depth = dst->format->BitsPerPixel;
+  assert(depth == 8 || depth == 32);
+
   SDL_Rect u_srcrect, u_dstrect;
   if (srcrect == NULL) {
     u_srcrect.x = 0;
@@ -24,12 +28,25 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     u_dstrect = *dstrect;
   }
 
-  for (int i = 0; i < dst->h; i++) {
-    if (i >= u_dstrect.y && i < (u_dstrect.y + u_srcrect.h)) {
-      for (int j = 0; j < dst->w; j++) {
-        if (j >= u_dstrect.x && j < (u_dstrect.x + u_srcrect.w)) {
-          *((uint32_t *)dst->pixels + i * dst->w + j) =
-              *((uint32_t *)src->pixels + (i - u_dstrect.y + u_srcrect.y) * src->w + (j - u_dstrect.x + u_srcrect.x));
+  if (depth == 8) {
+    for (int i = 0; i < dst->h; i++) {
+      if (i >= u_dstrect.y && i < (u_dstrect.y + u_srcrect.h)) {
+        for (int j = 0; j < dst->w; j++) {
+          if (j >= u_dstrect.x && j < (u_dstrect.x + u_srcrect.w)) {
+            *(dst->pixels + i * dst->w + j) =
+                *(src->pixels + (i - u_dstrect.y + u_srcrect.y) * src->w + (j - u_dstrect.x + u_srcrect.x));
+          }
+        }
+      }
+    }
+  } else {
+    for (int i = 0; i < dst->h; i++) {
+      if (i >= u_dstrect.y && i < (u_dstrect.y + u_srcrect.h)) {
+        for (int j = 0; j < dst->w; j++) {
+          if (j >= u_dstrect.x && j < (u_dstrect.x + u_srcrect.w)) {
+            *((uint32_t *)dst->pixels + i * dst->w + j) =
+                *((uint32_t *)src->pixels + (i - u_dstrect.y + u_srcrect.y) * src->w + (j - u_dstrect.x + u_srcrect.x));
+          }
         }
       }
     }
@@ -40,17 +57,39 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  if (dstrect == NULL) {
-    for (int i = 0; i < (dst->w * dst->h); i++) {
-      *((uint32_t *)dst->pixels + i) = color;
+
+  uint8_t depth = dst->format->BitsPerPixel;
+  assert(depth == 8 || depth == 32);
+  if (depth == 8) {
+    if (dstrect == NULL) {
+      for (int i = 0; i < (dst->w * dst->h); i++) {
+        *((uint8_t *)dst->pixels + i) = color;
+      }
+      // printf("dst->w:%d,dst->h:%d\n",dst->w,dst->h);
+    } else {
+      for (int i = 0; i < dst->h; i++) {
+        if (i >= dstrect->y && i < (dstrect->y + dstrect->h)) {
+          for (int j = 0; j < dst->w; j++) {
+            if (j >= dstrect->x && j < (dstrect->x + dstrect->w)) {
+              *((uint8_t *)dst->pixels + i * dst->w + j) = color;
+            }
+          }
+        }
+      }
     }
-    // printf("dst->w:%d,dst->h:%d\n",dst->w,dst->h);
   } else {
-    for (int i = 0; i < dst->h; i++) {
-      if (i >= dstrect->y && i < (dstrect->y + dstrect->h)) {
-        for (int j = 0; j < dst->w; j++) {
-          if (j >= dstrect->x && j < (dstrect->x + dstrect->w)) {
-            *((uint32_t *)dst->pixels + i * dst->w + j) = color;
+    if (dstrect == NULL) {
+      for (int i = 0; i < (dst->w * dst->h); i++) {
+        *((uint32_t *)dst->pixels + i) = color;
+      }
+      // printf("dst->w:%d,dst->h:%d\n",dst->w,dst->h);
+    } else {
+      for (int i = 0; i < dst->h; i++) {
+        if (i >= dstrect->y && i < (dstrect->y + dstrect->h)) {
+          for (int j = 0; j < dst->w; j++) {
+            if (j >= dstrect->x && j < (dstrect->x + dstrect->w)) {
+              *((uint32_t *)dst->pixels + i * dst->w + j) = color;
+            }
           }
         }
       }
@@ -62,13 +101,69 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  if (x == 0 || y == 0 || w == 0 || h == 0) {
-    // If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
-    NDL_DrawRect(s->pixels, 0, 0, s->w, s->h); // maybe something error
+  uint8_t *pixels;
+  uint8_t depth = s->format->BitsPerPixel;
+  assert(depth == 8 || depth == 32);
+
+  int u_w, u_h;
+  if (w == 0 || h == 0 || x == 0 || y == 0) {
+    u_w = s->w;
+    u_h = s->h;
   } else {
-    printf("complete SDL_UpdateRect branch!\n");
-    exit(1);
+    u_w = w;
+    u_h = h;
   }
+
+  if (depth == 8) {
+    pixels = malloc(u_w * u_h * 4);
+
+    for (int i = 0; i < u_h; i++) {
+      for (int j = 0; j < u_w; j++) {
+        // uint32_t val = s->format->palette->colors[*(s->pixels + i)].val;
+        // val = (val << (32 - 8) | (val >> 8));
+        // *((uint32_t *)pixels + i) = val;
+
+        // *((uint32_t *)pixels + i) = s->format->palette->colors[*(s->pixels + i)].val;
+
+        SDL_Color color = s->format->palette->colors[*(s->pixels + (i + y) * s->w + j + x)];
+        uint8_t r = color.r;
+        uint8_t g = color.g;
+        uint8_t b = color.b;
+        uint8_t a = color.a;
+        uint32_t val = a << 24 | r << 16 | g << 8 | b;
+        *((uint32_t *)pixels + i*u_w + j) = val;
+      }
+    }
+  } else {
+    pixels = s->pixels;
+  }
+
+  int rect_w, rect_h;
+
+  // if (w == 0 || h == 0) {
+  //   rect_w = s->w;
+  //   rect_h = s->h;
+  // } else {
+  //   rect_w = w;
+  //   rect_h = h;
+  // }
+  // NDL_DrawRect(pixels, x, y, rect_w, rect_h);
+
+  // If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
+  // printf("x:%d, y:%d, w:%d, h:%d\n", x, y, w, h);
+
+  NDL_DrawRect(pixels, x, y, u_w, u_h);
+
+  // if (w == 0 || h == 0 || x == 0 || y == 0) {
+  //   printf("SDL_UpdateRect:3\n");
+  //   NDL_DrawRect(pixels, 0, 0, s->w, s->h); // maybe something error
+  // } else {
+  //   printf("SDL_UpdateRect:4\n");
+  //   printf("x:%d, y:%d, w:%d, h:%d\n",x, y, w, h);
+  //   NDL_DrawRect(pixels, x, y, w, h);
+  //   // printf("complete SDL_UpdateRect branch!\n");
+  //   // exit(1);
+  // }
 }
 
 // APIs below are already implemented.
@@ -282,8 +377,10 @@ uint32_t SDL_MapRGBA(SDL_PixelFormat *fmt, uint8_t r, uint8_t g, uint8_t b, uint
 }
 
 int SDL_LockSurface(SDL_Surface *s) {
+  printf("SDL_LockSurface wait to achieve\n");
   return 0;
 }
 
 void SDL_UnlockSurface(SDL_Surface *s) {
+  printf("SDL_UnlockSurface wait to achieve\n");
 }

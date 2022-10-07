@@ -13,12 +13,15 @@ char *SDL_GetError() {
 }
 
 int SDL_SetError(const char* fmt, ...) {
+  printf("SDL_SetError wait to achieve\n");
   return -1;
 }
 
 int SDL_ShowCursor(int toggle) {
+  printf("SDL_ShowCursor wait to achieve\n");
   return 0;
 }
 
 void SDL_WM_SetCaption(const char *title, const char *icon) {
+  printf("SDL_WM_SetCaption wait to achieve\n");
 }

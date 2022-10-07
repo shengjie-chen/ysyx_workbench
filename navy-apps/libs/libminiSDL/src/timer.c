@@ -3,10 +3,12 @@
 #include <stdio.h>
 
 SDL_TimerID SDL_AddTimer(uint32_t interval, SDL_NewTimerCallback callback, void *param) {
+  printf("SDL_AddTimer wait to achieve\n");
   return NULL;
 }
 
 int SDL_RemoveTimer(SDL_TimerID id) {
+  printf("SDL_RemoveTimer wait to achieve\n");
   return 1;
 }
 
