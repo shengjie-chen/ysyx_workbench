@@ -16,7 +16,7 @@ void hello_fun(void *arg) {
   int j = 1;
   while (1) {
     Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
-    j ++;
+    j++;
     yield();
   }
 }
@@ -29,20 +29,23 @@ void init_proc() {
   // load program here
   // naive_uload(NULL, NULL);
 
-  // naive_uload(NULL,"/bin/menu");
-  // naive_uload(NULL,"/bin/nterm");
+  // APPS
   // naive_uload(NULL,"/bin/nslider");
+  // naive_uload(NULL,"/bin/menu");
+  naive_uload(NULL,"/bin/nterm");
   // naive_uload(NULL,"/bin/bird");
-  naive_uload(NULL,"/bin/pal");
+  // naive_uload(NULL, "/bin/pal");
 
-  // naive_uload(NULL,"/bin/fixedptc-test");
+  // TESTS
+  // naive_uload(NULL,"/bin/dummy");
+  // naive_uload(NULL,"/bin/hello");
+  // naive_uload(NULL,"/bin/file-test");
+  // naive_uload(NULL,"/bin/timer-test");
   // naive_uload(NULL,"/bin/event-test");
   // naive_uload(NULL,"/bin/bmp-test");
-  // naive_uload(NULL,"/bin/timer-test");
-  // naive_uload(NULL,"/bin/file-test");
-  // naive_uload(NULL,"/bin/hello");
+  // naive_uload(NULL,"/bin/fixedptc-test");
 }
 
-Context* schedule(Context *prev) {
+Context *schedule(Context *prev) {
   return NULL;
 }

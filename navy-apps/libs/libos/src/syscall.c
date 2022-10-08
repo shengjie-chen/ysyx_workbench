@@ -84,6 +84,7 @@ void *_sbrk(intptr_t increment) {
   if (_syscall_(SYS_brk, increment, 0, 0) == 0) {
     old_pb = pb;
     pb = pb_tmp;
+    // return (void *)-1;
     return old_pb;
   }
 

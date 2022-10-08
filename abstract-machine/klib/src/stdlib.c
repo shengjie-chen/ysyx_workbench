@@ -34,12 +34,12 @@ int atoi(const char *nptr) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
 static char *addr_alloc;
 static int first = 0;
-#endif
+// #endif
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
-#if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
+// #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   if (first == 0) {
     addr_alloc = (void *)ROUNDUP(heap.start, 8);
     first = 1;
@@ -53,9 +53,10 @@ void *malloc(size_t size) {
     *p = 0;
   }
   return old;
-#endif
+// #endif
   return NULL;
 }
+#endif
 
 void free(void *ptr) {
 }

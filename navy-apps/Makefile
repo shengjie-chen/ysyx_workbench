@@ -165,11 +165,11 @@ $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
 .PHONY: clean-all $(CLEAN_ALL)
 
-### nslider menu nterm bird pal
-### dummy hello timer-test bmp-test event-test fixedptc-test
 ### Build fsimg and ramdisk for Nanos-lite
+### nslider menu nterm bird pal
 APPS = nslider menu bird pal
-TESTS = bmp-test timer-test hello 
+### dummy hello file-test timer-test event-test bmp-test fixedptc-test
+TESTS = dummy hello file-test timer-test event-test bmp-test fixedptc-test
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
