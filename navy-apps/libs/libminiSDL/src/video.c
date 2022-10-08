@@ -131,7 +131,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
         uint8_t b = color.b;
         uint8_t a = color.a;
         uint32_t val = a << 24 | r << 16 | g << 8 | b;
-        *((uint32_t *)pixels + i*u_w + j) = val;
+        *((uint32_t *)pixels + i * u_w + j) = val;
       }
     }
   } else {
@@ -253,8 +253,8 @@ void SDL_FreeSurface(SDL_Surface *s) {
       free(s->format);
     }
     // printf("s->pixels:%lx\n",s->pixels);
-    // if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
-    // free(s->pixels);
+    if (s->pixels != NULL && !(s->flags & SDL_PREALLOC))
+      free(s->pixels);
     // printf("s->pixels:%lx\n",s->pixels);
     // printf("s:%lx\n",s);
     free(s);
