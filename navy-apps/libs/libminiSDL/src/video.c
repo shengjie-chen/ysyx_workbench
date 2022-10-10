@@ -106,25 +106,24 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   assert(depth == 8 || depth == 32);
 
   int u_w, u_h;
-  if (w == 0 || h == 0 || x == 0 || y == 0) {
+  if (w == 0 && h == 0 && x == 0 && y == 0) {
     u_w = s->w;
     u_h = s->h;
   } else {
     u_w = w;
     u_h = h;
+    if ((y + h) > s->h) {
+      u_h = s->h - y;
+    }
+    if ((x + w) > s->w) {
+      u_w = s->w - x;
+    }
   }
 
   if (depth == 8) {
     pixels = malloc(u_w * u_h * 4);
-
     for (int i = 0; i < u_h; i++) {
       for (int j = 0; j < u_w; j++) {
-        // uint32_t val = s->format->palette->colors[*(s->pixels + i)].val;
-        // val = (val << (32 - 8) | (val >> 8));
-        // *((uint32_t *)pixels + i) = val;
-
-        // *((uint32_t *)pixels + i) = s->format->palette->colors[*(s->pixels + i)].val;
-
         SDL_Color color = s->format->palette->colors[*(s->pixels + (i + y) * s->w + j + x)];
         uint8_t r = color.r;
         uint8_t g = color.g;
@@ -138,32 +137,10 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
     pixels = s->pixels;
   }
 
-  int rect_w, rect_h;
-
-  // if (w == 0 || h == 0) {
-  //   rect_w = s->w;
-  //   rect_h = s->h;
-  // } else {
-  //   rect_w = w;
-  //   rect_h = h;
-  // }
-  // NDL_DrawRect(pixels, x, y, rect_w, rect_h);
-
-  // If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
-  // printf("x:%d, y:%d, w:%d, h:%d\n", x, y, w, h);
-
   NDL_DrawRect(pixels, x, y, u_w, u_h);
-
-  // if (w == 0 || h == 0 || x == 0 || y == 0) {
-  //   printf("SDL_UpdateRect:3\n");
-  //   NDL_DrawRect(pixels, 0, 0, s->w, s->h); // maybe something error
-  // } else {
-  //   printf("SDL_UpdateRect:4\n");
-  //   printf("x:%d, y:%d, w:%d, h:%d\n",x, y, w, h);
-  //   NDL_DrawRect(pixels, x, y, w, h);
-  //   // printf("complete SDL_UpdateRect branch!\n");
-  //   // exit(1);
-  // }
+  if (depth == 8) {
+    free(pixels);
+  }
 }
 
 // APIs below are already implemented.
