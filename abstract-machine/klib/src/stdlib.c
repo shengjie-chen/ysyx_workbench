@@ -43,7 +43,7 @@ void *malloc(size_t size) {
   if (first == 0) {
     addr_alloc = (void *)ROUNDUP(heap.start, 8);
     first = 1;
-    printf("heap.start:%x\nheap.end:%x\n",heap.start,heap.end);
+    // printf("heap.start:%x\nheap.end:%x\n",heap.start,heap.end);
   }
   size = (size_t)ROUNDUP(size, 8);
   char *old = addr_alloc;
