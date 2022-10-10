@@ -52,8 +52,11 @@ void *malloc(size_t size) {
   if (!((uintptr_t)heap.start <= (uintptr_t)addr_alloc && (uintptr_t)addr_alloc <= (uintptr_t)heap.end)) {
     return NULL;
   }
-  // printf("addr_alloc:%x\n", addr_alloc);
+  printf("addr_alloc:%x\n", addr_alloc);
   for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr_alloc; p++) {
+    if(p>(uint64_t *)addr_alloc){
+      printf("p:%x\n", p);
+    }
     *p = 0;
   }
   return old;
