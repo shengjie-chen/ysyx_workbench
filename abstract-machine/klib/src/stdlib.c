@@ -53,7 +53,7 @@ void *malloc(size_t size) {
     return NULL;
   }
   // printf("addr_alloc:%x\n", addr_alloc);
-  for (uint64_t *p = (uint64_t *)old; p < (uint64_t *)addr_alloc; p++) {
+  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr_alloc; p++) {
     *p = 0;
   }
   return old;
