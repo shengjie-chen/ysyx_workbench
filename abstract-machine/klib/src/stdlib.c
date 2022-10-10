@@ -46,15 +46,15 @@ void *malloc(size_t size) {
     // printf("heap.start:%x\nheap.end:%x\n",heap.start,heap.end);
   }
   size = (size_t)ROUNDUP(size, 8);
-  if (size > ((uintptr_t)heap.end - (uintptr_t)addr_alloc)) {
-    return NULL;
-  }
+  // if (size > ((uintptr_t)heap.end - (uintptr_t)addr_alloc)) {
+  //   return NULL;
+  // }
   char *old = addr_alloc;
   addr_alloc += size;
   // printf("%ld\n", size);
-  // if (!((uintptr_t)heap.start <= (uintptr_t)addr_alloc && (uintptr_t)addr_alloc <= (uintptr_t)heap.end)) {
-  //   return NULL;
-  // }
+  if (!((uintptr_t)heap.start <= (uintptr_t)addr_alloc && (uintptr_t)addr_alloc <= (uintptr_t)heap.end)) {
+    return NULL;
+  }
 
   // printf("addr_alloc:%x\n", addr_alloc);
   // static int p_first = 0;
