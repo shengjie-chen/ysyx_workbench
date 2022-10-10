@@ -58,7 +58,8 @@ void *malloc(size_t size) {
 
   // printf("addr_alloc:%x\n", addr_alloc);
   // static int p_first = 0;
-  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr_alloc; p++) {
+  // for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr_alloc; p++) {
+  for (uint64_t *p = (uint64_t *)old; p < (uint64_t *)addr_alloc; p++) {
     // if (p > (uint64_t *)addr_alloc && p_first == 0) {
     //   printf("p:%x\n", p);
     //   p_first++;
