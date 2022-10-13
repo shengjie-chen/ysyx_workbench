@@ -156,3 +156,8 @@ char handle_key(SDL_Event *ev) {
   }
   return '\0';
 }
+
+void clear_display(void) {
+  SDL_FillRect(screen, NULL, 0x000000);
+  SDL_UpdateRect(screen, 0, 0, 0, 0);
+}

@@ -20,7 +20,7 @@ void do_syscall(Context *c) {
     // printf("sys_id:%ld, status:%ld, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
     // printf("name : %s", "SYS_exit\n");
     // halt(a[1]);
-    naive_uload(NULL,"/bin/menu");
+    naive_uload(NULL,"/bin/nterm");
     break;
   case SYS_yield:
     // printf("sys_id:%ld, a1:%ld, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
