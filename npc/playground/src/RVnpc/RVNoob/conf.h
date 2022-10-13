@@ -2,7 +2,7 @@
 #define __MACRO_CONF__
 
 // switch
-// #define BIGPROGRAM
+ #define BIGPROGRAM
 
 #ifdef BIGPROGRAM
 #define BIGPROGRAMDEBUG
