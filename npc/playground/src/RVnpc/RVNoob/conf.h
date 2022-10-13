@@ -1,10 +1,16 @@
 #ifndef __MACRO_CONF__
 #define __MACRO_CONF__
 
-// #define BIGPROGRAM
+// switch
+#define BIGPROGRAM
+
 #ifdef BIGPROGRAM
-#define BIGPROGRAMDEBUG
+// #define BIGPROGRAMDEBUG
+// #define CONFIG_DIFFTEST
 #endif
+
+// switch end
+
 
 #ifndef BIGPROGRAM
 #define CONFIG_ITRACE
@@ -19,10 +25,6 @@
 // 1M --> 1.6GB
 #define CONFIG_DUMPVCD
 #define CONFIG_DUMPSTART 11200000
-#endif
-
-#ifdef BIGPROGRAM
-#define CONFIG_DIFFTEST
 #endif
 
 #define CONFIG_ISA64 1
