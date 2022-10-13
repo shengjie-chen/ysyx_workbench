@@ -32,12 +32,15 @@ static void sh_handle_cmd(const char *cmd) {
   // envp[0] = NULL;
   // execve(cmd, (char**)exec_argv, (char**)envp);
   clear_display();
+
   char pathname [256];
   strcpy(pathname, cmd);
   int l = strlen(pathname);
   pathname[l-1] = 0;
-  execve(pathname, NULL, NULL);
 
+  // execve(pathname, NULL, NULL);
+  setenv("PATH","/bin",0);
+  execvp(pathname, NULL);
 }
 
 void builtin_sh_run() {
