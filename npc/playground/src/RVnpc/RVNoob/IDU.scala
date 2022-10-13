@@ -110,7 +110,7 @@ class IDU extends Module with IDU_op with function with RVNoobConfig {
   val rvm_divw  = opcode === "b0111011".U && fun3 === "b100".U && fun7 === "b0000001".U
   val rvm_divuw = opcode === "b0111011".U && fun3 === "b101".U && fun7 === "b0000001".U
   val rvm_remw  = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
-  val rvm_remuw = opcode === "b0111011".U && fun3 === "b110".U && fun7 === "b0000001".U
+  val rvm_remuw = opcode === "b0111011".U && fun3 === "b111".U && fun7 === "b0000001".U
 
   // privileged
   val pri_mret   = io.inst === "b00110000001000000000000001110011".U
