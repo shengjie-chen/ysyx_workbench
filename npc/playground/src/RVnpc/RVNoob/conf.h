@@ -5,8 +5,8 @@
 #define BIGPROGRAM
 
 #ifdef BIGPROGRAM
-// #define BIGPROGRAMDEBUG
-// #define CONFIG_DIFFTEST
+#define BIGPROGRAMDEBUG
+#define CONFIG_DIFFTEST
 #endif
 
 // switch end
@@ -24,7 +24,7 @@
 #ifdef BIGPROGRAMDEBUG
 // 1M --> 1.6GB
 #define CONFIG_DUMPVCD
-#define CONFIG_DUMPSTART 11200000
+// #define CONFIG_DUMPSTART 11200000
 #endif
 
 #define CONFIG_ISA64 1
