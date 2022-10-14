@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <RVNoob.h>
+#include "RVNoob.h"
 
 extern NPCState npc_state;
 
