@@ -10,6 +10,8 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <sys/time.h>
+#include "device.c"
+#include "timer.c"
 
 // int add(int a, int b) { return a + b; }
 
@@ -17,13 +19,6 @@ vluint64_t main_time = 0;
 const vluint64_t sim_time = -1;
 NPCState npc_state;
 CPU_state cpu_state;
-
-void device_update();
-uint64_t get_time_internal();
-void i8042_data_io_handler();
-void init_i8042();
-extern uint32_t *i8042_data_port_base;
-
 
 void npc_ebreak() {
   npc_state.state = NPC_END;
