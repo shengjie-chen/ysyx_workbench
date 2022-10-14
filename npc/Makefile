@@ -77,7 +77,7 @@ SDB=sdb_y  # 跳过sdb则改为sdb_n
 ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so
 DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
-DISASM_LIBS = $(shell llvm-config --libs) -O2 -fsanitize=address -pie -ldl
+DISASM_LIBS = $(shell llvm-config --libs) -O2 -fsanitize=address -pie -ldl -lSDL2
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
