@@ -63,7 +63,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   if (raddr == KBD_ADDR) {
     i8042_data_io_handler();
-    *rdata = *i8042_data_port_base;
+    *rdata = i8042_data_port_base;
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  keyboard ## addr: %llx", raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%08llx \n", *rdata);
