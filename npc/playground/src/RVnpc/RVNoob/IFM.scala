@@ -80,6 +80,7 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
       |  input longint raddr, output longint rdata);
       |import "DPI-C" function void pmem_write_dpi(
       |  input longint waddr, input longint wdata, input byte wmask);
+      |
       |reg [63:0] rdata_t;
       |
       |always @(*) begin

@@ -18,6 +18,13 @@ const vluint64_t sim_time = -1;
 NPCState npc_state;
 CPU_state cpu_state;
 
+void device_update();
+uint64_t get_time_internal();
+void i8042_data_io_handler();
+void init_i8042();
+extern uint32_t *i8042_data_port_base;
+
+
 void npc_ebreak() {
   npc_state.state = NPC_END;
   printf("!!!!!! npc ebreak !!!!!!\n");
@@ -52,6 +59,19 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  rtc ## addr: %llx", raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
+#endif
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
+    return;
+  }
+
+  if (raddr == KBD_ADDR) {
+    i8042_data_io_handler();
+    *rdata = *i8042_data_port_base;
+#ifdef CONFIG_MTRACE
+    fprintf(mtrace_fp, "read  keyboard ## addr: %llx", raddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%08llx \n", *rdata);
 #endif
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
@@ -161,6 +181,8 @@ void one_clock() {
 #ifdef CONFIG_DIFFTEST
   difftest_step(pc, cpu_npc);
 #endif
+
+  device_update();
 }
 
 int main(int argc, char **argv, char **env) {
@@ -182,6 +204,7 @@ int main(int argc, char **argv, char **env) {
   mtrace_fp = fopen(mtrace_file, "w");
 #endif
 
+  init_i8042();
   npc_state.state = NPC_RUNNING;
 
   int n = 10;
