@@ -6,7 +6,6 @@ void __am_timer_init();
 void __am_timer_rtc(AM_TIMER_RTC_T *);
 void __am_timer_uptime(AM_TIMER_UPTIME_T *);
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *);
-void __am_timer_rtc(AM_TIMER_RTC_T *);
 
 static void __am_timer_config(AM_TIMER_CONFIG_T *cfg) { cfg->present = true; cfg->has_rtc = true; }
 static void __am_input_config(AM_INPUT_CONFIG_T *cfg) { cfg->present = true;  }
@@ -29,5 +28,5 @@ bool ioe_init() {
   return true;
 }
 
-void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
+void ioe_read (int reg, void *buf) { printf("use device id : %d\n",reg);((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }
