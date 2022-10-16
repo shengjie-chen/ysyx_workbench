@@ -8,8 +8,8 @@
 #define BIGPROGRAM
 
 #ifdef BIGPROGRAM
-#define BIGPROGRAMDEBUG
-#define CONFIG_DIFFTEST
+// #define BIGPROGRAMDEBUG
+// #define CONFIG_DIFFTEST
 #endif
 
 // switch end
