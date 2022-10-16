@@ -53,7 +53,7 @@
 #define __IGNORE(...)
 #define __KEEP(...) __VA_ARGS__
 // keep the code if a boolean macro is defined
-#define IFDEF(macro, ...) MUXDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__)
+#define IFDEF(macro, ...) MUXDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__) // something error?
 // keep the code if a boolean macro is undefined
 #define IFNDEF(macro, ...) MUXNDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__)
 // keep the code if a boolean macro is defined to 1
