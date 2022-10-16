@@ -2,16 +2,16 @@
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
 // #include "disasm.cc"
+#include "device.c"
 #include "difftest.c"
 #include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
+#include "timer.c"
 #include "trace.c"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <sys/time.h>
-#include "device.c"
-#include "timer.c"
 
 // int add(int a, int b) { return a + b; }
 
@@ -74,6 +74,22 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
     return;
   }
 
+  if (raddr == VGACTL_ADDR || raddr == (VGACTL_ADDR + 2)) {
+    if (raddr == VGACTL_ADDR) {
+      *rdata = SCREEN_H;
+    } else {
+      *rdata = SCREEN_W;
+    }
+#ifdef CONFIG_MTRACE
+    fprintf(mtrace_fp, "read  vgactrl ## addr: %llx", raddr & ~0x7ull);
+    fprintf(mtrace_fp, " -> 0x%08llx \n", *rdata);
+#endif
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
+    return;
+  }
+
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
@@ -99,6 +115,18 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
+    return;
+  }
+
+  if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size())) {
+    assert(wmask == 0x0f);
+    *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
+    return;
+  }
+
+  if (raddr == (VGACTL_ADDR + 4)) {
+    assert(wmask == 0x0f);
+    vgactl_port_base_syn = wdata;
     return;
   }
 
@@ -200,6 +228,8 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   init_i8042();
+  init_vga();
+
   npc_state.state = NPC_RUNNING;
 
   int n = 10;
@@ -265,6 +295,7 @@ int main(int argc, char **argv, char **env) {
   fclose(itrace_fp);
 #endif
 
+  free(vmem);
   tfp->close();
   delete top;
   delete tfp;

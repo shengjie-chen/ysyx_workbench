@@ -2,6 +2,9 @@
 #define __MACRO_CONF__
 
 // switch
+#define CONFIG_VGA_SHOW_SCREEN
+#define CONFIG_VGA_SIZE_400x300
+
 #define BIGPROGRAM
 
 #ifdef BIGPROGRAM
