@@ -104,7 +104,6 @@ sim_npc_vcd_without_regen_gtk:
 	#g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
 	verilator --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
-	#gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 # sim_npc_vcd_without_regen_gdb:
 # 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
