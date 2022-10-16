@@ -90,7 +90,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
     return;
   }
 
-    if (raddr >= FB_ADDR && raddr < (FB_ADDR + screen_size)) {
+  if (raddr >= FB_ADDR && raddr < (FB_ADDR + screen_size)) {
     *rdata = *(uint32_t *)((uint8_t *)vmem + raddr - FB_ADDR);
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
@@ -127,9 +127,14 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   }
 
   if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size)) {
-    printf("wmask = %x\n",wmask);
-    assert(wmask == 0x0f);
-    *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
+    printf("wmask = %x\n", wmask);
+    assert(wmask == 0x0f || wmask == 0xf0);
+    if (wmask == 0x0f) {
+      *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
+    } else if (wmask == 0xf0) {
+      *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR + 4) = wdata >> 32;
+    }
+
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
