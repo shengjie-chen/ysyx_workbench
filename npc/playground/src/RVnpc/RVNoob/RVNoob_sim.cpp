@@ -118,13 +118,13 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     return;
   }
 
-  if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size())) {
+  if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size)) {
     assert(wmask == 0x0f);
     *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
     return;
   }
 
-  if (raddr == (VGACTL_ADDR + 4)) {
+  if (waddr == (VGACTL_ADDR + 4)) {
     assert(wmask == 0x0f);
     vgactl_port_base_syn = wdata;
     return;
