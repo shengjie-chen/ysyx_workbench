@@ -99,13 +99,9 @@ static void init_screen() {
   char title[128];
   sprintf(title, "%s-NPC", "riscv64");
   SDL_Init(SDL_INIT_VIDEO);
-  // SDL_CreateWindowAndRenderer(
-  //     SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
-  //     SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
-  //     0, &window, &renderer);
-    SDL_CreateWindowAndRenderer(
-      SCREEN_W * 1,
-      SCREEN_H * 1,
+  SDL_CreateWindowAndRenderer(
+      SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
+      SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       0, &window, &renderer);
   SDL_SetWindowTitle(window, title);
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
@@ -148,7 +144,7 @@ void init_vga() {
   // vmem = new_space(screen_size());
   // add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size));
+  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0xff, screen_size));
 }
 
 // --------------------------------> device
