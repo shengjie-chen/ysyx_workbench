@@ -49,6 +49,6 @@ class CSR extends Module with RVNoobConfig with Csr_op {
 
   io.csr_rdata := Mux(io.csr_ctrl.csr_en, csr(csr_addr), 0.U)
   io.mtvec     := Mux(io.csr_ctrl.ecall, csr(1), 0.U)
-  io.mepc      := Mux(io.csr_ctrl.mret, csr(2), 0.U & 1.U)
+  io.mepc      := Mux(io.csr_ctrl.mret, csr(2), 0.U)
 
 }

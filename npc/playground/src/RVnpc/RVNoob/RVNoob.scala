@@ -22,10 +22,10 @@ class RVNoob extends Module {
   val csr = Module(new CSR)
 
   npc_add_res := Mux(idu.io.dnpc_jalr, rf.io.rdata1, pc) + idu.io.imm
-  snpc        := Mux(idu.io.csr_ctrl.mret, csr.io.mepc, pc) + 4.U
+  snpc        := pc + 4.U
   dnpc := Mux(
-    idu.io.csr_ctrl.ecall,
-    csr.io.mtvec,
+    (idu.io.csr_ctrl.ecall || idu.io.csr_ctrl.mret),
+    Mux(idu.io.csr_ctrl.mret,csr.io.mepc,csr.io.mtvec),
     Mux(idu.io.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
   )
   pc    := Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
