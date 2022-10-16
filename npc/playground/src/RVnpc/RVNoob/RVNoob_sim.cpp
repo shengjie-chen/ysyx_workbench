@@ -132,7 +132,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     assert((wmask == 0x0f) || (wmask == (char)0xf0));
     if (wmask == 0x0f) {
       *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR) = wdata;
-    } else if (wmask == 0xf0) {
+    } else if (wmask == (char)0xf0) {
       *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR + 4) = wdata >> 32;
     }
 #ifdef CONFIG_DIFFTEST
