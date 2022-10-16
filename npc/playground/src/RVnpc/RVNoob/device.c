@@ -48,7 +48,7 @@ static void key_enqueue(uint32_t am_scancode) {
 
 static uint32_t key_dequeue() {
   uint32_t key = _KEY_NONE;
-  printf("key dequeue: key_f:%d, key_r:%d\n",key_f,key_r);
+  // printf("key dequeue: key_f:%d, key_r:%d\n",key_f,key_r);
   if (key_f != key_r) {
     key = key_queue[key_f];
     key_f = (key_f + 1) % KEY_QUEUE_LEN;
@@ -58,7 +58,7 @@ static uint32_t key_dequeue() {
 
 void send_key(uint8_t scancode, bool is_keydown) {
   if (npc_state.state == NPC_RUNNING && keymap[scancode] != _KEY_NONE) {
-    printf("is_keydown:%d, key:%d\n", is_keydown, keymap[scancode]);
+    // printf("is_keydown:%d, key:%d\n", is_keydown, keymap[scancode]);
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
     key_enqueue(am_scancode);
   }
@@ -86,7 +86,8 @@ static uint32_t screen_height = SCREEN_H;
 uint32_t screen_size = screen_width * screen_height * sizeof(uint32_t);
 
 void *vmem = NULL;
-uint32_t vgactl_port_base, vgactl_port_base_syn;
+// uint32_t vgactl_port_base, vgactl_port_base_syn;
+uint32_t vgactl_port_base[2];
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
 
@@ -119,18 +120,18 @@ static inline void update_screen() {
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
-  int sync = vgactl_port_base_syn;
+  int sync = vgactl_port_base[1];
   if (sync != 0) {
     update_screen();
-    vgactl_port_base_syn = 0;
+    vgactl_port_base[1] = 0;
   }
 }
 
 void init_vga() {
   // vgactl_port_base = (uint32_t *)new_space(8);
   // vgactl_port_base[0] = (screen_width() << 16) | screen_height();
-  vgactl_port_base = (screen_width << 16) | screen_height;
-  vgactl_port_base_syn = 0;
+  vgactl_port_base[0] = (screen_width << 16) | screen_height;
+  vgactl_port_base[1] = 0;
 
   // add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 

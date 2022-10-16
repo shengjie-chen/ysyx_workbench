@@ -76,9 +76,9 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   if (raddr == VGACTL_ADDR || raddr == (VGACTL_ADDR + 2)) {
     if (raddr == VGACTL_ADDR) {
-      *rdata = vgactl_port_base;
+      *rdata = vgactl_port_base[0];
     } else {
-      *rdata = vgactl_port_base >> 16;
+      *rdata = vgactl_port_base[0] >> 16;
     }
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  vgactrl ## addr: %llx", raddr & ~0x7ull);
@@ -134,32 +134,39 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     } else if (wmask == 0xf0) {
       *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR + 4) = wdata >> 32;
     }
-
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
     return;
   }
 
-  if (waddr == (VGACTL_ADDR + 4)) {
-    assert(wmask == 0x0f);
-    vgactl_port_base_syn = wdata;
-#ifdef CONFIG_DIFFTEST
-    difftest_skip_ref();
-#endif
-    return;
-  }
-
-  for (int i = 0; i < 8; i++) {
-    if ((wmask >> i) & 1 == 1) {
-      pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
+  if (waddr >= VGACTL_ADDR || waddr < (VGACTL_ADDR + 8)) {
+    // int addr_temp = waddr - VGACTL_ADDR;
+    for (int i = 0; i < 8; i++) {
+      if ((wmask >> i) & 1 == 1) {
+        *((char *)vgactl_port_base + i) = wdata >> (8 * i);
+      }
     }
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
+    return;
   }
+
+  if (waddr < CONFIG_MBASE || waddr >= (CONFIG_MBASE + CONFIG_MSIZE)) {
+    printf("!!! out of bound. write addr:%x\n", waddr);
+  }
+
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, "write pmem ## addr: %llx", waddr & ~0x7ull);
   fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
   fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
 #endif
+  for (int i = 0; i < 8; i++) {
+    if ((wmask >> i) & 1 == 1) {
+      pmem_write((waddr & ~0x7ull) + i, 1, wdata >> (8 * i));
+    }
+  }
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
