@@ -90,6 +90,14 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
     return;
   }
 
+    if (raddr >= FB_ADDR && raddr < (FB_ADDR + screen_size)) {
+    *rdata = *(uint32_t *)((uint8_t *)vmem + raddr - FB_ADDR);
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
+    return;
+  }
+
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
@@ -121,12 +129,18 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size)) {
     assert(wmask == 0x0f);
     *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
     return;
   }
 
   if (waddr == (VGACTL_ADDR + 4)) {
     assert(wmask == 0x0f);
     vgactl_port_base_syn = wdata;
+#ifdef CONFIG_DIFFTEST
+    difftest_skip_ref();
+#endif
     return;
   }
 
