@@ -1,7 +1,7 @@
 #include "RVNoob.h"
 #include "common.h"
-#include <SDL2/SDL.h>
 #include "timer.c"
+#include <SDL2/SDL.h>
 
 extern NPCState npc_state;
 
@@ -101,7 +101,7 @@ static void init_screen() {
       0, &window, &renderer);
   SDL_SetWindowTitle(window, title);
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
-      SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
+                              SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
 }
 
 static inline void update_screen() {
@@ -117,12 +117,11 @@ void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
   int sync = vgactl_port_base_syn;
-  if(sync != 0){
+  if (sync != 0) {
     update_screen();
     vgactl_port_base_syn = 0;
   }
 }
-
 
 void init_vga() {
   // vgactl_port_base = (uint32_t *)new_space(8);
@@ -133,16 +132,15 @@ void init_vga() {
   // add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 
   vmem = malloc(screen_size);
-  #ifdef CONFIG_VGA_SHOW_SCREEN
-  printf("1\n");
-  #endif
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, printf("1\n"));
+#ifdef CONFIG_VGA_SHOW_SCREEN
+  init_screen();
+  memset(vmem, 0, screen_size);
+#endif
+  // IFDEF(CONFIG_VGA_SHOW_SCREEN, printf("1\n"));
   // vmem = new_space(screen_size());
   // add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size));
-  // init_screen();
-  // memset(vmem, 0, screen_size);
+  // IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
+  // IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size));
 }
 
 // --------------------------------> device
