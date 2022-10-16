@@ -86,8 +86,8 @@ static uint32_t screen_height = SCREEN_H;
 uint32_t screen_size = screen_width * screen_height * sizeof(uint32_t);
 
 void *vmem = NULL;
-// uint32_t vgactl_port_base, vgactl_port_base_syn;
-uint32_t vgactl_port_base[2];
+uint32_t vgactl_port_base, vgactl_port_base_syn;
+// uint32_t vgactl_port_base[2];
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
 
