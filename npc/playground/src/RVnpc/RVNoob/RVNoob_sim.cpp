@@ -91,7 +91,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
   }
 
   if (raddr >= FB_ADDR && raddr < (FB_ADDR + screen_size)) {
-    *rdata = *(uint32_t *)((uint8_t *)vmem + raddr - FB_ADDR);
+    *rdata = *(uint64_t *)((uint8_t *)vmem + raddr - FB_ADDR);
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
