@@ -76,9 +76,9 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   if (raddr == VGACTL_ADDR || raddr == (VGACTL_ADDR + 2)) {
     if (raddr == VGACTL_ADDR) {
-      *rdata = SCREEN_H;
+      *rdata = vgactl_port_base;
     } else {
-      *rdata = SCREEN_W;
+      *rdata = vgactl_port_base >> 16;
     }
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  vgactrl ## addr: %llx", raddr & ~0x7ull);
