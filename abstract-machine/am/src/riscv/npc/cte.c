@@ -1,5 +1,7 @@
+#include "/home/jiexxpu/ysyx/ysyx-workbench/navy-apps/libs/libos/src/syscall.h"
 #include <am.h>
 #include <klib.h>
+#include <riscv/riscv.h>
 
 static Context *(*user_handler)(Event, Context *) = NULL;
 
