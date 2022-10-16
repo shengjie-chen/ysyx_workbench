@@ -76,9 +76,9 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   if (raddr == VGACTL_ADDR || raddr == (VGACTL_ADDR + 2)) {
     if (raddr == VGACTL_ADDR) {
-      *rdata = vgactl_port_base[0];
+      *rdata = vgactl_port_base;
     } else {
-      *rdata = vgactl_port_base[0] >> 16;
+      *rdata = vgactl_port_base >> 16;
     }
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  vgactrl ## addr: %llx", raddr & ~0x7ull);
@@ -140,13 +140,9 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
     return;
   }
 
-  if (waddr >= VGACTL_ADDR || waddr < (VGACTL_ADDR + 8)) {
-    // int addr_temp = waddr - VGACTL_ADDR;
-    for (int i = 0; i < 8; i++) {
-      if ((wmask >> i) & 1 == 1) {
-        *((char *)vgactl_port_base + i) = wdata >> (8 * i);
-      }
-    }
+  if (waddr == (VGACTL_ADDR + 4)) {
+    assert(wmask == 0x0f);
+    vgactl_port_base_syn = wdata;
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
