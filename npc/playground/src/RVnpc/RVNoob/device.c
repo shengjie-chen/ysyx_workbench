@@ -132,15 +132,15 @@ void init_vga() {
   // add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 
   vmem = malloc(screen_size);
-#ifdef CONFIG_VGA_SHOW_SCREEN
-  init_screen();
-  memset(vmem, 0, screen_size);
-#endif
+// #ifdef CONFIG_VGA_SHOW_SCREEN
+//   init_screen();
+//   memset(vmem, 0, screen_size);
+// #endif
   // IFDEF(CONFIG_VGA_SHOW_SCREEN, printf("1\n"));
   // vmem = new_space(screen_size());
   // add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
-  // IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
-  // IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size));
+  IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
+  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size));
 }
 
 // --------------------------------> device
