@@ -42,7 +42,8 @@ static void key_enqueue(uint32_t am_scancode) {
   key_queue[key_r] = am_scancode;
   key_r = (key_r + 1) % KEY_QUEUE_LEN;
   if (key_r != key_f)
-    panic("key queue overflow!");
+    key_r--;
+  // panic("key queue overflow!");
 }
 
 static uint32_t key_dequeue() {
@@ -56,7 +57,7 @@ static uint32_t key_dequeue() {
 
 void send_key(uint8_t scancode, bool is_keydown) {
   if (npc_state.state == NPC_RUNNING && keymap[scancode] != _KEY_NONE) {
-    printf("is_keydown:%d, key:%d\n",is_keydown,keymap[scancode]);
+    printf("is_keydown:%d, key:%d\n", is_keydown, keymap[scancode]);
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
     key_enqueue(am_scancode);
   }
@@ -133,10 +134,10 @@ void init_vga() {
   // add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 
   vmem = malloc(screen_size);
-// #ifdef CONFIG_VGA_SHOW_SCREEN
-//   init_screen();
-//   memset(vmem, 0, screen_size);
-// #endif
+  // #ifdef CONFIG_VGA_SHOW_SCREEN
+  //   init_screen();
+  //   memset(vmem, 0, screen_size);
+  // #endif
   // IFDEF(CONFIG_VGA_SHOW_SCREEN, printf("1\n"));
   // vmem = new_space(screen_size());
   // add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
