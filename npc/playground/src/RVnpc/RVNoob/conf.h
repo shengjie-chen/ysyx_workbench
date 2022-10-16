@@ -25,6 +25,7 @@
 
 #ifdef BIGPROGRAMDEBUG
 // #define CONFIG_MTRACE
+#define CONFIG_ITRACE
 // 1M --> 1.6GB
 #define CONFIG_DUMPVCD
 #define CONFIG_DUMPSTART 0
