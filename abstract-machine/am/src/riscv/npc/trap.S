@@ -24,6 +24,10 @@ __am_asm_trap:
 
   MAP(REGS, PUSH)
 
+  mv t0, sp
+  addi t0, t0, CONTEXT_SIZE
+  sd t0, OFFSET_SP(sp)
+
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
