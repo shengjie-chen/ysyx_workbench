@@ -65,6 +65,7 @@ int _open(const char *path, int flags, mode_t mode) {
 
 int _write(int fd, void *buf, size_t count) {
   int status;
+  printf("_write, fd:%ld, buf:%lx, count:%ld  \n", fd, buf, count);
   status = _syscall_(SYS_write, fd, (intptr_t)buf, count);
   if (status == -1 || status > count) {
     _exit(1);
@@ -92,7 +93,6 @@ void *_sbrk(intptr_t increment) {
 }
 
 int _read(int fd, void *buf, size_t count) {
-  printf("_read, fd:%ld, buf:%lx, count:%ld  \n", fd, buf, count);
   return _syscall_(SYS_read, fd, buf, count);
   // return 0;
 }
