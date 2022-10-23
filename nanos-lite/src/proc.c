@@ -30,7 +30,7 @@ void init_proc() {
   // naive_uload(NULL, NULL);
 
   // APPS
-  // naive_uload(NULL,"/bin/nslider");
+  naive_uload(NULL,"/bin/nslider");
   // naive_uload(NULL,"/bin/menu");
   // naive_uload(NULL,"/bin/nterm");
   // naive_uload(NULL,"/bin/bird");
@@ -43,7 +43,7 @@ void init_proc() {
   // naive_uload(NULL,"/bin/timer-test");
   // naive_uload(NULL,"/bin/event-test");
   // naive_uload(NULL,"/bin/bmp-test");
-  naive_uload(NULL,"/bin/fixedptc-test");
+  // naive_uload(NULL,"/bin/fixedptc-test");
 }
 
 Context *schedule(Context *prev) {
