@@ -1,3 +1,8 @@
+package RVnpc.RVNoob
+
+import chisel3._
+import chisel3.util._
+
 trait AxiParameters {
   val AxiAddrWidth = 4
   val AxiDataWidth = 32
