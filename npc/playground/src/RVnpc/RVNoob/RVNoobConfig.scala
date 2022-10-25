@@ -106,7 +106,7 @@ trait Csr_op {
 
 }
 
-trait IDU_op extends ALU_op with Judge_op with Csr_op
+trait IDU_op extends ALU_op with Judge_op with Csr_op with Judge_Load_op
 
 trait ext_function {
   def sext_64(inst_p: UInt): UInt = {

@@ -56,7 +56,6 @@ class RVNoob extends Module {
   exe.io.pc <> pc
   exe.io.snpc <> snpc
   exe.io.ctrl <> idu.io.exe_ctrl
-  exe.io.mem_data <> ifm.io.rdata
 
   csr.io.csr_ctrl <> idu.io.csr_ctrl
   csr.io.pc <> pc

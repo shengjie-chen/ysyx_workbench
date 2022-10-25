@@ -18,7 +18,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val exe_ctrl  = Output(new EXECtrlIO)
     val pmem_ctrl = Output(new PmemCtrlIO)
     val csr_ctrl  = Output(new CsrCtrlIO)
-    val judge_load_op = Output(UInt(judge_load_op_width.W))
+    val judge_load_op = Output(UInt(jdgl_op_w.W))
     val dnpc_jalr = Output(Bool())
     val pc_mux    = Output(Bool())
   })
