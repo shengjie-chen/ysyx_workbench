@@ -180,6 +180,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   )
   io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.dir_out_mux := rvi_lui || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.src1_bypass := || rvi_csrrw || rvi_csrrwi
   val jpg_slt  = rvi_slti || rvi_slt  // jpg = ? I forget
   val jpg_sltu = rvi_sltiu || rvi_sltu
   val jpg_sextw =

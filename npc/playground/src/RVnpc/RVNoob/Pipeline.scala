@@ -14,7 +14,7 @@ class PipelineInIO extends PipelineIO {
 }
 
 class PipelineOutIO extends PipelineIO {
-  val valid = Bool()
+//  val valid = Bool()
 }
 
 trait IDregSignal extends RVNoobConfig {
