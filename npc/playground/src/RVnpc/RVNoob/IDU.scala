@@ -8,17 +8,15 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val inst = Input(UInt(inst_w.W))
     val imm  = Output(UInt(xlen.W))
     // gpr
-    val wen  = Output(Bool())
-    val rd   = Output(UInt(5.W))
+    val rfwb_ctrl = Output(new WBCtrlIO)
     val ren1 = Output(Bool())
     val ren2 = Output(Bool())
     val rs1  = Output(UInt(5.W))
     val rs2  = Output(UInt(5.W))
     // control
     val exe_ctrl  = Output(new EXECtrlIO)
-    val pmem_ctrl = Output(new PmemCtrlIO)
+    val pmem_ctrl = Output(new MemCtrlIO)
     val csr_ctrl  = Output(new CsrCtrlIO)
-    val judge_load_op = Output(UInt(jdgl_op_w.W))
     val dnpc_jalr = Output(Bool())
     val pc_mux    = Output(Bool())
   })
@@ -32,7 +30,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   fun3   := io.inst(14, 12)
   fun7   := io.inst(31, 25)
 
-  io.rd  := io.inst(11, 7)
+  io.rfwb_ctrl.rd  := io.inst(11, 7)
   io.rs1 := io.inst(19, 15)
   io.rs2 := io.inst(24, 20)
 
@@ -160,7 +158,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       (rvi_srl || rvi_srli) -> op_srl,
       (rvi_sra || rvi_srai) -> op_sra,
       (rvi_xori || rvi_xor) -> op_xor,
-      (rvi_ori || rvi_or) -> op_or,
+      (rvi_ori || rvi_or || rvi_csrrs || rvi_csrrsi) -> op_or,
       (rvi_andi || rvi_and) -> op_and,
       (rvm_mul || rvm_mulw) -> op_mul,
       (rvm_divu) -> op_div,
@@ -176,11 +174,12 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       (rvm_remuw) -> op_remw,
       (rvi_srliw || rvi_srlw) -> op_srlw,
       (rvi_sraiw || rvi_sraw) -> op_sraw,
-      (rvi_slliw || rvi_sllw) -> op_sllw
+      (rvi_slliw || rvi_sllw) -> op_sllw,
+      (rvi_csrrc || rvi_csrrci) -> op_andinv
     )
   )
-  io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr
-  io.exe_ctrl.dir_out_mux := rvi_lui
+  io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.dir_out_mux := rvi_lui || rvi_csrrw || rvi_csrrwi
   val jpg_slt  = rvi_slti || rvi_slt  // jpg = ? I forget
   val jpg_sltu = rvi_sltiu || rvi_sltu
   val jpg_sextw =
@@ -205,7 +204,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_sextw -> jop_sextw
     )
   )
-  io.judge_load_op := MuxCase(
+  io.pmem_ctrl.judge_load_op := MuxCase(
     jlop_x,
     Array(
       jpg_sextw -> jlop_sextw,
@@ -232,7 +231,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.dnpc_jalr := rvi_jalr
 
   // 是否写寄存器文件
-  io.wen                   := type_R || type_I || type_J || type_U
+  io.rfwb_ctrl.wen                   := type_R || type_I || type_J || type_U
   io.ren1                  := type_I || type_R || type_S || type_B
   io.ren2                  := type_S || type_R || type_B
   io.exe_ctrl.alu_src1_mux := type_U
@@ -293,14 +292,15 @@ class EXECtrlIO extends ALUCtrlIO with RVNoobConfig {
   val alu_src2_mux = Bool()
   val exe_out_mux  = Bool()
   val dir_out_mux  = Bool()
+  val src1_bypass  = Bool()
 
 }
 
-class PmemCtrlIO extends Bundle with RVNoobConfig {
+class MemCtrlIO extends Bundle with RVNoobConfig {
   val zero_ex_op = UInt(2.W)
   val r_pmem     = Bool()
   val w_pmem     = Bool()
-
+  val judge_load_op = UInt(jdgl_op_w.W)
 }
 
 class CsrCtrlIO extends Bundle with RVNoobConfig {

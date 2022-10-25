@@ -9,6 +9,7 @@ trait RVNoobConfig {
   val jdgl_op_w = 3//judge_load_op_width
   val xlen     = 64
   val inst_w   = 32
+  val gpr_addr_w = 5
 
 }
 
@@ -24,7 +25,7 @@ trait ALU_op {
   val op_sra = 5.U // right_shift_arithmetic
   // logic
   val op_xor = 6.U
-  val op_or  = 7.U
+  val op_or  = 7.U   // csr
   val op_and = 8.U
   //x / %
   val op_mul = 9.U
@@ -46,7 +47,8 @@ trait ALU_op {
   val op_srlw = 21.U
   val op_sraw = 22.U
   val op_sllw = 23.U
-
+  // csr
+  val op_andinv = 24.U
 }
 
 trait Judge_op {

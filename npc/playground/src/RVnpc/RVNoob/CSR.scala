@@ -14,8 +14,9 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     val csr_ctrl   = Input(new CsrCtrlIO)
 
     val csr_rdata = Output(UInt(xlen.W))
-    val mtvec     = Output(UInt(xlen.W))
-    val mepc      = Output(UInt(xlen.W))
+//    val mtvec     = Output(UInt(xlen.W))
+//    val mepc      = Output(UInt(xlen.W))
+    val csr_dnpc  = Output(UInt(xlen.W))
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
   val csr = Reg(Vec(4, UInt(xlen.W)))
@@ -48,7 +49,8 @@ class CSR extends Module with RVNoobConfig with Csr_op {
 
 
   io.csr_rdata := Mux(io.csr_ctrl.csr_en, csr(csr_addr), 0.U)
-  io.mtvec     := Mux(io.csr_ctrl.ecall, csr(1), 0.U)
-  io.mepc      := Mux(io.csr_ctrl.mret, csr(2), 0.U)
+//  io.mtvec     := Mux(io.csr_ctrl.ecall, csr(1), 0.U)
+//  io.mepc      := Mux(io.csr_ctrl.mret, csr(2), 0.U)
+  io.csr_dnpc := Mux(io.csr_ctrl.ecall,csr(1),csr(2))
 
 }

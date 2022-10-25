@@ -38,7 +38,7 @@ class EXE extends Module with RVNoobConfig {
 
   alu.io.B_en <> io.B_en
 
-  val dir_out = Mux(io.ctrl.dir_out_mux, io.imm, io.snpc)
+  val dir_out = Mux(io.ctrl.dir_out_mux, Mux(io.ctrl.src1_bypass,io.src1,io.imm), io.snpc)
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 }
 
@@ -75,6 +75,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   val srlw   = io.ctrl.alu_op === op_srlw
   val sraw   = io.ctrl.alu_op === op_sraw
   val sllw   = io.ctrl.alu_op === op_sllw
+  val andinv = io.ctrl.alu_op === op_andinv
 
   val alu_src1 = Wire(UInt(xlen.W))
   val alu_src2 = Wire(UInt(xlen.W))
@@ -133,7 +134,8 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
       (rem || rems || remw || remsw) -> alu_rem_res,
       srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
       sraw -> (alu_src1(31, 0).asSInt() >> alu_src2(4, 0)).asUInt(),
-      sllw -> (alu_src1 << alu_src2(4, 0))
+      sllw -> (alu_src1 << alu_src2(4, 0)),
+      andinv -> (alu_src2 & (~alu_src1).asUInt())
       //      mul -> (alu_src1 * alu_src2),
 //        div -> (alu_src1 / alu_src2),
 //      rem -> (alu_src1 % alu_src2),
