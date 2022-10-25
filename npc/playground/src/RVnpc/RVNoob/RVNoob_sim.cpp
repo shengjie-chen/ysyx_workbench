@@ -319,6 +319,7 @@ int main(int argc, char **argv, char **env) {
   fclose(itrace_fp);
 #endif
 
+  IFDEF(CONFIG_VGA_SHOW_SCREEN,SDL_DestroyWindow(window));
   free(vmem);
   tfp->close();
   delete top;

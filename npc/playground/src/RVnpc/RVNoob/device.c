@@ -93,9 +93,9 @@ uint32_t vgactl_port_base, vgactl_port_base_syn;
 
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
-
+SDL_Window *window;
 static void init_screen() {
-  SDL_Window *window = NULL;
+  window = NULL;
   char title[128];
   sprintf(title, "%s-NPC", "riscv64");
   SDL_Init(SDL_INIT_VIDEO);
