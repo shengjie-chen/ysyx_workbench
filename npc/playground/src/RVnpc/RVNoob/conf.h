@@ -9,8 +9,8 @@
 
 // #define CONFIG_DIFFTEST
 
-// #define CONFIG_DUMPVCD
-// #define CONFIG_DUMPSTART 0
+#define CONFIG_DUMPVCD
+#define CONFIG_DUMPSTART 0
 
 // ---------------------------->switch end
 
