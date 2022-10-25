@@ -15,7 +15,7 @@ class RVNoob extends Module {
   val dnpc        = Wire(UInt(64.W))
   val npc_add_res = Wire(UInt(64.W))
 
-  val ifm = Module(new IFM)
+  val datam = Module(new DATAM)
   val idu = Module(new IDU)
   val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
@@ -34,9 +34,9 @@ class RVNoob extends Module {
   val dpi_npc = Module(new DpiNpc)
   dpi_npc.io.npc <> Mux(idu.io.pc_mux || exe.io.B_en, dnpc, snpc)
 
-  ifm.io.pmem_ctrl <> idu.io.pmem_ctrl
-  ifm.io.wdata <> rf.io.rdata2
-  ifm.io.data_addr <> exe.io.mem_addr
+  datam.io.pmem_ctrl <> idu.io.pmem_ctrl
+  datam.io.wdata <> rf.io.rdata2
+  datam.io.data_addr <> exe.io.mem_addr
 
   idu.io.inst := io.inst
 
@@ -66,7 +66,7 @@ class RVNoob extends Module {
   csr.io.dest_rdata <> rf.io.dest_rdata
 
   judge_load.io.judge_load_op <> idu.io.judge_load_op
-  judge_load.io.mem_data <> ifm.io.rdata
+  judge_load.io.mem_data <> datam.io.rdata
 
   io.res <> exe.io.gp_out
 

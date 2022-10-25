@@ -1,7 +1,7 @@
 package RVnpc.RVNoob
 import chisel3._
 import chisel3.util.{HasBlackBoxInline, MuxCase}
-class IFM extends Module with RVNoobConfig {
+class DATAM extends Module with RVNoobConfig {
   val io = IO(new Bundle {
 //    val inst_addr = Input(UInt(xlen.W))
 //    val inst = Output(UInt(inst_w.W))
