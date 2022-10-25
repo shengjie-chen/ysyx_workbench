@@ -6,6 +6,7 @@ import chisel3.util._
 trait RVNoobConfig {
   val alu_op_w = 5 //alu_op_width
   val jdg_op_w = 4 //judge_op_width
+  val jdgl_op_w = 3//judge_load_op_width
   val xlen     = 64
   val inst_w   = 32
 
@@ -57,21 +58,37 @@ trait Judge_op {
   val jop_bne  = 2.U
   val jop_blt  = 3.U
   val jop_bge  = 4.U
-  val jop_bltu = 13.U
-  val jop_bgeu = 14.U
+  val jop_bltu = 5.U
+  val jop_bgeu = 6.U
   // set
-  val jop_slt  = 5.U
-  val jop_sltu = 12.U
+  val jop_slt  = 7.U
+  val jop_sltu = 8.U
   // sext
-  val jop_sextw  = 6.U
-  val jop_sexthw = 7.U
-  val jop_sextb  = 8.U
+  val jop_sextw  = 9.U
+  // val jop_sexthw = 7.U
+  // val jop_sextb  = 8.U
   // uext
-  val jop_uextw  = 9.U
-  val jop_uexthw = 10.U
-  val jop_uextb  = 11.U
+  // val jop_uextw  = 9.U
+  // val jop_uexthw = 10.U
+  // val jop_uextb  = 11.U
 
 }
+
+trait Judge_Load_op {
+  //    val jop_x :: sOne1 :: sTwo1s :: Nil = Enum(3)
+
+  val jlop_x = 0.U
+  // sext
+  val jlop_sextw  = 1.U
+  val jlop_sexthw = 2.U
+  val jlop_sextb  = 3.U
+  // uext
+  val jlop_uextw  = 4.U
+  val jlop_uexthw = 5.U
+  val jlop_uextb  = 6.U
+
+}
+
 
 trait Csr_op {
   //    val jop_x :: sOne1 :: sTwo1s :: Nil = Enum(3)
@@ -91,7 +108,7 @@ trait Csr_op {
 
 trait IDU_op extends ALU_op with Judge_op with Csr_op
 
-trait function {
+trait ext_function {
   def sext_64(inst_p: UInt): UInt = {
     Cat(sext(inst_p, inst_p.getWidth), inst_p)
   }

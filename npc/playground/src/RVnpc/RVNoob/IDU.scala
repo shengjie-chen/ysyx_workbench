@@ -3,7 +3,7 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 
-class IDU extends Module with IDU_op with function with RVNoobConfig {
+class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val inst = Input(UInt(inst_w.W))
     val imm  = Output(UInt(xlen.W))
@@ -18,6 +18,7 @@ class IDU extends Module with IDU_op with function with RVNoobConfig {
     val exe_ctrl  = Output(new EXECtrlIO)
     val pmem_ctrl = Output(new PmemCtrlIO)
     val csr_ctrl  = Output(new CsrCtrlIO)
+    val judge_load_op = Output(UInt(judge_load_op_width.W))
     val dnpc_jalr = Output(Bool())
     val pc_mux    = Output(Bool())
   })
@@ -180,7 +181,7 @@ class IDU extends Module with IDU_op with function with RVNoobConfig {
   )
   io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr
   io.exe_ctrl.dir_out_mux := rvi_lui
-  val jpg_slt  = rvi_slti || rvi_slt
+  val jpg_slt  = rvi_slti || rvi_slt  // jpg = ? I forget
   val jpg_sltu = rvi_sltiu || rvi_sltu
   val jpg_sextw =
     rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || rvi_addw || rvi_subw || rvi_sllw || rvi_srlw || rvi_sraw || rvm_mulw || rvm_divw || rvm_divuw || rvm_remw || rvm_remuw || rvi_lw
@@ -201,15 +202,20 @@ class IDU extends Module with IDU_op with function with RVNoobConfig {
       rvi_bgeu -> jop_bgeu,
       jpg_slt -> jop_slt,
       jpg_sltu -> jop_sltu,
-      jpg_sextw -> jop_sextw,
-      jpg_sexb -> jop_sextb,
-      jpg_sexthw -> jop_sexthw,
-      jpg_uextw -> jop_uextw,
-      jpg_uexthw -> jop_uexthw,
-      jpg_uextb -> jop_uextb
+      jpg_sextw -> jop_sextw
     )
   )
-  io.exe_ctrl.old_val_mux := io.pmem_ctrl.r_pmem
+  io.judge_load_op := MuxCase(
+    jlop_x,
+    Array(
+      jpg_sextw -> jlop_sextw,
+      jpg_sexb -> jlop_sextb,
+      jpg_sexthw -> jlop_sexthw,
+      jpg_uextw -> jlop_uextw,
+      jpg_uexthw -> jlop_uexthw,
+      jpg_uextb -> jlop_uextb
+    )
+  )
   io.pmem_ctrl.r_pmem     := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
   io.pmem_ctrl.w_pmem     := type_S
   io.pmem_ctrl.zero_ex_op := MuxCase(
@@ -279,7 +285,6 @@ class ALUCtrlIO extends Bundle with RVNoobConfig {
   val judge_mux   = Bool()
   val judge_op    = UInt(jdg_op_w.W)
   val alu_op      = UInt(alu_op_w.W)
-  val old_val_mux = Bool()
 
 }
 

@@ -20,6 +20,7 @@ class RVNoob extends Module {
   val rf  = Module(new RegisterFile)
   val exe = Module(new EXE)
   val csr = Module(new CSR)
+  val judge_load = Module(new JudgeLoad)
 
   npc_add_res := Mux(idu.io.dnpc_jalr, rf.io.rdata1, pc) + idu.io.imm
   snpc        := pc + 4.U
@@ -40,7 +41,7 @@ class RVNoob extends Module {
   idu.io.inst := io.inst
 
   rf.io.wen <> idu.io.wen
-  rf.io.wdata <> exe.io.gp_out
+  rf.io.wdata <> Mux(idu.io.pmem_ctrl.r_pmem,judge_load.io.load_data,exe.io.gp_out)
   rf.io.waddr <> idu.io.rd
   rf.io.ren1 <> idu.io.ren1
   rf.io.ren2 <> idu.io.ren2
@@ -64,6 +65,9 @@ class RVNoob extends Module {
   csr.io.zimm <> idu.io.rs1
   csr.io.rdata1 <> rf.io.rdata1
   csr.io.dest_rdata <> rf.io.dest_rdata
+
+  judge_load.io.judge_load_op <> idu.io.judge_load_op
+  judge_load.io.mem_data <> ifm.io.rdata
 
   io.res <> exe.io.gp_out
 

@@ -101,3 +101,23 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
             """.stripMargin
   )
 }
+
+class JudgeLoad extends Module with RVNoobConfig with ext_function{
+  val io = IO(new Bundle {
+    val mem_data = Input(UInt(xlen.W))
+    val judge_load_op = Input(UInt(jdgl_op_w.W))
+    val load_data = Output(UInt(xlen.W))
+  })
+
+    io.load_data := MuxCase(
+    io.mem_data,
+    Array(
+      (io.judge_load_op === jlop_sextw) -> sext_64(io.mem_data(31, 0)),
+      (io.judge_load_op === jlop_sexthw) -> sext_64(io.mem_data(15, 0)),
+      (io.judge_load_op === jlop_sextb) -> sext_64(io.mem_data(7, 0)),
+      (io.judge_load_op === jlop_uextw) -> uext_64(io.mem_data(31, 0)),
+      (io.judge_load_op === jlop_uexthw) -> uext_64(io.mem_data(15, 0)),
+      (io.judge_load_op === jlop_uextb) -> uext_64(io.mem_data(7, 0))
+    )
+  )
+}

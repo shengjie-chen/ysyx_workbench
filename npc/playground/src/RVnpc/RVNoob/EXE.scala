@@ -9,7 +9,6 @@ class EXE extends Module with RVNoobConfig {
     val src1     = Input(UInt(xlen.W))
     val src2     = Input(UInt(xlen.W))
     val imm      = Input(UInt(xlen.W))
-    val mem_data = Input(UInt(xlen.W))
     val mem_addr = Output(UInt(xlen.W))
 
     val pc   = Input(UInt(xlen.W))
@@ -31,13 +30,11 @@ class EXE extends Module with RVNoobConfig {
   alu.io.src1 <> alu_src1
   alu.io.src2 <> alu_src2
   alu.io.result <> alu_out
-  alu.io.mem_data <> io.mem_data
   alu.io.mem_addr <> io.mem_addr
 
   alu.io.ctrl.judge_mux <> io.ctrl.judge_mux
   alu.io.ctrl.judge_op <> io.ctrl.judge_op
   alu.io.ctrl.alu_op <> io.ctrl.alu_op
-  alu.io.ctrl.old_val_mux <> io.ctrl.old_val_mux
 
   alu.io.B_en <> io.B_en
 
@@ -45,14 +42,13 @@ class EXE extends Module with RVNoobConfig {
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 }
 
-class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_op {
+class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Judge_op {
   val io = IO(new Bundle {
     val src1     = Input(UInt(xlen.W))
     val src2     = Input(UInt(xlen.W))
     val ctrl     = Input(new ALUCtrlIO)
     val result   = Output(UInt(xlen.W))
     val B_en     = Output(Bool())
-    val mem_data = Input(UInt(xlen.W))
     val mem_addr = Output(UInt(xlen.W))
   })
   val add = io.ctrl.alu_op === op_add
@@ -175,7 +171,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_
 
   val judge = Module(new Judge)
   judge.io.less <> less
-  judge.io.old_res <> Mux(io.ctrl.old_val_mux, io.mem_data, alu_res)
+  judge.io.old_res <> alu_res
   judge.io.judge_op <> io.ctrl.judge_op
   judge.io.B_en <> io.B_en
 
@@ -183,7 +179,7 @@ class ALU extends Module with ALU_op with function with RVNoobConfig with Judge_
 
 }
 
-class Judge extends Module with RVNoobConfig with Judge_op with function {
+class Judge extends Module with RVNoobConfig with Judge_op with ext_function {
   val io = IO(new Bundle {
     val less     = Input(Bool())
     val old_res  = Input(UInt(64.W))
@@ -208,12 +204,13 @@ class Judge extends Module with RVNoobConfig with Judge_op with function {
       ((io.judge_op === jop_slt) || (io.judge_op === jop_sltu)) -> io.less.asUInt(),
 //      (io.judge_op === jop_slt) -> io.less.asUInt(),
 //      (io.judge_op === jop_sltu) -> ((!io.less)&&(!zero)).asUInt(),
-      (io.judge_op === jop_sextw) -> sext_64(io.old_res(31, 0)),
-      (io.judge_op === jop_sexthw) -> sext_64(io.old_res(15, 0)),
-      (io.judge_op === jop_sextb) -> sext_64(io.old_res(7, 0)),
-      (io.judge_op === jop_uextw) -> uext_64(io.old_res(31, 0)),
-      (io.judge_op === jop_uexthw) -> uext_64(io.old_res(15, 0)),
-      (io.judge_op === jop_uextb) -> uext_64(io.old_res(7, 0))
+      (io.judge_op === jop_sextw) -> sext_64(io.old_res(31, 0))
+      // ,
+      // (io.judge_op === jop_sexthw) -> sext_64(io.old_res(15, 0)),
+      // (io.judge_op === jop_sextb) -> sext_64(io.old_res(7, 0)),
+      // (io.judge_op === jop_uextw) -> uext_64(io.old_res(31, 0)),
+      // (io.judge_op === jop_uexthw) -> uext_64(io.old_res(15, 0)),
+      // (io.judge_op === jop_uextb) -> uext_64(io.old_res(7, 0))
     )
   )
 
