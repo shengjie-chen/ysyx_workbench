@@ -108,6 +108,7 @@ object EXreg {
     ex_reg.in.src1_en <> 1.B
     ex_reg.in.src2_en <> 1.B
     ex_reg.in.imm_en <> 1.B
+    ex_reg.in.csr_dnpc <> 1.B
     ex_reg.in.exe_ctrl_en <> 1.B
     ex_reg.in.mem_ctrl_en <> 1.B
     ex_reg.in.wb_rf_ctrl_en <> 1.B
