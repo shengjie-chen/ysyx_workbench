@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import Pipeline._
 
-class RVNoob extends Module {
+class RVNoob extends Module with ext_function {
   val io = IO(new Bundle {
     val pc     = Output(UInt(64.W))
     val inst   = Input(UInt(32.W))
@@ -33,8 +33,8 @@ class RVNoob extends Module {
     id_reg.out.pc,
     id_reg.out.inst,
     id_reg.out.snpc,
-    rf.io.rdata1,
-    rf.io.rdata2,
+    Mux(idu.io.id_csr_ctrl.zimm_en,uext_64(idu.io.id_rf_ctrl.rs1),rf.io.rdata1),
+    Mux(idu.io.id_csr_ctrl.csr_ren,csr.io.csr_rdata,rf.io.rdata2),
     idu.io.imm,
     csr.io.csr_dnpc,
     idu.io.exe_ctrl,
