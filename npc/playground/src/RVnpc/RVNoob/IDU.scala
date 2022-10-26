@@ -202,7 +202,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.exe_ctrl.dir_out_mux := rvi_lui || rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.src1_bypass := rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.alu_src1_mux := type_U
-  io.exe_ctrl.alu_src2_mux := type_I || type_S || type_U
+  io.exe_ctrl.alu_src2_mux := (type_I || type_S || type_U) & !io.wb_csr_ctrl.csr_wen
 
   // >>>>>>>>>>>>>> MemCtrlIO <<<<<<<<<<<<<<
   io.mem_ctrl.judge_load_op := MuxCase(
