@@ -7,18 +7,14 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val inst = Input(UInt(inst_w.W))
     val imm  = Output(UInt(xlen.W))
-    // gpr
-    val rfwb_ctrl = Output(new WBCtrlIO)
-    val ren1 = Output(Bool())
-    val ren2 = Output(Bool())
-    val rs1  = Output(UInt(5.W))
-    val rs2  = Output(UInt(5.W))
     // control
     val exe_ctrl  = Output(new EXECtrlIO)
-    val pmem_ctrl = Output(new MemCtrlIO)
-    val csr_ctrl  = Output(new CsrCtrlIO)
-    val dnpc_jalr = Output(Bool())
-    val pc_mux    = Output(Bool())
+    val mem_ctrl = Output(new MemCtrlIO)
+    val id_csr_ctrl  = Output(new IdCsrCtrlIO)
+    val wb_csr_ctrl  = Output(new WbCsrCtrlIO)
+    val id_rf_ctrl  = Output(new IdRfCtrlIO)
+    val wb_rf_ctrl = Output(new WbRfCtrlIO)
+    val dnpc_ctrl = Output(new DnpcCtrlIO)
   })
   val dpi_inst = Module(new DpiInst)
   dpi_inst.io.inst <> io.inst
@@ -30,13 +26,11 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   fun3   := io.inst(14, 12)
   fun7   := io.inst(31, 25)
 
-  io.rfwb_ctrl.rd  := io.inst(11, 7)
-  io.rs1 := io.inst(19, 15)
-  io.rs2 := io.inst(24, 20)
+
 
   //  val rvi_lui   = Map("type"->"U","cond"->(opcode === "b0110111".U))
 
-  // inst
+  // ********************************** Inst **********************************
   // rv32i
   val rvi_lui   = opcode === "b0110111".U
   val rvi_auipc = opcode === "b0010111".U
@@ -114,9 +108,9 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   // privileged
   val pri_mret   = io.inst === "b00110000001000000000000001110011".U
 
-  // inst type
+  // ********************************** Inst Type **********************************
   val type_I =
-    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.pmem_ctrl.r_pmem || io.csr_ctrl.csr_en || rvi_ecall// TYPE_I addi
+    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || io.wb_csr_ctrl.csr_wen || rvi_ecall// TYPE_I addi
   val type_U = rvi_lui || rvi_auipc // TYPE_U auipc
   val type_S = rvi_sb || rvi_sh || rvi_sw || rvi_sd // TYPE_S
   val type_J = rvi_jal // TYPE_J
@@ -125,7 +119,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val type_B =
     rvi_beq || rvi_bne || rvi_blt || rvi_bge || rvi_bltu || rvi_bgeu // TYPE_B
 
-  // imm
+  // ********************************** Imm **********************************
   val immI = Wire(UInt(64.W))
   val immU = Wire(UInt(64.W))
   val immS = Wire(UInt(64.W))
@@ -147,8 +141,8 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     )
   )
 
-  // control
-  // ALU的功能控制
+  // ********************************** Control **********************************
+  // >>>>>>>>>>>>>> ALUCtrlIO <<<<<<<<<<<<<<
   io.exe_ctrl.alu_op := MuxCase(
     op_x,
     Array(
@@ -178,19 +172,16 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       (rvi_csrrc || rvi_csrrci) -> op_andinv
     )
   )
-  io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
-  io.exe_ctrl.dir_out_mux := rvi_lui || rvi_csrrw || rvi_csrrwi
-  io.exe_ctrl.src1_bypass := rvi_csrrw || rvi_csrrwi
-  val jpg_slt  = rvi_slti || rvi_slt  // jpg = ? I forget
+  val jpg_slt = rvi_slti || rvi_slt // jpg = ? I forget
   val jpg_sltu = rvi_sltiu || rvi_sltu
   val jpg_sextw =
     rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || rvi_addw || rvi_subw || rvi_sllw || rvi_srlw || rvi_sraw || rvm_mulw || rvm_divw || rvm_divuw || rvm_remw || rvm_remuw || rvi_lw
-  val jpg_sexb   = rvi_lb
+  val jpg_sexb = rvi_lb
   val jpg_sexthw = rvi_lh
-  val jpg_uextw  = rvi_lwu
+  val jpg_uextw = rvi_lwu
   val jpg_uexthw = rvi_lhu
-  val jpg_uextb  = rvi_lbu
-  io.exe_ctrl.judge_mux := jpg_slt || jpg_sltu || jpg_sextw || io.pmem_ctrl.r_pmem
+  val jpg_uextb = rvi_lbu
+  io.exe_ctrl.judge_mux := jpg_slt || jpg_sltu || jpg_sextw || io.mem_ctrl.r_pmem
   io.exe_ctrl.judge_op := MuxCase(
     jop_x,
     Array(
@@ -205,7 +196,16 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_sextw -> jop_sextw
     )
   )
-  io.pmem_ctrl.judge_load_op := MuxCase(
+
+  // >>>>>>>>>>>>>> EXECtrlIO <<<<<<<<<<<<<<
+  io.exe_ctrl.exe_out_mux := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.dir_out_mux := rvi_lui || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.src1_bypass := rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.alu_src1_mux := type_U
+  io.exe_ctrl.alu_src2_mux := type_I || type_S || type_U
+
+  // >>>>>>>>>>>>>> MemCtrlIO <<<<<<<<<<<<<<
+  io.mem_ctrl.judge_load_op := MuxCase(
     jlop_x,
     Array(
       jpg_sextw -> jlop_sextw,
@@ -216,9 +216,9 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_uextb -> jlop_uextb
     )
   )
-  io.pmem_ctrl.r_pmem     := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
-  io.pmem_ctrl.w_pmem     := type_S
-  io.pmem_ctrl.zero_ex_op := MuxCase(
+  io.mem_ctrl.r_pmem := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
+  io.mem_ctrl.w_pmem := type_S
+  io.mem_ctrl.zero_ex_op := MuxCase(
     DontCare,
     Array(
       rvi_sb -> 0.U,
@@ -228,35 +228,33 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     )
   )
 
-  io.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret// 出现pc=的指令
-  io.dnpc_jalr := rvi_jalr
+  // >>>>>>>>>>>>>> WbCsrCtrlIO <<<<<<<<<<<<<<
+  io.wb_csr_ctrl.ecall := rvi_ecall
+  io.wb_csr_ctrl.csr_wen := rvi_csrrs || rvi_csrrw || rvi_csrrc || rvi_csrrsi || rvi_csrrwi || rvi_csrrci
+  io.wb_csr_ctrl.csr_waddr := io.inst(31, 20)
 
+  // >>>>>>>>>>>>>> IdCsrCtrlIO <<<<<<<<<<<<<<
+  io.id_csr_ctrl.ecall := rvi_ecall
+  io.id_csr_ctrl.mret := pri_mret
+  io.id_csr_ctrl.zimm_en := rvi_csrrsi || rvi_csrrwi || rvi_csrrci
+  io.id_csr_ctrl.csr_raddr := io.inst(31, 20)
+  io.id_csr_ctrl.csr_ren := io.wb_csr_ctrl.csr_wen
+
+  // >>>>>>>>>>>>>> WbRfCtrlIO <<<<<<<<<<<<<<
+  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U
+  io.wb_rf_ctrl.rd := io.inst(11, 7)
+
+  // >>>>>>>>>>>>>> IdRfCtrlIO <<<<<<<<<<<<<<
   // 是否写寄存器文件
-  io.rfwb_ctrl.wen                   := type_R || type_I || type_J || type_U
-  io.ren1                  := type_I || type_R || type_S || type_B
-  io.ren2                  := type_S || type_R || type_B
-  io.exe_ctrl.alu_src1_mux := type_U
-  io.exe_ctrl.alu_src2_mux := type_I || type_S || type_U
+  io.id_rf_ctrl.ren1 := type_I || type_R || type_S || type_B
+  io.id_rf_ctrl.ren2 := type_S || type_R || type_B
+  io.id_rf_ctrl.rs1 := io.inst(19, 15)
+  io.id_rf_ctrl.rs2 := io.inst(24, 20)
 
-  io.csr_ctrl.csr := MuxCase(
-    csr_x,
-    Array(
-      rvi_csrrs -> csr_rs,
-      rvi_csrrw -> csr_rw,
-      rvi_csrrc -> csr_rc,
-      rvi_csrrsi -> csr_rsi,
-      rvi_csrrwi -> csr_rwi,
-      rvi_csrrci -> csr_rci
-    )
-  )
-  io.csr_ctrl.mret := pri_mret
-  io.csr_ctrl.ecall := rvi_ecall
-  io.csr_ctrl.csr_en := io.csr_ctrl.csr.orR
-
-
-  // control check
-  //  assert(!(io.dnpc_0b0 && !io.dnpc_mux), "dnpc_0b0->dnpc_mux dependence error!\n")
-  //  assert(!(io.dnpc_mux && !io.pc_mux), "dnpc_mux->pc_mux dependence error!\n")
+  // >>>>>>>>>>>>>> DnpcCtrlIO <<<<<<<<<<<<<<
+  io.dnpc_ctrl.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret// 出现pc=的指令
+  io.dnpc_ctrl.dnpc_jalr := rvi_jalr
+  io.dnpc_ctrl.dnpc_csr := rvi_ecall|| pri_mret
 
 }
 
@@ -282,6 +280,7 @@ class DpiInst extends BlackBox with HasBlackBoxInline {
 }
 
 class ALUCtrlIO extends Bundle with RVNoobConfig {
+  // ALU的功能控制
   val judge_mux   = Bool()
   val judge_op    = UInt(jdg_op_w.W)
   val alu_op      = UInt(alu_op_w.W)
@@ -304,9 +303,37 @@ class MemCtrlIO extends Bundle with RVNoobConfig {
   val judge_load_op = UInt(jdgl_op_w.W)
 }
 
-class CsrCtrlIO extends Bundle with RVNoobConfig {
+class WbCsrCtrlIO extends Bundle with RVNoobConfig {
+//  val mcause = UInt()
+  val ecall = Bool()
+  val csr_wen = Bool()
+  val csr_waddr   = UInt(12.W)
+}
+
+class IdCsrCtrlIO extends Bundle with RVNoobConfig {
   val ecall = Bool()
   val mret  = Bool()
-  val csr   = UInt(3.W)
-  val csr_en = Bool()   // all csr reg inst
+  //  val csr_en = Bool()   // all csr reg inst
+  val zimm_en = Bool()
+  val csr_raddr   = UInt(12.W)
+  val csr_ren = Bool()  // = csr_wen#0
+}
+
+class WbRfCtrlIO extends Bundle with RVNoobConfig {
+  // RF Write Back Ctrl
+  val wen    = Bool()
+  val rd  = UInt(gpr_addr_w.W)  // reg dest addr
+}
+
+class IdRfCtrlIO extends Bundle with RVNoobConfig {
+  val ren1 = Bool()
+  val ren2 = Bool()
+  val rs1 = UInt(gpr_addr_w.W)
+  val rs2 = UInt(gpr_addr_w.W)
+}
+
+class DnpcCtrlIO extends Bundle with RVNoobConfig {
+  val dnpc_csr  = Bool() // ecall||mret
+  val dnpc_jalr = Bool()
+  val pc_mux    = Bool()
 }

@@ -14,31 +14,20 @@ class RF_read(
   })
 }
 
-class WBCtrlIO extends Bundle with RVNoobConfig{
-  // RF Write Back Ctrl
-  val wen    = Bool()
-  val rd  = UInt(gpr_addr_w.W)  // reg dest addr
-}
+
 
 class RegisterFile(
   val ADDR_WIDTH: Int = 5,
   val DATA_WIDTH: Int = 64)
     extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val rfwb_ctrl = Input(new WBCtrlIO)
+    val wb_rf_ctrl = Input(new WbRfCtrlIO)
     val wdata  = Input(UInt(xlen.W))
 
-    val ren1   = Input(Bool())
-    val ren2   = Input(Bool())
-    val rs1 = Input(UInt(ADDR_WIDTH.W))
-    val rs2 = Input(UInt(ADDR_WIDTH.W))
-
-    val csr_rdata = Input(UInt(DATA_WIDTH.W))
-    val csr_en = Input(Bool())
+    val id_rf_ctrl = Input(new IdRfCtrlIO)
 
     val rdata1 = Output(UInt(DATA_WIDTH.W))
     val rdata2 = Output(UInt(DATA_WIDTH.W))
-    val dest_rdata = Output(UInt(DATA_WIDTH.W))
 
     val a0     = Output(UInt(DATA_WIDTH.W))
 
@@ -57,17 +46,15 @@ class RegisterFile(
   // read src1 and src2
   val rdata1 = Wire(UInt(DATA_WIDTH.W))
   val rdata2 = Wire(UInt(DATA_WIDTH.W))
-  rdata1    := rf(io.rs1)
-  rdata2    := rf(io.rs2)
-  io.rdata1 := Mux(io.ren1, rdata1, 0.U)
-  io.rdata2 := Mux(io.ren2, rdata2, 0.U)
+  rdata1    := rf(io.id_rf_ctrl.rs1)
+  rdata2    := rf(io.id_rf_ctrl.rs2)
+  io.rdata1 := Mux(io.id_rf_ctrl.ren1, rdata1, 0.U)
+  io.rdata2 := Mux(io.id_rf_ctrl.ren2, rdata2, 0.U)
 
   // write reg
-  when(io.rfwb_ctrl.wen) {
-    rf(io.rfwb_ctrl.rd) := Mux(io.csr_en,io.csr_rdata,io.wdata)
+  when(io.wb_rf_ctrl.wen) {
+    rf(io.wb_rf_ctrl.rd) := io.wdata
   }
-
-  io.dest_rdata := Mux(io.csr_en,rf(io.rfwb_ctrl.rd),0.U)
 
   io.a0 := rf(10)
   rf(0) := 0.U
