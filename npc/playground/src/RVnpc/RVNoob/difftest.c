@@ -6,6 +6,7 @@
 extern CPU_state cpu_state;
 extern NPCState npc_state;
 extern uint64_t *cpu_gpr;
+extern uint64_t *cpu_csr;
 extern VRVNoob *top;
 
 char *diff_file = NULL;
