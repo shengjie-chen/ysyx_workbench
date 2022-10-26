@@ -284,7 +284,7 @@ int main(int argc, char **argv, char **env) {
   } else {
     panic("check difftest file!\n")
   }
-  refresh_gpr_pc();
+  refresh_gpr_pc_csr();
   if (diff_en) {
     diff_file = *(argv + 4) + 5;
     init_difftest(diff_file, img_size, 0, &cpu_state);

@@ -18,12 +18,15 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
-void refresh_gpr_pc() {
+void refresh_gpr_pc_csr() {
   int i;
   for (i = 0; i < 32; i++) {
     cpu_state.gpr[i] = cpu_gpr[i];
   }
   cpu_state.pc = top->io_pc;
+  for (i = 0; i < CSR_NUM; i++) {
+    cpu_state.csr[i] = cpu_csr[i];
+  }
 }
 
 void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
@@ -70,6 +73,15 @@ bool isa_difftest_checkregs(CPU_state *ref_r) {
     printf("!!!!!!!\n");
     return false;
   }
+  for (int i = 0; i < CSR_NUM; i++) {
+    if (cpu_state.csr[i] != ref_r->csr[i]) {
+      printf("!!!!!!!\n");
+      printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
+      printf("ref.csr[%d] is " FMT_WORD "\n", i, ref_r->csr[i]);
+      printf("!!!!!!!\n");
+      return false;
+    }
+  }
   return true;
 }
 void isa_reg_display(CPU_state *ref) {
@@ -79,6 +91,10 @@ void isa_reg_display(CPU_state *ref) {
   for (i = 0; i < 32; i++) {
     printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
     printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref->gpr[i]);
+  }
+    for (i = 0; i < CSR_NUM; i++) {
+    printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
+    printf("ref.csr[%d] is " FMT_WORD "\n", i, ref->csr[i]);
   }
 }
 
@@ -112,7 +128,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
-    refresh_gpr_pc();
+    refresh_gpr_pc_csr();
     ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF);
     is_skip_ref = false;
     return;
@@ -121,7 +137,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
-  refresh_gpr_pc();
+  refresh_gpr_pc_csr();
   checkregs(&ref_r, pc);
 }
 

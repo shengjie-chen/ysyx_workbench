@@ -14,8 +14,6 @@ class RF_read(
   })
 }
 
-
-
 class RegisterFile(
   val ADDR_WIDTH: Int = 5,
   val DATA_WIDTH: Int = 64)
@@ -35,7 +33,7 @@ class RegisterFile(
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
   val rf      = Reg(Vec(reg_num, UInt(DATA_WIDTH.W)))
-  val rf_read = Module(new RF_read)
+  val rf_read = Module(new RF_read) // dpi rf
   rf_read.io.rf <> rf
 
   when(reset.asBool) {

@@ -10,8 +10,8 @@
 #define CONFIG_DIFFTEST
 
 // 1M --> 1.6GB
-#define CONFIG_DUMPVCD
-#define CONFIG_DUMPSTART 60000000
+// #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPSTART 60000000
 
 // ---------------------------->switch end
 
