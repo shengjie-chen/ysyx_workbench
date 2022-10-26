@@ -73,7 +73,7 @@ object WBreg {
     wb_reg.in.mem_data <> mem_data
     wb_reg.in.r_pmem <> r_pmem
     wb_reg.in.wb_rf_ctrl <> wb_rf_ctrl
-    wb_reg.in.wb_csr_ctrl <> wb_rf_ctrl
+    wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     wb_reg.in.pc_en <> 1.B
     wb_reg.in.inst_en <> 1.B
