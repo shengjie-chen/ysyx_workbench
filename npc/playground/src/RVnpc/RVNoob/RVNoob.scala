@@ -12,7 +12,7 @@ class RVNoob extends Module with ext_function {
     //    override val prefix
   })
 
-  val pipelineBypass : Boolean = true
+  val pipelineBypass : Boolean = false
 
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
