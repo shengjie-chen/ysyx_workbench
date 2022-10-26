@@ -11,7 +11,7 @@
 
 // 1M --> 1.6GB
 #define CONFIG_DUMPVCD
-#define CONFIG_DUMPSTART 70000000
+#define CONFIG_DUMPSTART 60000000
 
 // ---------------------------->switch end
 
