@@ -47,7 +47,7 @@ uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 //    //  0x00100073,  // ebreak (used as NPC_trap)
 //    //  0xdeadbeef,  // some data
 //};
-const uint32_t img[] = {
+const uint32_t img[] = { // 测试用例中不包括跳转指令，且不存在指令相关性冲突
     0x00000413, // li	s0,0
     0x00009117, // auipc	sp,0x9
     0x01858593, // addi	a1,a1,24 

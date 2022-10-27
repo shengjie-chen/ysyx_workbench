@@ -17,6 +17,7 @@ class RVNoob extends Module with ext_function {
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
+  val dnpc_en = Wire(Bool())
   val npc  = Wire(UInt(64.W))
   val snpc = Wire(UInt(64.W))
 
@@ -80,7 +81,8 @@ class RVNoob extends Module with ext_function {
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc  := pc + 4.U
-  npc   := Mux(mem_reg.out.pc_mux || mem_reg.out.B_en, mem_reg.out.dnpc, snpc)
+  dnpc_en := mem_reg.out.pc_mux || mem_reg.out.B_en
+  npc   := Mux(dnpc_en, mem_reg.out.dnpc, snpc)
   pc    := npc
   io.pc := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
@@ -100,6 +102,8 @@ class RVNoob extends Module with ext_function {
   U_ebreak.io.ebreak <> io.ebreak
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
+  ex_reg.reset <> dnpc_en
+
   dnpc_t := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
     ex_reg.out.csr_dnpc,

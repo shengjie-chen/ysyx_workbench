@@ -55,20 +55,20 @@ class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.dnpc_ctrl   := in.dnpc_ctrl
 
   } else {
-    out.pc   := RegEnable(in.pc, in.pc_en)
-    out.inst := RegEnable(in.inst, in.inst_en)
+    out.pc   := RegEnable(in.pc, 0.U, in.pc_en)
+    out.inst := RegEnable(in.inst, 0.U, in.inst_en)
 
-    out.snpc     := RegEnable(in.snpc, in.snpc_en)
-    out.src1     := RegEnable(in.src1, in.src1_en)
-    out.src2     := RegEnable(in.src2, in.src2_en)
-    out.imm      := RegEnable(in.imm, in.imm_en)
-    out.csr_dnpc := RegEnable(in.csr_dnpc, in.csr_dnpc_en)
+    out.snpc     := RegEnable(in.snpc, 0.U, in.snpc_en)
+    out.src1     := RegEnable(in.src1, 0.U, in.src1_en)
+    out.src2     := RegEnable(in.src2, 0.U, in.src2_en)
+    out.imm      := RegEnable(in.imm, 0.U, in.imm_en)
+    out.csr_dnpc := RegEnable(in.csr_dnpc, 0.U, in.csr_dnpc_en)
 
-    out.exe_ctrl    := RegEnable(in.exe_ctrl, in.exe_ctrl_en)
-    out.mem_ctrl    := RegEnable(in.mem_ctrl, in.mem_ctrl_en)
-    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, in.wb_rf_ctrl_en)
-    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, in.wb_csr_ctrl_en)
-    out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, in.dnpc_ctrl_en)
+    out.exe_ctrl    := RegEnable(in.exe_ctrl, 0.U.asTypeOf(new EXECtrlIO), in.exe_ctrl_en)
+    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.mem_ctrl_en)
+    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.wb_rf_ctrl_en)
+    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.wb_csr_ctrl_en)
+    out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.dnpc_ctrl_en)
   }
 }
 
