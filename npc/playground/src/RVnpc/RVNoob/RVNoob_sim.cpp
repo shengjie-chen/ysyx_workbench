@@ -241,6 +241,7 @@ int main(int argc, char **argv, char **env) {
 
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
+  printf("%s\n",img_file);
   long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
