@@ -49,9 +49,18 @@ uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 //};
 const uint32_t img[] = {
     0xff010113, // addi	sp,sp,-16
+    0x01858593, // addi	a1,a1,24 
     0x004c8c93, // addi	s9,s9,4
     0x00840413, // addi	s0,s0,8
     0x004a0a13, // addi	s4,s4,4
+    0x00b13423, // sd	a1,8(sp)
+    0x00006597, // auipc	a1,0x6
+    0xff010113, // addi	sp,sp,-16
+    0x00813983, // ld	s3,8(sp)
+    0x00000517, // auipc	a0,0x0
+    0x0015869b, // addiw	a3,a1,1
+    0x01c50513, // addi	a0,a0,28 
+    0x00050513, // mv	a0,a0
     // 0xfa010113, // addi	sp,sp,-96
 //    0xff010113, // addi	sp,sp,-16
 //    0xfa010113, // addi	sp,sp,-96
