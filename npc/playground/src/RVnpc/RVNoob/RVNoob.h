@@ -68,7 +68,7 @@ uint8_t *guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 
 long load_img()
 {
-  if (img_file == NULL) {
+  if (img_file == "default") {
     printf("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
