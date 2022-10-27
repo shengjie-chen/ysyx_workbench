@@ -52,7 +52,7 @@ const uint32_t img[] = {
     0x004c8c93, // addi	s9,s9,4
     0x00840413, // addi	s0,s0,8
     0x004a0a13, // addi	s4,s4,4
-    0xfa010113, // addi	sp,sp,-96
+    // 0xfa010113, // addi	sp,sp,-96
 //    0xff010113, // addi	sp,sp,-16
 //    0xfa010113, // addi	sp,sp,-96
 //    0x004c8c93, // addi	s9,s9,4
