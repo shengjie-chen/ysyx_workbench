@@ -31,6 +31,8 @@ class WBregInIO extends PipelineInIO with WBregSignal {
 class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new WBregInIO))
   val out = IO(Output(new WBregOutIO))
+  dontTouch(in)
+  dontTouch(out)
 
   if (bypass) {
     out.pc          := in.pc

@@ -17,6 +17,8 @@ class IDregInIO extends PipelineInIO with IDregSignal {
 class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new IDregInIO))
   val out = IO(Output(new IDregOutIO))
+  dontTouch(in)
+  dontTouch(out)
   if (bypass) {
     out.pc   := in.pc
     out.inst := in.inst

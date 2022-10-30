@@ -37,6 +37,8 @@ class EXregOutIO extends PipelineOutIO with EXregSignal {}
 class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new EXregInIO))
   val out = IO(Output(new EXregOutIO))
+  dontTouch(in)
+  dontTouch(out)
 
   if (bypass) {
     out.pc   := in.pc

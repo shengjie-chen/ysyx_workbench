@@ -37,6 +37,8 @@ class MEMregInIO extends PipelineInIO with MEMregSignal {
 class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new MEMregInIO))
   val out = IO(Output(new MEMregOutIO))
+  dontTouch(in)
+  dontTouch(out)
   if (bypass) {
     out.pc       := in.pc
     out.inst     := in.inst
