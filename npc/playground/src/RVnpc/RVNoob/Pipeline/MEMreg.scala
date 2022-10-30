@@ -52,18 +52,18 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := in.wb_csr_ctrl
 
   } else {
-    out.pc       := RegEnable(in.pc, in.pc_en)
-    out.inst     := RegEnable(in.inst, in.inst_en)
-    out.dnpc     := RegEnable(in.dnpc, in.dnpc_en)
-    out.src2     := RegEnable(in.src2, in.src2_en)
-    out.mem_addr := RegEnable(in.mem_addr, in.mem_addr_en)
-    out.alu_res  := RegEnable(in.alu_res, in.alu_res_en)
-    out.B_en     := RegEnable(in.B_en, in.B_en_en)
-    out.pc_mux   := RegEnable(in.pc_mux, in.pc_mux_en)
+    out.pc       := RegEnable(in.pc, 0.U, in.pc_en)
+    out.inst     := RegEnable(in.inst, 0.U, in.inst_en)
+    out.dnpc     := RegEnable(in.dnpc, 0.U, in.dnpc_en)
+    out.src2     := RegEnable(in.src2, 0.U, in.src2_en)
+    out.mem_addr := RegEnable(in.mem_addr, 0.U, in.mem_addr_en)
+    out.alu_res  := RegEnable(in.alu_res, 0.U, in.alu_res_en)
+    out.B_en     := RegEnable(in.B_en, 0.B, in.B_en_en)
+    out.pc_mux   := RegEnable(in.pc_mux, 0.B, in.pc_mux_en)
 
-    out.mem_ctrl    := RegEnable(in.mem_ctrl, in.mem_ctrl_en)
-    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, in.wb_rf_ctrl_en)
-    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, in.wb_csr_ctrl_en)
+    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.mem_ctrl_en)
+    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.wb_rf_ctrl_en)
+    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.wb_csr_ctrl_en)
   }
 
 }

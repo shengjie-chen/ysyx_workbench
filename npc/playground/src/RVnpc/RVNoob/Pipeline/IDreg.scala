@@ -22,9 +22,9 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.inst := in.inst
     out.snpc := in.snpc
   } else {
-    out.pc   := RegEnable(in.pc, in.pc_en)
-    out.inst := RegEnable(in.inst, in.inst_en)
-    out.snpc := RegEnable(in.snpc, in.snpc_en)
+    out.pc   := RegEnable(in.pc, 0.U, in.pc_en)
+    out.inst := RegEnable(in.inst, 0.U, in.inst_en)
+    out.snpc := RegEnable(in.snpc, 0.U, in.snpc_en)
   }
 }
 

@@ -18,6 +18,7 @@ class RVNoob extends Module with ext_function {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
   val dnpc_en = Wire(Bool())
+  val flush = Wire(Bool())
   val npc  = Wire(UInt(64.W))
   val snpc = Wire(UInt(64.W))
 
@@ -82,6 +83,7 @@ class RVNoob extends Module with ext_function {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc  := pc + 4.U
   dnpc_en := mem_reg.out.pc_mux || mem_reg.out.B_en
+  flush := dnpc_en
   npc   := Mux(dnpc_en, mem_reg.out.dnpc, snpc)
   pc    := npc
   io.pc := pc
@@ -89,6 +91,8 @@ class RVNoob extends Module with ext_function {
   dpi_npc.io.npc <> npc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+  id_reg.reset <> flush
+
   idu.io.inst := id_reg.out.inst
 
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
@@ -102,7 +106,7 @@ class RVNoob extends Module with ext_function {
   U_ebreak.io.ebreak <> io.ebreak
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  ex_reg.reset <> dnpc_en
+  ex_reg.reset <> flush
 
   dnpc_t := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
@@ -121,6 +125,8 @@ class RVNoob extends Module with ext_function {
   exe.io.ctrl <> ex_reg.out.exe_ctrl
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
+  mem_reg.reset <> flush
+
   datam.io.mem_ctrl <> mem_reg.out.mem_ctrl
   datam.io.wdata <> mem_reg.out.src2
   datam.io.data_addr <> mem_reg.out.mem_addr
