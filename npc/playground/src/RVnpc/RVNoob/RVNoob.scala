@@ -27,7 +27,7 @@ class RVNoob extends Module with ext_function {
   val idu    = Module(new IDU)
   val rf     = Module(new RegisterFile)
   val csr    = Module(new CSR)
-  lazy val hazard = HazardDetect(idu.io.id_rf_ctrl,idu.io.id_csr_ctrl,ex_reg.out.wb_rf_ctrl,ex_reg.out.wb_csr_ctrl,mem_reg.out.wb_rf_ctrl,mem_reg.out.wb_csr_ctrl,dnpc_en)
+  val hazard = HazardDetect(idu.io.id_rf_ctrl,idu.io.id_csr_ctrl,ex_reg.out.wb_rf_ctrl,ex_reg.out.wb_csr_ctrl,mem_reg.out.wb_rf_ctrl,mem_reg.out.wb_csr_ctrl,dnpc_en)
 
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
