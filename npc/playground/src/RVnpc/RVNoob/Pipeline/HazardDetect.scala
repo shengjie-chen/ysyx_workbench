@@ -15,13 +15,14 @@ class HazardDetect extends Module {
     val ex_reg_csr   = Input(new WbCsrCtrlIO)
     val mem_reg_rf   = Input(new WbRfCtrlIO)
     val mem_reg_csr  = Input(new WbCsrCtrlIO)
-    val dnpc_en      = Input(     Bool())
+    val dnpc_en      = Input(Bool())
     val id_reg_ctrl  = Output(new RegCtrl)
     val ex_reg_ctrl  = Output(new RegCtrl)
     val mem_reg_ctrl = Output(new RegCtrl)
     val wb_reg_ctrl  = Output(new RegCtrl)
-    val pc_en        = Output(    Bool())
+    val pc_en        = Output(Bool())
   })
+  dontTouch(io.pc_en)
   val sNone :: sDH1 :: sDH2 :: Nil = Enum(3) // Data Hazard
   val state                        = RegInit(sNone)
   // condition
@@ -102,13 +103,13 @@ class HazardDetect extends Module {
 
 object HazardDetect {
   def apply(
-  idu_rf : IdRfCtrlIO,
-  idu_csr : IdCsrCtrlIO,
-  ex_reg_rf : WbRfCtrlIO,
-  ex_reg_csr : WbCsrCtrlIO,
-  mem_reg_rf : WbRfCtrlIO,
-  mem_reg_csr : WbCsrCtrlIO,
-  dnpc_en :  Bool
+    idu_rf:      IdRfCtrlIO,
+    idu_csr:     IdCsrCtrlIO,
+    ex_reg_rf:   WbRfCtrlIO,
+    ex_reg_csr:  WbCsrCtrlIO,
+    mem_reg_rf:  WbRfCtrlIO,
+    mem_reg_csr: WbCsrCtrlIO,
+    dnpc_en:     Bool
   ): HazardDetect = {
     val hazard = Module(new HazardDetect)
     hazard.io.idu_rf      <> idu_rf
