@@ -71,8 +71,8 @@ sim_vcd: verilog
 	$(BIN_VCD)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
-#IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
-IMG=default
+IMG=/home/jiexxpu/ysyx/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
+#IMG=default
 # sdb itrace mtrace ftrace
 SDB=sdb_y  # 跳过sdb则改为sdb_n
 ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so

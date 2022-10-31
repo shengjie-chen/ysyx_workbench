@@ -31,10 +31,10 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   val csr_raddr = MuxCase(
     0.U,
     Array(
-      (io.id_csr_ctrl.csr_raddr === 0x300.U) -> 0.U,
-      (io.id_csr_ctrl.csr_raddr === 0x305.U) -> 1.U,
-      (io.id_csr_ctrl.csr_raddr === 0x341.U) -> 2.U,
-      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> 3.U
+      (io.id_csr_ctrl.csr_raddr === 0x300.U) -> 0.U, // mstatus
+      (io.id_csr_ctrl.csr_raddr === 0x305.U) -> 1.U, // mtvec
+      (io.id_csr_ctrl.csr_raddr === 0x341.U) -> 2.U, // mepc
+      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> 3.U  // mcause
     )
   )
   io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr(csr_raddr), 0.U)

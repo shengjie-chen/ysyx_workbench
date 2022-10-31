@@ -241,7 +241,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.id_csr_ctrl.csr_ren := io.wb_csr_ctrl.csr_wen
 
   // >>>>>>>>>>>>>> WbRfCtrlIO <<<<<<<<<<<<<<
-  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U
+  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U && (!io.id_csr_ctrl.zimm_en)
   io.wb_rf_ctrl.rd := io.inst(11, 7)
 
   // >>>>>>>>>>>>>> IdRfCtrlIO <<<<<<<<<<<<<<

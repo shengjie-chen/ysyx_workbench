@@ -19,17 +19,17 @@ trait EXregSignal extends RVNoobConfig {
 }
 
 class EXregInIO extends PipelineInIO with EXregSignal {
-  val snpc_en     = Bool()
-  val src1_en     = Bool()
-  val src2_en     = Bool()
-  val imm_en      = Bool()
-  val csr_dnpc_en = Bool()
-
-  val exe_ctrl_en    = Bool()
-  val mem_ctrl_en    = Bool()
-  val wb_rf_ctrl_en  = Bool()
-  val wb_csr_ctrl_en = Bool()
-  val dnpc_ctrl_en   = Bool()
+//  val snpc_en     = Bool()
+//  val src1_en     = Bool()
+//  val src2_en     = Bool()
+//  val imm_en      = Bool()
+//  val csr_dnpc_en = Bool()
+//
+//  val exe_ctrl_en    = Bool()
+//  val mem_ctrl_en    = Bool()
+//  val wb_rf_ctrl_en  = Bool()
+//  val wb_csr_ctrl_en = Bool()
+//  val dnpc_ctrl_en   = Bool()
 }
 
 class EXregOutIO extends PipelineOutIO with EXregSignal {}
@@ -56,21 +56,23 @@ class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := in.wb_csr_ctrl
     out.dnpc_ctrl   := in.dnpc_ctrl
 
+    out.valid := 1.B
+
   } else {
-    out.pc   := RegEnable(in.pc, 0.U, in.pc_en)
-    out.inst := RegEnable(in.inst, 0.U, in.inst_en)
+    out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
+    out.inst := RegEnable(in.inst, 0.U, in.reg_en)
 
-    out.snpc     := RegEnable(in.snpc, 0.U, in.snpc_en)
-    out.src1     := RegEnable(in.src1, 0.U, in.src1_en)
-    out.src2     := RegEnable(in.src2, 0.U, in.src2_en)
-    out.imm      := RegEnable(in.imm, 0.U, in.imm_en)
-    out.csr_dnpc := RegEnable(in.csr_dnpc, 0.U, in.csr_dnpc_en)
+    out.snpc     := RegEnable(in.snpc, 0.U, in.reg_en)
+    out.src1     := RegEnable(in.src1, 0.U, in.reg_en)
+    out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
+    out.imm      := RegEnable(in.imm, 0.U, in.reg_en)
+    out.csr_dnpc := RegEnable(in.csr_dnpc, 0.U, in.reg_en)
 
-    out.exe_ctrl    := RegEnable(in.exe_ctrl, 0.U.asTypeOf(new EXECtrlIO), in.exe_ctrl_en)
-    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.mem_ctrl_en)
-    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.wb_rf_ctrl_en)
-    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.wb_csr_ctrl_en)
-    out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.dnpc_ctrl_en)
+    out.exe_ctrl    := RegEnable(in.exe_ctrl, 0.U.asTypeOf(new EXECtrlIO), in.reg_en)
+    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
+    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
+    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
+    out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.reg_en)
   }
 }
 
@@ -88,6 +90,7 @@ object EXreg {
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
     dnpc_ctrl:   DnpcCtrlIO,
+    reg_en:      Bool,
     bypass:      Boolean = false
   ): EXreg = {
     val ex_reg = Module(new EXreg(bypass))
@@ -104,18 +107,7 @@ object EXreg {
     ex_reg.in.wb_csr_ctrl <> wb_csr_ctrl
     ex_reg.in.dnpc_ctrl <> dnpc_ctrl
 
-    ex_reg.in.pc_en <> 1.B
-    ex_reg.in.inst_en <> 1.B
-    ex_reg.in.snpc_en <> 1.B
-    ex_reg.in.src1_en <> 1.B
-    ex_reg.in.src2_en <> 1.B
-    ex_reg.in.imm_en <> 1.B
-    ex_reg.in.csr_dnpc_en <> 1.B
-    ex_reg.in.exe_ctrl_en <> 1.B
-    ex_reg.in.mem_ctrl_en <> 1.B
-    ex_reg.in.wb_rf_ctrl_en <> 1.B
-    ex_reg.in.wb_csr_ctrl_en <> 1.B
-    ex_reg.in.dnpc_ctrl_en <> 1.B
+    ex_reg.in.reg_en <> reg_en
 
     ex_reg
   }

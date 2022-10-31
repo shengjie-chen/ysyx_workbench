@@ -16,17 +16,19 @@ class RVNoob extends Module with ext_function {
 
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
-  val pc   = RegInit(0x80000000L.U(64.W)) //2147483648
   val dnpc_en = Wire(Bool())
   val flush = Wire(Bool())
   val npc  = Wire(UInt(64.W))
+  val pc   = RegEnable(npc,0x80000000L.U(64.W),hazard.io.pc_en) //2147483648
   val snpc = Wire(UInt(64.W))
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val id_reg = IDreg(pc, io.inst, snpc,pipelineBypass)
+  val id_reg = IDreg(pc, io.inst, snpc,hazard.io.id_reg_ctrl.en,pipelineBypass)
   val idu    = Module(new IDU)
   val rf     = Module(new RegisterFile)
   val csr    = Module(new CSR)
+  lazy val hazard = HazardDetect(idu.io.id_rf_ctrl,idu.io.id_csr_ctrl,ex_reg.out.wb_rf_ctrl,ex_reg.out.wb_csr_ctrl,mem_reg.out.wb_rf_ctrl,mem_reg.out.wb_csr_ctrl,dnpc_en)
+
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val dnpc_t      = Wire(UInt(64.W))
@@ -44,6 +46,7 @@ class RVNoob extends Module with ext_function {
     idu.io.wb_rf_ctrl,
     idu.io.wb_csr_ctrl,
     idu.io.dnpc_ctrl,
+    hazard.io.ex_reg_ctrl.en,
     pipelineBypass
   )
   val exe = Module(new EXE)
@@ -61,6 +64,7 @@ class RVNoob extends Module with ext_function {
     ex_reg.out.mem_ctrl,
     ex_reg.out.wb_rf_ctrl,
     ex_reg.out.wb_csr_ctrl,
+    hazard.io.mem_reg_ctrl.en,
     pipelineBypass
   )
   val datam      = Module(new DATAM)
@@ -76,6 +80,7 @@ class RVNoob extends Module with ext_function {
     mem_reg.out.mem_ctrl.r_pmem,
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
+    hazard.io.wb_reg_ctrl.en,
     pipelineBypass
   )
 
@@ -91,7 +96,7 @@ class RVNoob extends Module with ext_function {
   dpi_npc.io.npc <> npc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  id_reg.reset <> flush
+  id_reg.reset <> hazard.io.id_reg_ctrl.flush
 
   idu.io.inst := id_reg.out.inst
 
@@ -106,7 +111,7 @@ class RVNoob extends Module with ext_function {
   U_ebreak.io.ebreak <> io.ebreak
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  ex_reg.reset <> flush
+  ex_reg.reset <> hazard.io.ex_reg_ctrl.flush
 
   dnpc_t := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
@@ -125,7 +130,7 @@ class RVNoob extends Module with ext_function {
   exe.io.ctrl <> ex_reg.out.exe_ctrl
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  mem_reg.reset <> flush
+  mem_reg.reset <> hazard.io.mem_reg_ctrl.flush
 
   datam.io.mem_ctrl <> mem_reg.out.mem_ctrl
   datam.io.wdata <> mem_reg.out.src2
@@ -135,6 +140,7 @@ class RVNoob extends Module with ext_function {
   judge_load.io.mem_data <> datam.io.rdata
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
+  wb_reg.reset <> hazard.io.wb_reg_ctrl.flush
   rf.io.wdata <> Mux(wb_reg.out.wb_csr_ctrl.csr_wen,
     wb_reg.out.src2,
     Mux(wb_reg.out.r_pmem,

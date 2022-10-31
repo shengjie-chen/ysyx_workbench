@@ -20,26 +20,26 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   dontTouch(in)
   dontTouch(out)
   if (bypass) {
-    out.pc   := in.pc
-    out.inst := in.inst
-    out.snpc := in.snpc
+    out.pc    := in.pc
+    out.inst  := in.inst
+    out.snpc  := in.snpc
+    out.valid := 1.B
   } else {
-    out.pc   := RegEnable(in.pc, 0.U, in.pc_en)
-    out.inst := RegEnable(in.inst, 0.U, in.inst_en)
-    out.snpc := RegEnable(in.snpc, 0.U, in.snpc_en)
+    out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
+    out.inst := RegEnable(in.inst, 0.U, in.reg_en)
+    out.snpc := RegEnable(in.snpc, 0.U, in.reg_en)
+
   }
 }
 
 object IDreg {
-  def apply(pc: UInt, inst: UInt, snpc: UInt, bypass: Boolean = false): IDreg = {
+  def apply(pc: UInt, inst: UInt, snpc: UInt, reg_en: Bool, bypass: Boolean = false): IDreg = {
     val id_reg = Module(new IDreg(bypass))
     id_reg.in.pc <> pc
     id_reg.in.inst <> inst
     id_reg.in.snpc <> snpc
 
-    id_reg.in.pc_en <> 1.B
-    id_reg.in.inst_en <> 1.B
-    id_reg.in.snpc_en <> 1.B
+    id_reg.in.reg_en <> reg_en
 
     id_reg
   }

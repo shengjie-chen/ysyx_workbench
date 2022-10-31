@@ -43,15 +43,17 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.r_pmem      := in.r_pmem
     out.wb_rf_ctrl  := in.wb_rf_ctrl
     out.wb_csr_ctrl := in.wb_csr_ctrl
+
+    out.valid := 1.B
   } else {
-    out.pc          := RegEnable(in.pc, 0.U, in.pc_en)
-    out.inst        := RegEnable(in.inst, 0.U, in.inst_en)
-    out.src2        := RegEnable(in.src2, 0.U, in.src2_en)
-    out.alu_res     := RegEnable(in.alu_res, 0.U, in.alu_res_en)
-    out.mem_data    := RegEnable(in.mem_data, 0.U, in.mem_data_en)
-    out.r_pmem      := RegEnable(in.r_pmem, 0.B, in.r_pmem_en)
-    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.wb_rf_ctrl_en)
-    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.wb_csr_ctrl_en)
+    out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
+    out.inst        := RegEnable(in.inst, 0.U, in.reg_en)
+    out.src2        := RegEnable(in.src2, 0.U, in.reg_en)
+    out.alu_res     := RegEnable(in.alu_res, 0.U, in.reg_en)
+    out.mem_data    := RegEnable(in.mem_data, 0.U, in.reg_en)
+    out.r_pmem      := RegEnable(in.r_pmem, 0.B, in.reg_en)
+    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
+    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
   }
 }
 
@@ -65,6 +67,7 @@ object WBreg {
     r_pmem:      UInt,
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
+    reg_en:      Bool,
     bypass:      Boolean = false
   ): WBreg = {
     val wb_reg = Module(new WBreg(bypass))
@@ -77,14 +80,7 @@ object WBreg {
     wb_reg.in.wb_rf_ctrl <> wb_rf_ctrl
     wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
-    wb_reg.in.pc_en <> 1.B
-    wb_reg.in.inst_en <> 1.B
-    wb_reg.in.src2_en <> 1.B
-    wb_reg.in.alu_res_en <> 1.B
-    wb_reg.in.mem_data_en <> 1.B
-    wb_reg.in.r_pmem_en <> 1.B
-    wb_reg.in.wb_rf_ctrl_en <> 1.B
-    wb_reg.in.wb_csr_ctrl_en <> 1.B
+    wb_reg.in.reg_en <> reg_en
 
     wb_reg
   }
