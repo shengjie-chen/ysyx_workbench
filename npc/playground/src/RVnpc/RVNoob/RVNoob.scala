@@ -19,9 +19,9 @@ class RVNoob extends Module with ext_function {
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
   dontTouch(npc)
-  val pc_en   = Wire(Bool())
-  val pc      = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
-  val snpc    = Wire(UInt(64.W))
+  val pc_en = Wire(Bool())
+  val pc    = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
+  val snpc  = Wire(UInt(64.W))
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val hazard = Module(new HazardDetect)
@@ -83,6 +83,7 @@ class RVNoob extends Module with ext_function {
     hazard.io.wb_reg_ctrl.en,
     pipelineBypass
   )
+  val U_ebreak = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
 
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
@@ -111,12 +112,6 @@ class RVNoob extends Module with ext_function {
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
 
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
-
-  val U_ebreak = Module(new Ebreak)
-  U_ebreak.io.clk    <> clock
-  U_ebreak.io.inst   <> id_reg.out.inst
-  U_ebreak.io.a0     <> rf.io.a0
-  U_ebreak.io.ebreak <> io.ebreak
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.reset <> hazard.io.ex_reg_ctrl.flush
