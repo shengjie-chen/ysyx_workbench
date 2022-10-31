@@ -11,7 +11,7 @@ trait IDregSignal extends RVNoobConfig {
 class IDregOutIO extends PipelineOutIO with IDregSignal {}
 
 class IDregInIO extends PipelineInIO with IDregSignal {
-  val snpc_en = Bool()
+//  val snpc_en = Bool()
 }
 
 class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
@@ -23,7 +23,7 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.pc    := in.pc
     out.inst  := in.inst
     out.snpc  := in.snpc
-    out.valid := 1.B
+//    out.valid := 1.B
   } else {
     out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
     out.inst := RegEnable(in.inst, 0.U, in.reg_en)

@@ -18,13 +18,13 @@ trait WBregSignal extends RVNoobConfig {
 class WBregOutIO extends PipelineOutIO with WBregSignal {}
 
 class WBregInIO extends PipelineInIO with WBregSignal {
-  val src2_en     = Bool()
-  val alu_res_en  = Bool()
-  val mem_data_en = Bool()
-  val r_pmem_en   = Bool()
-
-  val wb_rf_ctrl_en  = Bool()
-  val wb_csr_ctrl_en = Bool()
+//  val src2_en     = Bool()
+//  val alu_res_en  = Bool()
+//  val mem_data_en = Bool()
+//  val r_pmem_en   = Bool()
+//
+//  val wb_rf_ctrl_en  = Bool()
+//  val wb_csr_ctrl_en = Bool()
 
 }
 
@@ -44,7 +44,7 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_rf_ctrl  := in.wb_rf_ctrl
     out.wb_csr_ctrl := in.wb_csr_ctrl
 
-    out.valid := 1.B
+//    out.valid := 1.B
   } else {
     out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
     out.inst        := RegEnable(in.inst, 0.U, in.reg_en)

@@ -56,7 +56,7 @@ class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := in.wb_csr_ctrl
     out.dnpc_ctrl   := in.dnpc_ctrl
 
-    out.valid := 1.B
+//    out.valid := 1.B
 
   } else {
     out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
