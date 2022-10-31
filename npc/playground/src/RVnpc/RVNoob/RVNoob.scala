@@ -89,7 +89,6 @@ class RVNoob extends Module with ext_function {
   dnpc_en := mem_reg.out.pc_mux || mem_reg.out.B_en
   pc_en   := hazard.io.pc_en
   npc     := Mux(dnpc_en, mem_reg.out.dnpc, snpc)
-  pc      := npc
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
