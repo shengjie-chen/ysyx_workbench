@@ -18,6 +18,7 @@ class RVNoob extends Module with ext_function {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
+  dontTouch(npc)
   val pc_en   = Wire(Bool())
   val pc      = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc    = Wire(UInt(64.W))

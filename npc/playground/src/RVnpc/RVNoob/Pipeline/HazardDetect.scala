@@ -22,7 +22,6 @@ class HazardDetect extends Module {
     val wb_reg_ctrl  = Output(new RegCtrl)
     val pc_en        = Output(Bool())
   })
-  dontTouch(io.pc_en)
   val sNone :: sDH1 :: sDH2 :: Nil = Enum(3) // Data Hazard
   val state                        = RegInit(sNone)
   // condition
