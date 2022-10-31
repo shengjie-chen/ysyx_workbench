@@ -27,7 +27,7 @@ class RVNoob extends Module with ext_function {
   val idu    = Module(new IDU)
   val rf     = Module(new RegisterFile)
   val csr    = Module(new CSR)
-  val hazard: HazardDetect = HazardDetect(
+  lazy val hazard: HazardDetect = HazardDetect(
     idu.io.id_rf_ctrl,
     idu.io.id_csr_ctrl,
     ex_reg.out.wb_rf_ctrl,
@@ -40,7 +40,7 @@ class RVNoob extends Module with ext_function {
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val dnpc_t      = Wire(UInt(64.W))
   val npc_add_res = Wire(UInt(64.W))
-  val ex_reg: EXreg = EXreg(
+  lazy val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
     id_reg.out.inst,
     id_reg.out.snpc,
@@ -59,7 +59,7 @@ class RVNoob extends Module with ext_function {
   val exe = Module(new EXE)
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  val mem_reg: MEMreg = MEMreg(
+  lazy val mem_reg: MEMreg = MEMreg(
     ex_reg.out.pc,
     ex_reg.out.inst,
     dnpc_t,
