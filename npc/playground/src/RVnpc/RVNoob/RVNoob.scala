@@ -17,30 +17,22 @@ class RVNoob extends Module with ext_function {
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val dnpc_en = Wire(Bool())
-  val flush   = Wire(Bool())
   val npc     = Wire(UInt(64.W))
-  val pc      = RegEnable(npc, 0x80000000L.U(64.W), hazard.io.pc_en) //2147483648
+  val pc_en   = Wire(Bool())
+  val pc      = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc    = Wire(UInt(64.W))
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+  val hazard = Module(new HazardDetect)
   val id_reg = IDreg(pc, io.inst, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
   val idu    = Module(new IDU)
   val rf     = Module(new RegisterFile)
   val csr    = Module(new CSR)
-  lazy val hazard: HazardDetect = HazardDetect(
-    idu.io.id_rf_ctrl,
-    idu.io.id_csr_ctrl,
-    ex_reg.out.wb_rf_ctrl,
-    ex_reg.out.wb_csr_ctrl,
-    mem_reg.out.wb_rf_ctrl,
-    mem_reg.out.wb_csr_ctrl,
-    dnpc_en
-  )
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val dnpc_t      = Wire(UInt(64.W))
   val npc_add_res = Wire(UInt(64.W))
-  lazy val ex_reg: EXreg = EXreg(
+  val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
     id_reg.out.inst,
     id_reg.out.snpc,
@@ -59,7 +51,7 @@ class RVNoob extends Module with ext_function {
   val exe = Module(new EXE)
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  lazy val mem_reg: MEMreg = MEMreg(
+  val mem_reg: MEMreg = MEMreg(
     ex_reg.out.pc,
     ex_reg.out.inst,
     dnpc_t,
@@ -95,7 +87,7 @@ class RVNoob extends Module with ext_function {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc    := pc + 4.U
   dnpc_en := mem_reg.out.pc_mux || mem_reg.out.B_en
-  flush   := dnpc_en
+  pc_en   := hazard.io.pc_en
   npc     := Mux(dnpc_en, mem_reg.out.dnpc, snpc)
   pc      := npc
   io.pc   := pc
@@ -103,18 +95,27 @@ class RVNoob extends Module with ext_function {
   dpi_npc.io.npc <> npc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+
+  hazard.io.idu_rf      <> idu.io.id_rf_ctrl
+  hazard.io.idu_csr     <> idu.io.id_csr_ctrl
+  hazard.io.ex_reg_rf   <> ex_reg.out.wb_rf_ctrl
+  hazard.io.ex_reg_csr  <> ex_reg.out.wb_csr_ctrl
+  hazard.io.mem_reg_rf  <> mem_reg.out.wb_rf_ctrl
+  hazard.io.mem_reg_csr <> mem_reg.out.wb_csr_ctrl
+  hazard.io.dnpc_en     <> dnpc_en
+
   id_reg.reset <> hazard.io.id_reg_ctrl.flush
 
-  idu.io.inst := id_reg.out.inst
+  idu.io.inst <> id_reg.out.inst
 
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
 
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
   val U_ebreak = Module(new Ebreak)
-  U_ebreak.io.clk <> clock
-  U_ebreak.io.inst <> id_reg.out.inst
-  U_ebreak.io.a0 <> rf.io.a0
+  U_ebreak.io.clk    <> clock
+  U_ebreak.io.inst   <> id_reg.out.inst
+  U_ebreak.io.a0     <> rf.io.a0
   U_ebreak.io.ebreak <> io.ebreak
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
@@ -131,20 +132,20 @@ class RVNoob extends Module with ext_function {
 
   exe.io.src1 <> ex_reg.out.src1
   exe.io.src2 <> ex_reg.out.src2
-  exe.io.imm <> ex_reg.out.imm
-  exe.io.pc <> ex_reg.out.pc
+  exe.io.imm  <> ex_reg.out.imm
+  exe.io.pc   <> ex_reg.out.pc
   exe.io.snpc <> ex_reg.out.snpc
   exe.io.ctrl <> ex_reg.out.exe_ctrl
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   mem_reg.reset <> hazard.io.mem_reg_ctrl.flush
 
-  datam.io.mem_ctrl <> mem_reg.out.mem_ctrl
-  datam.io.wdata <> mem_reg.out.src2
+  datam.io.mem_ctrl  <> mem_reg.out.mem_ctrl
+  datam.io.wdata     <> mem_reg.out.src2
   datam.io.data_addr <> mem_reg.out.mem_addr
 
   judge_load.io.judge_load_op <> mem_reg.out.mem_ctrl.judge_load_op
-  judge_load.io.mem_data <> datam.io.rdata
+  judge_load.io.mem_data      <> datam.io.rdata
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset <> hazard.io.wb_reg_ctrl.flush
@@ -156,9 +157,9 @@ class RVNoob extends Module with ext_function {
   rf.io.wb_rf_ctrl <> wb_reg.out.wb_rf_ctrl
 
   csr.io.wb_csr_ctrl <> wb_reg.out.wb_csr_ctrl
-  csr.io.pc <> wb_reg.out.pc
-  csr.io.mcause <> 11.U
-  csr.io.csr_wdata <> wb_reg.out.alu_res
+  csr.io.pc          <> wb_reg.out.pc
+  csr.io.mcause      <> 11.U
+  csr.io.csr_wdata   <> wb_reg.out.alu_res
 
 }
 
