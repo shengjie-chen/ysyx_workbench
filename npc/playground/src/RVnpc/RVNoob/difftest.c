@@ -167,5 +167,5 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
 void difftest_skip_ref() {
   is_skip_ref = true;
-  is_skip_ref_num
+  // is_skip_ref_num
 }
