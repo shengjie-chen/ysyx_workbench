@@ -4,15 +4,17 @@ import chisel3._
 import chisel3.util._
 import Pipeline._
 
-class RVNoob extends Module with ext_function {
+class RVNoob (pipeline:Boolean = true)extends Module with ext_function {
   val io = IO(new Bundle {
     val pc     = Output(UInt(64.W))
     val inst   = Input(UInt(32.W))
     val ebreak = Output(Bool())
+    val diff_en = Output(Bool())
+    val diff_pc = Output(UInt(64.W))
     //    override val prefix
   })
 
-  val pipelineBypass: Boolean = false
+  val pipelineBypass: Boolean = !pipeline
 
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
@@ -156,6 +158,17 @@ class RVNoob extends Module with ext_function {
   csr.io.mcause      <> 11.U
   csr.io.csr_wdata   <> wb_reg.out.alu_res
 
+  // ********************************** Difftest **********************************
+  if(pipeline){
+    io.diff_en := ShiftRegister(wb_reg.in.reg_en,2,1.B)
+    when(ShiftRegister(mem_reg.out.pc,1,1.B) =/= 0.U){
+      io.diff_pc := ShiftRegister(mem_reg.out.pc,1,1.B)
+    }.elsewhen(ShiftRegister(dnpc_en,1,1.B)){
+      io.diff_pc := pc
+    }.otherwise{
+      io.diff_pc := ShiftRegister(id_reg.out.pc,1,1.B)
+    }
+  }
 }
 
 object RVNoobGen extends App {
