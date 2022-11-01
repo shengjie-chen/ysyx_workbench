@@ -110,8 +110,30 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
 }
 
 static bool is_skip_ref = false;
+static int  is_skip_ref_num = 0;
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
+  #ifdef CONFIG_PIPELINE
+  CPU_state ref_r;
+  if(top->io_diff_en){
+    if (is_skip_ref) {
+    // to skip the checking of an instruction, just copy the reg state to reference design
+    refresh_gpr_pc_csr(); // 更新状态
+    ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
+    is_skip_ref = false;
+    return;
+  }
+
+  ref_difftest_exec(1);
+  ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+
+  refresh_gpr_pc_csr();
+  checkregs(&ref_r, pc);
+  }
+
+
+
+  #else
   CPU_state ref_r;
 
   // if (skip_dut_nr_inst > 0) {
@@ -129,8 +151,8 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
-    refresh_gpr_pc_csr();
-    ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF);
+    refresh_gpr_pc_csr(); // 更新状态
+    ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
     is_skip_ref = false;
     return;
   }
@@ -140,8 +162,10 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   refresh_gpr_pc_csr();
   checkregs(&ref_r, pc);
+  #endif
 }
 
 void difftest_skip_ref() {
   is_skip_ref = true;
+  is_skip_ref_num
 }

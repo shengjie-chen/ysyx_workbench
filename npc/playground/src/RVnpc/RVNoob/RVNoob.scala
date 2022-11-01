@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import Pipeline._
 
-class RVNoob(pipeline: Boolean = true) extends Module with ext_function {
+class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val pc      = Output(UInt(64.W))
     val inst    = Input(UInt(32.W))
@@ -85,6 +85,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function {
     hazard.io.wb_reg_ctrl.en,
     pipelineBypass
   )
+  val not_csr_wdata = Wire(UInt(xlen.W))
   val U_ebreak = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
 
   // ********************************** Connect and Logic **********************************
@@ -127,8 +128,13 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function {
   npc_add_res := ex_reg.out.imm +
     Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, ex_reg.out.src1, ex_reg.out.pc)
 
-  exe.io.src1 <> ex_reg.out.src1
-  exe.io.src2 <> ex_reg.out.src2
+  if(pipeline){
+    exe.io.src1 <> MuxLookup(hazard.io.forward1,ex_reg.out.src1,Array(1.U -> not_csr_wdata, 2.U-> mem_reg.out.alu_res))
+    exe.io.src2 <> MuxLookup(hazard.io.forward2,ex_reg.out.src2,Array(1.U -> not_csr_wdata, 2.U-> mem_reg.out.alu_res))
+  }else{
+    exe.io.src1 <> ex_reg.out.src1
+    exe.io.src2 <> ex_reg.out.src2
+  }
   exe.io.imm  <> ex_reg.out.imm
   exe.io.pc   <> ex_reg.out.pc
   exe.io.snpc <> ex_reg.out.snpc
@@ -146,10 +152,11 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function {
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset <> hazard.io.wb_reg_ctrl.flush
+  not_csr_wdata := Mux(wb_reg.out.r_pmem, wb_reg.out.mem_data, wb_reg.out.alu_res)
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
     wb_reg.out.src2,
-    Mux(wb_reg.out.r_pmem, wb_reg.out.mem_data, wb_reg.out.alu_res)
+    not_csr_wdata
   )
   rf.io.wb_rf_ctrl <> wb_reg.out.wb_rf_ctrl
 

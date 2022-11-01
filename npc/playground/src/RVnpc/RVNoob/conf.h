@@ -8,7 +8,7 @@
 // #define CONFIG_MTRACE
 
 // #define CONFIG_DIFFTEST
-#define CONFIG_PIPELINE
+// #define CONFIG_PIPELINE
 
 // 1M --> 1.6GB
 #define CONFIG_DUMPVCD
