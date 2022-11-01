@@ -86,7 +86,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     pipelineBypass
   )
   val not_csr_wdata = Wire(UInt(xlen.W))
-  val U_ebreak = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
+  val U_ebreak      = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
 
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
@@ -100,13 +100,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
 
-  hazard.io.idu_rf      <> idu.io.id_rf_ctrl
-  hazard.io.idu_csr     <> idu.io.id_csr_ctrl
-  hazard.io.ex_reg_rf   <> ex_reg.out.wb_rf_ctrl
-  hazard.io.ex_reg_csr  <> ex_reg.out.wb_csr_ctrl
-  hazard.io.mem_reg_rf  <> mem_reg.out.wb_rf_ctrl
-  hazard.io.mem_reg_csr <> mem_reg.out.wb_csr_ctrl
-  hazard.io.dnpc_en     <> dnpc_en
+  hazard.io.idu_rf          <> idu.io.id_rf_ctrl
+  hazard.io.idu_csr         <> idu.io.id_csr_ctrl
+  hazard.io.ex_reg_rf       <> ex_reg.out.wb_rf_ctrl
+  hazard.io.ex_reg_csr      <> ex_reg.out.wb_csr_ctrl
+  hazard.io.ex_reg_mem_ctrl <> ex_reg.out.mem_ctrl
+  hazard.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
+  hazard.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
+  hazard.io.dnpc_en         <> dnpc_en
 
   id_reg.reset <> hazard.io.id_reg_ctrl.flush
 
@@ -128,10 +129,18 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   npc_add_res := ex_reg.out.imm +
     Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, ex_reg.out.src1, ex_reg.out.pc)
 
-  if(pipeline){
-    exe.io.src1 <> MuxLookup(hazard.io.forward1,ex_reg.out.src1,Array(1.U -> not_csr_wdata, 2.U-> mem_reg.out.alu_res))
-    exe.io.src2 <> MuxLookup(hazard.io.forward2,ex_reg.out.src2,Array(1.U -> not_csr_wdata, 2.U-> mem_reg.out.alu_res))
-  }else{
+  if (pipeline) {
+    exe.io.src1 <> MuxLookup(
+      hazard.io.forward1,
+      ex_reg.out.src1,
+      Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
+    )
+    exe.io.src2 <> MuxLookup(
+      hazard.io.forward2,
+      ex_reg.out.src2,
+      Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
+    )
+  } else {
     exe.io.src1 <> ex_reg.out.src1
     exe.io.src2 <> ex_reg.out.src2
   }
@@ -151,7 +160,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   judge_load.io.mem_data      <> datam.io.rdata
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  wb_reg.reset <> hazard.io.wb_reg_ctrl.flush
+  wb_reg.reset  <> hazard.io.wb_reg_ctrl.flush
   not_csr_wdata := Mux(wb_reg.out.r_pmem, wb_reg.out.mem_data, wb_reg.out.alu_res)
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
@@ -172,7 +181,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     when(ShiftRegister(mem_reg.out.pc, 1, 1.B) =/= 0.U) {
       io.diff_pc := ShiftRegister(mem_reg.out.pc, 1, 1.B)
     }.elsewhen(ShiftRegister(dnpc_en, 2, 1.B)) {
-      io.diff_pc := ShiftRegister(pc,1,1.B)
+      io.diff_pc := ShiftRegister(pc, 1, 1.B)
     }.otherwise {
       io.diff_pc := ShiftRegister(id_reg.out.pc, 1, 1.B)
     }
