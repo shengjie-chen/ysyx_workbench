@@ -182,7 +182,6 @@ void one_clock() {
   vaddr_t pc = top->io_pc;
   top->clock = 0;
   printf("time %d read inst addr : %x\n",main_time,top->io_pc);
-  tfp->dump(main_time);
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
 #ifdef CONFIG_DUMPVCD
