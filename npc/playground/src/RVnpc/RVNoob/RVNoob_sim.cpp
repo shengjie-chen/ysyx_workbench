@@ -101,6 +101,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
+    printf("read data addr : %x\n",addr);
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  pmem ## addr: %llx", raddr & ~0x7ull);
@@ -180,6 +181,7 @@ VerilatedVcdC *tfp = new VerilatedVcdC;
 void one_clock() {
   vaddr_t pc = top->io_pc;
   top->clock = 0;
+  printf("read inst addr : %x\n",addr);
   top->io_inst = pmem_read(top->io_pc, 4);
   top->eval();
 #ifdef CONFIG_DUMPVCD

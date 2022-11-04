@@ -167,7 +167,6 @@ void host_write(void *addr, int len, word_t data) {
 
 word_t pmem_read(paddr_t addr, int len)
 {
-  printf("read addr : %x\n",addr);
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
