@@ -184,7 +184,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
       io.diff_pc := ShiftRegister(pc, 2, 1.B)
     }.elsewhen(mem_reg.out.pc =/= 0.U) {
       io.diff_pc := mem_reg.out.pc
-    }.otherwise{
+    }.otherwise {
       io.diff_pc := ex_reg.out.pc
     }
   }

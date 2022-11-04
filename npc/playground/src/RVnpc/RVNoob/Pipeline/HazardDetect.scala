@@ -9,33 +9,33 @@ class RegCtrl extends Bundle {
 }
 class HazardDetect extends Module {
   val io = IO(new Bundle {
-    val idu_rf       = Input(new IdRfCtrlIO)
-    val idu_csr      = Input(new IdCsrCtrlIO)
-    val ex_reg_rf    = Input(new WbRfCtrlIO)
-    val ex_reg_csr   = Input(new WbCsrCtrlIO)
+    val idu_rf          = Input(new IdRfCtrlIO)
+    val idu_csr         = Input(new IdCsrCtrlIO)
+    val ex_reg_rf       = Input(new WbRfCtrlIO)
+    val ex_reg_csr      = Input(new WbCsrCtrlIO)
     val ex_reg_mem_ctrl = Input(new MemCtrlIO)
-    val mem_reg_rf   = Input(new WbRfCtrlIO)
-    val mem_reg_csr  = Input(new WbCsrCtrlIO)
-    val dnpc_en      = Input(Bool())
-    val id_reg_ctrl  = Output(new RegCtrl)
-    val ex_reg_ctrl  = Output(new RegCtrl)
-    val mem_reg_ctrl = Output(new RegCtrl)
-    val wb_reg_ctrl  = Output(new RegCtrl)
-    val pc_en        = Output(Bool())
-    val forward1 = Output(UInt(2.W))
-    val forward2 = Output(UInt(2.W))
+    val mem_reg_rf      = Input(new WbRfCtrlIO)
+    val mem_reg_csr     = Input(new WbCsrCtrlIO)
+    val dnpc_en         = Input(Bool())
+    val id_reg_ctrl     = Output(new RegCtrl)
+    val ex_reg_ctrl     = Output(new RegCtrl)
+    val mem_reg_ctrl    = Output(new RegCtrl)
+    val wb_reg_ctrl     = Output(new RegCtrl)
+    val pc_en           = Output(Bool())
+    val forward1        = Output(UInt(2.W))
+    val forward2        = Output(UInt(2.W))
   })
   val sNone :: sDH1 :: Nil = Enum(2) // Data Hazard
-  val state                        = RegInit(sNone)
+  val state                = RegInit(sNone)
   // condition
   val ex_hazard_1 =
     (io.idu_rf.rs1 === io.ex_reg_rf.rd) && (io.ex_reg_rf.rd =/= 0.U) && io.ex_reg_rf.wen && io.idu_rf.ren1
   val ex_hazard_2 =
     (io.idu_rf.rs2 === io.ex_reg_rf.rd) && (io.ex_reg_rf.rd =/= 0.U) && io.ex_reg_rf.wen && io.idu_rf.ren2
   val ex_hazard_1_bypass = ex_hazard_1 && !io.ex_reg_mem_ctrl.r_pmem
-  val ex_hazard_1_delay = ex_hazard_1 && io.ex_reg_mem_ctrl.r_pmem
+  val ex_hazard_1_delay  = ex_hazard_1 && io.ex_reg_mem_ctrl.r_pmem
   val ex_hazard_2_bypass = ex_hazard_2 && !io.ex_reg_mem_ctrl.r_pmem
-  val ex_hazard_2_delay = ex_hazard_2 && io.ex_reg_mem_ctrl.r_pmem
+  val ex_hazard_2_delay  = ex_hazard_2 && io.ex_reg_mem_ctrl.r_pmem
   val mem_hazard_1 =
     (io.idu_rf.rs1 === io.mem_reg_rf.rd) && (io.mem_reg_rf.rd =/= 0.U) && io.mem_reg_rf.wen && io.idu_rf.ren1
   val mem_hazard_2 =
@@ -47,8 +47,8 @@ class HazardDetect extends Module {
     (io.mem_reg_csr.csr_wen && io.idu_csr.csr_ren && io.idu_csr.csr_raddr === io.mem_reg_csr.csr_waddr) || (io.mem_reg_csr.ecall && io.idu_csr.csr_raddr === 0x341.U) // &&csr_addr === mcause
 
   // Forward
-  val forward1 = RegNext(Mux(mem_hazard_1,1.U,Mux(ex_hazard_1_bypass,2.U,0.U)))
-  val forward2 = RegNext(Mux(mem_hazard_2,1.U,Mux(ex_hazard_2_bypass,2.U,0.U)))
+  val forward1 = RegNext(Mux(mem_hazard_1, 1.U, Mux(ex_hazard_1_bypass, 2.U, 0.U)))
+  val forward2 = RegNext(Mux(mem_hazard_2, 1.U, Mux(ex_hazard_2_bypass, 2.U, 0.U)))
   io.forward1 := forward1
   io.forward2 := forward2
 
@@ -73,16 +73,16 @@ class HazardDetect extends Module {
   }
 
   def harard_do_1 = { // exe data hazard second do
-    io.id_reg_ctrl.en     := 0.B
-    io.ex_reg_ctrl.en     := 0.B
-    io.ex_reg_ctrl.flush  := 1.B
-    io.pc_en              := 0.B
+    io.id_reg_ctrl.en    := 0.B
+    io.ex_reg_ctrl.en    := 0.B
+    io.ex_reg_ctrl.flush := 1.B
+    io.pc_en             := 0.B
   }
 
   when(io.dnpc_en) {
-    io.id_reg_ctrl.flush  := 1.B
-    io.ex_reg_ctrl.flush  := 1.B
-    state                 := sNone
+    io.id_reg_ctrl.flush := 1.B
+    io.ex_reg_ctrl.flush := 1.B
+    state                := sNone
   }.otherwise {
     switch(state) {
       is(sNone) {
