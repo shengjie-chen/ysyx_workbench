@@ -178,12 +178,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   if (pipeline) {
     // wb 写完成的周期
     io.diff_en := ShiftRegister(wb_reg.in.reg_en, 2, 1.B) && (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U)
-    when(ShiftRegister(mem_reg.out.pc, 1, 1.B) =/= 0.U) {
-      io.diff_pc := ShiftRegister(mem_reg.out.pc, 1, 1.B)
-    }.elsewhen(ShiftRegister(dnpc_en, 2, 1.B)) {
-      io.diff_pc := ShiftRegister(pc, 1, 1.B)
-    }.otherwise {
-      io.diff_pc := ShiftRegister(id_reg.out.pc, 1, 1.B)
+    when(wb_reg.out.pc =/= 0.U) {
+      io.diff_pc := wb_reg.out.pc
+    }.elsewhen(ShiftRegister(dnpc_en, 3, 1.B)) {
+      io.diff_pc := ShiftRegister(pc, 2, 1.B)
+    }.elsewhen(mem_reg.out.pc =/= 0.U) {
+      io.diff_pc := mem_reg.out.pc
+    }.otherwise{
+      io.diff_pc := ex_reg.out.pc
     }
   }
 }

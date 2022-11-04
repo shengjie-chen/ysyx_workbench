@@ -25,7 +25,7 @@ class HazardDetect extends Module {
     val forward1 = Output(UInt(2.W))
     val forward2 = Output(UInt(2.W))
   })
-  val sNone :: sDH1 :: sDH2 :: Nil = Enum(3) // Data Hazard
+  val sNone :: sDH1 :: Nil = Enum(2) // Data Hazard
   val state                        = RegInit(sNone)
   // condition
   val ex_hazard_1 =
@@ -76,14 +76,7 @@ class HazardDetect extends Module {
     io.id_reg_ctrl.en     := 0.B
     io.ex_reg_ctrl.en     := 0.B
     io.ex_reg_ctrl.flush  := 1.B
-    io.mem_reg_ctrl.en    := 0.B
-    io.mem_reg_ctrl.flush := 1.B
     io.pc_en              := 0.B
-  }
-
-  def harard_do_2 = { // exe data hazard third do
-    io.mem_reg_ctrl.flush := 1.B
-    io.wb_reg_ctrl.flush  := 1.B
   }
 
   when(io.dnpc_en) {
@@ -103,10 +96,6 @@ class HazardDetect extends Module {
       }
       is(sDH1) {
         harard_do_1
-        state := sDH2
-      }
-      is(sDH2) {
-        harard_do_2
         state := sNone
       }
     }
