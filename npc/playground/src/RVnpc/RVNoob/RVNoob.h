@@ -141,6 +141,7 @@ long load_img()
 
 word_t host_read(void *addr, int len)
 {
+  print("read addr : %p\n",addr);
   switch (len) {
   case 1:
     return *(uint8_t *)addr;
