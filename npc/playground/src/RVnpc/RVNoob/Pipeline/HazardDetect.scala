@@ -91,7 +91,7 @@ class HazardDetect extends Module {
           state := sDH1
         }.elsewhen(mem_csr_hazard) {
           harard_do_1
-          state := sDH2
+          state := sNone
         }
       }
       is(sDH1) {
