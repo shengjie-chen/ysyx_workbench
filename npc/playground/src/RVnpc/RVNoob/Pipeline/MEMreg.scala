@@ -5,12 +5,9 @@ import chisel3._
 import chisel3.util._
 
 trait MEMregSignal extends RVNoobConfig {
-  val dnpc     = UInt(xlen.W)
   val src2     = UInt(xlen.W)
   val mem_addr = UInt(xlen.W)
   val alu_res  = UInt(xlen.W)
-  val B_en     = Bool()
-  val pc_mux   = Bool()
 
   val mem_ctrl    = new MemCtrlIO
   val wb_rf_ctrl  = new WbRfCtrlIO
@@ -42,12 +39,9 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   if (bypass) {
     out.pc       := in.pc
     out.inst     := in.inst
-    out.dnpc     := in.dnpc
     out.src2     := in.src2
     out.mem_addr := in.mem_addr
     out.alu_res  := in.alu_res
-    out.B_en     := in.B_en
-    out.pc_mux   := in.pc_mux
 
     out.mem_ctrl    := in.mem_ctrl
     out.wb_rf_ctrl  := in.wb_rf_ctrl
@@ -58,12 +52,9 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   } else {
     out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
     out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
-    out.dnpc     := RegEnable(in.dnpc, 0.U, in.reg_en)
     out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
     out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
     out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)
-    out.B_en     := RegEnable(in.B_en, 0.B, in.reg_en)
-    out.pc_mux   := RegEnable(in.pc_mux, 0.B, in.reg_en)
 
     out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
@@ -91,12 +82,9 @@ object MEMreg {
     val mem_reg = Module(new MEMreg(bypass))
     mem_reg.in.pc <> pc
     mem_reg.in.inst <> inst
-    mem_reg.in.dnpc <> dnpc
     mem_reg.in.src2 <> src2
     mem_reg.in.mem_addr <> mem_addr
     mem_reg.in.alu_res <> alu_res
-    mem_reg.in.B_en <> B_en
-    mem_reg.in.pc_mux <> pc_mux
     mem_reg.in.mem_ctrl <> mem_ctrl
     mem_reg.in.wb_rf_ctrl <> wb_rf_ctrl
     mem_reg.in.wb_csr_ctrl <> wb_csr_ctrl

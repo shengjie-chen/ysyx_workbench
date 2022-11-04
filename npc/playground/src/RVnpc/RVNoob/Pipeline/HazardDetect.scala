@@ -89,7 +89,6 @@ class HazardDetect extends Module {
   when(io.dnpc_en) {
     io.id_reg_ctrl.flush  := 1.B
     io.ex_reg_ctrl.flush  := 1.B
-    io.mem_reg_ctrl.flush := 1.B
     state                 := sNone
   }.otherwise {
     switch(state) {

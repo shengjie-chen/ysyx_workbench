@@ -91,9 +91,9 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc    := pc + 4.U
-  dnpc_en := mem_reg.out.pc_mux || mem_reg.out.B_en
+  dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || exe.io.B_en
   pc_en   := hazard.io.pc_en
-  npc     := Mux(dnpc_en, mem_reg.out.dnpc, snpc)
+  npc     := Mux(dnpc_en, dnpc_t, snpc)
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
