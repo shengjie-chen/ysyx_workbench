@@ -113,8 +113,12 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-static bool is_skip_ref = false;
+#ifdef CONFIG_PIPELINE
 static int is_skip_ref_num = 0;
+vaddr_t wb_pc = 0x80000000;
+#else
+static bool is_skip_ref = false;
+#endif
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
 #ifdef CONFIG_PIPELINE
@@ -132,7 +136,8 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
     refresh_gpr_pc_csr();
-    checkregs(&ref_r, pc);
+    checkregs(&ref_r, wb_pc);
+    wb_pc = top->io_diff_pc;
   }
 
 #else
@@ -168,6 +173,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 }
 
 void difftest_skip_ref() {
-  is_skip_ref = true;
+#ifdef CONFIG_PIPELINE
   is_skip_ref_num++;
+#else
+  is_skip_ref = true;
+#endif
 }
