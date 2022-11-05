@@ -57,7 +57,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val mem_reg: MEMreg = MEMreg(
     ex_reg.out.pc,
     ex_reg.out.inst,
-    ex_reg.out.src2,
+    exe.io.src2,
     exe.io.mem_addr,
     exe.io.gp_out,
     exe.io.B_en,
