@@ -4,11 +4,11 @@ import chisel3._
 import chisel3.util._
 
 trait RVNoobConfig {
-  val alu_op_w = 5 //alu_op_width
-  val jdg_op_w = 4 //judge_op_width
-  val jdgl_op_w = 3//judge_load_op_width
-  val xlen     = 64
-  val inst_w   = 32
+  val alu_op_w   = 5 //alu_op_width
+  val jdg_op_w   = 4 //judge_op_width
+  val jdgl_op_w  = 3 //judge_load_op_width
+  val xlen       = 64
+  val inst_w     = 32
   val gpr_addr_w = 5
 
 }
@@ -25,7 +25,7 @@ trait ALU_op {
   val op_sra = 5.U // right_shift_arithmetic
   // logic
   val op_xor = 6.U
-  val op_or  = 7.U   // csr
+  val op_or  = 7.U // csr
   val op_and = 8.U
   //x / %
   val op_mul = 9.U
@@ -66,7 +66,7 @@ trait Judge_op {
   val jop_slt  = 7.U
   val jop_sltu = 8.U
   // sext
-  val jop_sextw  = 9.U
+  val jop_sextw = 9.U
   // val jop_sexthw = 7.U
   // val jop_sextb  = 8.U
   // uext
@@ -90,7 +90,6 @@ trait Judge_Load_op {
   val jlop_uextb  = 6.U
 
 }
-
 
 trait Csr_op {
   //    val jop_x :: sOne1 :: sTwo1s :: Nil = Enum(3)

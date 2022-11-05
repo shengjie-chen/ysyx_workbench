@@ -79,13 +79,13 @@ object MEMreg {
     bypass:      Boolean = false
   ): MEMreg = {
     val mem_reg = Module(new MEMreg(bypass))
-    mem_reg.in.pc <> pc
-    mem_reg.in.inst <> inst
-    mem_reg.in.src2 <> src2
-    mem_reg.in.mem_addr <> mem_addr
-    mem_reg.in.alu_res <> alu_res
-    mem_reg.in.mem_ctrl <> mem_ctrl
-    mem_reg.in.wb_rf_ctrl <> wb_rf_ctrl
+    mem_reg.in.pc          <> pc
+    mem_reg.in.inst        <> inst
+    mem_reg.in.src2        <> src2
+    mem_reg.in.mem_addr    <> mem_addr
+    mem_reg.in.alu_res     <> alu_res
+    mem_reg.in.mem_ctrl    <> mem_ctrl
+    mem_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
     mem_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     mem_reg.in.reg_en <> reg_en

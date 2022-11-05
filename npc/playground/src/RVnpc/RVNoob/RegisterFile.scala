@@ -17,17 +17,18 @@ class RF_read(
 class RegisterFile(
   val ADDR_WIDTH: Int = 5,
   val DATA_WIDTH: Int = 64)
-    extends Module with RVNoobConfig {
+    extends Module
+    with RVNoobConfig {
   val io = IO(new Bundle {
     val wb_rf_ctrl = Input(new WbRfCtrlIO)
-    val wdata  = Input(UInt(xlen.W))
+    val wdata      = Input(UInt(xlen.W))
 
     val id_rf_ctrl = Input(new IdRfCtrlIO)
 
     val rdata1 = Output(UInt(DATA_WIDTH.W))
     val rdata2 = Output(UInt(DATA_WIDTH.W))
 
-    val a0     = Output(UInt(DATA_WIDTH.W))
+    val a0 = Output(UInt(DATA_WIDTH.W))
 
   })
   // init reg
@@ -44,8 +45,16 @@ class RegisterFile(
   // read src1 and src2
   val rdata1 = Wire(UInt(DATA_WIDTH.W))
   val rdata2 = Wire(UInt(DATA_WIDTH.W))
-  rdata1    := Mux((io.id_rf_ctrl.rs1 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs1 =/= 0.U) && io.wb_rf_ctrl.wen,io.wdata,rf(io.id_rf_ctrl.rs1))
-  rdata2    := Mux((io.id_rf_ctrl.rs2 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs2 =/= 0.U) && io.wb_rf_ctrl.wen,io.wdata,rf(io.id_rf_ctrl.rs2))
+  rdata1 := Mux(
+    (io.id_rf_ctrl.rs1 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs1 =/= 0.U) && io.wb_rf_ctrl.wen,
+    io.wdata,
+    rf(io.id_rf_ctrl.rs1)
+  )
+  rdata2 := Mux(
+    (io.id_rf_ctrl.rs2 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs2 =/= 0.U) && io.wb_rf_ctrl.wen,
+    io.wdata,
+    rf(io.id_rf_ctrl.rs2)
+  )
   io.rdata1 := Mux(io.id_rf_ctrl.ren1, rdata1, 0.U)
   io.rdata2 := Mux(io.id_rf_ctrl.ren2, rdata2, 0.U)
 

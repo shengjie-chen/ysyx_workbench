@@ -71,13 +71,13 @@ object WBreg {
     bypass:      Boolean = false
   ): WBreg = {
     val wb_reg = Module(new WBreg(bypass))
-    wb_reg.in.pc <> pc
-    wb_reg.in.inst <> inst
-    wb_reg.in.src2 <> src2
-    wb_reg.in.alu_res <> alu_res
-    wb_reg.in.mem_data <> mem_data
-    wb_reg.in.r_pmem <> r_pmem
-    wb_reg.in.wb_rf_ctrl <> wb_rf_ctrl
+    wb_reg.in.pc          <> pc
+    wb_reg.in.inst        <> inst
+    wb_reg.in.src2        <> src2
+    wb_reg.in.alu_res     <> alu_res
+    wb_reg.in.mem_data    <> mem_data
+    wb_reg.in.r_pmem      <> r_pmem
+    wb_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
     wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     wb_reg.in.reg_en <> reg_en

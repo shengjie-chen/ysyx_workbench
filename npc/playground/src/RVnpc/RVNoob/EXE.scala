@@ -27,18 +27,18 @@ class EXE extends Module with RVNoobConfig {
   alu_src2 := Mux(io.ctrl.alu_src2_mux, io.imm, io.src2)
 
   val alu = Module(new ALU)
-  alu.io.src1 <> alu_src1
-  alu.io.src2 <> alu_src2
-  alu.io.result <> alu_out
+  alu.io.src1     <> alu_src1
+  alu.io.src2     <> alu_src2
+  alu.io.result   <> alu_out
   alu.io.mem_addr <> io.mem_addr
 
   alu.io.ctrl.judge_mux <> io.ctrl.judge_mux
-  alu.io.ctrl.judge_op <> io.ctrl.judge_op
-  alu.io.ctrl.alu_op <> io.ctrl.alu_op
+  alu.io.ctrl.judge_op  <> io.ctrl.judge_op
+  alu.io.ctrl.alu_op    <> io.ctrl.alu_op
 
   alu.io.B_en <> io.B_en
 
-  val dir_out = Mux(io.ctrl.dir_out_mux, Mux(io.ctrl.src1_bypass,io.src1,io.imm), io.snpc)
+  val dir_out = Mux(io.ctrl.dir_out_mux, Mux(io.ctrl.src1_bypass, io.src1, io.imm), io.snpc)
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 }
 
@@ -151,13 +151,13 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
     )
   )
   val u_less = (io.ctrl.judge_op === jop_sltu) || (io.ctrl.judge_op === jop_bgeu) || (io.ctrl.judge_op === jop_bltu)
-  val less = Wire(Bool())
+  val less   = Wire(Bool())
   when(u_less) {
-    less := Mux(io.src2===0.U,add_res(64),!add_res(64))
+    less := Mux(io.src2 === 0.U, add_res(64), !add_res(64))
   }.otherwise {
     when(io.src1(63) && !io.src2(63)) { // s1- s2+  -
       less := 1.B
-    }.elsewhen(!io.src1(63) && io.src2(63)) {// s1+ s2- +
+    }.elsewhen(!io.src1(63) && io.src2(63)) { // s1+ s2- +
       less := 0.B
     }.otherwise {
       less := add_res(63)
@@ -172,10 +172,10 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
 //      }
 
   val judge = Module(new Judge)
-  judge.io.less <> less
-  judge.io.old_res <> alu_res
+  judge.io.less     <> less
+  judge.io.old_res  <> alu_res
   judge.io.judge_op <> io.ctrl.judge_op
-  judge.io.B_en <> io.B_en
+  judge.io.B_en     <> io.B_en
 
   io.result := Mux(io.ctrl.judge_mux, judge.io.new_res, alu_res)
 
@@ -196,7 +196,7 @@ class Judge extends Module with RVNoobConfig with Judge_op with ext_function {
       (io.judge_op === jop_beq) -> zero,
       (io.judge_op === jop_bne) -> !zero,
       ((io.judge_op === jop_blt) || (io.judge_op === jop_bltu)) -> io.less,
-      ((io.judge_op === jop_bge) || (io.judge_op === jop_bgeu)) -> !io.less//(!io.less || zero)
+      ((io.judge_op === jop_bge) || (io.judge_op === jop_bgeu)) -> !io.less //(!io.less || zero)
     )
   )
 

@@ -8,7 +8,7 @@ class DATAM extends Module with RVNoobConfig {
     val data_addr = Input(UInt(xlen.W))
     val wdata     = Input(UInt(xlen.W))
     val rdata     = Output(UInt(xlen.W))
-    val mem_ctrl = Input(new MemCtrlIO)
+    val mem_ctrl  = Input(new MemCtrlIO)
   })
 
   val daddr = io.data_addr & (~0x7.U(64.W)).asUInt()
@@ -20,25 +20,25 @@ class DATAM extends Module with RVNoobConfig {
   when(io.mem_ctrl.r_pmem || io.mem_ctrl.w_pmem) {
     when(io.mem_ctrl.zero_ex_op === 3.U) {
       assert(shift === 0.U)
-    }.elsewhen(io.mem_ctrl.zero_ex_op === 2.U){
+    }.elsewhen(io.mem_ctrl.zero_ex_op === 2.U) {
       assert(shift <= 4.U)
-    }.elsewhen(io.mem_ctrl.zero_ex_op === 1.U){
+    }.elsewhen(io.mem_ctrl.zero_ex_op === 1.U) {
       assert(shift <= 6.U)
-    }.otherwise{
+    }.otherwise {
       assert(shift < 8.U)
     }
   }
   val dpi_pmem = Module(new DpiPmem)
-  dpi_pmem.io.clk <> clock
-  dpi_pmem.io.raddr <> daddr
-  dpi_pmem.io.waddr <> daddr
-  dpi_pmem.io.wmask <> wmask
-  dpi_pmem.io.rdata <> rdata
-  dpi_pmem.io.wdata <> wdata
+  dpi_pmem.io.clk    <> clock
+  dpi_pmem.io.raddr  <> daddr
+  dpi_pmem.io.waddr  <> daddr
+  dpi_pmem.io.wmask  <> wmask
+  dpi_pmem.io.rdata  <> rdata
+  dpi_pmem.io.wdata  <> wdata
   dpi_pmem.io.r_pmem <> io.mem_ctrl.r_pmem
   dpi_pmem.io.w_pmem <> io.mem_ctrl.w_pmem
 
-  shift :=  io.data_addr
+  shift    := io.data_addr
   io.rdata := (rdata >> (shift * 8.U))
   wdata    := (io.wdata << (shift * 8.U))
   wmask := MuxCase(
@@ -54,12 +54,12 @@ class DATAM extends Module with RVNoobConfig {
 
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
-    val clk   = Input(Clock())
-    val raddr = Input(UInt(xlen.W))
-    val waddr = Input(UInt(xlen.W))
-    val wmask = Input(UInt((xlen / 8).W))
-    val rdata = Output(UInt(xlen.W))
-    val wdata = Input(UInt(xlen.W))
+    val clk    = Input(Clock())
+    val raddr  = Input(UInt(xlen.W))
+    val waddr  = Input(UInt(xlen.W))
+    val wmask  = Input(UInt((xlen / 8).W))
+    val rdata  = Output(UInt(xlen.W))
+    val wdata  = Input(UInt(xlen.W))
     val r_pmem = Input(Bool())
     val w_pmem = Input(Bool())
   })
@@ -102,14 +102,14 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   )
 }
 
-class JudgeLoad extends Module with RVNoobConfig with ext_function with Judge_Load_op{
+class JudgeLoad extends Module with RVNoobConfig with ext_function with Judge_Load_op {
   val io = IO(new Bundle {
-    val mem_data = Input(UInt(xlen.W))
+    val mem_data      = Input(UInt(xlen.W))
     val judge_load_op = Input(UInt(jdgl_op_w.W))
-    val load_data = Output(UInt(xlen.W))
+    val load_data     = Output(UInt(xlen.W))
   })
 
-    io.load_data := MuxCase(
+  io.load_data := MuxCase(
     io.mem_data,
     Array(
       (io.judge_load_op === jlop_sextw) -> sext_64(io.mem_data(31, 0)),

@@ -12,18 +12,18 @@ class CSR_read_dpi extends BlackBox with RVNoobConfig {
 
 class CSR extends Module with RVNoobConfig with Csr_op {
   val io = IO(new Bundle {
-    val csr_rdata = Output(UInt(xlen.W))
+    val csr_rdata   = Output(UInt(xlen.W))
     val id_csr_ctrl = Input(new IdCsrCtrlIO)
-    val csr_dnpc = Output(UInt(xlen.W))
+    val csr_dnpc    = Output(UInt(xlen.W))
 
-    val pc = Input(UInt(xlen.W))
-    val mcause = Input(UInt(xlen.W))
+    val pc          = Input(UInt(xlen.W))
+    val mcause      = Input(UInt(xlen.W))
     val wb_csr_ctrl = Input(new WbCsrCtrlIO)
-    val csr_wdata = Input(UInt(xlen.W))
+    val csr_wdata   = Input(UInt(xlen.W))
 
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
-  val csr = Reg(Vec(4, UInt(xlen.W)))
+  val csr      = Reg(Vec(4, UInt(xlen.W)))
   val csr_read = Wire(Vec(4, UInt(xlen.W)))
   csr_read := csr
 
@@ -41,11 +41,11 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     )
   )
   when(io.wb_csr_ctrl.csr_wen) {
-    csr(csr_waddr) := io.csr_wdata
+    csr(csr_waddr)      := io.csr_wdata
     csr_read(csr_waddr) := io.csr_wdata
   }.elsewhen(io.wb_csr_ctrl.ecall) {
-    csr(2) := io.pc
-    csr(3) := io.mcause
+    csr(2)      := io.pc
+    csr(3)      := io.mcause
     csr_read(2) := io.pc
     csr_read(3) := io.mcause
   }
@@ -60,5 +60,5 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     )
   )
   io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read(csr_raddr), 0.U)
-  io.csr_dnpc := Mux(io.id_csr_ctrl.ecall, csr_read(1), csr_read(2)) // this 2 signal can mix
+  io.csr_dnpc  := Mux(io.id_csr_ctrl.ecall, csr_read(1), csr_read(2)) // this 2 signal can mix
 }

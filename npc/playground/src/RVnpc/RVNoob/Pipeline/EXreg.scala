@@ -94,18 +94,18 @@ object EXreg {
     bypass:      Boolean = false
   ): EXreg = {
     val ex_reg = Module(new EXreg(bypass))
-    ex_reg.in.pc <> pc
-    ex_reg.in.inst <> inst
-    ex_reg.in.snpc <> snpc
-    ex_reg.in.src1 <> src1
-    ex_reg.in.src2 <> src2
-    ex_reg.in.imm <> imm
-    ex_reg.in.csr_dnpc <> csr_dnpc
-    ex_reg.in.exe_ctrl <> exe_ctrl
-    ex_reg.in.mem_ctrl <> mem_ctrl
-    ex_reg.in.wb_rf_ctrl <> wb_rf_ctrl
+    ex_reg.in.pc          <> pc
+    ex_reg.in.inst        <> inst
+    ex_reg.in.snpc        <> snpc
+    ex_reg.in.src1        <> src1
+    ex_reg.in.src2        <> src2
+    ex_reg.in.imm         <> imm
+    ex_reg.in.csr_dnpc    <> csr_dnpc
+    ex_reg.in.exe_ctrl    <> exe_ctrl
+    ex_reg.in.mem_ctrl    <> mem_ctrl
+    ex_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
     ex_reg.in.wb_csr_ctrl <> wb_csr_ctrl
-    ex_reg.in.dnpc_ctrl <> dnpc_ctrl
+    ex_reg.in.dnpc_ctrl   <> dnpc_ctrl
 
     ex_reg.in.reg_en <> reg_en
 

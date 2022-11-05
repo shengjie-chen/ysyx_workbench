@@ -33,7 +33,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val csr    = Module(new CSR)
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  val dnpc      = Wire(UInt(64.W))
+  val dnpc        = Wire(UInt(64.W))
   val npc_add_res = Wire(UInt(64.W))
   val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
@@ -51,7 +51,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     hazard.io.ex_reg_ctrl.en,
     pipelineBypass
   )
-  val exe = Module(new EXE)
+  val exe      = Module(new EXE)
   val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
 
