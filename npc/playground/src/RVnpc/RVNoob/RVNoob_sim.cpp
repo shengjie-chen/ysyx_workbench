@@ -101,7 +101,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
-    printf("read data addr : %x\n",raddr & ~0x7ull);
+    printf("read data addr : %x\n", raddr & ~0x7ull);
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  pmem ## addr: %llx", raddr & ~0x7ull);
@@ -144,7 +144,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 
   if (waddr == VGACTL_ADDR) {
     assert(wmask == (char)0xf0);
-    vgactl_port_base_syn = wdata>>32;
+    vgactl_port_base_syn = wdata >> 32;
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
 #endif
@@ -181,9 +181,16 @@ VerilatedVcdC *tfp = new VerilatedVcdC;
 void one_clock() {
   vaddr_t pc = top->io_pc;
   top->clock = 0;
-  printf("time %d read inst addr : %x\n",main_time,top->io_pc);
-  top->io_inst = pmem_read(top->io_pc, 4);
-  printf("inst : %x\n",top->io_inst);
+  if (in_pmem(raddr)) {
+    printf("time %d read inst addr : %x\n", main_time, top->io_pc);
+    top->io_inst = pmem_read(top->io_pc, 4);
+    printf("inst : %x\n", top->io_inst);
+  } else {
+    printf("error happen!! time %d read inst addr : %x\n", main_time, top->io_pc);
+    tfp->close();
+    exit(1);
+  }
+
   top->eval();
 #ifdef CONFIG_DUMPVCD
   if (main_time > CONFIG_DUMPSTART)
@@ -244,7 +251,7 @@ int main(int argc, char **argv, char **env) {
 
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
-  printf("%s\n",img_file);
+  printf("%s\n", img_file);
   long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
