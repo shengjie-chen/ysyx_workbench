@@ -52,12 +52,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     pipelineBypass
   )
   val exe = Module(new EXE)
+  val exe_src1 = Wire(UInt(xlen.W))
+  val exe_src2 = Wire(UInt(xlen.W))
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   val mem_reg: MEMreg = MEMreg(
     ex_reg.out.pc,
     ex_reg.out.inst,
-    exe.io.src2,
+    exe_src2,
     exe.io.mem_addr,
     exe.io.gp_out,
     exe.io.B_en,
@@ -126,19 +128,22 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   )
 
   npc_add_res := ex_reg.out.imm +
-    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, exe.io.src1, ex_reg.out.pc)
+    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, exe_src1, ex_reg.out.pc)
 
   if (pipeline) {
-    exe.io.src1 <> MuxLookup(
+    exe_src1 := MuxLookup(
       hazard.io.forward1,
       ex_reg.out.src1,
       Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
     )
-    exe.io.src2 <> MuxLookup(
+    exe_src2 := MuxLookup(
       hazard.io.forward2,
       ex_reg.out.src2,
       Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
     )
+
+    exe.io.src1 <> exe_src1
+    exe.io.src2 <> exe_src2
   } else {
     exe.io.src1 <> ex_reg.out.src1
     exe.io.src2 <> ex_reg.out.src2
