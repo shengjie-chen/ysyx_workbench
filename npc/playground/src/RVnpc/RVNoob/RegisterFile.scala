@@ -44,8 +44,8 @@ class RegisterFile(
   // read src1 and src2
   val rdata1 = Wire(UInt(DATA_WIDTH.W))
   val rdata2 = Wire(UInt(DATA_WIDTH.W))
-  rdata1    := Mux(io.id_rf_ctrl.rs1 === io.wb_rf_ctrl.rd,io.wdata,rf(io.id_rf_ctrl.rs1))
-  rdata2    := Mux(io.id_rf_ctrl.rs2 === io.wb_rf_ctrl.rd,io.wdata,rf(io.id_rf_ctrl.rs2))
+  rdata1    := Mux((io.id_rf_ctrl.rs1 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs1 =/= 0.U),io.wdata,rf(io.id_rf_ctrl.rs1))
+  rdata2    := Mux((io.id_rf_ctrl.rs2 === io.wb_rf_ctrl.rd) && (io.id_rf_ctrl.rs2 =/= 0.U),io.wdata,rf(io.id_rf_ctrl.rs2))
   io.rdata1 := Mux(io.id_rf_ctrl.ren1, rdata1, 0.U)
   io.rdata2 := Mux(io.id_rf_ctrl.ren2, rdata2, 0.U)
 
