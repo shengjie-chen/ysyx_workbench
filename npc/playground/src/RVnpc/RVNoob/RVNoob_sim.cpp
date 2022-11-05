@@ -101,7 +101,6 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata) {
 
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   if (likely(in_pmem(raddr))) {
-    printf("read data addr : %x\n", raddr & ~0x7ull);
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  pmem ## addr: %llx", raddr & ~0x7ull);

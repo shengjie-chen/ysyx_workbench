@@ -67,7 +67,6 @@ object MEMreg {
   def apply(
     pc:          UInt,
     inst:        UInt,
-    dnpc:        UInt,
     src2:        UInt,
     mem_addr:    UInt,
     alu_res:     UInt,

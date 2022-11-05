@@ -33,7 +33,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val csr    = Module(new CSR)
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  val dnpc_t      = Wire(UInt(64.W))
+  val dnpc      = Wire(UInt(64.W))
   val npc_add_res = Wire(UInt(64.W))
   val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
@@ -57,7 +57,6 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val mem_reg: MEMreg = MEMreg(
     ex_reg.out.pc,
     ex_reg.out.inst,
-    dnpc_t,
     ex_reg.out.src2,
     exe.io.mem_addr,
     exe.io.gp_out,
@@ -93,7 +92,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   snpc    := pc + 4.U
   dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || exe.io.B_en
   pc_en   := hazard.io.pc_en
-  npc     := Mux(dnpc_en, dnpc_t, snpc)
+  npc     := Mux(dnpc_en, dnpc, snpc)
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
@@ -120,14 +119,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.reset <> hazard.io.ex_reg_ctrl.flush
 
-  dnpc_t := Mux(
+  dnpc := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
     ex_reg.out.csr_dnpc,
     Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
   )
 
   npc_add_res := ex_reg.out.imm +
-    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, ex_reg.out.src1, ex_reg.out.pc)
+    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, exe.io.src1, ex_reg.out.pc)
 
   if (pipeline) {
     exe.io.src1 <> MuxLookup(
