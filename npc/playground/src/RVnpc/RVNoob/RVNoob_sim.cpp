@@ -157,7 +157,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, "write pmem ## addr: %llx", waddr & ~0x7ull);
   fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
-  fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
+  fprintf(mtrace_fp, " wmask-> 0x%02x \n", wmask);
 #endif
   for (int i = 0; i < 8; i++) {
     if ((wmask >> i) & 1 == 1) {
