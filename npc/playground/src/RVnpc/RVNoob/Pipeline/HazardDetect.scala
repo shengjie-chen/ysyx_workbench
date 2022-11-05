@@ -47,7 +47,7 @@ class HazardDetect extends Module {
     (io.mem_reg_csr.csr_wen && io.idu_csr.csr_ren && io.idu_csr.csr_raddr === io.mem_reg_csr.csr_waddr) || (io.mem_reg_csr.ecall && io.idu_csr.csr_raddr === 0x341.U) // &&csr_addr === mcause
 
   // Forward
-  val forward1 = RegNext(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U)))
+  val forward1 = RegNext(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U))) // ex_hazard优先级大于mem_hazard
   val forward2 = RegNext(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)))
   io.forward1 := forward1
   io.forward2 := forward2
@@ -65,14 +65,14 @@ class HazardDetect extends Module {
   io.wb_reg_ctrl  := normal_state
   io.pc_en        := 1.B
 
-  def harard_do_0 = { // exe data hazard first do
+  def harard_do_0 = { // if,id stop, ex flush
     io.id_reg_ctrl.en    := 0.B
     io.ex_reg_ctrl.en    := 0.B
     io.ex_reg_ctrl.flush := 1.B
     io.pc_en             := 0.B
   }
 
-  def harard_do_1 = { // exe data hazard second do
+  def harard_do_1 = { // if,id,ex stop, ex flush
     io.id_reg_ctrl.en    := 0.B
     io.ex_reg_ctrl.en    := 0.B
     io.ex_reg_ctrl.flush := 1.B
@@ -86,7 +86,10 @@ class HazardDetect extends Module {
   }.otherwise {
     switch(state) {
       is(sNone) {
-        when(ex_hazard_1_delay || ex_hazard_2_delay || ex_csr_hazard) {
+        when(ex_hazard_1_delay || ex_hazard_2_delay) {
+          harard_do_0
+          state := sNone
+        }.elsewhen(ex_csr_hazard) {
           harard_do_0
           state := sDH1
         }.elsewhen(mem_csr_hazard) {
