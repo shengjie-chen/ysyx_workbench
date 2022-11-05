@@ -187,7 +187,6 @@ void one_clock() {
     tfp->close();
     exit(1);
   }
-
   top->eval();
 #ifdef CONFIG_DUMPVCD
   if (main_time > CONFIG_DUMPSTART)
