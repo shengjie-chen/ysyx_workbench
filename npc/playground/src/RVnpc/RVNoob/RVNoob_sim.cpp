@@ -119,7 +119,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "write serial ## addr: %llx", waddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
-    fprintf(mtrace_fp, " wmask-> 0x%08x \n", wmask);
+    fprintf(mtrace_fp, " wmask-> 0x%02x \n", wmask);
 #endif
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref();
