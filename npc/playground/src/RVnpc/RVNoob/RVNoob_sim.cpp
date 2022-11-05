@@ -326,6 +326,12 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_ITRACE
   fclose(itrace_fp);
 #endif
+#ifdef CONFIG_MTRACE
+  fclose(mtrace_fp);
+#endif
+#ifdef CONFIG_FTRACE
+  fclose(ftrace_fp);
+#endif
 
   free(vmem);
   tfp->close();
