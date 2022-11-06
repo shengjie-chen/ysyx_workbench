@@ -7,6 +7,8 @@ class RegCtrl extends Bundle {
   val en    = Bool()
   val flush = Bool()
 }
+
+// maybe name PipeLineCtrl
 class HazardDetect extends Module {
   val io = IO(new Bundle {
     val idu_rf          = Input(new IdRfCtrlIO)
@@ -17,6 +19,7 @@ class HazardDetect extends Module {
     val mem_reg_rf      = Input(new WbRfCtrlIO)
     val mem_reg_csr     = Input(new WbCsrCtrlIO)
     val dnpc_en         = Input(Bool())
+    val miss            = Input(Bool())
     val id_reg_ctrl     = Output(new RegCtrl)
     val ex_reg_ctrl     = Output(new RegCtrl)
     val mem_reg_ctrl    = Output(new RegCtrl)
@@ -47,8 +50,9 @@ class HazardDetect extends Module {
     (io.mem_reg_csr.csr_wen && io.idu_csr.csr_ren && io.idu_csr.csr_raddr === io.mem_reg_csr.csr_waddr) || (io.mem_reg_csr.ecall && io.idu_csr.csr_raddr === 0x341.U) // &&csr_addr === mcause
 
   // Forward
-  val forward1 = RegNext(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U))) // ex_hazard优先级大于mem_hazard
-  val forward2 = RegNext(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)))
+  val forward1 =
+    RegEnable(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U)), !io.miss) // ex_hazard优先级大于mem_hazard
+  val forward2 = RegEnable(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)), !io.miss)
   io.forward1 := forward1
   io.forward2 := forward2
 
@@ -59,6 +63,13 @@ class HazardDetect extends Module {
     ns.flush := 0.B
     ns
   }
+  val all_delay_state = {
+    val ns = Wire(new RegCtrl)
+    ns.en    := 0.B
+    ns.flush := 0.B
+    ns
+  }
+
   io.id_reg_ctrl  := normal_state
   io.ex_reg_ctrl  := normal_state
   io.mem_reg_ctrl := normal_state
@@ -79,27 +90,35 @@ class HazardDetect extends Module {
     io.pc_en             := 0.B
   }
 
-  when(io.dnpc_en) {
-    io.id_reg_ctrl.flush := 1.B
-    io.ex_reg_ctrl.flush := 1.B
-    state                := sNone
+  when(io.miss) {
+    io.id_reg_ctrl  := all_delay_state
+    io.ex_reg_ctrl  := all_delay_state
+    io.mem_reg_ctrl := all_delay_state
+    io.wb_reg_ctrl  := all_delay_state
+    io.pc_en        := 0.B
   }.otherwise {
-    switch(state) {
-      is(sNone) {
-        when(ex_hazard_1_delay || ex_hazard_2_delay) {
-          harard_do_0
-          state := sNone
-        }.elsewhen(ex_csr_hazard) {
-          harard_do_0
-          state := sDH1
-        }.elsewhen(mem_csr_hazard) {
+    when(io.dnpc_en) {
+      io.id_reg_ctrl.flush := 1.B
+      io.ex_reg_ctrl.flush := 1.B
+      state                := sNone
+    }.otherwise {
+      switch(state) {
+        is(sNone) {
+          when(ex_hazard_1_delay || ex_hazard_2_delay) {
+            harard_do_0
+            state := sNone
+          }.elsewhen(ex_csr_hazard) {
+            harard_do_0
+            state := sDH1
+          }.elsewhen(mem_csr_hazard) {
+            harard_do_1
+            state := sNone
+          }
+        }
+        is(sDH1) {
           harard_do_1
           state := sNone
         }
-      }
-      is(sDH1) {
-        harard_do_1
-        state := sNone
       }
     }
   }

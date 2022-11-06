@@ -3,11 +3,12 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 import Pipeline._
+import RVnpc.RVNoob.Cache.ICache
 
 class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val pc      = Output(UInt(64.W))
-    val inst    = Input(UInt(32.W))
+    val inst    = Output(UInt(32.W))
     val ebreak  = Output(Bool())
     val diff_en = Output(Bool())
     val diff_pc = Output(UInt(64.W))
@@ -21,13 +22,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
   dontTouch(npc)
-  val pc_en = Wire(Bool())
-  val pc    = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
-  val snpc  = Wire(UInt(64.W))
+  val pc_en  = Wire(Bool())
+  val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
+  val snpc   = Wire(UInt(64.W))
+  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val hazard = Module(new HazardDetect)
-  val id_reg = IDreg(pc, io.inst, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
+  val id_reg = IDreg(pc, icache.io.inst_data, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
   val idu    = Module(new IDU)
   val rf     = Module(new RegisterFile)
   val csr    = Module(new CSR)
@@ -99,6 +101,9 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
 
+  icache.io.inst_addr <> pc
+  icache.io.inst_ren  <> 1.B
+
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
 
   hazard.io.idu_rf          <> idu.io.id_rf_ctrl
@@ -109,6 +114,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   hazard.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
   hazard.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
   hazard.io.dnpc_en         <> dnpc_en
+  hazard.io.miss            <> (icache.io.miss && icache.io.inst_ren)
 
   id_reg.reset <> hazard.io.id_reg_ctrl.flush
 

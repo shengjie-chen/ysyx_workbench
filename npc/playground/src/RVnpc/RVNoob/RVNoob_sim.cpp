@@ -181,7 +181,7 @@ void one_clock() {
   vaddr_t pc = top->io_pc;
   top->clock = 0;
   if (in_pmem(top->io_pc)) {
-    top->io_inst = pmem_read(top->io_pc, 4);
+    // top->io_inst = pmem_read(top->io_pc, 4);
   } else {
     printf("error happen!! time %ld read inst addr : %lx\n", main_time, top->io_pc);
     tfp->close();
