@@ -28,11 +28,12 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val hazard = Module(new HazardDetect)
-  val id_reg = IDreg(pc, icache.io.inst_data, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
-  val idu    = Module(new IDU)
-  val rf     = Module(new RegisterFile)
-  val csr    = Module(new CSR)
+  val hazard     = Module(new HazardDetect)
+  val id_reg     = IDreg(pc, icache.io.inst_data, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
+  val idu        = Module(new IDU)
+  val rf         = Module(new RegisterFile)
+  val csr        = Module(new CSR)
+  val cache_miss = Wire(Bool())
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val dnpc        = Wire(UInt(64.W))
@@ -100,11 +101,13 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
+  io.inst        := icache.io.inst_data
 
   icache.io.inst_addr <> pc
   icache.io.inst_ren  <> 1.B
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+  cache_miss := icache.io.miss && icache.io.inst_ren
 
   hazard.io.idu_rf          <> idu.io.id_rf_ctrl
   hazard.io.idu_csr         <> idu.io.id_csr_ctrl
@@ -114,7 +117,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   hazard.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
   hazard.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
   hazard.io.dnpc_en         <> dnpc_en
-  hazard.io.miss            <> (icache.io.miss && icache.io.inst_ren)
+  hazard.io.miss            <> cache_miss
 
   id_reg.reset <> hazard.io.id_reg_ctrl.flush
 
@@ -187,7 +190,8 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   // ********************************** Difftest **********************************
   if (pipeline) {
     // wb 写完成的周期
-    io.diff_en := ShiftRegister(wb_reg.in.reg_en, 2, 1.B) && (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U)
+    io.diff_en := ShiftRegister(wb_reg.in.reg_en, 2, 1.B) &&
+    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && !cache_miss
     when(wb_reg.out.pc =/= 0.U) {
       io.diff_pc := wb_reg.out.pc
     }.elsewhen(ShiftRegister(dnpc_en, 3, 1.B)) {
