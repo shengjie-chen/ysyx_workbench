@@ -3,7 +3,7 @@ package RVnpc.RVNoob.Cache
 import RVnpc.RVNoob.{DpiPmem, RVNoobConfig}
 import chisel3._
 import chisel3.util._
-import scala.math
+import scala.math.pow
 
 class TagArrays(tagWidth: Int) extends Bundle {
   val dirty_bit = Bool()
@@ -13,21 +13,26 @@ class TagArrays(tagWidth: Int) extends Bundle {
 
 class ICache(
   val addrWidth:     Int = 32,
-  val cacheSize:     Int = 4 * 2 ^ 10,
+  val cacheSize:     Int = 4 * pow(2,10).toInt,
   val cacheLineSize: Int = 32,
   val ways:          Int = 4,
   val axiDataWidth:  Int = 64,
   val missDelay:     Int = 4)
     extends Module
     with RVNoobConfig {
+//  println(s"ways = $ways")
+//  println(s"cacheSize = $cacheSize")
   //
   val cacheLineNum:   Int = cacheSize / cacheLineSize // 128
   val sets:           Int = cacheLineNum / ways // 32
   val wordNumPerLine: Int = cacheLineSize / (inst_w / 8) // 8
+//  println(s"cacheLineNum = $cacheLineNum")
+
   // Width
   val byteOffsetWidth: Int = 2
   val wordOffsetWidth: Int = log2Ceil(wordNumPerLine) // 3
-  val indexWidth:      Int = 5 //log2Ceil(sets) //
+//  println(s"sets = $sets")
+  val indexWidth:      Int = log2Ceil(sets) //log2Ceil(sets) //5
   val tagWidth:        Int = addrWidth - indexWidth - wordOffsetWidth - byteOffsetWidth // 22
   val io = IO(new Bundle {
     val inst_addr = Input(UInt(addrWidth.W))
@@ -39,6 +44,9 @@ class ICache(
 
   val tag_arrays  = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
   val data_arrays = Reg(Vec(ways, Vec(sets, Vec(wordNumPerLine, UInt(32.W)))))
+  dontTouch(tag_arrays)
+  dontTouch(data_arrays)
+
   //  when(reset.asBool()){
   //    for (i <- 0 to ways)
   //
@@ -50,6 +58,7 @@ class ICache(
     io.inst_addr(addrWidth - tagWidth - indexWidth - 1, addrWidth - tagWidth - indexWidth - wordOffsetWidth)
 
   val hit = Wire(Vec(ways, Bool()))
+  dontTouch(hit)
   hit := 0.B.asTypeOf(hit)
   when(io.inst_ren) {
     for (w <- 0 until ways) {
