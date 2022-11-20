@@ -104,7 +104,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   io.inst        := icache.io.inst_data
 
   icache.io.inst_addr <> pc
-  icache.io.inst_ren  <> 1.B
+  icache.io.inst_ren  <> !reset.asBool()
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss && icache.io.inst_ren

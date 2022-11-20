@@ -71,7 +71,7 @@ class ICache(
   io.inst_data := data_arrays(hit_way)(inst_addr_index)(inst_addr_wordoffset)
 
   val miss = Wire(Bool())
-  miss    := hit.asUInt() === 0.U
+  miss    := hit.asUInt() === 0.U && io.inst_ren
   io.miss := miss
   val miss_delay_cnt = RegInit(0.U(log2Ceil(missDelay).W))
   when(miss) {
