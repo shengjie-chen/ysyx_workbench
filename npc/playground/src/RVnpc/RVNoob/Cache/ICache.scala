@@ -42,7 +42,7 @@ class ICache(
     val miss      = Output(Bool())
     val inst_data = Output(UInt(inst_w.W))
   })
-  assert((io.inst_addr >= 0x80000000L.U) && (io.inst_addr < 0x88000000L.U))
+  assert(!io.inst_ren || (io.inst_addr >= 0x80000000L.U) && (io.inst_addr < 0x88000000L.U))
 
   val tag_arrays  = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
   val data_arrays = Reg(Vec(ways, Vec(sets, Vec(wordNumPerLine, UInt(32.W)))))
