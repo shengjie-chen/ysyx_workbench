@@ -7,7 +7,7 @@
 // #define CONFIG_FTRACE
 // #define CONFIG_MTRACE
 
-#define CONFIG_DIFFTEST
+// #define CONFIG_DIFFTEST
 #define CONFIG_PIPELINE
 
 // 1M --> 1.6GB
