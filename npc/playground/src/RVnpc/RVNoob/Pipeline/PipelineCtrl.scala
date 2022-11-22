@@ -9,7 +9,7 @@ class RegCtrl extends Bundle {
 }
 
 // maybe name PipeLineCtrl
-class HazardDetect extends Module {
+class PipelineCtrl extends Module {
   val io = IO(new Bundle {
     val idu_rf          = Input(new IdRfCtrlIO)
     val idu_csr         = Input(new IdCsrCtrlIO)
@@ -125,7 +125,7 @@ class HazardDetect extends Module {
 
 }
 
-object HazardDetect {
+object PipelineCtrl {
   def apply(
     idu_rf:      IdRfCtrlIO,
     idu_csr:     IdCsrCtrlIO,
@@ -134,8 +134,8 @@ object HazardDetect {
     mem_reg_rf:  WbRfCtrlIO,
     mem_reg_csr: WbCsrCtrlIO,
     dnpc_en:     Bool
-  ): HazardDetect = {
-    val hazard = Module(new HazardDetect)
+  ): PipelineCtrl = {
+    val hazard = Module(new PipelineCtrl)
     hazard.io.idu_rf      <> idu_rf
     hazard.io.idu_csr     <> idu_csr
     hazard.io.ex_reg_rf   <> ex_reg_rf
@@ -148,10 +148,10 @@ object HazardDetect {
   }
 }
 
-object HazardDetectGen extends App {
+object PipelineCtrlGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(
       Array("--target-dir", "./build/test"),
-      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new HazardDetect()))
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new PipelineCtrl()))
     )
 }

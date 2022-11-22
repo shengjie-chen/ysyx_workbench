@@ -28,8 +28,8 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val hazard     = Module(new HazardDetect)
-  val id_reg     = IDreg(pc, icache.io.inst_data, snpc, hazard.io.id_reg_ctrl.en, pipelineBypass)
+  val ppl_ctrl   = Module(new PipelineCtrl)
+  val id_reg     = IDreg(pc, icache.io.inst_data, snpc, ppl_ctrl.io.id_reg_ctrl.en, pipelineBypass)
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
@@ -51,7 +51,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     idu.io.wb_rf_ctrl,
     idu.io.wb_csr_ctrl,
     idu.io.dnpc_ctrl,
-    hazard.io.ex_reg_ctrl.en,
+    ppl_ctrl.io.ex_reg_ctrl.en,
     pipelineBypass
   )
   val exe      = Module(new EXE)
@@ -70,7 +70,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     ex_reg.out.mem_ctrl,
     ex_reg.out.wb_rf_ctrl,
     ex_reg.out.wb_csr_ctrl,
-    hazard.io.mem_reg_ctrl.en,
+    ppl_ctrl.io.mem_reg_ctrl.en,
     pipelineBypass
   )
   val datam      = Module(new DATAM)
@@ -86,7 +86,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     mem_reg.out.mem_ctrl.r_pmem,
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
-    hazard.io.wb_reg_ctrl.en,
+    ppl_ctrl.io.wb_reg_ctrl.en,
     pipelineBypass
   )
   val not_csr_wdata = Wire(UInt(xlen.W))
@@ -96,7 +96,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc    := pc + 4.U
   dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || exe.io.B_en
-  pc_en   := hazard.io.pc_en
+  pc_en   := ppl_ctrl.io.pc_en
   npc     := Mux(dnpc_en, dnpc, snpc)
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
@@ -107,19 +107,19 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   icache.io.inst_ren  <> !reset.asBool()
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  cache_miss := icache.io.miss && icache.io.inst_ren
+  cache_miss := icache.io.miss
 
-  hazard.io.idu_rf          <> idu.io.id_rf_ctrl
-  hazard.io.idu_csr         <> idu.io.id_csr_ctrl
-  hazard.io.ex_reg_rf       <> ex_reg.out.wb_rf_ctrl
-  hazard.io.ex_reg_csr      <> ex_reg.out.wb_csr_ctrl
-  hazard.io.ex_reg_mem_ctrl <> ex_reg.out.mem_ctrl
-  hazard.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
-  hazard.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
-  hazard.io.dnpc_en         <> dnpc_en
-  hazard.io.miss            <> cache_miss
+  ppl_ctrl.io.idu_rf          <> idu.io.id_rf_ctrl
+  ppl_ctrl.io.idu_csr         <> idu.io.id_csr_ctrl
+  ppl_ctrl.io.ex_reg_rf       <> ex_reg.out.wb_rf_ctrl
+  ppl_ctrl.io.ex_reg_csr      <> ex_reg.out.wb_csr_ctrl
+  ppl_ctrl.io.ex_reg_mem_ctrl <> ex_reg.out.mem_ctrl
+  ppl_ctrl.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
+  ppl_ctrl.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
+  ppl_ctrl.io.dnpc_en         <> dnpc_en
+  ppl_ctrl.io.miss            <> cache_miss
 
-  id_reg.reset <> hazard.io.id_reg_ctrl.flush
+  id_reg.reset <> ppl_ctrl.io.id_reg_ctrl.flush
 
   idu.io.inst <> id_reg.out.inst
 
@@ -128,7 +128,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  ex_reg.reset <> hazard.io.ex_reg_ctrl.flush
+  ex_reg.reset <> ppl_ctrl.io.ex_reg_ctrl.flush
 
   dnpc := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
@@ -141,12 +141,12 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   if (pipeline) {
     exe_src1 := MuxLookup(
-      hazard.io.forward1,
+      ppl_ctrl.io.forward1,
       ex_reg.out.src1,
       Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
     )
     exe_src2 := MuxLookup(
-      hazard.io.forward2,
+      ppl_ctrl.io.forward2,
       ex_reg.out.src2,
       Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
     )
@@ -163,7 +163,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   exe.io.ctrl <> ex_reg.out.exe_ctrl
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  mem_reg.reset <> hazard.io.mem_reg_ctrl.flush
+  mem_reg.reset <> ppl_ctrl.io.mem_reg_ctrl.flush
 
   datam.io.mem_ctrl  <> mem_reg.out.mem_ctrl
   datam.io.wdata     <> mem_reg.out.src2
@@ -173,7 +173,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   judge_load.io.mem_data      <> datam.io.rdata
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  wb_reg.reset  <> hazard.io.wb_reg_ctrl.flush
+  wb_reg.reset  <> ppl_ctrl.io.wb_reg_ctrl.flush
   not_csr_wdata := Mux(wb_reg.out.r_pmem, wb_reg.out.mem_data, wb_reg.out.alu_res)
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
