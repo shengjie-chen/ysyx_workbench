@@ -188,12 +188,12 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   csr.io.csr_wdata <> wb_reg.out.alu_res
 
   // ********************************** Difftest **********************************
-  val cache_miss_last = !cache_miss && RegNext(cache_miss)
+  val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
   val cache_miss_first = cache_miss && !RegNext(cache_miss)
 
   if (pipeline) {
     // wb 写完成的周期
-    io.diff_en := (ShiftRegister(wb_reg.in.reg_en, 2, 1.B) || cache_miss_first) &&
+    io.diff_en := (ShiftRegister(wb_reg.in.reg_en, 2, 1.B) || RegNext(cache_miss_last_next)) &&
       (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
     when(wb_reg.out.pc =/= 0.U) {
       io.diff_pc := wb_reg.out.pc
