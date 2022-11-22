@@ -54,6 +54,9 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.r_pmem      := RegEnable(in.r_pmem, 0.B, in.reg_en)
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
+
+    out.valid := PipelineValid(reset.asBool(), in.reg_en)
+
   }
 }
 

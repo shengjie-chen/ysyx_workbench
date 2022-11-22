@@ -63,10 +63,16 @@ class PipelineCtrl extends Module {
     ns.flush := 0.B
     ns
   }
-  val all_delay_state = {
+  val delay_state = {
     val ns = Wire(new RegCtrl)
     ns.en    := 0.B
     ns.flush := 0.B
+    ns
+  }
+  val flush_state = {
+    val ns = Wire(new RegCtrl)
+    ns.en    := 0.B
+    ns.flush := 1.B
     ns
   }
 
@@ -76,48 +82,47 @@ class PipelineCtrl extends Module {
   io.wb_reg_ctrl  := normal_state
   io.pc_en        := 1.B
 
-  def harard_do_0 = { // if,id stop, ex flush
-    io.id_reg_ctrl.en    := 0.B
-    io.ex_reg_ctrl.en    := 0.B
-    io.ex_reg_ctrl.flush := 1.B
-    io.pc_en             := 0.B
+  def if_id_delay_ex_flush = { // if,id stop, ex flush
+    io.id_reg_ctrl := delay_state
+    io.ex_reg_ctrl := flush_state
+    io.pc_en       := 0.B
   }
 
   def harard_do_1 = { // if,id,ex stop, ex flush
-    io.id_reg_ctrl.en    := 0.B
-    io.ex_reg_ctrl.en    := 0.B
-    io.ex_reg_ctrl.flush := 1.B
-    io.pc_en             := 0.B
+    io.id_reg_ctrl := delay_state
+    io.ex_reg_ctrl := flush_state
+    io.pc_en       := 0.B
   }
 
   when(io.miss) {
-    io.id_reg_ctrl  := all_delay_state
-    io.ex_reg_ctrl  := all_delay_state
-    io.mem_reg_ctrl := all_delay_state
-    io.wb_reg_ctrl  := all_delay_state
+    io.id_reg_ctrl  := delay_state
+    io.ex_reg_ctrl  := delay_state
+    io.mem_reg_ctrl := delay_state
+    io.wb_reg_ctrl  := delay_state
     io.pc_en        := 0.B
   }.otherwise {
     when(io.dnpc_en) {
-      io.id_reg_ctrl.flush := 1.B
-      io.ex_reg_ctrl.flush := 1.B
-      state                := sNone
+      io.id_reg_ctrl := flush_state
+      io.ex_reg_ctrl := flush_state
+      state          := sNone
     }.otherwise {
       switch(state) {
         is(sNone) {
           when(ex_hazard_1_delay || ex_hazard_2_delay) {
-            harard_do_0
+            if_id_delay_ex_flush
             state := sNone
           }.elsewhen(ex_csr_hazard) {
-            harard_do_0
+            if_id_delay_ex_flush
             state := sDH1
           }.elsewhen(mem_csr_hazard) {
-            harard_do_1
+            if_id_delay_ex_flush
             state := sNone
           }
         }
         is(sDH1) {
-          harard_do_1
-          state := sNone
+          if_id_delay_ex_flush
+          io.mem_reg_ctrl := flush_state
+          state           := sNone
         }
       }
     }

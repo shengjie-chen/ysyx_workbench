@@ -16,4 +16,51 @@ class PipelineInIO extends PipelineIO {
   val reg_en = Bool()
 }
 
-class PipelineOutIO extends PipelineIO {}
+class PipelineOutIO extends PipelineIO {
+  val valid = Bool()
+}
+
+class PipelineValid extends Module {
+  val io = IO(new Bundle {
+    val reg_en = Input(Bool())
+    val valid  = Output(Bool())
+  })
+
+  val sValid :: sInvalid :: sDelay :: Nil = Enum(3)
+  val state                               = RegInit(sInvalid)
+
+  io.valid := state =/= sInvalid
+
+  switch(state) {
+    is(sValid) {
+      when(!io.reg_en) {
+        state := sDelay
+      }
+    }
+    is(sDelay) {
+      when(io.reg_en) {
+        state := sValid
+      }.otherwise {
+        state := sInvalid
+      }
+    }
+    is(sInvalid) {
+      when(io.reg_en) {
+        state := sValid
+      }
+    }
+  }
+
+}
+
+object PipelineValid {
+  def apply(
+    flush:  Bool,
+    reg_en: Bool
+  ): Bool = {
+    val ppl_valid = Module(new PipelineValid)
+    ppl_valid.reset     <> flush
+    ppl_valid.io.reg_en <> reg_en
+    ppl_valid.io.valid
+  }
+}
