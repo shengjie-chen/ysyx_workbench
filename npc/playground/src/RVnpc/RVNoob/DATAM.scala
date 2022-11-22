@@ -5,6 +5,7 @@ class DATAM extends Module with RVNoobConfig {
   val io = IO(new Bundle {
 //    val inst_addr = Input(UInt(xlen.W))
 //    val inst = Output(UInt(inst_w.W))
+    val valid     = Input(Bool())
     val data_addr = Input(UInt(xlen.W))
     val wdata     = Input(UInt(xlen.W))
     val rdata     = Output(UInt(xlen.W))
@@ -35,8 +36,8 @@ class DATAM extends Module with RVNoobConfig {
   dpi_pmem.io.wmask  <> wmask
   dpi_pmem.io.rdata  <> rdata
   dpi_pmem.io.wdata  <> wdata
-  dpi_pmem.io.r_pmem <> io.mem_ctrl.r_pmem
-  dpi_pmem.io.w_pmem <> io.mem_ctrl.w_pmem
+  dpi_pmem.io.r_pmem <> (io.mem_ctrl.r_pmem && io.valid)
+  dpi_pmem.io.w_pmem <> (io.mem_ctrl.w_pmem && io.valid)
 
   shift    := io.data_addr
   io.rdata := (rdata >> (shift * 8.U))
