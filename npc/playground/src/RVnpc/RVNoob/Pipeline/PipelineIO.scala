@@ -29,7 +29,7 @@ class PipelineValid extends Module {
   val sValid :: sInvalid :: sDelay :: Nil = Enum(3)
   val state                               = RegInit(sInvalid)
 
-  io.valid := state =/= sInvalid
+  io.valid := state === sValid
 
   switch(state) {
     is(sValid) {
