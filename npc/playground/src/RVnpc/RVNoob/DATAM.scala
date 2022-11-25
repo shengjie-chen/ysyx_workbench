@@ -17,6 +17,30 @@ class DATAM extends Module with RVNoobConfig {
   val rdata = Wire(UInt(xlen.W))
   val wdata = Wire(UInt(xlen.W))
   val wmask = Wire(UInt(8.W))
+
+  shift    := io.data_addr
+  io.rdata := (rdata >> (shift * 8.U))
+  wdata    := (io.wdata << (shift * 8.U))
+  wmask := MuxCase(
+    "b11111111".U,
+    Array(
+      (io.mem_ctrl.zero_ex_op === 3.U) -> "b11111111".U,        // write double word
+      (io.mem_ctrl.zero_ex_op === 2.U) -> ("b1111".U << shift), // write word
+      (io.mem_ctrl.zero_ex_op === 1.U) -> ("b11".U << shift),   // write half word
+      (io.mem_ctrl.zero_ex_op === 0.U) -> ("b1".U << shift)     // write byte
+    )
+  )
+
+  val dpi_pmem = Module(new DpiPmem)
+  dpi_pmem.io.clk    <> clock
+  dpi_pmem.io.raddr  <> daddr
+  dpi_pmem.io.waddr  <> daddr
+  dpi_pmem.io.wmask  <> wmask
+  dpi_pmem.io.rdata  <> rdata
+  dpi_pmem.io.wdata  <> wdata
+  dpi_pmem.io.r_pmem <> io.mem_ctrl.r_pmem
+  dpi_pmem.io.w_pmem <> (io.mem_ctrl.w_pmem && io.valid)
+
   // assert
   when(io.mem_ctrl.r_pmem || io.mem_ctrl.w_pmem) {
     when(io.mem_ctrl.zero_ex_op === 3.U) {
@@ -29,28 +53,6 @@ class DATAM extends Module with RVNoobConfig {
       assert(shift < 8.U)
     }
   }
-  val dpi_pmem = Module(new DpiPmem)
-  dpi_pmem.io.clk    <> clock
-  dpi_pmem.io.raddr  <> daddr
-  dpi_pmem.io.waddr  <> daddr
-  dpi_pmem.io.wmask  <> wmask
-  dpi_pmem.io.rdata  <> rdata
-  dpi_pmem.io.wdata  <> wdata
-  dpi_pmem.io.r_pmem <> io.mem_ctrl.r_pmem
-  dpi_pmem.io.w_pmem <> (io.mem_ctrl.w_pmem && io.valid)
-
-  shift    := io.data_addr
-  io.rdata := (rdata >> (shift * 8.U))
-  wdata    := (io.wdata << (shift * 8.U))
-  wmask := MuxCase(
-    "b11111111".U,
-    Array(
-      (io.mem_ctrl.zero_ex_op === 3.U) -> "b11111111".U,
-      (io.mem_ctrl.zero_ex_op === 2.U) -> ("b1111".U << shift),
-      (io.mem_ctrl.zero_ex_op === 1.U) -> ("b11".U << shift),
-      (io.mem_ctrl.zero_ex_op === 0.U) -> ("b1".U << shift)
-    )
-  )
 }
 
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {

@@ -114,6 +114,8 @@ class ICache(
     when(miss_delay_cnt === (missDelay - 1).U) {
       tag_arrays(replace_way(inst_addr_index))(inst_addr_index).valid := 1.B
       tag_arrays(replace_way(inst_addr_index))(inst_addr_index).tag   := inst_addr_tag
+
+      replace_way(inst_addr_index) := replace_way(inst_addr_index) + 1.U
     }
   }
 
