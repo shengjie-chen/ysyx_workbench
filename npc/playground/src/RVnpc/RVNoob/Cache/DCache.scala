@@ -32,8 +32,8 @@ class DCache(
     val wdata      = Input(UInt(xlen.W))
     val ren        = Input(Bool())
     val wen        = Input(Bool())
-    val valid      = Input(Bool())
     val zero_ex_op = Input(UInt(2.W))
+    val valid      = Input(Bool())
 
     val miss  = Output(Bool())
     val rdata = Output(UInt(xlen.W))
@@ -41,7 +41,6 @@ class DCache(
   //  println(s"sets = $sets")
   // 主要mem
   val tag_arrays = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
-  assert(!io.ren || (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U))
   val data_arrays = Reg(Vec(ways, Vec(sets, Vec(wordNumPerLine, UInt(32.W)))))
   // mmio 控制信号
   val inpmem = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
@@ -122,14 +121,14 @@ class DCache(
     }
   }
   val pmem_waddr = Wire(UInt(addrWidth.W))
-  val wdata      = Wire(UInt(xlen.W))
-  val wmask      = Wire(UInt(8.W))
+  val pmem_wdata = Wire(UInt(xlen.W))
+  val pmem_wmask = Wire(UInt(8.W))
   val dpi_pmem   = Module(new DpiPmem)
   when(mmio_write && io.valid) {
     pmem_waddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
     shift      := io.addr
-    wdata      := (io.wdata << (shift * 8.U))
-    wmask := MuxCase(
+    pmem_wdata := (io.wdata << (shift * 8.U))
+    pmem_wmask := MuxCase(
       "b11111111".U,
       Array(
         (io.zero_ex_op === 3.U) -> "b11111111".U, // write double word
@@ -146,19 +145,19 @@ class DCache(
       0.U((byteOffsetWidth + 1).W)
     )
     shift := 0.U
-    wdata := Cat(
+    pmem_wdata := Cat(
       data_arrays(replace_way(addr_index))(addr_index)(miss_delay_cnt * wordNumPerBurst.U + 1.U),
       data_arrays(replace_way(addr_index))(addr_index)(miss_delay_cnt * wordNumPerBurst.U)
     )
-    wmask := "b11111111".U
+    pmem_wmask := "b11111111".U
   }
 
   dpi_pmem.io.clk    <> clock
   dpi_pmem.io.raddr  <> pmem_raddr
   dpi_pmem.io.waddr  <> pmem_waddr
-  dpi_pmem.io.wmask  <> wmask
+  dpi_pmem.io.wmask  <> pmem_wmask
   dpi_pmem.io.rdata  <> pmem_rdata
-  dpi_pmem.io.wdata  <> wdata
+  dpi_pmem.io.wdata  <> pmem_wdata
   dpi_pmem.io.r_pmem <> (miss || mmio_read)
   dpi_pmem.io.w_pmem <> ((mmio_write && io.valid) || replace_dirty)
 
@@ -177,7 +176,7 @@ class DCache(
     }
     when(io.zero_ex_op === 3.U) {
       data_arrays(hit_way)(addr_index)(addr_wordoffset)       := io.wdata(31, 0)
-      data_arrays(hit_way)(addr_index)(addr_wordoffset + 1.U) := io.wdata(64, 32)
+      data_arrays(hit_way)(addr_index)(addr_wordoffset + 1.U) := io.wdata(63, 32)
     }.elsewhen(io.zero_ex_op === 2.U) {
       data_arrays(hit_way)(addr_index)(addr_wordoffset) := io.wdata(31, 0)
     }.elsewhen(io.zero_ex_op === 1.U) {
@@ -191,4 +190,12 @@ class DCache(
     tag_arrays(hit_way)(addr_index).dirty_bit := 1.B
   }
 
+}
+
+object DCacheGen extends App {
+  (new chisel3.stage.ChiselStage)
+    .execute(
+      Array("--target-dir", "./build/test"),
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new DCache()))
+    )
 }

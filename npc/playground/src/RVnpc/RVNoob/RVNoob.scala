@@ -3,7 +3,7 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 import Pipeline._
-import RVnpc.RVNoob.Cache.ICache
+import RVnpc.RVNoob.Cache.{DCache, ICache}
 
 class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
@@ -73,7 +73,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     ppl_ctrl.io.mem_reg_ctrl.en,
     pipelineBypass
   )
-  val datam      = Module(new DATAM)
+  val dcache     = Module(new DCache)
   val judge_load = Module(new JudgeLoad)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
@@ -107,7 +107,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   icache.io.inst_ren  <> !reset.asBool()
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  cache_miss := icache.io.miss
+  cache_miss := icache.io.miss || dcache.io.miss
 
   ppl_ctrl.io.idu_rf          <> idu.io.id_rf_ctrl
   ppl_ctrl.io.idu_csr         <> idu.io.id_csr_ctrl
@@ -165,13 +165,16 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   mem_reg.reset <> ppl_ctrl.io.mem_reg_ctrl.flush
 
-  datam.io.mem_ctrl  <> mem_reg.out.mem_ctrl
-  datam.io.wdata     <> mem_reg.out.src2
-  datam.io.data_addr <> mem_reg.out.mem_addr
-  datam.io.valid     <> mem_reg.out.valid
+  dcache.io.addr  <> mem_reg.out.mem_addr
+  dcache.io.wdata <> mem_reg.out.src2
+
+  dcache.io.ren        <> mem_reg.out.mem_ctrl.r_pmem
+  dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
+  dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
+  dcache.io.valid      <> mem_reg.out.valid
 
   judge_load.io.judge_load_op <> mem_reg.out.mem_ctrl.judge_load_op
-  judge_load.io.mem_data      <> datam.io.rdata
+  judge_load.io.mem_data      <> dcache.io.rdata
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset  <> ppl_ctrl.io.wb_reg_ctrl.flush
