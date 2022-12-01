@@ -221,7 +221,7 @@ class DCache(
     Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
   )
   when(miss && replace_dirty) {
-    replace_cnt := replace_cnt + 1
+    replace_cnt := replace_cnt + 1.U
     when(replace_cnt === 0.U) {
       replace_addr  := Cat(replace_tag, addr_index, addr_offset)
       replace_valid := 1.B
