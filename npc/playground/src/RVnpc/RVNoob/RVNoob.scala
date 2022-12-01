@@ -8,7 +8,6 @@ import RVnpc.RVNoob.Cache.{DCache, ICache}
 class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val pc      = Output(UInt(64.W))
-    val inst    = Output(UInt(32.W))
     val ebreak  = Output(Bool())
     val diff_en = Output(Bool())
     val diff_pc = Output(UInt(64.W))
@@ -102,7 +101,6 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
-  io.inst        := icache.io.rdata
 
   icache.io.addr <> pc
   icache.io.ren  <> !reset.asBool()
