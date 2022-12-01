@@ -121,7 +121,7 @@ class DCache(
   data_wen := (!replace_dirty && !hit) || (hit && io.wen)
   // BWEN
   val data_shift = Mux(!replace_dirty && !hit, pmem_read_ok_addr(3, 0), addr_offset(3, 0)) << 3
-  val bwen_temp  = Cat( 0xffffffffffffffffL.S(64.W).asUInt(),0.U(64.W))
+  val bwen_temp  = Cat(0xffffffffffffffffL.S(64.W).asUInt(), 0.U(64.W))
   data_bwen := MuxCase(
     0.U,
     Array(
@@ -309,7 +309,7 @@ object DCache {
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
-      cache.io.zero_ex_op := 2.U
+      cache.io.zero_ex_op := 3.U
       cache.io.valid      := 1.B
     }
     cache
