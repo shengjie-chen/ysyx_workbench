@@ -138,7 +138,7 @@ class DCache(
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
     data_arrays(i).CLK  <> clock
-    data_arrays(i).CEN  <> data_cen(i)
+    data_arrays(i).CEN  :=  data_cen(i)
     data_arrays(i).WEN  <> data_wen
     data_arrays(i).BWEN <> data_bwen
     data_arrays(i).A    <> data_addr
