@@ -120,15 +120,15 @@ class DCache(
   // WEN
   data_wen := (!replace_dirty && !hit) || (hit && io.wen)
   // BWEN
-  val data_shift = Mux(!replace_dirty && !hit, pmem_read_ok_addr(3, 0), addr_offset(3, 0)) << 3
-  val bwen_temp  = Cat(0xffffffffffffffffL.S(64.W).asUInt(), 0.U(64.W))
+  val data_shift = (Mux(!replace_dirty && !hit, pmem_read_ok_addr(3, 0), addr_offset(3, 0)) << 3).asUInt()
+  val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
   data_bwen := MuxCase(
     0.U,
     Array(
-      (io.zero_ex_op === 3.U) -> (bwen_temp << data_shift), // write double word
-      (io.zero_ex_op === 2.U) -> (~0xffffffffL.U(128.W) << data_shift), // write word
-      (io.zero_ex_op === 1.U) -> (~0xffffL.U(128.W) << data_shift), // write half word
-      (io.zero_ex_op === 0.U) -> (~0xffL.U(128.W) << data_shift) // write byte
+      (io.zero_ex_op === 3.U) -> (~(bwen_temp << data_shift)), // write double word
+      (io.zero_ex_op === 2.U) -> (~(0xffffffffL.U(128.W) << data_shift)), // write word
+      (io.zero_ex_op === 1.U) -> (~(0xffffL.U(128.W) << data_shift)), // write half word
+      (io.zero_ex_op === 0.U) -> (~(0xffL.U(128.W) << data_shift)) // write byte
     )
   )
   // A
