@@ -82,7 +82,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     mem_reg.out.src2,
     mem_reg.out.alu_res,
     dcache.io.rdata,
-    mem_reg.out.mem_ctrl.r_pmem,
+    mem_reg.out.mem_ctrl,
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.wb_reg_ctrl.en,
@@ -175,9 +175,9 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> ppl_ctrl.io.wb_reg_ctrl.flush
-  judge_load.io.judge_load_op <> wb_reg.out.judge_load_op
+  judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
-  not_csr_wdata               := Mux(wb_reg.out.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
+  not_csr_wdata               := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
     wb_reg.out.src2,

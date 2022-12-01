@@ -5,12 +5,10 @@ import chisel3._
 import chisel3.util._
 
 trait WBregSignal extends RVNoobConfig {
-  val src2          = UInt(xlen.W)
-  val alu_res       = UInt(xlen.W)
-  val mem_data      = UInt(xlen.W)
-  val r_pmem        = Bool()
-  val judge_load_op = UInt(jdgl_op_w.W)
-
+  val src2        = UInt(xlen.W)
+  val alu_res     = UInt(xlen.W)
+  val mem_data    = UInt(xlen.W)
+  val mem_ctrl    = new MemCtrlIO
   val wb_rf_ctrl  = new WbRfCtrlIO
   val wb_csr_ctrl = new WbCsrCtrlIO
 
@@ -41,20 +39,18 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.src2        := in.src2
     out.alu_res     := in.alu_res
     out.mem_data    := in.mem_data
-    out.r_pmem      := in.r_pmem
+    out.mem_ctrl    := in.mem_ctrl
     out.wb_rf_ctrl  := in.wb_rf_ctrl
     out.wb_csr_ctrl := in.wb_csr_ctrl
 
 //    out.valid := 1.B
   } else {
-    out.pc            := RegEnable(in.pc, 0.U, in.reg_en)
-    out.inst          := RegEnable(in.inst, 0.U, in.reg_en)
-    out.src2          := RegEnable(in.src2, 0.U, in.reg_en)
-    out.alu_res       := RegEnable(in.alu_res, 0.U, in.reg_en)
-    out.mem_data      := Mux(reset.asBool(), 0.U, in.mem_data)
-    out.r_pmem        := RegEnable(in.r_pmem, 0.B, in.reg_en)
-    out.judge_load_op := RegEnable(in.judge_load_op, 0.B, in.reg_en)
-
+    out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
+    out.inst        := RegEnable(in.inst, 0.U, in.reg_en)
+    out.src2        := RegEnable(in.src2, 0.U, in.reg_en)
+    out.alu_res     := RegEnable(in.alu_res, 0.U, in.reg_en)
+    out.mem_data    := Mux(reset.asBool(), 0.U, in.mem_data)
+    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.B, in.reg_en)
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
@@ -70,7 +66,7 @@ object WBreg {
     src2:        UInt,
     alu_res:     UInt,
     mem_data:    UInt,
-    r_pmem:      UInt,
+    mem_ctrl:    MemCtrlIO,
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
     reg_en:      Bool,
@@ -82,7 +78,7 @@ object WBreg {
     wb_reg.in.src2        <> src2
     wb_reg.in.alu_res     <> alu_res
     wb_reg.in.mem_data    <> mem_data
-    wb_reg.in.r_pmem      <> r_pmem
+    wb_reg.in.mem_ctrl    <> mem_ctrl
     wb_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
     wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
