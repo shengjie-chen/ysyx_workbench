@@ -37,12 +37,12 @@ class ICache(
   //  println(s"sets = $sets")
 
   val io = IO(new Bundle {
-    val inst_addr = Input(UInt(addrWidth.W))
-    val inst_ren  = Input(Bool())
-    val miss      = Output(Bool())
-    val inst_data = Output(UInt(inst_w.W))
+    val addr  = Input(UInt(addrWidth.W))
+    val ren   = Input(Bool())
+    val miss  = Output(Bool())
+    val rdata = Output(UInt(inst_w.W))
   })
-  assert(!io.inst_ren || (io.inst_addr >= 0x80000000L.U) && (io.inst_addr < 0x88000000L.U))
+  assert(!io.ren || (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U))
 
   val tag_arrays  = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
   val data_arrays = Reg(Vec(ways, Vec(sets, Vec(wordNumPerLine, UInt(32.W)))))
@@ -54,24 +54,24 @@ class ICache(
   //
   //  }
 
-  val inst_addr_tag   = io.inst_addr(addrWidth - 1, addrWidth - tagWidth)
-  val inst_addr_index = io.inst_addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
+  val inst_addr_tag   = io.addr(addrWidth - 1, addrWidth - tagWidth)
+  val inst_addr_index = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
   val inst_addr_wordoffset =
-    io.inst_addr(addrWidth - tagWidth - indexWidth - 1, addrWidth - tagWidth - indexWidth - wordOffsetWidth)
+    io.addr(addrWidth - tagWidth - indexWidth - 1, addrWidth - tagWidth - indexWidth - wordOffsetWidth)
 
   val hit = Wire(Vec(ways, Bool()))
 //  dontTouch(hit)
   hit := 0.B.asTypeOf(hit)
-  when(io.inst_ren) {
+  when(io.ren) {
     for (w <- 0 until ways) {
       hit(w) := (tag_arrays(w)(inst_addr_index).tag === inst_addr_tag) && tag_arrays(w)(inst_addr_index).valid
     }
   }
   val hit_way = OHToUInt(hit)
-  io.inst_data := data_arrays(hit_way)(inst_addr_index)(inst_addr_wordoffset)
+  io.rdata := RegNext(data_arrays(hit_way)(inst_addr_index)(inst_addr_wordoffset))
 
   val miss = Wire(Bool())
-  miss    := hit.asUInt() === 0.U && io.inst_ren
+  miss    := hit.asUInt() === 0.U && io.ren
   io.miss := miss
   val miss_delay_cnt = RegInit(0.U(log2Ceil(missDelay).W))
   when(miss) {
