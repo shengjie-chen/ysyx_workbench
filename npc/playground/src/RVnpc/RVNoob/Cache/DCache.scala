@@ -38,7 +38,7 @@ class DCache(
   // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
   val data_arrays = VecInit(Seq.fill(4)(Module(new S011HD1P_X32Y2D128_BW).io))
 
-  val data_cen   = WireDefault(Vec(4, 0.B))
+  val data_cen   = WireDefault(VecInit(Seq.fill(4)(0.B)))
   val data_wen   = Wire(Bool())
   val data_bwen  = Wire(UInt(128.W))
   val data_addr  = Wire(UInt(6.W))
