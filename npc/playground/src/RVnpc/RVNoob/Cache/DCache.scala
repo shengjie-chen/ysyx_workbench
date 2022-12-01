@@ -125,10 +125,10 @@ class DCache(
   data_bwen := MuxCase(
     0.U,
     Array(
-      (io.zero_ex_op === 3.U) -> (~(bwen_temp << data_shift)), // write double word
-      (io.zero_ex_op === 2.U) -> (~(0xffffffffL.U(128.W) << data_shift)), // write word
-      (io.zero_ex_op === 1.U) -> (~(0xffffL.U(128.W) << data_shift)), // write half word
-      (io.zero_ex_op === 0.U) -> (~(0xffL.U(128.W) << data_shift)) // write byte
+      (io.zero_ex_op === 3.U) -> (bwen_temp << data_shift), // write double word
+      (io.zero_ex_op === 2.U) -> (0xffffffffL.U(128.W) << data_shift), // write word
+      (io.zero_ex_op === 1.U) -> (0xffffL.U(128.W) << data_shift), // write half word
+      (io.zero_ex_op === 0.U) -> (0xffL.U(128.W) << data_shift) // write byte
     )
   )
   // A
@@ -142,9 +142,9 @@ class DCache(
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
     data_arrays(i).CLK  <> clock
-    data_arrays(i).CEN  := data_cen(i)
-    data_arrays(i).WEN  := data_wen
-    data_arrays(i).BWEN := data_bwen
+    data_arrays(i).CEN  := ~data_cen(i)
+    data_arrays(i).WEN  := ~data_wen
+    data_arrays(i).BWEN := ~data_bwen
     data_arrays(i).A    := data_addr
     data_arrays(i).D    := data_wdata
   }
