@@ -301,7 +301,7 @@ class S011HD1P_X32Y2D128_BW extends BlackBox {
 
 object DCache {
   def apply(isICache: Boolean): DCache = {
-    val cache = new DCache
+    val cache = Module(new DCache)
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
