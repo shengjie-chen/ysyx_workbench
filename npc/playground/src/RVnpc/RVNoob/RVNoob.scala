@@ -25,8 +25,8 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val pc_en = Wire(Bool())
   val pc    = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc  = Wire(UInt(64.W))
-//  val icache = DCache(true)
-  val icache = Module(new ICache)
+  val icache = DCache(true)
+//  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl   = Module(new PipelineCtrl)
