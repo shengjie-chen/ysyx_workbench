@@ -23,8 +23,8 @@ class DCache(
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
   val io = IO(new Bundle {
-    val addr       = Input(UInt(addrWidth.W))
-    val ren        = Input(Bool())
+    val addr = Input(UInt(addrWidth.W))
+    val ren  = Input(Bool())
 
     val wen        = Input(Bool())
     val wdata      = Input(UInt(xlen.W))
@@ -138,11 +138,11 @@ class DCache(
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
     data_arrays(i).CLK  <> clock
-    data_arrays(i).CEN  :=  data_cen(i)
-    data_arrays(i).WEN  <> data_wen
-    data_arrays(i).BWEN <> data_bwen
-    data_arrays(i).A    <> data_addr
-    data_arrays(i).D    <> data_wdata
+    data_arrays(i).CEN  := data_cen(i)
+    data_arrays(i).WEN  := data_wen
+    data_arrays(i).BWEN := data_bwen
+    data_arrays(i).A    := data_addr
+    data_arrays(i).D    := data_wdata
   }
 
   // ********************************** Tag Array **********************************
