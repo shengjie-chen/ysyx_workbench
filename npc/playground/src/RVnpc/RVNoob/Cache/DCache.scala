@@ -72,7 +72,7 @@ class DCache(
   val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
   val addr_offset = io.addr(byteOffsetWidth - 1, 0)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
-  val hit_oh  = WireDefault(Vec(ways, 0.B))
+  val hit_oh  = WireDefault(VecInit(Seq.fill(ways)(0.B)))
   val hit_way = OHToUInt(hit_oh)
   val hit     = hit_oh.asUInt().orR
   when(io.ren || io.wen) {
