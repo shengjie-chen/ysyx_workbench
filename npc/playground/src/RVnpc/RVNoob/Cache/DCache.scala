@@ -38,7 +38,7 @@ class DCache(
   // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
   val data_arrays = VecInit(Seq.fill(4)(Module(new S011HD1P_X32Y2D128_BW).io))
 
-  val data_cen   = WireDefault(VecInit(Seq.fill(4)(0.B)))
+  val data_cen   = Wire(Vec(4, Bool()))
   val data_wen   = Wire(Bool())
   val data_bwen  = Wire(UInt(128.W))
   val data_addr  = Wire(UInt(6.W))
@@ -72,9 +72,10 @@ class DCache(
   val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
   val addr_offset = io.addr(byteOffsetWidth - 1, 0)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
-  val hit_oh  = WireDefault(VecInit(Seq.fill(ways)(0.B)))
+  val hit_oh  = Wire(Vec(ways, Bool()))
   val hit_way = OHToUInt(hit_oh)
   val hit     = hit_oh.asUInt().orR
+  hit_oh := 0.B.asTypeOf(hit_oh)
   when(io.ren || io.wen) {
     for (w <- 0 until ways) {
       hit_oh(w) := (tag_arrays(w)(addr_index).tag === addr_tag) && tag_arrays(w)(addr_index).valid
@@ -85,25 +86,28 @@ class DCache(
   miss := !hit && inpmem_op
   // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<
   // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
-  val waysWidth       = log2Ceil(ways)
+  val waysWidth = log2Ceil(ways)
+//  println(s"waysWidth = $waysWidth")
   val wordNumPerBurst = axiDataWidth / 32
   val PLRU_bits       = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
   val replace_way     = Wire(UInt(waysWidth.W))
 
   val replace_dirty = tag_arrays(replace_way)(addr_index).dirty_bit
-  val replace_tag   = tag_arrays(replace_way)(addr_index).tag
+  val replace_tag   = Wire(UInt(tagWidth.W))
+  replace_tag := tag_arrays(replace_way)(addr_index).tag
+  dontTouch(replace_tag)
 
   val replace_buffer = Reg(Vec(2, UInt(64.W)))
   val replace_addr   = Reg(UInt(addrWidth.W))
   val replace_valid  = RegInit(0.B)
   val replace_cnt    = RegInit(0.U(2.W))
-  dontTouch(replace_tag)
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
   val allocate_cnt = RegInit(0.U(3.W))
 
   // ********************************** Data Array / Single Port RAM x 4 **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // CEN
+  data_cen := 0.B.asTypeOf(data_cen)
   when(inpmem_op) {
     when(hit) {
       data_cen := hit_oh
