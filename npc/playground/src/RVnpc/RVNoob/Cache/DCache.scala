@@ -309,7 +309,7 @@ object DCache {
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
-      cache.io.zero_ex_op := 0.U
+      cache.io.zero_ex_op := 2.U
       cache.io.valid      := 1.B
     }
     cache
