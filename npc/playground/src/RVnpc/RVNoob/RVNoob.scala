@@ -21,9 +21,9 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
   dontTouch(npc)
-  val pc_en = Wire(Bool())
-  val pc    = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
-  val snpc  = Wire(UInt(64.W))
+  val pc_en  = Wire(Bool())
+  val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
+  val snpc   = Wire(UInt(64.W))
   val icache = DCache(true)
 //  val icache = Module(new ICache)
 
@@ -118,7 +118,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   ppl_ctrl.io.dnpc_en         <> dnpc_en
   ppl_ctrl.io.miss            <> cache_miss
 
-  id_reg.reset <> ppl_ctrl.io.id_reg_ctrl.flush
+  id_reg.reset <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
 
   idu.io.inst <> id_reg.out.inst
 
@@ -127,7 +127,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  ex_reg.reset <> ppl_ctrl.io.ex_reg_ctrl.flush
+  ex_reg.reset <> (ppl_ctrl.io.ex_reg_ctrl.flush || reset.asBool())
 
   dnpc := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
@@ -162,7 +162,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   exe.io.ctrl <> ex_reg.out.exe_ctrl
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  mem_reg.reset <> ppl_ctrl.io.mem_reg_ctrl.flush
+  mem_reg.reset <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
 
   dcache.io.addr  <> mem_reg.out.mem_addr
   dcache.io.wdata <> mem_reg.out.src2
@@ -173,7 +173,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   dcache.io.valid      <> mem_reg.out.valid
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  wb_reg.reset                <> ppl_ctrl.io.wb_reg_ctrl.flush
+  wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
   not_csr_wdata               := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
