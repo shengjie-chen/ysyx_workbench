@@ -25,11 +25,11 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val pc_en  = Wire(Bool())
   val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc   = Wire(UInt(64.W))
-  val icache = Module(new ICache)
+  val icache = DCache(true)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl   = Module(new PipelineCtrl)
-  val id_reg     = IDreg(pc, icache.io.inst_data, snpc, ppl_ctrl.io.id_reg_ctrl.en, pipelineBypass)
+  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en, pipelineBypass)
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
@@ -73,8 +73,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     ppl_ctrl.io.mem_reg_ctrl.en,
     pipelineBypass
   )
-  val dcache     = Module(new DCache)
-  val judge_load = Module(new JudgeLoad)
+  val dcache = Module(new DCache)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
@@ -82,13 +81,14 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     mem_reg.out.inst,
     mem_reg.out.src2,
     mem_reg.out.alu_res,
-    judge_load.io.load_data,
+    dcache.io.rdata,
     mem_reg.out.mem_ctrl.r_pmem,
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.wb_reg_ctrl.en,
     pipelineBypass
   )
+  val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
   val U_ebreak      = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
 
@@ -101,10 +101,10 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   io.pc   := pc
   val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
   dpi_npc.io.npc <> npc
-  io.inst        := icache.io.inst_data
+  io.inst        := icache.io.rdata
 
-  icache.io.inst_addr <> pc
-  icache.io.inst_ren  <> !reset.asBool()
+  icache.io.addr <> pc
+  icache.io.ren  <> !reset.asBool()
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -173,12 +173,11 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   dcache.io.valid      <> mem_reg.out.valid
 
-  judge_load.io.judge_load_op <> mem_reg.out.mem_ctrl.judge_load_op
-  judge_load.io.mem_data      <> dcache.io.rdata
-
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  wb_reg.reset  <> ppl_ctrl.io.wb_reg_ctrl.flush
-  not_csr_wdata := Mux(wb_reg.out.r_pmem, wb_reg.out.mem_data, wb_reg.out.alu_res)
+  wb_reg.reset                <> ppl_ctrl.io.wb_reg_ctrl.flush
+  judge_load.io.judge_load_op <> wb_reg.out.judge_load_op
+  judge_load.io.mem_data      <> wb_reg.out.mem_data
+  not_csr_wdata               := Mux(wb_reg.out.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
     wb_reg.out.src2,

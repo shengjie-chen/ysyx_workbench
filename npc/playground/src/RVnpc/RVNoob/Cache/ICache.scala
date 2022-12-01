@@ -96,14 +96,15 @@ class ICache(
   dpi_pmem.io.w_pmem <> 0.B
 
   // 替换算法 最早输入数据被替换
-  val waysWidth   = log2Ceil(ways)
-  val replace_way = Reg(Vec(sets, UInt(waysWidth.W)))
+  val waysWidth = log2Ceil(ways)
+//  val replace_way = Reg(Vec(sets, UInt(waysWidth.W)))
 //  val replace_way     = RegInit(VecInit(Seq.fill(sets)(0.U(waysWidth.W))))
-  when(reset.asBool()) {
-    for (i <- 0 until sets) {
-      replace_way(i) := 0.U
-    }
-  }
+  val replace_way = RegInit(VecInit(Seq.fill(sets)(0.U(waysWidth.W))))
+//  when(reset.asBool()) {
+//    for (i <- 0 until sets) {
+//      replace_way(i) := 0.U
+//    }
+//  }
   val wordNumPerBurst = axiDataWidth / 32
   when(miss) {
     for (i <- 0 until wordNumPerBurst) {

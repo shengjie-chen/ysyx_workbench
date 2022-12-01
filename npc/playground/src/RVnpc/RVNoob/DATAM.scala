@@ -59,11 +59,12 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
     val clk    = Input(Clock())
     val raddr  = Input(UInt(xlen.W))
+    val rdata  = Output(UInt(xlen.W))
+    val r_pmem = Input(Bool())
+
     val waddr  = Input(UInt(xlen.W))
     val wmask  = Input(UInt((xlen / 8).W))
-    val rdata  = Output(UInt(xlen.W))
     val wdata  = Input(UInt(xlen.W))
-    val r_pmem = Input(Bool())
     val w_pmem = Input(Bool())
   })
   setInline(

@@ -14,182 +14,302 @@ class DCache(
   val missDelay:     Int = 4)
     extends Module
     with RVNoobConfig {
-
-  //
-  val cacheLineNum:   Int = cacheSize / cacheLineSize // 128
-  val sets:           Int = cacheLineNum / ways // 32
-  val wordNumPerLine: Int = cacheLineSize / (inst_w / 8) // 8
-  // Width
-  val byteOffsetWidth: Int = 2
+  val cacheLineNum:    Int = cacheSize / cacheLineSize // 128
+  val sets:            Int = cacheLineNum / ways // 32
+  val byteOffsetWidth: Int = log2Ceil(cacheLineSize) // 5
+  val indexWidth:      Int = log2Ceil(sets) //log2Ceil(sets) // 5
+  val tagWidth:        Int = addrWidth - indexWidth - byteOffsetWidth // 22
   //  println(s"ways = $ways")
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
-  val wordOffsetWidth: Int = log2Ceil(wordNumPerLine) // 3
-  val indexWidth:      Int = log2Ceil(sets) //log2Ceil(sets) //5
-  val tagWidth:        Int = addrWidth - indexWidth - wordOffsetWidth - byteOffsetWidth // 22
   val io = IO(new Bundle {
     val addr       = Input(UInt(addrWidth.W))
-    val wdata      = Input(UInt(xlen.W))
     val ren        = Input(Bool())
+
     val wen        = Input(Bool())
+    val wdata      = Input(UInt(xlen.W))
     val zero_ex_op = Input(UInt(2.W))
     val valid      = Input(Bool())
 
     val miss  = Output(Bool())
     val rdata = Output(UInt(xlen.W))
   })
-  //  println(s"sets = $sets")
-  // 主要mem
-  val tag_arrays = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
-  val data_arrays = Reg(Vec(ways, Vec(sets, Vec(wordNumPerLine, UInt(32.W)))))
-  // mmio 控制信号
-  val inpmem = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
-  //  dontTouch(tag_arrays)
-  //  dontTouch(data_arrays)
-  //    when(reset.asBool()){
-  //      for (i <- 0 until ways){
-  //        for(j <- 0 until sets){
-  //        }
-  //      }
-  //    }
-  val mmio_read  = !inpmem && io.ren
-  val mmio_write = !inpmem && io.wen
-  // 地址分段
-  val addr_tag   = io.addr(addrWidth - 1, addrWidth - tagWidth)
-  val addr_index = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
-  val addr_wordoffset =
-    io.addr(addrWidth - tagWidth - indexWidth - 1, addrWidth - tagWidth - indexWidth - wordOffsetWidth)
-  val addr_byteoffset = io.addr(byteOffsetWidth - 1, 0)
-  // 命中信号
-  val hit     = Wire(Vec(ways, Bool()))
-  val hit_way = OHToUInt(hit)
-  //  dontTouch(hit)
-  hit := 0.B.asTypeOf(hit)
-  when(io.ren || io.wen) {
-    for (w <- 0 until ways) {
-      hit(w) := (tag_arrays(w)(addr_index).tag === addr_tag) && tag_arrays(w)(addr_index).valid
-    }
-  }
-  // 缺失信号与缺失周期计数
-  val miss           = Wire(Bool())
-  val miss_delay_cnt = RegInit(0.U(log2Ceil(missDelay).W))
-  miss    := hit.asUInt() === 0.U && (io.ren || io.wen) && inpmem
-  io.miss := miss
-  // dpi_pmem 控制信号
-  // read solution : read miss; write miss; mmio read
-  val pmem_raddr = Wire(UInt(addrWidth.W))
-  when(miss) {
-    when(miss_delay_cnt === (missDelay - 1).U) {
-      miss_delay_cnt := 0.U
-    }.otherwise {
-      miss_delay_cnt := miss_delay_cnt + 1.U
-    }
-  }
-  val pmem_rdata = Wire(UInt(xlen.W))
-  // write solution : replace dirty; mmio write
-  // 替换算法 最早输入数据被替换
-  val waysWidth = log2Ceil(ways)
-  when(mmio_read) {
-    pmem_raddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
-  }.otherwise {
-    pmem_raddr := Cat(addr_tag, addr_index, miss_delay_cnt(1, 0), 0.U((byteOffsetWidth + 1).W))
-  }
-  val replace_way   = Reg(Vec(sets, UInt(waysWidth.W)))
-  val replace_dirty = tag_arrays(replace_way(addr_index))(addr_index).dirty_bit && miss
-  // data and tag replace
-  val wordNumPerBurst = axiDataWidth / 32
-  //  val replace_way     = RegInit(VecInit(Seq.fill(sets)(0.U(waysWidth.W))))
-  when(reset.asBool()) {
-    for (i <- 0 until sets) {
-      replace_way(i) := 0.U
-    }
-  }
-  // write pmem
-  val shift = Wire(UInt(3.W))
-  when(miss) {
-    for (i <- 0 until wordNumPerBurst) {
-      data_arrays(replace_way(addr_index))(addr_index)(
-        miss_delay_cnt * wordNumPerBurst.U + i.U
-      ) := pmem_rdata(i * 32 + 31, i * 32)
-    }
-    when(miss_delay_cnt === (missDelay - 1).U) {
-      tag_arrays(replace_way(addr_index))(addr_index).valid     := 1.B
-      tag_arrays(replace_way(addr_index))(addr_index).tag       := addr_tag
-      tag_arrays(replace_way(addr_index))(addr_index).dirty_bit := 0.B
+  // ********************************** Main Mem Define **********************************
+  // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
+  val data_arrays = VecInit(Seq.fill(4)(Module(new S011HD1P_X32Y2D128_BW).io))
 
-      replace_way(addr_index) := replace_way(addr_index) + 1.U
-    }
-  }
+  val data_cen   = WireDefault(Vec(4, 0.B))
+  val data_wen   = Wire(Bool())
+  val data_bwen  = Wire(UInt(128.W))
+  val data_addr  = Wire(UInt(6.W))
+  val data_wdata = Wire(UInt(128.W))
+  // >>>>>>>>>>>>>> tag array <<<<<<<<<<<<<<
+  val tag_arrays = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
+  // >>>>>>>>>>>>>> DPI PMEM / AXI <<<<<<<<<<<<<<
+  val dpi_pmem = Module(new DpiPmem)
+
+  val pmem_ren   = Wire(Bool())
+  val pmem_raddr = Wire(UInt(addrWidth.W))
+  val pmem_rdata = Reg(UInt(xlen.W))
+
+  val pmem_wen   = Wire(Bool())
   val pmem_waddr = Wire(UInt(addrWidth.W))
   val pmem_wdata = Wire(UInt(xlen.W))
   val pmem_wmask = Wire(UInt(8.W))
-  val dpi_pmem   = Module(new DpiPmem)
+
+  val pmem_shift        = Wire(UInt(3.W))
+  val pmem_read_ok      = Wire(Bool())
+  val pmem_read_ok_addr = Wire(UInt(addrWidth.W))
+
+  // ********************************** Main Signal Define **********************************
+  // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
+  val inpmem     = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
+  val inpmem_op  = (io.ren || io.wen) && inpmem
+  val mmio_read  = !inpmem && io.ren
+  val mmio_write = !inpmem && io.wen
+  // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
+  val addr_tag    = io.addr(addrWidth - 1, addrWidth - tagWidth)
+  val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
+  val addr_offset = io.addr(byteOffsetWidth - 1, 0)
+  // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
+  val hit_oh  = WireDefault(Vec(ways, 0.B))
+  val hit_way = OHToUInt(hit_oh)
+  val hit     = hit_oh.asUInt().orR
+  when(io.ren || io.wen) {
+    for (w <- 0 until ways) {
+      hit_oh(w) := (tag_arrays(w)(addr_index).tag === addr_tag) && tag_arrays(w)(addr_index).valid
+    }
+  }
+  // >>>>>>>>>>>>>> 缺失信号 <<<<<<<<<<<<<<
+  val miss = Wire(Bool())
+  miss := !hit && inpmem_op
+  // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<
+  // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
+  val waysWidth       = log2Ceil(ways)
+  val wordNumPerBurst = axiDataWidth / 32
+  val PLRU_bits       = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
+  val replace_way     = Wire(UInt(waysWidth.W))
+
+  val replace_dirty = tag_arrays(replace_way)(addr_index).dirty_bit
+  val replace_tag   = tag_arrays(replace_way)(addr_index).tag
+
+  val replace_buffer = Reg(Vec(2, UInt(64.W)))
+  val replace_addr   = Reg(UInt(addrWidth.W))
+  val replace_valid  = RegInit(0.B)
+  val replace_cnt    = RegInit(0.U(2.W))
+  dontTouch(replace_tag)
+  // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
+  val allocate_cnt = RegInit(0.U(3.W))
+
+  // ********************************** Data Array / Single Port RAM x 4 **********************************
+  // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
+  // CEN
+  when(inpmem_op) {
+    when(hit) {
+      data_cen := hit_oh
+    }.otherwise {
+      when(replace_dirty || (!replace_dirty && pmem_read_ok && allocate_cnt =/= 0.U)) {
+        data_cen(replace_way) := 1.B
+      }
+    }
+  }
+  // WEN
+  data_wen := (!replace_dirty && !hit) || (hit && io.wen)
+  // BWEN
+  val data_shift = Mux(!replace_dirty && !hit, pmem_read_ok_addr(3, 0), addr_offset(3, 0)) << 3
+  val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
+  data_bwen := MuxCase(
+    0.U,
+    Array(
+      (io.zero_ex_op === 3.U) -> (bwen_temp << data_shift), // write double word
+      (io.zero_ex_op === 2.U) -> (0xffffffffL.U(128.W) << data_shift), // write word
+      (io.zero_ex_op === 1.U) -> (0xffffL.U(128.W) << data_shift), // write half word
+      (io.zero_ex_op === 0.U) -> (0xffL.U(128.W) << data_shift) // write byte
+    )
+  )
+  // A
+  data_addr := Mux(
+    !hit,
+    Mux(replace_dirty, Cat(addr_index, replace_cnt(0)), pmem_read_ok_addr(9, 4)),
+    Cat(addr_index, addr_offset(byteOffsetWidth - 1))
+  )
+  // D
+  data_wdata := Mux(!hit, pmem_rdata << data_shift, io.wdata << data_shift)
+  // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
+  for (i <- 0 to 3) {
+    data_arrays(i).CLK  <> clock
+    data_arrays(i).CEN  <> data_cen(i)
+    data_arrays(i).WEN  <> data_wen
+    data_arrays(i).BWEN <> data_bwen
+    data_arrays(i).A    <> data_addr
+    data_arrays(i).D    <> data_wdata
+  }
+
+  // ********************************** Tag Array **********************************
+  when(replace_cnt === 2.U) {
+    tag_arrays(replace_way)(addr_index).dirty_bit := 0.B
+  }
+  when(inpmem_op && hit && io.wen) {
+    tag_arrays(hit_way)(addr_index).dirty_bit := 1.B
+  }
+  when(allocate_cnt === 4.U) {
+    tag_arrays(replace_way)(addr_index).valid := 1.B
+    tag_arrays(replace_way)(addr_index).tag   := addr_tag
+  }
+
+  // ********************************** DPI PMEM / AXI **********************************
+  // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
+  // Read signal
+  when(mmio_read) {
+    pmem_raddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
+  }.otherwise {
+    pmem_raddr := Cat(addr_tag, addr_index, allocate_cnt(1, 0), 0.U((byteOffsetWidth - 2).W))
+  }
+  pmem_ren := ((miss && !replace_dirty && !allocate_cnt(2)) || mmio_read)
+  // Write signal
+  pmem_wen := (mmio_write && io.valid) || replace_valid
   when(mmio_write && io.valid) {
     pmem_waddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
-    shift      := io.addr
-    pmem_wdata := (io.wdata << (shift * 8.U))
+    pmem_wdata := (io.wdata << (pmem_shift * 8.U))
     pmem_wmask := MuxCase(
       "b11111111".U,
       Array(
         (io.zero_ex_op === 3.U) -> "b11111111".U, // write double word
-        (io.zero_ex_op === 2.U) -> ("b1111".U << shift), // write word
-        (io.zero_ex_op === 1.U) -> ("b11".U << shift), // write half word
-        (io.zero_ex_op === 0.U) -> ("b1".U << shift) // write byte
+        (io.zero_ex_op === 2.U) -> ("b1111".U << pmem_shift), // write word
+        (io.zero_ex_op === 1.U) -> ("b11".U << pmem_shift), // write half word
+        (io.zero_ex_op === 0.U) -> ("b1".U << pmem_shift) // write byte
       )
     )
   }.otherwise {
-    pmem_waddr := Cat(
-      tag_arrays(replace_way(addr_index))(addr_index).tag,
-      addr_index,
-      miss_delay_cnt(1, 0),
-      0.U((byteOffsetWidth + 1).W)
-    )
-    shift := 0.U
-    pmem_wdata := Cat(
-      data_arrays(replace_way(addr_index))(addr_index)(miss_delay_cnt * wordNumPerBurst.U + 1.U),
-      data_arrays(replace_way(addr_index))(addr_index)(miss_delay_cnt * wordNumPerBurst.U)
+    pmem_waddr := replace_addr
+    pmem_wdata := Mux(
+      replace_dirty,
+      Mux(replace_cnt(0), data_arrays(replace_way).Q(63, 0), replace_buffer(1)),
+      replace_buffer(allocate_cnt(0))
     )
     pmem_wmask := "b11111111".U
   }
+  // Other
+  pmem_shift := 0.U
+  when((mmio_write || mmio_read) && io.valid) {
+    pmem_shift := io.addr
+  }
+  pmem_read_ok      := RegNext(pmem_ren)
+  pmem_read_ok_addr := RegNext(pmem_raddr)
 
+  // >>>>>>>>>>>>>> Connect <<<<<<<<<<<<<<
   dpi_pmem.io.clk    <> clock
+  dpi_pmem.io.r_pmem <> pmem_ren
   dpi_pmem.io.raddr  <> pmem_raddr
+  dpi_pmem.io.rdata  <> pmem_rdata
+  dpi_pmem.io.w_pmem <> pmem_wen
   dpi_pmem.io.waddr  <> pmem_waddr
   dpi_pmem.io.wmask  <> pmem_wmask
-  dpi_pmem.io.rdata  <> pmem_rdata
   dpi_pmem.io.wdata  <> pmem_wdata
-  dpi_pmem.io.r_pmem <> (miss || mmio_read)
-  dpi_pmem.io.w_pmem <> ((mmio_write && io.valid) || replace_dirty)
 
-  // hit read
-  when(inpmem) {
-    //    io.rdata := (rdata >> (shift * 8.U))
-    io.rdata := data_arrays(hit_way)(addr_index)(addr_wordoffset)
-  }.otherwise {
-    io.rdata := pmem_rdata
-  }
-  // hit write
-  when(!miss && io.wen) {
-    val data_temp = Wire(Vec(4, UInt()))
-    for (i <- 0 to 3) {
-      data_temp(i) := data_arrays(hit_way)(addr_index)(addr_wordoffset)(i * 8 + 7, i * 8)
-    }
-    when(io.zero_ex_op === 3.U) {
-      data_arrays(hit_way)(addr_index)(addr_wordoffset)       := io.wdata(31, 0)
-      data_arrays(hit_way)(addr_index)(addr_wordoffset + 1.U) := io.wdata(63, 32)
-    }.elsewhen(io.zero_ex_op === 2.U) {
-      data_arrays(hit_way)(addr_index)(addr_wordoffset) := io.wdata(31, 0)
-    }.elsewhen(io.zero_ex_op === 1.U) {
-      data_temp(addr_byteoffset)                        := io.wdata(7, 0)
-      data_temp(addr_byteoffset + 1.U)                  := io.wdata(15, 8)
-      data_arrays(hit_way)(addr_index)(addr_wordoffset) := Cat(data_temp(3), data_temp(2), data_temp(1), data_temp(0))
+  // ********************************** Replace信号 **********************************
+  when(inpmem_op && hit) {
+    PLRU_bits(addr_index)(0) := hit_oh.asUInt()(1, 0).orR
+    when(hit_oh.asUInt()(1, 0).orR) {
+      PLRU_bits(addr_index)(1) := hit_oh.asUInt()(0)
     }.otherwise {
-      data_temp(addr_byteoffset)                        := io.wdata(7, 0)
-      data_arrays(hit_way)(addr_index)(addr_wordoffset) := Cat(data_temp(3), data_temp(2), data_temp(1), data_temp(0))
+      PLRU_bits(addr_index)(2) := hit_oh.asUInt()(2)
     }
-    tag_arrays(hit_way)(addr_index).dirty_bit := 1.B
+  }
+  replace_way := Cat(
+    PLRU_bits(addr_index)(0),
+    Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
+  )
+  when(miss && replace_dirty) {
+    replace_cnt := replace_cnt + 1
+    when(replace_cnt === 0.U) {
+      replace_addr  := Cat(replace_tag, addr_index, addr_offset)
+      replace_valid := 1.B
+    }.elsewhen(replace_cnt === 1.U) {
+      replace_buffer(1) := data_arrays(replace_way).Q(127, 64)
+      replace_addr      := replace_addr + 8.U
+    }.elsewhen(replace_cnt === 2.U) {
+      replace_addr      := replace_addr + 8.U
+      replace_buffer(1) := data_arrays(replace_way).Q(127, 64)
+      replace_buffer(0) := data_arrays(replace_way).Q(63, 0)
+      replace_cnt       := 0.U
+    }
+  }
+  when(miss && !replace_dirty) {
+    when(allocate_cnt === 0.U) {
+      when(replace_valid) {
+        replace_addr := replace_addr + 8.U
+      }
+    }.elsewhen(allocate_cnt === 1.U) {
+      when(replace_valid) {
+        replace_valid := 0.B
+      }
+    }
   }
 
+  // ********************************** Allocate信号 **********************************
+  when(miss && !replace_dirty) {
+    when(allocate_cnt === 0.U) {
+      allocate_cnt := allocate_cnt + 1.U
+    }.elsewhen(pmem_read_ok) {
+      when(allocate_cnt === 4.U) {
+        allocate_cnt := 0.U
+      }.otherwise {
+        allocate_cnt := allocate_cnt + 1.U
+      }
+    }
+  }
+
+  // ********************************** Output **********************************
+  io.miss := miss
+  when(inpmem) {
+    io.rdata := data_arrays(hit_way).Q >> data_shift
+  }.otherwise {
+    io.rdata := (pmem_rdata >> (pmem_shift * 8.U))
+  }
+
+}
+
+class S011HD1P_X32Y2D128_BW extends BlackBox {
+  val io = IO(new Bundle {
+    val Q    = Output(UInt(128.W))
+    val CLK  = Input(Clock())
+    val CEN  = Input(Bool())
+    val WEN  = Input(Bool())
+    val BWEN = Input(UInt(128.W))
+    val A    = Input(UInt(6.W))
+    val D    = Input(UInt(128.W))
+  })
+
+}
+
+//object S011HD1P_X32Y2D128_BW {
+//  def apply(
+//    clk:    Clock,
+//    inst:   UInt,
+//    a0:     UInt,
+//    ebreak: Bool
+//  ): S011HD1P_X32Y2D128_BW = {
+//    val data = Module(new S011HD1P_X32Y2D128_BW)
+//    data.io.clk    <> clk
+//    data.io.inst   <> inst
+//    data.io.a0     <> a0
+//    data.io.ebreak <> ebreak
+//    data
+//  }
+//}
+
+object DCache {
+  def apply(isICache: Boolean): DCache = {
+    val cache = new DCache
+    if (isICache) {
+      cache.io.wdata      := 0.U
+      cache.io.wen        := 0.B
+      cache.io.zero_ex_op := 0.U
+      cache.io.valid      := 1.B
+    }
+    cache
+  }
 }
 
 object DCacheGen extends App {

@@ -5,10 +5,11 @@ import chisel3._
 import chisel3.util._
 
 trait WBregSignal extends RVNoobConfig {
-  val src2     = UInt(xlen.W)
-  val alu_res  = UInt(xlen.W)
-  val mem_data = UInt(xlen.W)
-  val r_pmem   = Bool()
+  val src2          = UInt(xlen.W)
+  val alu_res       = UInt(xlen.W)
+  val mem_data      = UInt(xlen.W)
+  val r_pmem        = Bool()
+  val judge_load_op = UInt(jdgl_op_w.W)
 
   val wb_rf_ctrl  = new WbRfCtrlIO
   val wb_csr_ctrl = new WbCsrCtrlIO
@@ -46,12 +47,14 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
 
 //    out.valid := 1.B
   } else {
-    out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
-    out.inst        := RegEnable(in.inst, 0.U, in.reg_en)
-    out.src2        := RegEnable(in.src2, 0.U, in.reg_en)
-    out.alu_res     := RegEnable(in.alu_res, 0.U, in.reg_en)
-    out.mem_data    := RegEnable(in.mem_data, 0.U, in.reg_en)
-    out.r_pmem      := RegEnable(in.r_pmem, 0.B, in.reg_en)
+    out.pc            := RegEnable(in.pc, 0.U, in.reg_en)
+    out.inst          := RegEnable(in.inst, 0.U, in.reg_en)
+    out.src2          := RegEnable(in.src2, 0.U, in.reg_en)
+    out.alu_res       := RegEnable(in.alu_res, 0.U, in.reg_en)
+    out.mem_data      := Mux(reset.asBool(), 0.U, in.mem_data)
+    out.r_pmem        := RegEnable(in.r_pmem, 0.B, in.reg_en)
+    out.judge_load_op := RegEnable(in.judge_load_op, 0.B, in.reg_en)
+
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
