@@ -50,7 +50,7 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.src2        := RegEnable(in.src2, 0.U, in.reg_en)
     out.alu_res     := RegEnable(in.alu_res, 0.U, in.reg_en)
     out.mem_data    := Mux(reset.asBool(), 0.U, in.mem_data)
-    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.B, in.reg_en)
+    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
