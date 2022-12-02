@@ -267,7 +267,7 @@ class DCache(
   // ********************************** Output **********************************
   io.miss := miss
   val rdata_temp = Wire(UInt(xlen.W))
-  io.rdata := Mux(RegNext(io.ren), rdata_temp, 0.U)
+  io.rdata := Mux(RegNext(io.ren && !miss), rdata_temp, 0.U)
   when(inpmem) {
     rdata_temp := data_arrays(hit_way).Q >> RegNext(data_shift)
   }.otherwise {
