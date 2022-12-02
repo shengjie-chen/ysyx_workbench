@@ -266,14 +266,14 @@ class DCache(
 
   // ********************************** Output **********************************
   io.miss := miss
-  val rdata_ready = RegNext(io.ren && !miss)
-  val rdata_temp  = Wire(UInt(xlen.W))
-  val rdata_reg   = RegEnable(rdata_temp, 0.U, io.ren && !miss)
-  io.rdata := Mux(rdata_ready, rdata_temp, rdata_reg)
+//  val rdata_ready = RegNext(io.ren && !miss)
+//  val rdata_temp  = Wire(UInt(xlen.W))
+//  val rdata_reg   = RegEnable(rdata_temp, 0.U, io.ren && !miss)
+//  io.rdata := Mux(rdata_ready, rdata_temp, rdata_reg)
   when(inpmem) {
-    rdata_temp := data_arrays(hit_way).Q >> RegNext(data_shift)
+    io.rdata := data_arrays(hit_way).Q >> RegNext(data_shift)
   }.otherwise {
-    rdata_temp := (pmem_rdata >> (RegNext(pmem_shift) * 8.U))
+    io.rdata := (pmem_rdata >> (RegNext(pmem_shift) * 8.U))
   }
 
 }

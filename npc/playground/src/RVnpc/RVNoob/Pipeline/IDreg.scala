@@ -14,6 +14,12 @@ class IDregInIO extends PipelineInIO with IDregSignal {
 //  val snpc_en = Bool()
 }
 
+//class CombRegEnable() extends Module{
+//  val io = IO(new Bundle{
+//    val in =
+//  })
+//}
+
 class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new IDregInIO))
   val out = IO(Output(new IDregOutIO))
@@ -25,10 +31,14 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.snpc := in.snpc
 //    out.valid := 1.B
   } else {
-    val reset_t = RegNext(reset.asBool())
+
     out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
-    out.inst := Mux(reset_t, 0.U, in.inst)
     out.snpc := RegEnable(in.snpc, 0.U, in.reg_en)
+
+    val reset_t = RegNext(reset.asBool())
+    val reg_en_t = RegNext(in.reg_en.asBool())
+    val inst_t = RegNext(out.inst)
+    out.inst := Mux(reset_t, 0.U, Mux(reg_en_t, in.inst, inst_t))
 
     out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
   }
