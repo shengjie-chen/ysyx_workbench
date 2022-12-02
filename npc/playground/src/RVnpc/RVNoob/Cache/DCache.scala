@@ -271,7 +271,7 @@ class DCache(
 //  val rdata_reg   = RegEnable(rdata_temp, 0.U, io.ren && !miss)
 //  io.rdata := Mux(rdata_ready, rdata_temp, rdata_reg)
   when(RegNext(inpmem)) {
-    io.rdata := (data_arrays(hit_way).Q >> RegNext(data_shift))
+    io.rdata := (data_arrays(RegNext(hit_way)).Q >> RegNext(data_shift))
   }.otherwise {
     io.rdata := (pmem_rdata >> (RegNext(pmem_shift) * 8.U))
   }
