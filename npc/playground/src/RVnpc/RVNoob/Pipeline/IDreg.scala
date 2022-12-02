@@ -25,11 +25,12 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.snpc := in.snpc
 //    out.valid := 1.B
   } else {
+    val reset_t = RegNext(reset.asBool())
     out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
-    out.inst := in.inst
+    out.inst := Mux(reset_t, 0.U, in.inst)
     out.snpc := RegEnable(in.snpc, 0.U, in.reg_en)
 
-    out.valid := PipelineValid(reset.asBool(), in.reg_en)
+    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
   }
 }
 

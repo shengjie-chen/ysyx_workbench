@@ -296,7 +296,6 @@ int main(int argc, char **argv, char **env) {
   cpu_state.pc = top->io_pc;
   if (diff_en) {
     diff_file = *(argv + 4) + 5;
-    printf("%lx\n",cpu_state.pc);
     init_difftest(diff_file, img_size, 0, &cpu_state);
   }
 #endif

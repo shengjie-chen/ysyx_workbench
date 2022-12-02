@@ -74,7 +74,7 @@ class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
     out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.reg_en)
 
-    out.valid := PipelineValid(reset.asBool(), in.reg_en)
+    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
   }
 }
 

@@ -60,7 +60,7 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-    out.valid := PipelineValid(reset.asBool(), in.reg_en)
+    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
   }
 
 }

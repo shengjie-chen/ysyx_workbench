@@ -193,19 +193,33 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
   val cache_miss_first     = cache_miss && !RegNext(cache_miss)
 
+  val diff_pc = Reg(UInt(64.W))
+
   if (pipeline) {
     // wb 写完成的周期
-    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
-    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
-    when(wb_reg.out.pc =/= 0.U) {
-      io.diff_pc := wb_reg.out.pc
-    }.elsewhen(ShiftRegister(dnpc_en, 3, 1.B)) {
-      io.diff_pc := ShiftRegister(pc, 2, 1.B)
-    }.elsewhen(mem_reg.out.pc =/= 0.U) {
+//    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
+//    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
+    io.diff_en := RegNext(wb_reg.out.valid)
+    io.diff_pc := diff_pc
+    when(mem_reg.out.valid) {
       io.diff_pc := mem_reg.out.pc
-    }.otherwise {
+    }.elsewhen(ex_reg.out.valid) {
       io.diff_pc := ex_reg.out.pc
+    }.elsewhen(id_reg.out.valid) {
+      io.diff_pc := id_reg.out.pc
+    }.otherwise {
+      io.diff_pc := pc
     }
+
+//    when(wb_reg.out.pc =/= 0.U) {
+//      io.diff_pc := wb_reg.out.pc
+//    }.elsewhen(ShiftRegister(dnpc_en, 3, 1.B)) {
+//      io.diff_pc := ShiftRegister(pc, 2, 1.B)
+//    }.elsewhen(mem_reg.out.pc =/= 0.U) {
+//      io.diff_pc := mem_reg.out.pc
+//    }.otherwise {
+//      io.diff_pc := ex_reg.out.pc
+//    }
   }
 }
 
