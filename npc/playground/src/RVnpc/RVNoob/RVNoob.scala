@@ -201,17 +201,15 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 //    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
     io.diff_en := RegNext(wb_reg.out.valid)
     io.diff_pc := diff_pc
-    when(io.diff_en) {
-      when(wb_reg.out.valid) {
-        io.diff_pc := wb_reg.out.pc
-      }.elsewhen(mem_reg.out.valid) {
-        io.diff_pc := mem_reg.out.pc
+    when(wb_reg.out.valid) {
+      when(mem_reg.out.valid) {
+        diff_pc := mem_reg.out.pc
       }.elsewhen(ex_reg.out.valid) {
-        io.diff_pc := ex_reg.out.pc
+        diff_pc := ex_reg.out.pc
       }.elsewhen(id_reg.out.valid) {
-        io.diff_pc := id_reg.out.pc
+        diff_pc := id_reg.out.pc
       }.otherwise {
-        io.diff_pc := pc
+        diff_pc := pc
       }
     }
 
