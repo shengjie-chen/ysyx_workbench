@@ -131,11 +131,11 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       is_skip_ref_num--;
       return;
     }
+    refresh_gpr_pc_csr();
 
     ref_difftest_exec(1);
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
-    refresh_gpr_pc_csr();
     checkregs(&ref_r, wb_pc);
     wb_pc = top->io_diff_pc;
   }

@@ -295,6 +295,7 @@ int main(int argc, char **argv, char **env) {
   refresh_gpr_pc_csr();
   if (diff_en) {
     diff_file = *(argv + 4) + 5;
+    printf("%lx\n",cpu_state.pc);
     init_difftest(diff_file, img_size, 0, &cpu_state);
   }
 #endif
