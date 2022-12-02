@@ -267,9 +267,9 @@ class DCache(
   // ********************************** Output **********************************
   io.miss := miss
   when(inpmem) {
-    io.rdata := data_arrays(hit_way).Q >> data_shift
+    io.rdata := data_arrays(hit_way).Q >> RegNext(data_shift)
   }.otherwise {
-    io.rdata := (pmem_rdata >> (pmem_shift * 8.U))
+    io.rdata := (pmem_rdata >> (RegNext(pmem_shift) * 8.U))
   }
 
 }
