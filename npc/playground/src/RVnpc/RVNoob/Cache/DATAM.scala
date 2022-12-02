@@ -1,10 +1,12 @@
-package RVnpc.RVNoob
+package RVnpc.RVNoob.Cache
+
+import RVnpc.RVNoob.{Judge_Load_op, MemCtrlIO, RVNoobConfig, ext_function}
 import chisel3._
 import chisel3.util.{HasBlackBoxInline, MuxCase}
+
+// Data Mem, have discarded
 class DATAM extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-//    val inst_addr = Input(UInt(xlen.W))
-//    val inst = Output(UInt(inst_w.W))
     val valid     = Input(Bool())
     val data_addr = Input(UInt(xlen.W))
     val wdata     = Input(UInt(xlen.W))
@@ -55,6 +57,7 @@ class DATAM extends Module with RVNoobConfig {
   }
 }
 
+// DPI implemented, Main Mem access module
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
     val clk    = Input(Clock())
@@ -106,6 +109,7 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   )
 }
 
+// Combination logic, after wb reg to deal with dcache.rdata
 class JudgeLoad extends Module with RVNoobConfig with ext_function with Judge_Load_op {
   val io = IO(new Bundle {
     val mem_data      = Input(UInt(xlen.W))

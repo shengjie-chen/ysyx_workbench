@@ -1,16 +1,13 @@
 package RVnpc.RVNoob.Cache
 
-import RVnpc.RVNoob.{DpiPmem, RVNoobConfig}
+import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 import scala.math.pow
 
-class TagArrays(tagWidth: Int) extends Bundle {
-  val dirty_bit = Bool()
-  val valid     = Bool()
-  val tag       = UInt(tagWidth.W)
-}
 
+
+// ICache module, have discarded, DCache instead
 class ICache(
   val addrWidth:     Int = 32,
   val cacheSize:     Int = 4 * pow(2, 10).toInt,

@@ -1,9 +1,15 @@
 package RVnpc.RVNoob.Cache
 
-import RVnpc.RVNoob.{DpiPmem, RVNoobConfig}
+import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 import scala.math.pow
+
+class TagArrays(tagWidth: Int) extends Bundle {
+  val dirty_bit = Bool()
+  val valid     = Bool()
+  val tag       = UInt(tagWidth.W)
+}
 
 class DCache(
   val addrWidth:     Int = 32,
@@ -266,10 +272,7 @@ class DCache(
 
   // ********************************** Output **********************************
   io.miss := miss
-//  val rdata_ready = RegNext(io.ren && !miss)
-//  val rdata_temp  = Wire(UInt(xlen.W))
-//  val rdata_reg   = RegEnable(rdata_temp, 0.U, io.ren && !miss)
-//  io.rdata := Mux(rdata_ready, rdata_temp, rdata_reg)
+
   when(RegNext(inpmem)) {
     io.rdata := (data_arrays(RegNext(hit_way)).Q >> RegNext(data_shift))
   }.otherwise {

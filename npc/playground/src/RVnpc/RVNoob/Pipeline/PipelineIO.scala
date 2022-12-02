@@ -20,6 +20,11 @@ class PipelineOutIO extends PipelineIO {
   val valid = Bool()
 }
 
+//TODO
+// need to optimization, can delete one state
+/**
+ *  for pipeline reg, if reg_en=0 or reset, next clock valid is 0
+ */
 class PipelineValid extends Module {
   val io = IO(new Bundle {
     val reg_en = Input(Bool())

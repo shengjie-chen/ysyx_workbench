@@ -3,7 +3,7 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 import Pipeline._
-import RVnpc.RVNoob.Cache.{DCache, ICache}
+import RVnpc.RVNoob.Cache.{DCache, ICache, JudgeLoad}
 
 class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
