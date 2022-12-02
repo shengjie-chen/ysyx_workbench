@@ -217,7 +217,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.mem_ctrl.r_pmem := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
   io.mem_ctrl.w_pmem := type_S
   io.mem_ctrl.zero_ex_op := MuxCase(
-    3.U,
+    DontCare,
     Array(
       rvi_sb -> 0.U,
       rvi_sh -> 1.U,
