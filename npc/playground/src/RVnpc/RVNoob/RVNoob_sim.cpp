@@ -293,6 +293,7 @@ int main(int argc, char **argv, char **env) {
     panic("check difftest file!\n")
   }
   refresh_gpr_pc_csr();
+  cpu_state.pc = top->io_pc;
   if (diff_en) {
     diff_file = *(argv + 4) + 5;
     printf("%lx\n",cpu_state.pc);
