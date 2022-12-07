@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 23:23:45
+ * @LastEditTime: 2022-12-07 23:24:56
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -29,18 +29,6 @@ const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
 NPCState npc_state;
 /// @brief NPC寄存器状态
 CPU_state cpu_state;
-
-void npc_ebreak() {
-  npc_state.state = NPC_END;
-  printf("!!!!!! npc ebreak !!!!!!\n");
-}
-
-// uint32_t *cpu_inst = NULL;
-// extern "C" void set_inst_ptr(const svLogicVecVal *r)
-//{
-//   cpu_inst = (uint32_t *)(r);
-// }
-
 
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
