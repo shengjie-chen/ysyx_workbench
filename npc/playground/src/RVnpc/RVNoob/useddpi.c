@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 23:21:15
+ * @LastEditTime: 2022-12-07 23:27:30
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
@@ -148,4 +148,16 @@ uint32_t cpu_npc;
 extern "C" void npc_change(const svLogicVecVal *r) {
   cpu_npc = *(vaddr_t *)(r);
 }
+
+void npc_ebreak() {
+  npc_state.state = NPC_END;
+  printf("!!!!!! npc ebreak !!!!!!\n");
+}
+
+// uint32_t *cpu_inst = NULL;
+// extern "C" void set_inst_ptr(const svLogicVecVal *r)
+//{
+//   cpu_inst = (uint32_t *)(r);
+// }
+
 
