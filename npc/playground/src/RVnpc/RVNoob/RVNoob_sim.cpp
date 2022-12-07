@@ -2,31 +2,29 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 22:59:34
+ * @LastEditTime: 2022-12-07 23:21:25
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
-#include "RVNoob.h"
 #include "VRVNoob.h"
 #include "VRVNoob__Dpi.h"
-// #include "disasm.cc"
-#include "device.c"
-#include "difftest.c"
-#include "sdb.c"
 #include "svdpi.h"
 #include "time.h"
-#include "timer.c"
-#include "trace.c"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <sys/time.h>
+
+#include "RVNoob.h"
+#include "device.c"
+#include "difftest.c"
+#include "sdb.c"
+#include "timer.c"
+#include "trace.c"
 #include "useddpi.c"
 
-// int add(int a, int b) { return a + b; }
 
-vluint64_t main_time = 0;
-const vluint64_t sim_time = -1;
-// const vluint64_t sim_time = 100;
+vluint64_t main_time = 0; // 当前仿真时间
+const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
 NPCState npc_state;
 CPU_state cpu_state;
 
@@ -41,21 +39,10 @@ void npc_ebreak() {
 //   cpu_inst = (uint32_t *)(r);
 // }
 
-uint32_t cpu_inst;
-extern "C" void inst_change(const svLogicVecVal *r) {
-  cpu_inst = *(uint32_t *)(r);
-  // printf("inst : %x\n", cpu_inst);
-}
-
-uint32_t cpu_npc;
-extern "C" void npc_change(const svLogicVecVal *r) {
-  cpu_npc = *(vaddr_t *)(r);
-}
 
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
 #endif
-
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern "C" void init_disasm(const char *triple);

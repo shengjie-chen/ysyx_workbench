@@ -180,6 +180,7 @@ bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MSIZE < (paddr_t)CONFIG_MBASE);
 }
 
+/// @brief NPC当前运行状态等
 typedef struct {
   int state;
   vaddr_t halt_pc;
@@ -187,6 +188,7 @@ typedef struct {
 } NPCState;
 
 #define CSR_NUM 4
+/// @brief RV64CPU寄存器状态
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
