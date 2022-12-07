@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 23:21:25
+ * @LastEditTime: 2022-12-07 23:23:45
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -25,7 +25,9 @@
 
 vluint64_t main_time = 0; // 当前仿真时间
 const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
+/// @brief NPC当前运行状态等
 NPCState npc_state;
+/// @brief NPC寄存器状态
 CPU_state cpu_state;
 
 void npc_ebreak() {
@@ -43,9 +45,6 @@ void npc_ebreak() {
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
 #endif
-
-extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-extern "C" void init_disasm(const char *triple);
 
 #ifdef CONFIG_ITRACE
 char logbuf[128];
