@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 22:57:22
+ * @LastEditTime: 2022-12-07 22:59:34
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -20,7 +20,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <sys/time.h>
-#include "useddpi.h"
+#include "useddpi.c"
 
 // int add(int a, int b) { return a + b; }
 
