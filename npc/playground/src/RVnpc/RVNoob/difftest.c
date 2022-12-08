@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 16:57:14
+ * @LastEditTime: 2022-12-08 17:00:38
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -142,6 +142,8 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   if (top->io_diff_en) {
     if (skip_pc_write != skip_pc_read) {
       printf("inst wait to skip\n");
+      printf("wb_pc:\t" FMT_WORD "\n", wb_pc);
+      printf("skip_pc[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
       if (wb_pc == skip_pc[skip_pc_read]) {
         printf("skip difftest!\n");
         // to skip the checking of an instruction, just copy the reg state to reference design
