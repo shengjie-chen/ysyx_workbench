@@ -41,7 +41,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
     id_reg.out.inst,
-    id_reg.out.valid,
+    RegNext(!id_reg.reset.asBool()),
     id_reg.out.snpc,
     Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1),
     Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2),
@@ -72,7 +72,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     ex_reg.out.wb_rf_ctrl,
     ex_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.mem_reg_ctrl.en,
-    ex_reg.out.valid,
+    RegNext(!ex_reg.reset.asBool()),
     pipelineBypass
   )
   val dcache = Module(new DCache)
@@ -88,7 +88,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.wb_reg_ctrl.en,
-    mem_reg.out.valid,
+    RegNext(!mem_reg.reset.asBool()),
     pipelineBypass
   )
   val judge_load    = Module(new JudgeLoad)
