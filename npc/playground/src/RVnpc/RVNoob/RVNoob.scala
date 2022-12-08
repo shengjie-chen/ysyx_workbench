@@ -29,7 +29,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl   = Module(new PipelineCtrl)
-  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en, pipelineBypass)
+  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en, 1.B,pipelineBypass)
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
@@ -41,6 +41,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
     id_reg.out.inst,
+    id_reg.out.valid,
     id_reg.out.snpc,
     Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1),
     Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2),
@@ -71,6 +72,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     ex_reg.out.wb_rf_ctrl,
     ex_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.mem_reg_ctrl.en,
+    ex_reg.out.valid,
     pipelineBypass
   )
   val dcache = Module(new DCache)
@@ -86,6 +88,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
     mem_reg.out.wb_rf_ctrl,
     mem_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.wb_reg_ctrl.en,
+    mem_reg.out.valid,
     pipelineBypass
   )
   val judge_load    = Module(new JudgeLoad)

@@ -53,13 +53,17 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-    val reset_t = RegNext(reset.asBool())
-    val reg_en_t = RegNext(in.reg_en.asBool())
+    val reset_t    = RegNext(reset.asBool())
+    val reg_en_t   = RegNext(in.reg_en.asBool())
     val mem_data_t = RegNext(out.mem_data)
     out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
-    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
-
+    out.valid := Reg(Bool())
+    when(reset.asBool() || !in.reg_en) {
+      out.valid := 0.B
+    }.otherwise {
+      out.valid := in.valid
+    }
   }
 }
 
@@ -74,6 +78,7 @@ object WBreg {
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
     reg_en:      Bool,
+    valid:       Bool,
     bypass:      Boolean = false
   ): WBreg = {
     val wb_reg = Module(new WBreg(bypass))
@@ -87,6 +92,7 @@ object WBreg {
     wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     wb_reg.in.reg_en <> reg_en
+    wb_reg.in.valid  <> valid
 
     wb_reg
   }

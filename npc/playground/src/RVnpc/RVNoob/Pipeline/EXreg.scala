@@ -74,7 +74,12 @@ class EXreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
     out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.reg_en)
 
-    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+    out.valid := Reg(Bool())
+    when(reset.asBool() || !in.reg_en) {
+      out.valid := 0.B
+    }.otherwise {
+      out.valid := in.valid
+    }
   }
 }
 
@@ -82,6 +87,7 @@ object EXreg {
   def apply(
     pc:          UInt,
     inst:        UInt,
+    valid:       Bool,
     snpc:        UInt,
     src1:        UInt,
     src2:        UInt,
@@ -110,6 +116,7 @@ object EXreg {
     ex_reg.in.dnpc_ctrl   <> dnpc_ctrl
 
     ex_reg.in.reg_en <> reg_en
+    ex_reg.in.valid  <> valid
 
     ex_reg
   }
