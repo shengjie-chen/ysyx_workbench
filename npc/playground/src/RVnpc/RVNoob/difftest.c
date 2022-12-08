@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 12:54:53
+ * @LastEditTime: 2022-12-08 12:56:14
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -147,7 +147,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       refresh_gpr_pc_csr();                             // 更新状态
       ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
       if (skip_pc_read == 3) {
-        skip_pc_read == 0;
+        skip_pc_read = 0;
       } else {
         skip_pc_read++;
       }
@@ -169,7 +169,7 @@ void difftest_skip_ref(vaddr_t addr) {
   skip_pc[skip_pc_write] = addr;
   printf("\tmem_pc:" FMT_WORD " -> skip_pc[%d]\n", addr, skip_pc_write);
   if (skip_pc_write == 3) {
-    skip_pc_write == 0;
+    skip_pc_write = 0;
   } else {
     skip_pc_write++;
   }
