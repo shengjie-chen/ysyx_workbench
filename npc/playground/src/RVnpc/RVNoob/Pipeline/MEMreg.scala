@@ -63,7 +63,7 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
 
     val dpi_mem_pc = Module(new DpiMemPc)
-    dpi_mem_pc.io.pc <> out.pc
+    dpi_mem_pc.io.pc := out.pc
   }
 
 }
