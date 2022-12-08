@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 21:03:42
+ * @LastEditTime: 2022-12-08 21:04:46
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -129,15 +129,16 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
     printf("diff test fail!!\n");
     printf("error inst is " FMT_WORD "\n", pc);
     isa_reg_display(ref);
-  } else if (ref_mem_temp != 0) {
-    printf("main_time : %ld\n", main_time);
-    npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = pc;
-    printf("ref mem change unusually!!\n");
-    printf("ref mem " FMT_WORD " is " FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
-        printf("error inst is " FMT_WORD "\n", pc);
-    isa_reg_display(ref);
-  }
+  } 
+  // else if (ref_mem_temp != 0) {
+  //   printf("main_time : %ld\n", main_time);
+  //   npc_state.state = NPC_ABORT;
+  //   npc_state.halt_pc = pc;
+  //   printf("ref mem change unusually!!\n");
+  //   printf("ref mem " FMT_WORD " is " FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
+  //       printf("error inst is " FMT_WORD "\n", pc);
+  //   isa_reg_display(ref);
+  // }
 }
 
 /// @brief 当前检测的指令
