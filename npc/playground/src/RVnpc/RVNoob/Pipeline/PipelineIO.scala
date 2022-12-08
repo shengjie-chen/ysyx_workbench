@@ -7,7 +7,7 @@ import chisel3.util._
 class PipelineIO extends Bundle with RVNoobConfig {
   val pc   = UInt(xlen.W)
   val inst = UInt(inst_w.W)
-  val valid = Bool()
+//  val valid = Bool()
 }
 
 class PipelineInIO extends PipelineIO {
@@ -17,6 +17,7 @@ class PipelineInIO extends PipelineIO {
 }
 
 class PipelineOutIO extends PipelineIO {
+  val valid = Bool()
 }
 
 //TODO

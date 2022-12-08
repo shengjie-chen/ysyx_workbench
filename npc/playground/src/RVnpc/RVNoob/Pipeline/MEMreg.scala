@@ -60,13 +60,7 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-    val valid = Reg(Bool())
-    when(reset.asBool() || !in.reg_en) {
-      valid := 0.B
-    }.otherwise {
-      valid := in.valid
-    }
-    out.valid := valid
+    out.valid := PipelineValid(reset.asBool(), in.reg_en)
   }
 
 }
@@ -84,7 +78,6 @@ object MEMreg {
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
     reg_en:      Bool,
-    valid:       Bool,
     bypass:      Boolean = false
   ): MEMreg = {
     val mem_reg = Module(new MEMreg(bypass))
@@ -98,7 +91,6 @@ object MEMreg {
     mem_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     mem_reg.in.reg_en <> reg_en
-    mem_reg.in.valid  <> valid
 
     mem_reg
   }
