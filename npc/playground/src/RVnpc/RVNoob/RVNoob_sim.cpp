@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 10:01:31
+ * @LastEditTime: 2022-12-08 10:04:14
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -198,9 +198,9 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_FTRACE
   fclose(ftrace_fp);
 #endif
-#ifdef CONFIG_DUMPVCD
-  sleep(1);
-#endif
+// #ifdef CONFIG_DUMPVCD
+//   sleep(1);
+// #endif
 
   free(vmem);
   tfp->close();
