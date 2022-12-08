@@ -1,3 +1,11 @@
+/*
+ * @Author: Shengjie Chen chenshengjie1999@126.com
+ * @Date: 2022-11-05 16:32:16
+ * @LastEditors: Shengjie Chen chenshengjie1999@126.com
+ * @LastEditTime: 2022-12-08 23:05:41
+ * @FilePath: /nanos-lite/src/proc.c
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #include <proc.h>
 
 #define MAX_NR_PROC 4
@@ -32,9 +40,9 @@ void init_proc() {
   // APPS
   // naive_uload(NULL,"/bin/nslider");
   // naive_uload(NULL,"/bin/menu");
-  naive_uload(NULL,"/bin/nterm");
+  // naive_uload(NULL,"/bin/nterm");
   // naive_uload(NULL,"/bin/bird");
-  // naive_uload(NULL, "/bin/pal");
+  naive_uload(NULL, "/bin/pal");
 
   // TESTS
   // naive_uload(NULL,"/bin/dummy");
