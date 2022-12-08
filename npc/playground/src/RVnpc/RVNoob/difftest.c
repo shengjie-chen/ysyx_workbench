@@ -135,6 +135,7 @@ vaddr_t wb_pc = 0x80000000;
 vaddr_t skip_pc[4];
 static int skip_pc_write = 0;
 static int skip_pc_read = 0;
+extern uint32_t mem_pc;
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
