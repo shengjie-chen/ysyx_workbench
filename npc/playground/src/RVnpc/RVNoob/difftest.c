@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 16:07:44
+ * @LastEditTime: 2022-12-08 16:56:01
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -140,18 +140,21 @@ extern uint32_t mem_pc;
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
   if (top->io_diff_en) {
-    if ((skip_pc_write != skip_pc_read) && (wb_pc == skip_pc[skip_pc_read])) {
-      printf("skip difftest!\n");
-      // to skip the checking of an instruction, just copy the reg state to reference design
-      refresh_gpr_pc_csr();                             // 更新状态
-      ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
-      if (skip_pc_read == 3) {
-        skip_pc_read = 0;
-      } else {
-        skip_pc_read++;
+    if (skip_pc_write != skip_pc_read) {
+      printf("inst wait to skip\n")
+      if (wb_pc == skip_pc[skip_pc_read]) {
+        printf("skip difftest!\n");
+        // to skip the checking of an instruction, just copy the reg state to reference design
+        refresh_gpr_pc_csr();                             // 更新状态
+        ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
+        if (skip_pc_read == 3) {
+          skip_pc_read = 0;
+        } else {
+          skip_pc_read++;
+        }
+        printf("skip_pc_read:%d\n", skip_pc_read);
+        return;
       }
-      printf("skip_pc_read:%d\n", skip_pc_read);
-      return;
     }
     refresh_gpr_pc_csr();
     ref_difftest_exec(1);
