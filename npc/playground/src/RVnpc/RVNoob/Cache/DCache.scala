@@ -29,6 +29,8 @@ class DCache(
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
   val io = IO(new Bundle {
+    val pc = Input(UInt(addrWidth.W))
+
     val addr = Input(UInt(addrWidth.W))
     val ren  = Input(Bool())
 
@@ -216,6 +218,7 @@ class DCache(
   dpi_pmem.io.waddr  <> pmem_waddr
   dpi_pmem.io.wmask  <> pmem_wmask
   dpi_pmem.io.wdata  <> pmem_wdata
+  dpi_pmem.io.pc     <> io.pc
 
   // ********************************** Replace信号 **********************************
   when(inpmem_op && hit) {

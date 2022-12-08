@@ -1,6 +1,6 @@
 package RVnpc.RVNoob.Cache
 
-import RVnpc.RVNoob.{Judge_Load_op, MemCtrlIO, RVNoobConfig, ext_function}
+import RVnpc.RVNoob.{ext_function, Judge_Load_op, MemCtrlIO, RVNoobConfig}
 import chisel3._
 import chisel3.util.{HasBlackBoxInline, MuxCase}
 
@@ -26,10 +26,10 @@ class DATAM extends Module with RVNoobConfig {
   wmask := MuxCase(
     "b11111111".U,
     Array(
-      (io.mem_ctrl.zero_ex_op === 3.U) -> "b11111111".U,        // write double word
+      (io.mem_ctrl.zero_ex_op === 3.U) -> "b11111111".U, // write double word
       (io.mem_ctrl.zero_ex_op === 2.U) -> ("b1111".U << shift), // write word
-      (io.mem_ctrl.zero_ex_op === 1.U) -> ("b11".U << shift),   // write half word
-      (io.mem_ctrl.zero_ex_op === 0.U) -> ("b1".U << shift)     // write byte
+      (io.mem_ctrl.zero_ex_op === 1.U) -> ("b11".U << shift), // write half word
+      (io.mem_ctrl.zero_ex_op === 0.U) -> ("b1".U << shift) // write byte
     )
   )
 
@@ -61,6 +61,7 @@ class DATAM extends Module with RVNoobConfig {
 class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
   val io = IO(new Bundle {
     val clk    = Input(Clock())
+    val pc     = Input(UInt(xlen.W))
     val raddr  = Input(UInt(xlen.W))
     val rdata  = Output(UInt(xlen.W))
     val r_pmem = Input(Bool())
@@ -75,6 +76,7 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
     """
       |module DpiPmem(
       |input clk,
+      |input [63:0] pc,
       |input [63:0] raddr,
       |input [63:0] waddr,
       |input [7:0] wmask,
@@ -84,22 +86,22 @@ class DpiPmem extends BlackBox with HasBlackBoxInline with RVNoobConfig {
       |);
       |
       |import "DPI-C" function void pmem_read_dpi(
-      |  input longint raddr, output longint rdata);
+      |  input longint raddr, output longint rdata, input longint pc);
       |import "DPI-C" function void pmem_write_dpi(
-      |  input longint waddr, input longint wdata, input byte wmask);
+      |  input longint waddr, input longint wdata, input byte wmask, input longint pc);
       |
       |reg [63:0] rdata_t;
       |
       |always @(*) begin
       |  if(r_pmem == 1'b1)
-      |    pmem_read_dpi(raddr, rdata_t);
+      |    pmem_read_dpi(raddr, rdata_t, pc);
       |  else
       |    rdata_t = 64'd0;
       |end
       |
       |always @(posedge clk) begin
       |  if(w_pmem == 1'b1)
-      |    pmem_write_dpi(waddr, wdata, wmask);
+      |    pmem_write_dpi(waddr, wdata, wmask, pc);
       |end
       |
       |assign rdata = rdata_t;

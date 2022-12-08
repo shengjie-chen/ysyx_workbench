@@ -104,6 +104,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   icache.io.addr <> pc
   icache.io.ren  <> !reset.asBool()
+  icache.io.pc  <> pc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -171,6 +172,8 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
   dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   dcache.io.valid      <> mem_reg.out.valid
+
+  dcache.io.pc <> mem_reg.out.pc
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
