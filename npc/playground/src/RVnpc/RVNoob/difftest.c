@@ -141,8 +141,6 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
   if (top->io_diff_en) {
     if ((skip_pc_write != skip_pc_read) && (wb_pc == skip_pc[skip_pc_read])) {
-      printf("skip difftest!\n");
-
       // to skip the checking of an instruction, just copy the reg state to reference design
       refresh_gpr_pc_csr();                             // 更新状态
       ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
@@ -151,7 +149,6 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       } else {
         skip_pc_read++;
       }
-      printf("skip_pc_read:%d\n", skip_pc_read);
       return;
     }
     refresh_gpr_pc_csr();
@@ -167,11 +164,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref(vaddr_t addr) {
   skip_pc[skip_pc_write] = addr;
-  printf("\tmem_pc:" FMT_WORD " -> skip_pc[%d]\n", addr, skip_pc_write);
   if (skip_pc_write == 3) {
     skip_pc_write = 0;
   } else {
     skip_pc_write++;
   }
-  printf("skip_pc_write:%d\n", skip_pc_write);
 }
