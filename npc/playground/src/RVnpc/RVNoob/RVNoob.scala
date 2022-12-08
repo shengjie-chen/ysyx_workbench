@@ -29,7 +29,7 @@ class RVNoob(pipeline: Boolean = true) extends Module with ext_function with RVN
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl   = Module(new PipelineCtrl)
-  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en, 1.B,pipelineBypass)
+  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en, !reset.asBool(),pipelineBypass)
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
