@@ -142,7 +142,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   if (top->io_diff_en) {
     if (skip_pc_write != skip_pc_read) {
       printf("inst wait to skip\n");
-      printf("wb_pc:\t" FMT_WORD "\n", wb_pc);
+      printf("wb_pc:\t\t" FMT_WORD "\n", wb_pc);
       printf("skip_pc[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
       if (wb_pc == skip_pc[skip_pc_read]) {
         printf("skip difftest!\n");
