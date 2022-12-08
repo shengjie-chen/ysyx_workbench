@@ -2,14 +2,14 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 12:43:30
+ * @LastEditTime: 2022-12-08 22:30:02
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
 
 /// @brief dpi函数用于读任意有效地址
-/// @param raddr 
-/// @param rdata 
+/// @param raddr
+/// @param rdata
 extern "C" void pmem_read_dpi(long long raddr, long long *rdata, long long pc) {
   if (raddr == RTC_ADDR) {
     struct timeval now;
@@ -67,16 +67,16 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata, long long pc) {
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
-    fprintf(mtrace_fp, "read  pmem ## addr: %llx", raddr & ~0x7ull);
+    fprintf(mtrace_fp, "T:%d\tread  pmem ## addr: %llx", main_time, raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
 #endif
   }
 }
 
 /// @brief dpi函数用于写任意有效地址
-/// @param waddr 
-/// @param wdata 
-/// @param wmask 
+/// @param waddr
+/// @param wdata
+/// @param wmask
 extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, long long pc) {
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
@@ -123,7 +123,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
   }
 
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, "write pmem ## addr: %llx", waddr & ~0x7ull);
+  fprintf(mtrace_fp, "T:%d\twrite pmem ## addr: %llx", main_time, waddr & ~0x7ull);
   fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
   fprintf(mtrace_fp, " wmask-> 0x%02x \n", (uint8_t)wmask);
 #endif
@@ -163,4 +163,3 @@ uint32_t mem_pc;
 extern "C" void mem_pc_change(const svLogicVecVal *r) {
   mem_pc = *(vaddr_t *)(r);
 }
-
