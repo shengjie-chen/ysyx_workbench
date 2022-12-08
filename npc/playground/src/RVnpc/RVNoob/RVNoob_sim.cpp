@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 10:06:25
+ * @LastEditTime: 2022-12-08 19:25:11
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -22,6 +22,8 @@
 #include "trace.c"
 #include "useddpi.c"
 
+extern "C" void init_disasm(const char *triple);
+extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 vluint64_t main_time = 0; // 当前仿真时间
 const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
