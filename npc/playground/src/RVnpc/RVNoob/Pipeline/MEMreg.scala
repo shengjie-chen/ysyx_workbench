@@ -61,6 +61,9 @@ class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
     out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+
+    val dpi_mem_pc = Module(new DpiMemPc)
+    dpi_mem_pc.io.pc <> out.pc
   }
 
 }
@@ -94,4 +97,21 @@ object MEMreg {
 
     mem_reg
   }
+}
+
+class DpiMemPc extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val pc = Input(UInt(64.W))
+  })
+  setInline(
+    "DpiMemPc.v",
+    """
+      |import "DPI-C" function void mem_pc_change(input logic [63:0] a);
+      |module DpiMemPc(input [63:0] pc);
+      |
+      | always @* mem_pc_change(pc);
+      |
+      |endmodule
+            """.stripMargin
+  )
 }

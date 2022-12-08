@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 10:43:01
+ * @LastEditTime: 2022-12-08 11:56:05
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -33,17 +33,17 @@ void refresh_gpr_pc_csr() {
   for (i = 0; i < 32; i++) {
     cpu_state.gpr[i] = cpu_gpr[i];
   }
-  cpu_state.pc = top->io_diff_pc; 
+  cpu_state.pc = top->io_diff_pc;
   for (i = 0; i < CSR_NUM; i++) {
     cpu_state.csr[i] = cpu_csr[i];
   }
 }
 
 /// @brief 显式调用动态链接库,进行difftest初始化
-/// @param ref_so_file 
-/// @param img_size 
-/// @param port 
-/// @param cpu 
+/// @param ref_so_file
+/// @param img_size
+/// @param port
+/// @param cpu
 void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
   assert(ref_so_file != NULL);
 
@@ -116,8 +116,8 @@ void isa_reg_display(CPU_state *ref) {
   }
 }
 
-/// @brief 
-/// @param ref 
+/// @brief
+/// @param ref
 /// @param pc 上一周期wb的pc，也就是当前检测pc
 void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref)) {
@@ -129,25 +129,32 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-static int is_skip_ref_num = 0;
+/// @brief 当前检测的指令
 vaddr_t wb_pc = 0x80000000;
+// FIFO
+vaddr_t skip_pc[4];
+static int skip_pc_write = 0;
+static int skip_pc_read = 0;
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
   if (top->io_diff_en) {
-    if (is_skip_ref_num != 0) {
+    if ((skip_pc_write != skip_pc_read) && (wb_pc == skip_pc[skip_pc_read])) {
       // to skip the checking of an instruction, just copy the reg state to reference design
       refresh_gpr_pc_csr();                             // 更新状态
       ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
-      is_skip_ref_num--;
+      if (skip_pc_read == 3) {
+        skip_pc_read == 0;
+      } else {
+        skip_pc_read++;
+      }
       return;
     }
     refresh_gpr_pc_csr();
-
     ref_difftest_exec(1);
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-
     checkregs(&ref_r, wb_pc);
+
     wb_pc = top->io_diff_pc;
   }
 }
@@ -155,5 +162,10 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 /// @brief 对外设进行读写时需要跳过difftest
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref() {
-  is_skip_ref_num++;
+  skip_pc[skip_pc_write] = mem_reg_out_pc;
+  if (skip_pc_write == 3) {
+    skip_pc_write == 0;
+  } else {
+    skip_pc_write++;
+  }
 }

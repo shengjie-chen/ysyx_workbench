@@ -245,5 +245,4 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
       |endmodule
             """.stripMargin
   )
-
 }
