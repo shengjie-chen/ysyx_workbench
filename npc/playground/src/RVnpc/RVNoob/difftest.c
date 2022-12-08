@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 12:07:28
+ * @LastEditTime: 2022-12-08 12:16:13
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -164,6 +164,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref() {
   skip_pc[skip_pc_write] = mem_pc;
+  printf("mem_pc:" FMT_WORD " -> skip_pc[%d]", skip_pc_write);
   if (skip_pc_write == 3) {
     skip_pc_write == 0;
   } else {
