@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 21:06:50
+ * @LastEditTime: 2022-12-08 21:09:17
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -23,6 +23,7 @@ enum { DIFFTEST_TO_DUT,
        DIFFTEST_TO_REF };
 
 uint32_t ref_mem_temp;
+uint32_t ref_mem_temp_r = 0;
 paddr_t ref_mem_temp_addr = 0x8001341c;
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
@@ -129,14 +130,13 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
     printf("diff test fail!!\n");
     printf("error inst is " FMT_WORD "\n", pc);
     isa_reg_display(ref);
-  } 
-  else if (ref_mem_temp != 0) {
+  } else if (ref_mem_temp != ref_mem_temp_r) {
+    ref_mem_temp_r = ref_mem_temp;
     printf("----------------------\n");
     printf("main_time : %ld\n", main_time);
     printf("ref mem change unusually!!\n");
     printf("ref mem " FMT_WORD " is " FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
     printf("error inst is " FMT_WORD "\n", pc);
-    isa_reg_display(ref);
     printf("----------------------\n");
   }
 }
