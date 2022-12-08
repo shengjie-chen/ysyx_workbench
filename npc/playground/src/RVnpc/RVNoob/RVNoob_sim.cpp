@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 10:04:14
+ * @LastEditTime: 2022-12-08 10:06:25
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -95,13 +95,13 @@ void one_clock() {
   if (main_time > CONFIG_DUMPSTART)
     tfp->dump(main_time);
 #endif
-  main_time++;
 
 #ifdef CONFIG_DIFFTEST
   difftest_step(pc, cpu_npc);
 #endif
 
   device_update();
+  main_time++;
 }
 
 int main(int argc, char **argv, char **env) {

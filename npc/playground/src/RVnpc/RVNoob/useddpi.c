@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-07 23:27:30
+ * @LastEditTime: 2022-12-08 10:07:17
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
@@ -134,17 +134,15 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask) {
   }
 }
 
-uint32_t cpu_inst;
 /// @brief 获取cpu的指令，当前得到idu的指令
-/// @param r 
+uint32_t cpu_inst;
 extern "C" void inst_change(const svLogicVecVal *r) {
   cpu_inst = *(uint32_t *)(r);
   // printf("inst : %x\n", cpu_inst);
 }
 
-uint32_t cpu_npc;
 /// @brief 获取下一个pc值，即下一周期pc寄存器的值
-/// @param r 
+uint32_t cpu_npc;
 extern "C" void npc_change(const svLogicVecVal *r) {
   cpu_npc = *(vaddr_t *)(r);
 }
