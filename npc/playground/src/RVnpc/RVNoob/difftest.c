@@ -155,6 +155,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
           skip_pc_read++;
         }
         printf("skip_pc_read:%d\n", skip_pc_read);
+        wb_pc = top->io_diff_pc;
         return;
       }
     }
