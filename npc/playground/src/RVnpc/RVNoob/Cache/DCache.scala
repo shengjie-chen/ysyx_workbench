@@ -235,7 +235,7 @@ class DCache(
   when(miss && replace_dirty) {
     replace_cnt := replace_cnt + 1.U
     when(replace_cnt === 0.U) {
-      replace_addr  := Cat(replace_tag, addr_index, addr_offset)
+      replace_addr  := Cat(replace_tag, addr_index, 0.U(5.W))
       replace_valid := 1.B
     }.elsewhen(replace_cnt === 1.U) {
       replace_buffer(1) := data_arrays(replace_way).Q(127, 64)

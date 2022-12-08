@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 22:30:02
+ * @LastEditTime: 2022-12-08 22:31:16
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
@@ -67,7 +67,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata, long long pc) {
   if (likely(in_pmem(raddr))) {
     *rdata = pmem_read(raddr & ~0x7ull, 8);
 #ifdef CONFIG_MTRACE
-    fprintf(mtrace_fp, "T:%d\tread  pmem ## addr: %llx", main_time, raddr & ~0x7ull);
+    fprintf(mtrace_fp, "T:%ld\tread  pmem ## addr: %llx", main_time, raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%016llx \n", *rdata);
 #endif
   }
@@ -123,7 +123,7 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
   }
 
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, "T:%d\twrite pmem ## addr: %llx", main_time, waddr & ~0x7ull);
+  fprintf(mtrace_fp, "T:%ld\twrite pmem ## addr: %llx", main_time, waddr & ~0x7ull);
   fprintf(mtrace_fp, " -> 0x%016llx ", wdata);
   fprintf(mtrace_fp, " wmask-> 0x%02x \n", (uint8_t)wmask);
 #endif
