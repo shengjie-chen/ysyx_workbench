@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 21:09:17
+ * @LastEditTime: 2022-12-08 22:51:24
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -22,9 +22,11 @@ char *diff_file = NULL;
 enum { DIFFTEST_TO_DUT,
        DIFFTEST_TO_REF };
 
+#ifdef CONFIG_DIFFTEST_REF_MEM_POINT
 uint32_t ref_mem_temp;
 uint32_t ref_mem_temp_r = 0;
 paddr_t ref_mem_temp_addr = 0x8001341c;
+#endif
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
@@ -130,7 +132,9 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
     printf("diff test fail!!\n");
     printf("error inst is " FMT_WORD "\n", pc);
     isa_reg_display(ref);
-  } else if (ref_mem_temp != ref_mem_temp_r) {
+  }
+#ifdef CONFIG_DIFFTEST_REF_MEM_POINT
+  else if (ref_mem_temp != ref_mem_temp_r) {
     ref_mem_temp_r = ref_mem_temp;
     printf("----------------------\n");
     printf("main_time : %ld\n", main_time);
@@ -139,6 +143,7 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
     printf("error inst is " FMT_WORD "\n", pc);
     printf("----------------------\n");
   }
+#endif
 }
 
 /// @brief 当前检测的指令
@@ -175,8 +180,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     refresh_gpr_pc_csr();
     ref_difftest_exec(1);
 
+#ifdef CONFIG_DIFFTEST_REF_MEM_POINT
     ref_difftest_memcpy(ref_mem_temp_addr, &ref_mem_temp, 4, DIFFTEST_TO_DUT);
-
+#endif
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     checkregs(&ref_r, wb_pc);
 
