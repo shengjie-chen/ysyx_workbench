@@ -58,7 +58,7 @@ class DCache(
 
   val pmem_ren   = Wire(Bool())
   val pmem_raddr = Wire(UInt(addrWidth.W))
-  val pmem_rdata = RegEnable(UInt(xlen.W), io.valid)
+  val pmem_rdata = RegEnable(dpi_pmem.io.rdata, pmem_ren)
 
   val pmem_wen   = Wire(Bool())
   val pmem_waddr = Wire(UInt(addrWidth.W))
@@ -172,7 +172,7 @@ class DCache(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  when(mmio_read) {
+  when(mmio_read ) {
     pmem_raddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
   }.otherwise {
     pmem_raddr := Cat(addr_tag, addr_index, allocate_cnt(1, 0), 0.U((byteOffsetWidth - 2).W))
@@ -213,7 +213,6 @@ class DCache(
   dpi_pmem.io.clk    <> clock
   dpi_pmem.io.r_pmem <> pmem_ren
   dpi_pmem.io.raddr  <> pmem_raddr
-  dpi_pmem.io.rdata  <> pmem_rdata
   dpi_pmem.io.w_pmem <> pmem_wen
   dpi_pmem.io.waddr  <> pmem_waddr
   dpi_pmem.io.wmask  <> pmem_wmask
