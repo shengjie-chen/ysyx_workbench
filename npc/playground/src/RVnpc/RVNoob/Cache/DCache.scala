@@ -58,7 +58,7 @@ class DCache(
 
   val pmem_ren   = Wire(Bool())
   val pmem_raddr = Wire(UInt(addrWidth.W))
-  val pmem_rdata = Reg(UInt(xlen.W))
+  val pmem_rdata = RegEnable(UInt(xlen.W), io.valid)
 
   val pmem_wen   = Wire(Bool())
   val pmem_waddr = Wire(UInt(addrWidth.W))
@@ -177,7 +177,7 @@ class DCache(
   }.otherwise {
     pmem_raddr := Cat(addr_tag, addr_index, allocate_cnt(1, 0), 0.U((byteOffsetWidth - 2).W))
   }
-  pmem_ren := ((miss && !replace_dirty && !allocate_cnt(2)) || mmio_read)
+  pmem_ren := ((miss && !replace_dirty && !allocate_cnt(2)) || (mmio_read && io.valid))
   // Write signal
   pmem_wen := (mmio_write && io.valid) || replace_valid
   when(mmio_write && io.valid) {
