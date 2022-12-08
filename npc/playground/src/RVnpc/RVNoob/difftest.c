@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 08:56:47
+ * @LastEditTime: 2022-12-08 09:51:05
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -75,10 +75,12 @@ void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
   ref_difftest_regcpy(cpu, DIFFTEST_TO_REF);
 }
 
+extern vluint64_t main_time;
 bool isa_difftest_checkregs(CPU_state *ref_r) {
   for (int i = 0; i < 32; i++) {
     if (cpu_state.gpr[i] != ref_r->gpr[i]) {
       printf("!!!!!!!\n");
+      printf("main_time : %d\n", main_time);
       printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
       printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
       printf("!!!!!!!\n");
