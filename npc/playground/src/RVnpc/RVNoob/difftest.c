@@ -134,7 +134,7 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = pc;
     printf("ref mem change unusually!!\n");
-    printf("ref mem " FMT_WORD "is" FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp)
+    printf("ref mem " FMT_WORD "is" FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
         printf("error inst is " FMT_WORD "\n", pc);
     isa_reg_display(ref);
   }
