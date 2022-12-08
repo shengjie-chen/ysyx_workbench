@@ -164,7 +164,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref() {
   skip_pc[skip_pc_write] = mem_pc;
-  printf("mem_pc:" FMT_WORD " -> skip_pc[%d]", skip_pc_write);
+  printf("mem_pc:" FMT_WORD " -> skip_pc[%d]\n", skip_pc_write);
   if (skip_pc_write == 3) {
     skip_pc_write == 0;
   } else {

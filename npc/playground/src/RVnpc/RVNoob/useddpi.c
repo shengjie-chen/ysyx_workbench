@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 12:05:04
+ * @LastEditTime: 2022-12-08 12:19:09
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
@@ -161,6 +161,6 @@ void npc_ebreak() {
 /// @brief 获取mem_reg.out.pc
 uint32_t mem_pc;
 extern "C" void mem_pc_change(const svLogicVecVal *r) {
-  mem_pc = *(uint32_t *)(r);
+  mem_pc = *(vaddr_t *)(r);
 }
 
