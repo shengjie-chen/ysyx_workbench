@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 11:56:05
+ * @LastEditTime: 2022-12-08 12:07:28
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -76,7 +76,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r) {
   for (int i = 0; i < 32; i++) {
     if (cpu_state.gpr[i] != ref_r->gpr[i]) {
       printf("!!!!!!!\n");
-      printf("main_time : %d\n", main_time);
+      printf("main_time : %ld\n", main_time);
       printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
       printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
       printf("!!!!!!!\n");
@@ -162,7 +162,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 /// @brief 对外设进行读写时需要跳过difftest
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref() {
-  skip_pc[skip_pc_write] = mem_reg_out_pc;
+  skip_pc[skip_pc_write] = mem_pc;
   if (skip_pc_write == 3) {
     skip_pc_write == 0;
   } else {
