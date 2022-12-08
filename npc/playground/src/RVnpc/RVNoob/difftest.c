@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 12:52:56
+ * @LastEditTime: 2022-12-08 12:54:53
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
  * @Description: difftest相关的变量与函数
  */
@@ -141,7 +141,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
   if (top->io_diff_en) {
     if ((skip_pc_write != skip_pc_read) && (wb_pc == skip_pc[skip_pc_read])) {
-      printf("skip difftest\n");
+      printf("skip difftest!\n");
 
       // to skip the checking of an instruction, just copy the reg state to reference design
       refresh_gpr_pc_csr();                             // 更新状态
@@ -151,6 +151,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       } else {
         skip_pc_read++;
       }
+      printf("skip_pc_read:%d\n", skip_pc_read);
       return;
     }
     refresh_gpr_pc_csr();
@@ -172,4 +173,5 @@ void difftest_skip_ref(vaddr_t addr) {
   } else {
     skip_pc_write++;
   }
+  printf("skip_pc_write:%d\n", skip_pc_write);
 }
