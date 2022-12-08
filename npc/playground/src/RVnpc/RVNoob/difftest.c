@@ -1,3 +1,11 @@
+/*
+ * @Author: Shengjie Chen chenshengjie1999@126.com
+ * @Date: 2022-11-05 16:32:16
+ * @LastEditors: Shengjie Chen chenshengjie1999@126.com
+ * @LastEditTime: 2022-12-08 08:56:47
+ * @FilePath: /npc/playground/src/RVnpc/RVNoob/difftest.c
+ * @Description: difftest相关的变量与函数
+ */
 #include "RVNoob.h"
 #include "VRVNoob.h"
 #include "common.h"
@@ -19,6 +27,7 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
+/// @brief 从硬件那里更新仿真软件这边的cpu寄存器
 void refresh_gpr_pc_csr() {
   int i;
   for (i = 0; i < 32; i++) {
@@ -34,6 +43,11 @@ void refresh_gpr_pc_csr() {
   }
 }
 
+/// @brief 显式调用动态链接库,进行difftest初始化
+/// @param ref_so_file 
+/// @param img_size 
+/// @param port 
+/// @param cpu 
 void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
   assert(ref_so_file != NULL);
 
@@ -89,6 +103,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r) {
   }
   return true;
 }
+
 void isa_reg_display(CPU_state *ref) {
   printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
   printf("ref.pc is " FMT_WORD "\n", ref->pc);
@@ -172,6 +187,8 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 #endif
 }
 
+/// @brief 对外设进行读写时需要跳过difftest
+/// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref() {
 #ifdef CONFIG_PIPELINE
   is_skip_ref_num++;

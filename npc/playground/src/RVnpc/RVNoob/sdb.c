@@ -11,19 +11,21 @@ extern NPCState npc_state;
 extern vluint64_t main_time;
 extern const vluint64_t sim_time;
 
+/// @brief gpr寄存器向量(数组)的指针
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r)
 {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
+/// @brief csr寄存器向量(数组)的指针
 uint64_t *cpu_csr = NULL;
 extern "C" void set_csr_ptr(const svOpenArrayHandle r)
 {
   cpu_csr = (uint64_t *)(((VerilatedDpiOpenVar *)r)->datap());
 }
 
-// 一个输出RTL中通用寄存器的值的示例
+/// @brief 一个输出RTL中通用寄存器的值的示例
 void dump_gpr()
 {
   int i;
