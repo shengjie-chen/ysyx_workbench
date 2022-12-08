@@ -40,12 +40,13 @@ class IDreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     val inst_t   = RegNext(out.inst)
     out.inst := Mux(reset_t, 0.U, Mux(reg_en_t, in.inst, inst_t))
 
-    out.valid := Reg(Bool())
+    val valid = Reg(Bool())
     when(reset.asBool() || !in.reg_en) {
-      out.valid := 0.B
+      valid := 0.B
     }.otherwise {
-      out.valid := in.valid
+      valid := in.valid
     }
+    out.valid := valid
   }
 }
 

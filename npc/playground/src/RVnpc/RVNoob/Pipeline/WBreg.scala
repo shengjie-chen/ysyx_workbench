@@ -58,12 +58,13 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     val mem_data_t = RegNext(out.mem_data)
     out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
-    out.valid := Reg(Bool())
+    val valid = Reg(Bool())
     when(reset.asBool() || !in.reg_en) {
-      out.valid := 0.B
+      valid := 0.B
     }.otherwise {
-      out.valid := in.valid
+      valid := in.valid
     }
+    out.valid := valid
   }
 }
 
