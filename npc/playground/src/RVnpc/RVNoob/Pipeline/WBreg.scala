@@ -108,7 +108,7 @@ class DpiWb extends BlackBox with HasBlackBoxInline {
       |import "DPI-C" function void wb_change(input logic v, input logic [63:0] p, input logic [31:0] i);
       |module DpiWb(input valid, input [63:0] pc, input [31:0] inst);
       |
-      | always @* wb_change(v, p, i);
+      | always @* wb_change(valid, pc, inst);
       |
       |endmodule
             """.stripMargin
