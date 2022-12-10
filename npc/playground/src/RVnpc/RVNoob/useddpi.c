@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-12-07 22:51:47
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 22:31:16
+ * @LastEditTime: 2022-12-10 10:48:32
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/useddpi.c
  * @Description: 用到的dpi变量和函数集合
  */
@@ -163,3 +163,13 @@ uint32_t mem_pc;
 extern "C" void mem_pc_change(const svLogicVecVal *r) {
   mem_pc = *(vaddr_t *)(r);
 }
+
+uint8_t wb_valid;
+uint32_t wb_pc;
+uint32_t wb_inst;
+extern "C" void wb_change(const svLogicVecVal *v, const svLogicVecVal *p, const svLogicVecVal *i){
+  wb_valid = *(uint8_t *)(v);
+  wb_pc = *(vaddr_t *)(p);
+  wb_inst = *(uint32_t *)(i);
+}
+

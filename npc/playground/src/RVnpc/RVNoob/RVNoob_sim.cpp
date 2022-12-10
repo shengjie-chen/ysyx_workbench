@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-08 19:25:11
+ * @LastEditTime: 2022-12-10 11:08:05
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/RVNoob_sim.cpp
  * @Description: 对RVNoob处理器进行仿真的主文件
  */
@@ -67,11 +67,12 @@ void one_clock() {
 #endif
 
 #ifdef CONFIG_ITRACE
+if(wb_valid == 1){
   memset(logbuf, 0, 128);
   char *p = logbuf;
-  p += snprintf(p, sizeof(logbuf), "0x%016lx:", top->io_pc);
+  p += snprintf(p, sizeof(logbuf), "0x%016lx:", wb_pc);
   int i;
-  uint8_t *inst = (uint8_t *)(&cpu_inst);
+  uint8_t *inst = (uint8_t *)(&wb_inst);
   // printf("%x\n", cpu_inst);
   int ilen = 4;
   for (i = ilen - 1; i >= 0; i--) {
@@ -85,10 +86,10 @@ void one_clock() {
   memset(p, ' ', space_len);
   p += space_len;
   disassemble(p, logbuf + sizeof(logbuf) - p,
-              top->io_pc, (uint8_t *)(&cpu_inst), ilen);
+              top->io_pc, (uint8_t *)(&wb_inst), ilen);
 
   fprintf(itrace_fp, "%s\n", logbuf);
-
+}
 #endif
 
   top->clock = 1;

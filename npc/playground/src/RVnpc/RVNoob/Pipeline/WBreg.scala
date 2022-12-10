@@ -53,13 +53,17 @@ class WBreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
     out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
     out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-    val reset_t = RegNext(reset.asBool())
-    val reg_en_t = RegNext(in.reg_en.asBool())
+    val reset_t    = RegNext(reset.asBool())
+    val reg_en_t   = RegNext(in.reg_en.asBool())
     val mem_data_t = RegNext(out.mem_data)
     out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
     out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
 
+    val dpi_wb = Module(new DpiWb)
+    dpi_wb.io.valid := out.valid
+    dpi_wb.io.pc    := out.pc
+    dpi_wb.io.inst  := out.inst
   }
 }
 
@@ -90,4 +94,23 @@ object WBreg {
 
     wb_reg
   }
+}
+
+class DpiWb extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val valid = Input(Bool())
+    val pc    = Input(UInt(64.W))
+    val inst  = Input(UInt(32.W))
+  })
+  setInline(
+    "DpiWb.v",
+    """
+      |import "DPI-C" function void wb_change(input logic v, input logic [63:0] p, input logic [31:0] i);
+      |module DpiWb(input valid, input [63:0] pc, input [31:0] inst);
+      |
+      | always @* wb_change(v, p, i);
+      |
+      |endmodule
+            """.stripMargin
+  )
 }
