@@ -167,7 +167,7 @@ extern "C" void mem_pc_change(const svLogicVecVal *r) {
 uint8_t wb_valid;
 uint32_t wb_pc;
 uint32_t wb_inst;
-extern "C" void wb_change(const svLogicVecVal *v, const svLogicVecVal *p, const svLogicVecVal *i){
+extern "C" void wb_change(const svLogic *v, const svLogicVecVal *p, const svLogicVecVal *i){
   wb_valid = *(uint8_t *)(v);
   wb_pc = *(vaddr_t *)(p);
   wb_inst = *(uint32_t *)(i);
