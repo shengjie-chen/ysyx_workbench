@@ -147,7 +147,7 @@ void checkregs(CPU_state *ref, vaddr_t pc) {
 }
 
 /// @brief 当前检测的指令
-vaddr_t wb_pc = 0x80000000;
+vaddr_t finish_pc = 0x80000000;
 // FIFO
 vaddr_t skip_pc[4];
 static int skip_pc_write = 0;
@@ -159,9 +159,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   if (top->io_diff_en) {
     if (skip_pc_write != skip_pc_read) {
       // printf("inst wait to skip\n");
-      // printf("wb_pc:\t\t" FMT_WORD "\n", wb_pc);
+      // printf("finish_pc:\t\t" FMT_WORD "\n", finish_pc);
       // printf("skip_pc[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
-      if (wb_pc == skip_pc[skip_pc_read]) {
+      if (finish_pc == skip_pc[skip_pc_read]) {
         // printf("skip difftest!\n");
         // to skip the checking of an instruction, just copy the reg state to reference design
         refresh_gpr_pc_csr();                             // 更新状态
@@ -172,7 +172,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
           skip_pc_read++;
         }
         // printf("skip_pc_read:%d\n", skip_pc_read);
-        wb_pc = top->io_diff_pc;
+        finish_pc = top->io_diff_pc;
         return;
       }
     }
@@ -184,9 +184,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     ref_difftest_memcpy(ref_mem_temp_addr, &ref_mem_temp, 4, DIFFTEST_TO_DUT);
 #endif
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-    checkregs(&ref_r, wb_pc);
+    checkregs(&ref_r, finish_pc);
 
-    wb_pc = top->io_diff_pc;
+    finish_pc = top->io_diff_pc;
   }
 }
 
