@@ -50,7 +50,7 @@ int width;
 int height;
 void NDL_OpenCanvas(int *w, int *h) {
 
-  // printf("canvas width: %d, height: %d\n", *w, *h);
+  printf("canvas width: %d, height: %d\n", *w, *h);
   assert(*w <= width);
   assert(*h <= height);
   if (*w == 0 && *h == 0) {
