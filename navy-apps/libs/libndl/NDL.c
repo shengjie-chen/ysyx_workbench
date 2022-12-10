@@ -51,7 +51,7 @@ int height;
 void NDL_OpenCanvas(int *w, int *h) {
 
   printf("canvas width: %d, height: %d\n", *w, *h);
-  printf("width: %d, height: %d\n", width, height);
+  // printf("width: %d, height: %d\n", width, height);
   assert(*w <= width);
   assert(*h <= height);
   if (*w == 0 && *h == 0) {
@@ -182,7 +182,7 @@ int NDL_Init(uint32_t flags) {
   // printf("tv_sec: %ld,tv_usec: %ld\n",curr_time.tv_sec,curr_time.tv_usec);
   init_sec = curr_time.tv_sec;
   init_usec = curr_time.tv_usec;
-  // printf("screen width: %d, height: %d\n", width, height);
+  printf("screen width: %d, height: %d\n", width, height);
   return 0;
 }
 
