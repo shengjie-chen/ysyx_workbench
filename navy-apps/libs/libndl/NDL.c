@@ -129,6 +129,7 @@ int NDL_Init(uint32_t flags) {
     printf("open file fail!\n");
     exit(1);
   }
+  printf("read pinfo!!\n");
   read(fd, pinfo, 25);
   // printf("%s\n", pinfo);
   int colon1 = 0, colon2 = 0;
