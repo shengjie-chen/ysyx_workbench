@@ -2,7 +2,7 @@
  * @Author: Shengjie Chen chenshengjie1999@126.com
  * @Date: 2022-11-05 16:32:16
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
- * @LastEditTime: 2022-12-10 15:08:24
+ * @LastEditTime: 2022-12-10 15:23:07
  * @FilePath: /nanos-lite/src/proc.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -47,8 +47,8 @@ void init_proc() {
   // TESTS
   // naive_uload(NULL,"/bin/dummy");
   // naive_uload(NULL,"/bin/hello");
-  naive_uload(NULL,"/bin/file-test");
-  // naive_uload(NULL,"/bin/timer-test");
+  // naive_uload(NULL,"/bin/file-test");
+  naive_uload(NULL,"/bin/timer-test");
   // naive_uload(NULL,"/bin/event-test");
   // naive_uload(NULL,"/bin/bmp-test");
   // naive_uload(NULL,"/bin/fixedptc-test");
