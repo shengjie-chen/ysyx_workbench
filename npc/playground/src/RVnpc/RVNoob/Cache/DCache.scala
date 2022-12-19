@@ -42,7 +42,7 @@ class DCache(
     val miss  = Output(Bool())
     val rdata = Output(UInt(xlen.W))
 
-    val sram = VecInit(Seq.fill(4)(new CacheSramIO))
+    val sram = Vec(4, new CacheSramIO)
   })
   // ********************************** Main Mem Define **********************************
   // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
@@ -149,11 +149,11 @@ class DCache(
   data_wdata := Mux(!hit, pmem_rdata << data_shift, io.wdata << data_shift)
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
-    io.sram(i).cen  := ~data_cen(i)
-    io.sram(i).wen  := ~data_wen
+    io.sram(i).cen   := ~data_cen(i)
+    io.sram(i).wen   := ~data_wen
     io.sram(i).wmask := ~data_bwen
-    io.sram(i).addr    := data_addr
-    io.sram(i).wdata    := data_wdata
+    io.sram(i).addr  := data_addr
+    io.sram(i).wdata := data_wdata
   }
 
   // ********************************** Tag Array **********************************
@@ -171,7 +171,7 @@ class DCache(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  when(mmio_read ) {
+  when(mmio_read) {
     pmem_raddr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
   }.otherwise {
     pmem_raddr := Cat(addr_tag, addr_index, allocate_cnt(1, 0), 0.U((byteOffsetWidth - 2).W))
