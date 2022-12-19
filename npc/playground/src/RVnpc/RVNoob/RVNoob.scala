@@ -13,7 +13,7 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
     val diff_pc = Output(UInt(64.W))
   })
   // >>>>>>>>>>>>>> RVNoobCore <<<<<<<<<<<<<<
-  val core = Module(new RVNoobCore)
+  val core = RVNoobCore()
   // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
   val sram0 = Module(new S011HD1P_X32Y2D128_BW)
   val sram1 = Module(new S011HD1P_X32Y2D128_BW)
