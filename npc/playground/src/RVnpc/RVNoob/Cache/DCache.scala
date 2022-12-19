@@ -41,11 +41,11 @@ class DCache(
 
     val miss  = Output(Bool())
     val rdata = Output(UInt(xlen.W))
+
+    val sram = VecInit(Seq.fill(4)(new CacheSramIO))
   })
   // ********************************** Main Mem Define **********************************
   // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
-  val data_arrays = VecInit(Seq.fill(4)(Module(new S011HD1P_X32Y2D128_BW).io))
-
   val data_cen   = Wire(Vec(4, Bool()))
   val data_wen   = Wire(Bool())
   val data_bwen  = Wire(UInt(128.W))
@@ -149,12 +149,11 @@ class DCache(
   data_wdata := Mux(!hit, pmem_rdata << data_shift, io.wdata << data_shift)
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
-    data_arrays(i).CLK  <> clock
-    data_arrays(i).CEN  := ~data_cen(i)
-    data_arrays(i).WEN  := ~data_wen
-    data_arrays(i).BWEN := ~data_bwen
-    data_arrays(i).A    := data_addr
-    data_arrays(i).D    := data_wdata
+    io.sram(i).cen  := ~data_cen(i)
+    io.sram(i).wen  := ~data_wen
+    io.sram(i).wmask := ~data_bwen
+    io.sram(i).addr    := data_addr
+    io.sram(i).wdata    := data_wdata
   }
 
   // ********************************** Tag Array **********************************
@@ -196,7 +195,7 @@ class DCache(
     pmem_waddr := replace_addr
     pmem_wdata := Mux(
       replace_dirty,
-      Mux(replace_cnt(0), data_arrays(replace_way).Q(63, 0), replace_buffer(1)),
+      Mux(replace_cnt(0), io.sram(replace_way).rdata(63, 0), replace_buffer(1)),
       replace_buffer(allocate_cnt(0))
     )
     pmem_wmask := "b11111111".U
@@ -238,12 +237,12 @@ class DCache(
       replace_addr  := Cat(replace_tag, addr_index, 0.U(5.W))
       replace_valid := 1.B
     }.elsewhen(replace_cnt === 1.U) {
-      replace_buffer(1) := data_arrays(replace_way).Q(127, 64)
+      replace_buffer(1) := io.sram(replace_way).rdata(127, 64)
       replace_addr      := replace_addr + 8.U
     }.elsewhen(replace_cnt === 2.U) {
       replace_addr      := replace_addr + 8.U
-      replace_buffer(1) := data_arrays(replace_way).Q(127, 64)
-      replace_buffer(0) := data_arrays(replace_way).Q(63, 0)
+      replace_buffer(1) := io.sram(replace_way).rdata(127, 64)
+      replace_buffer(0) := io.sram(replace_way).rdata(63, 0)
       replace_cnt       := 0.U
     }
   }
@@ -276,7 +275,7 @@ class DCache(
   io.miss := miss
 
   when(RegNext(inpmem)) {
-    io.rdata := (data_arrays(RegNext(hit_way)).Q >> RegNext(data_shift))
+    io.rdata := (io.sram(RegNext(hit_way)).rdata >> RegNext(data_shift))
   }.otherwise {
     io.rdata := (pmem_rdata >> (RegNext(pmem_shift) * 8.U))
   }

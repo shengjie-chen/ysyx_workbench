@@ -31,40 +31,26 @@ class MEMregInIO extends PipelineInIO with MEMregSignal {
 
 }
 
-class MEMreg(bypass: Boolean = false) extends MultiIOModule with RVNoobConfig {
+class MEMreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new MEMregInIO))
   val out = IO(Output(new MEMregOutIO))
   dontTouch(in)
   dontTouch(out)
-  if (bypass) {
-    out.pc       := in.pc
-    out.inst     := in.inst
-    out.src2     := in.src2
-    out.mem_addr := in.mem_addr
-    out.alu_res  := in.alu_res
 
-    out.mem_ctrl    := in.mem_ctrl
-    out.wb_rf_ctrl  := in.wb_rf_ctrl
-    out.wb_csr_ctrl := in.wb_csr_ctrl
+  out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
+  out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
+  out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
+  out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
+  out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)
 
-//    out.valid := 1.B
+  out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
+  out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
+  out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  } else {
-    out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
-    out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
-    out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
-    out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
-    out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)
+  out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
 
-    out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
-    out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
-    out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
-
-    out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
-
-    val dpi_mem_pc = Module(new DpiMemPc)
-    dpi_mem_pc.io.pc := out.pc
-  }
+  val dpi_mem_pc = Module(new DpiMemPc)
+  dpi_mem_pc.io.pc := out.pc
 
 }
 
@@ -80,10 +66,9 @@ object MEMreg {
     mem_ctrl:    MemCtrlIO,
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
-    reg_en:      Bool,
-    bypass:      Boolean = false
+    reg_en:      Bool
   ): MEMreg = {
-    val mem_reg = Module(new MEMreg(bypass))
+    val mem_reg = Module(new MEMreg)
     mem_reg.in.pc          <> pc
     mem_reg.in.inst        <> inst
     mem_reg.in.src2        <> src2
