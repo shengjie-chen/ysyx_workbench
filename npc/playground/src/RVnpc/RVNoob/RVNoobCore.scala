@@ -15,7 +15,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
-    val master = new AXIIO
+//    val master = new AXIIO
     val slave = Flipped(new AXIIO)
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
     val sram0 = new CacheSramIO
@@ -34,7 +34,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
    * ********************************* */
   dontTouch(io.interrupt)
-  dontTouch(io.master)
+//  dontTouch(io.master)
   dontTouch(io.slave)
   io.slave.awready := 0.B
   io.slave.wready := 0.B
