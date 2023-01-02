@@ -171,12 +171,13 @@ class DCacheI(
   pmem_rdata        := io.axi_rctrl.data
   io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state)) || mmio_read_valid
   io.axi_rctrl.id   := deviceId.U
-  io.axi_rctrl.addr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
   io.axi_rctrl.size := 3.U
   when(mmio_read) {
+    io.axi_rctrl.addr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
     io.axi_rctrl.burst := 0.U
     io.axi_rctrl.len   := 0.U
   }.otherwise {
+    io.axi_rctrl.addr := io.addr & (~0x1F.U(addrWidth.W)).asUInt()
     io.axi_rctrl.burst := 1.U
     io.axi_rctrl.len   := 3.U
   }
