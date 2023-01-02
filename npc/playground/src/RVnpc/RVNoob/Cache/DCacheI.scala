@@ -125,7 +125,7 @@ class DCacheI(
   // WEN
   data_wen := (!replace_dirty && !hit) || (hit && io.wen)
   // BWEN
-  val data_shift = (Mux(!replace_dirty && !hit, Mux(allocate_cnt(0), 0.U, 8.U), addr_offset(3, 0)) << 3).asUInt()
+  val data_shift = (Mux(!replace_dirty && !hit, Mux(allocate_cnt(0), 8.U, 0.U), addr_offset(3, 0)) << 3).asUInt()
   val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
   data_bwen := MuxCase(
     0.U,
