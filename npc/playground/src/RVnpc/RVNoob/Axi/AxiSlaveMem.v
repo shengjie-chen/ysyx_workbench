@@ -444,11 +444,11 @@ begin
   if (axi_rvalid)
     begin
       // Read address mux
-      axi_rdata <= mem_data_out;
+      axi_rdata = mem_data_out;
     end
   else
     begin
-      axi_rdata <= 32'h00000000;
+      axi_rdata = 64'h00000000;
     end
 end
 
