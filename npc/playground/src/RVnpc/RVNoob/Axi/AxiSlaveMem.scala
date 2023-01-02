@@ -5,6 +5,8 @@ import chisel3.util._
 
 class AxiSlaveMem extends BlackBox {
   val io = IO(new Bundle {
+    val PC            = Input(UInt(64.W))
+
     val S_AXI_ACLK    = Input(Clock())
     val S_AXI_ARESETN = Input(Bool())
 

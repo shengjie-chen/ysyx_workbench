@@ -9,6 +9,8 @@ module AxiSlaveMem #
     parameter integer C_S_AXI_ADDR_WIDTH	= 32
 )
 (
+    input wire [63 : 0]    PC,
+
     input wire  S_AXI_ACLK,
     input wire  S_AXI_ARESETN,
 
@@ -418,7 +420,7 @@ wire [63:0] data_out;
 
 DpiPmem u_DpiPmem(
     .clk    ( S_AXI_ACLK    ),
-    .pc     (               ),
+    .pc     (   PC          ),
     .raddr  ( {32'b0, axi_araddr}  ),
     .rdata  ( data_out  ),
     .r_pmem ( mem_rden ),

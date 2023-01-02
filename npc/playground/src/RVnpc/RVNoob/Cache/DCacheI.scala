@@ -32,8 +32,6 @@ class DCacheI(
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
   val io = IO(new Bundle {
-    val pc = Input(UInt(addrWidth.W))
-
     val addr = Input(UInt(addrWidth.W))
     val ren  = Input(Bool())
 

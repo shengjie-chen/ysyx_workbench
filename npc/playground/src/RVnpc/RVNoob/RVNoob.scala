@@ -26,7 +26,7 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   val sram6 = Module(new S011HD1P_X32Y2D128_BW)
   val sram7 = Module(new S011HD1P_X32Y2D128_BW)
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
-  val axi_pmem = Module(new AxiSlaveMem)
+  val axi_pmem  = Module(new AxiSlaveMem)
   val axi_pmem2 = Module(new AxiSlaveMem)
 
   io.pc      <> core.io.pc
@@ -164,6 +164,10 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   axi_pmem2.io.S_AXI_RDATA   <> core.io.master2.rdata
   axi_pmem2.io.S_AXI_RRESP   <> core.io.master2.rresp
   axi_pmem2.io.S_AXI_RLAST   <> core.io.master2.rlast
+
+  axi_pmem.io.PC  <> core.io.if_pc
+  axi_pmem2.io.PC <> core.io.mem_pc
+
 }
 
 object RVNoobGen extends App {

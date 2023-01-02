@@ -12,6 +12,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val ebreak  = Output(Bool())
     val diff_en = Output(Bool())
     val diff_pc = Output(UInt(64.W))
+    val if_pc   = Output(UInt(64.W))
+    val mem_pc  = Output(UInt(64.W))
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
@@ -136,7 +138,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   icache.io.addr    <> pc
   icache.io.ren     <> !reset.asBool()
-  icache.io.pc      <> pc
   icache.io.sram(0) <> io.sram0
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
@@ -145,6 +146,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   maxi.io.maxi  <> io.master
   maxi.io.rctrl <> icache.io.axi_rctrl
   maxi.io.wctrl <> icache.io.axi_wctrl
+
+  io.if_pc      <> pc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -209,8 +212,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   dcache.io.valid      <> mem_reg.out.valid
 
-  dcache.io.pc <> mem_reg.out.pc
-
   dcache.io.sram(0) <> io.sram4
   dcache.io.sram(1) <> io.sram5
   dcache.io.sram(2) <> io.sram6
@@ -219,6 +220,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   maxi2.io.maxi  <> io.master2
   maxi2.io.rctrl <> dcache.io.axi_rctrl
   maxi2.io.wctrl <> dcache.io.axi_wctrl
+
+  io.mem_pc <> mem_reg.out.pc
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
