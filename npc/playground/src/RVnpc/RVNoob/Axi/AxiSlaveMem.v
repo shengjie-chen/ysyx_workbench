@@ -204,7 +204,7 @@ begin
                 end
             default: //reserved (incremental burst for example)
               begin
-                axi_awaddr <= axi_awaddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+                axi_awaddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] <= axi_awaddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
                 //for awsize = 4 bytes (010)
               end
           endcase
@@ -358,7 +358,7 @@ begin
                 end
             default: //reserved (incremental burst for example)
               begin
-                axi_araddr <= axi_araddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB]+1;
+                axi_araddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB] <= axi_araddr[C_S_AXI_ADDR_WIDTH - 1:ADDR_LSB]+1;
                 //for arsize = 4 bytes (010)
               end
           endcase
@@ -419,11 +419,11 @@ wire [63:0] data_out;
 DpiPmem u_DpiPmem(
     .clk    ( S_AXI_ACLK    ),
     .pc     (               ),
-    .raddr  ( axi_araddr  ),
+    .raddr  ( {32'b0, axi_araddr}  ),
     .rdata  ( data_out  ),
     .r_pmem ( mem_rden ),
 
-    .waddr  ( axi_awaddr  ),
+    .waddr  ( {32'b0, axi_awaddr}  ),
     .wmask  ( S_AXI_WSTRB  ),
     .wdata  ( S_AXI_WDATA  ),
     .w_pmem  ( mem_wren  )
