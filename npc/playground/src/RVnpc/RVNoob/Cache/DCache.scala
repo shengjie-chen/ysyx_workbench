@@ -5,12 +5,6 @@ import chisel3._
 import chisel3.util._
 import scala.math.pow
 
-class TagArrays(tagWidth: Int) extends Bundle {
-  val dirty_bit = Bool()
-  val valid     = Bool()
-  val tag       = UInt(tagWidth.W)
-}
-
 class DCache(
   val addrWidth:     Int = 32,
   val cacheSize:     Int = 4 * pow(2, 10).toInt,
@@ -281,35 +275,6 @@ class DCache(
   }
 
 }
-
-class S011HD1P_X32Y2D128_BW extends BlackBox {
-  val io = IO(new Bundle {
-    val Q    = Output(UInt(128.W))
-    val CLK  = Input(Clock())
-    val CEN  = Input(Bool())
-    val WEN  = Input(Bool())
-    val BWEN = Input(UInt(128.W))
-    val A    = Input(UInt(6.W))
-    val D    = Input(UInt(128.W))
-  })
-
-}
-
-//object S011HD1P_X32Y2D128_BW {
-//  def apply(
-//    clk:    Clock,
-//    inst:   UInt,
-//    a0:     UInt,
-//    ebreak: Bool
-//  ): S011HD1P_X32Y2D128_BW = {
-//    val data = Module(new S011HD1P_X32Y2D128_BW)
-//    data.io.clk    <> clk
-//    data.io.inst   <> inst
-//    data.io.a0     <> a0
-//    data.io.ebreak <> ebreak
-//    data
-//  }
-//}
 
 object DCache {
   def apply(isICache: Boolean): DCache = {
