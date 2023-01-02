@@ -42,7 +42,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   io.slave.bresp   := 0.U
   io.slave.bid     := 0.U
   io.slave.arready := 0.B
-  io.slave.rready  := 0.B
+  io.slave.rvalid  := 0.B
+  io.slave.rresp   := 0.U
+  io.slave.rdata   := 0.U
+  io.slave.rlast   := 0.B
+  io.slave.rid     := 0.U
 
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
@@ -136,7 +140,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
 
-  maxi.io.maxi <> io.master
+  maxi.io.maxi  <> io.master
   maxi.io.rctrl <> icache.io.axi_rctrl
   maxi.io.wctrl <> icache.io.axi_wctrl
 
