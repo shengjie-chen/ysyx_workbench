@@ -46,26 +46,22 @@ class AxiWriteCtrlIO extends Bundle {
   val id         = Input(UInt(4.W))
   val size       = Input(UInt(3.W))
   val wbuf_ready = Input(Bool())
-
   val burst      = Input(UInt(2.W)) // 0 - fix, 1 - incr
   val addr       = Input(UInt(32.W))
   val len        = Input(UInt(8.W))
   val data       = Input(UInt(64.W))
   val strb       = Input(UInt(8.W))
-
   val whandshake = Output(Bool())
   val bhandshake = Output(Bool())
 }
 
 class AxiReadCtrlIO extends Bundle {
-  val en    = Input(Bool())
-  val id    = Input(UInt(4.W))
-  val addr  = Input(UInt(32.W))
-  val size  = Input(UInt(3.W))
-
-  val burst = Input(UInt(2.W))
-  val len   = Input(UInt(8.W))
-
+  val en        = Input(Bool())
+  val id        = Input(UInt(4.W))
+  val size      = Input(UInt(3.W))
+  val addr      = Input(UInt(32.W))
+  val burst     = Input(UInt(2.W))
+  val len       = Input(UInt(8.W))
   val data      = Output(UInt(64.W))
   val handshake = Output(Bool())
 }
