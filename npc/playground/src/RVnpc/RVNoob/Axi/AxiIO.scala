@@ -1,9 +1,10 @@
 package RVnpc.RVNoob.Axi
 
+import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 
-class AXIIO extends Bundle {
+class AxiIO extends Bundle {
   // >>>>>>>>>>>>>> AW <<<<<<<<<<<<<<
   val awready = Input(Bool())
   val awvalid = Output(Bool())
@@ -32,9 +33,39 @@ class AXIIO extends Bundle {
   val arsize  = Output(UInt(3.W))
   val arburst = Output(UInt(2.W))
   // >>>>>>>>>>>>>> R <<<<<<<<<<<<<<
-  val rready = Input(Bool())
-  val rvalid = Output(Bool())
-  val rdata  = Output(UInt(64.W))
-  val rstrb  = Output(UInt(8.W))
-  val rlast  = Output(Bool())
+  val rready = Output(Bool())
+  val rvalid = Input(Bool())
+  val rresp  = Input(UInt(2.W))
+  val rdata  = Input(UInt(64.W))
+  val rlast  = Input(Bool())
+  val rid    = Input(UInt(4.W))
+}
+
+class AxiWriteCtrlIO extends Bundle {
+  val en         = Input(Bool())
+  val id         = Input(UInt(4.W))
+  val size       = Input(UInt(3.W))
+  val wbuf_ready = Input(Bool())
+
+  val burst      = Input(UInt(2.W)) // 0 - fix, 1 - incr
+  val addr       = Input(UInt(32.W))
+  val len        = Input(UInt(8.W))
+  val data       = Input(UInt(64.W))
+  val strb       = Input(UInt(8.W))
+
+  val whandshake = Output(Bool())
+  val bhandshake = Output(Bool())
+}
+
+class AxiReadCtrlIO extends Bundle {
+  val en    = Input(Bool())
+  val id    = Input(UInt(4.W))
+  val addr  = Input(UInt(32.W))
+  val size  = Input(UInt(3.W))
+
+  val burst = Input(UInt(2.W))
+  val len   = Input(UInt(8.W))
+
+  val data      = Output(UInt(64.W))
+  val handshake = Output(Bool())
 }

@@ -3,6 +3,7 @@ package RVnpc.RVNoob
 import chisel3._
 import chisel3.util._
 import Pipeline._
+import RVnpc.RVNoob.Axi.AxiSlaveMem
 import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, ICache, JudgeLoad, S011HD1P_X32Y2D128_BW}
 
 class RVNoob extends Module with ext_function with RVNoobConfig {
@@ -24,6 +25,8 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   val sram5 = Module(new S011HD1P_X32Y2D128_BW)
   val sram6 = Module(new S011HD1P_X32Y2D128_BW)
   val sram7 = Module(new S011HD1P_X32Y2D128_BW)
+  // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
+  val axi_pmem = Module(new AxiSlaveMem)
 
   io.pc      <> core.io.pc
   io.ebreak  <> core.io.ebreak
@@ -95,6 +98,40 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   sram7.io.BWEN <> core.io.sram7.wmask
   sram7.io.A    <> core.io.sram7.addr
   sram7.io.D    <> core.io.sram7.wdata
+
+  // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
+  axi_pmem.io.S_AXI_ACLK    <> clock
+  axi_pmem.io.S_AXI_ARESETN <> !reset.asBool()
+  axi_pmem.io.S_AXI_AWVALID <> core.io.master.awvalid
+  axi_pmem.io.S_AXI_AWREADY <> core.io.master.awready
+  axi_pmem.io.S_AXI_AWID    <> core.io.master.awid
+  axi_pmem.io.S_AXI_AWADDR  <> core.io.master.awaddr
+  axi_pmem.io.S_AXI_AWLEN   <> core.io.master.awlen
+  axi_pmem.io.S_AXI_AWSIZE  <> core.io.master.awsize
+  axi_pmem.io.S_AXI_AWBURST <> core.io.master.awburst
+  axi_pmem.io.S_AXI_WVALID  <> core.io.master.wvalid
+  axi_pmem.io.S_AXI_WREADY  <> core.io.master.wready
+  axi_pmem.io.S_AXI_WDATA   <> core.io.master.wdata
+  axi_pmem.io.S_AXI_WSTRB   <> core.io.master.wstrb
+  axi_pmem.io.S_AXI_WLAST   <> core.io.master.wlast
+  axi_pmem.io.S_AXI_BVALID  <> core.io.master.bvalid
+  axi_pmem.io.S_AXI_BREADY  <> core.io.master.bready
+  axi_pmem.io.S_AXI_BID     <> core.io.master.bid
+  axi_pmem.io.S_AXI_BRESP   <> core.io.master.bresp
+  axi_pmem.io.S_AXI_ARVALID <> core.io.master.arvalid
+  axi_pmem.io.S_AXI_ARREADY <> core.io.master.arready
+  axi_pmem.io.S_AXI_ARID    <> core.io.master.arid
+  axi_pmem.io.S_AXI_ARADDR  <> core.io.master.araddr
+  axi_pmem.io.S_AXI_ARLEN   <> core.io.master.arlen
+  axi_pmem.io.S_AXI_ARSIZE  <> core.io.master.arsize
+  axi_pmem.io.S_AXI_ARBURST <> core.io.master.arburst
+  axi_pmem.io.S_AXI_RVALID  <> core.io.master.rvalid
+  axi_pmem.io.S_AXI_RREADY  <> core.io.master.rready
+  axi_pmem.io.S_AXI_RID     <> core.io.master.rid
+  axi_pmem.io.S_AXI_RDATA   <> core.io.master.rdata
+  axi_pmem.io.S_AXI_RRESP   <> core.io.master.rresp
+  axi_pmem.io.S_AXI_RLAST   <> core.io.master.rlast
+
 }
 
 object RVNoobGen extends App {

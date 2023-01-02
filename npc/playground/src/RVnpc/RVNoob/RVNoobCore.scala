@@ -1,7 +1,7 @@
 package RVnpc.RVNoob
 
-import RVnpc.RVNoob.Axi.AXIIO
-import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad}
+import RVnpc.RVNoob.Axi.{AxiIO, AxiMaster}
+import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, DCacheI, JudgeLoad}
 import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
@@ -15,8 +15,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
-    //    val master = new AXIIO
-    val slave = Flipped(new AXIIO)
+    val master = new AxiIO
+    val slave  = Flipped(new AxiIO)
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
     val sram0 = new CacheSramIO
     val sram1 = new CacheSramIO
@@ -52,7 +52,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val pc_en  = Wire(Bool())
   val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc   = Wire(UInt(64.W))
-  val icache = DCache(true)
+  val icache = DCacheI(true)
+  val maxi   = Module(new AxiMaster)
   //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
@@ -134,6 +135,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
+
+  maxi.io.maxi <> io.master
+  maxi.io.rctrl <> icache.io.axi_rctrl
+  maxi.io.wctrl <> icache.io.axi_wctrl
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -282,10 +287,7 @@ object RVNoobCore {
     core.io.slave.arlen   := DontCare
     core.io.slave.arsize  := DontCare
     core.io.slave.arburst := DontCare
-    core.io.slave.rvalid  := DontCare
-    core.io.slave.rdata   := DontCare
-    core.io.slave.rstrb   := DontCare
-    core.io.slave.rlast   := DontCare
+    core.io.slave.rready  := DontCare
 
     core
   }
