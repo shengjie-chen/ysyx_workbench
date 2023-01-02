@@ -63,7 +63,7 @@ class DCacheI(
   val pmem_rdata   = Wire(UInt(xlen.W))
   val pmem_shift   = Wire(UInt(3.W))
   val pmem_read_ok = Wire(Bool())
-//  val pmem_read_ok_addr = Wire(UInt(addrWidth.W))
+  //  val pmem_read_ok_addr = Wire(UInt(addrWidth.W))
   val pmem_write_ok     = Wire(Bool())
   val pmem_writeback_ok = Wire(Bool())
   // ********************************** Main Signal Define **********************************
@@ -94,13 +94,12 @@ class DCacheI(
   // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<
   // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
   val waysWidth = log2Ceil(ways)
-//  println(s"waysWidth = $waysWidth")
+  //  println(s"waysWidth = $waysWidth")
   val wordNumPerBurst = axiDataWidth / 32
   val PLRU_bits       = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
   val replace_way     = Wire(UInt(waysWidth.W))
-
-  val replace_dirty = tag_arrays(replace_way)(addr_index).dirty_bit
-  val replace_tag   = Wire(UInt(tagWidth.W))
+  val replace_dirty   = tag_arrays(replace_way)(addr_index).dirty_bit
+  val replace_tag     = Wire(UInt(tagWidth.W))
   replace_tag := tag_arrays(replace_way)(addr_index).tag
   dontTouch(replace_tag)
 
@@ -108,7 +107,8 @@ class DCacheI(
   val replace_addr   = Reg(UInt(addrWidth.W))
   val replace_cnt    = RegInit(0.U(3.W))
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
-  val allocate_cnt = RegInit(0.U(3.W))
+  val allocate_state = inpmem_miss && !replace_dirty
+  val allocate_cnt   = RegInit(0.U(2.W))
   // ********************************** Data Array / Single Port RAM x 4 **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // CEN
@@ -117,7 +117,7 @@ class DCacheI(
     when(hit) {
       data_cen := hit_oh
     }.otherwise {
-      when((replace_dirty && replace_cnt <= 1.U) || (!replace_dirty && pmem_read_ok && allocate_cnt =/= 0.U)) {
+      when((replace_dirty && replace_cnt <= 1.U) || (!replace_dirty && pmem_read_ok)) {
         data_cen(replace_way) := 1.B
       }
     }
@@ -160,7 +160,7 @@ class DCacheI(
   when(inpmem_op && hit && io.wen) {
     tag_arrays(hit_way)(addr_index).dirty_bit := 1.B
   }
-  when(allocate_cnt === 4.U) {
+  when(allocate_cnt === 3.U && pmem_read_ok) {
     tag_arrays(replace_way)(addr_index).valid := 1.B
     tag_arrays(replace_way)(addr_index).tag   := addr_tag
   }
@@ -169,7 +169,7 @@ class DCacheI(
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
   pmem_rdata        := io.axi_rctrl.data
-  io.axi_rctrl.en   := (inpmem_miss && !replace_dirty && allocate_cnt === 0.U) || mmio_read_valid
+  io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state)) || mmio_read_valid
   io.axi_rctrl.id   := deviceId.U
   io.axi_rctrl.addr := io.addr & (~0x7.U(addrWidth.W)).asUInt()
   io.axi_rctrl.size := 3.U
@@ -257,15 +257,11 @@ class DCacheI(
   }
 
   // ********************************** Allocate信号 **********************************
-  when(inpmem_miss && !replace_dirty) {
-    when(allocate_cnt === 0.U) {
+  when(allocate_state && pmem_read_ok) {
+    when(allocate_cnt === 3.U) {
+      allocate_cnt := 0.U
+    }.elsewhen() {
       allocate_cnt := allocate_cnt + 1.U
-    }.elsewhen(pmem_read_ok) {
-      when(allocate_cnt === 4.U) {
-        allocate_cnt := 0.U
-      }.otherwise {
-        allocate_cnt := allocate_cnt + 1.U
-      }
     }
   }
 
