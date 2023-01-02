@@ -16,6 +16,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
     val master = new AxiIO
+    val master2 = new AxiIO
     val slave  = Flipped(new AxiIO)
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
     val sram0 = new CacheSramIO
@@ -104,7 +105,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     ex_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.mem_reg_ctrl.en
   )
-  val dcache = Module(new DCache)
+  val dcache = Module(new DCacheI(deviceId = 1))
+  val maxi2   = Module(new AxiMaster)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
@@ -214,6 +216,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
 
+  maxi2.io.maxi  <> io.master2
+  maxi2.io.rctrl <> dcache.io.axi_rctrl
+  maxi2.io.wctrl <> dcache.io.axi_wctrl
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
