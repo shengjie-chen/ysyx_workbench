@@ -258,11 +258,7 @@ class DCacheI(
 
   // ********************************** Allocate信号 **********************************
   when(allocate_state && pmem_read_ok) {
-    when(allocate_cnt === 3.U) {
-      allocate_cnt := 0.U
-    }.elsewhen() {
-      allocate_cnt := allocate_cnt + 1.U
-    }
+    allocate_cnt := allocate_cnt + 1.U
   }
 
   // ********************************** Output **********************************
