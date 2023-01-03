@@ -70,8 +70,8 @@ class DCacheI(
   val inpmem_op        = (io.ren || io.wen) && inpmem
   val mmio_read        = !inpmem && io.ren && !RegNext(pmem_read_ok)
   val mmio_write       = !inpmem && io.wen && !RegNext(pmem_write_ok)
-  val mmio_read_valid  = mmio_read && !RegNext(mmio_read)
-  val mmio_write_valid = mmio_write && !RegNext(mmio_write)
+  val mmio_read_valid  = mmio_read && !RegNext(mmio_read) && io.valid
+  val mmio_write_valid = mmio_write && !RegNext(mmio_write) && io.valid
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
   val addr_tag    = io.addr(addrWidth - 1, addrWidth - tagWidth)
   val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
