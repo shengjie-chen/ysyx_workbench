@@ -153,7 +153,7 @@ class DCacheI(
     Cat(addr_index, addr_offset(byteOffsetWidth - 1))
   )
   // D
-  data_wdata := Mux(!hit, pmem_rdata << data_shift, io.wdata << data_shift)
+  data_wdata := Mux(!hit, io.axi_rctrl.data << data_shift, io.wdata << data_shift)
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
   for (i <- 0 to 3) {
     io.sram(i).cen   := ~data_cen(i)
@@ -178,7 +178,7 @@ class DCacheI(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  pmem_rdata        := io.axi_rctrl.data
+  pmem_rdata        := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), pmem_read_ok)
   io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state)) || mmio_read_valid
   io.axi_rctrl.id   := deviceId.U
   io.axi_rctrl.size := 3.U
@@ -278,7 +278,7 @@ class DCacheI(
   when(RegNext(inpmem)) {
     io.rdata := (io.sram(RegNext(hit_way)).rdata >> RegNext(data_shift))
   }.otherwise {
-    io.rdata := (RegNext(pmem_rdata) >> (RegNext(pmem_shift) * 8.U))
+    io.rdata := pmem_rdata
   }
 
 }
