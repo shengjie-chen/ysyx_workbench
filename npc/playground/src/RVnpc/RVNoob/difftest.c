@@ -162,7 +162,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       printf("finish_pc/current difftest pc:\t\t" FMT_WORD "\n", finish_pc);
       printf("inst wait to skip: skip_pc_buf[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
       if (finish_pc == skip_pc[skip_pc_read]) {
-        printf("skip difftest!\n");
+        printf("[skip buf output]\tskip difftest!\n");
         // to skip the checking of an instruction, just copy the reg state to reference design
         refresh_gpr_pc_csr();                             // 更新状态
         ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
@@ -171,7 +171,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
         } else {
           skip_pc_read++;
         }
-        printf("skip_pc_buf next read index:%d\n", skip_pc_read);
+        printf("\t\t\tskip_pc_buf next read index:%d\n", skip_pc_read);
         finish_pc = top->io_diff_pc;
         return;
       }
@@ -200,5 +200,5 @@ void difftest_skip_ref(vaddr_t addr) {
   } else {
     skip_pc_write++;
   }
-  printf("\t\t\t\tskip_pc_buf next write index:%d\n", skip_pc_write);
+  printf("\t\t\tskip_pc_buf next write index:%d\n", skip_pc_write);
 }
