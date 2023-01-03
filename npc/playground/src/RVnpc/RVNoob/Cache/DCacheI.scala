@@ -66,12 +66,24 @@ class DCacheI(
   val pmem_writeback_ok = Wire(Bool())
   // ********************************** Main Signal Define **********************************
   // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
-  val inpmem           = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
-  val inpmem_op        = (io.ren || io.wen) && inpmem
-  val mmio_read        = !inpmem && io.ren && !RegNext(pmem_read_ok)
-  val mmio_write       = !inpmem && io.wen && !RegNext(pmem_write_ok)
-  val mmio_read_valid  = mmio_read && !RegNext(mmio_read) && io.valid
-  val mmio_write_valid = mmio_write && !RegNext(mmio_write) && io.valid
+  val inpmem          = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
+  val inpmem_op       = (io.ren || io.wen) && inpmem
+  val mmio_read_valid = !inpmem && io.ren && io.valid
+  val mmio_read_reg   = RegInit(0.B)
+  val mmio_read       = mmio_read_valid || mmio_read_reg
+  when(mmio_read_valid) {
+    mmio_read_reg := 1.B
+  }.elsewhen(pmem_read_ok) {
+    mmio_read_reg := 0.B
+  }
+  val mmio_write_valid = !inpmem && io.wen && io.valid
+  val mmio_write_reg   = RegInit(0.B)
+  val mmio_write       = mmio_write_valid || mmio_write_reg
+  when(mmio_write_valid) {
+    mmio_write_reg := 1.B
+  }.elsewhen(pmem_writeback_ok) {
+    mmio_write_reg := 0.B
+  }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
   val addr_tag    = io.addr(addrWidth - 1, addrWidth - tagWidth)
   val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
