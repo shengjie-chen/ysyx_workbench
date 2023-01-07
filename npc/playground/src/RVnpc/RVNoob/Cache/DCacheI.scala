@@ -183,7 +183,7 @@ class DCacheI(
   io.axi_rctrl.id   := deviceId.U
   io.axi_rctrl.size := 3.U
   when(mmio_read) {
-    io.axi_rctrl.addr  := io.addr
+    io.axi_rctrl.addr  := io.addr & (~0x7.U(addrWidth.W)).asUInt()
     io.axi_rctrl.burst := 0.U
     io.axi_rctrl.len   := 0.U
   }.otherwise {
@@ -200,7 +200,7 @@ class DCacheI(
   io.axi_wctrl.wbuf_ready := mmio_write_valid || (replace_cnt === 2.U)
   when(mmio_write) {
     io.axi_wctrl.burst := 0.U
-    io.axi_wctrl.addr  := io.addr
+    io.axi_wctrl.addr  := io.addr & (~0x7.U(addrWidth.W)).asUInt()
     io.axi_wctrl.len   := 0.U
     io.axi_wctrl.data  := (io.wdata << (pmem_shift * 8.U))
     io.axi_wctrl.strb := MuxCase(
