@@ -193,7 +193,8 @@ class DCacheI(
   }
 
   // Write signal
-  io.axi_wctrl.en         := mmio_write_valid || (replace_cnt === 3.U)
+  val replace_axi_write = replace_cnt === 3.U
+  io.axi_wctrl.en         := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write))
   io.axi_wctrl.id         := deviceId.U
   io.axi_wctrl.size       := 3.U
   io.axi_wctrl.wbuf_ready := mmio_write_valid || (replace_cnt === 2.U)
@@ -260,7 +261,7 @@ class DCacheI(
         replace_buffer(3) := io.sram(replace_way).rdata(127, 64)
         replace_buffer(2) := io.sram(replace_way).rdata(63, 0)
       }
-    }.elsewhen((replace_cnt >= 3.U || replace_cnt < 6.U) && pmem_write_ok) {
+    }.elsewhen((replace_cnt >= 3.U && replace_cnt < 6.U) && pmem_write_ok) {
       replace_cnt := replace_cnt + 1.U
     }.elsewhen(replace_cnt === 6.U && pmem_writeback_ok) {
       replace_cnt := 0.U
