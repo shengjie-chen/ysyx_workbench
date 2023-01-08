@@ -55,7 +55,7 @@ class AxiMaster extends Module with RVNoobConfig {
     wvalid := 0.B
   }
   when(
-    (write_index === (awlen - 1.U) && (awlen >= 1.U) && io.wctrl.whandshake) || ((awlen === 0.U) && io.wctrl.en)
+    (write_index === (awlen - 1.U) && (awlen >= 1.U) && io.wctrl.whandshake) || ((io.wctrl.len === 0.U) && io.wctrl.en)
   ) {
     wlast := 1.B
   }.elsewhen(io.wctrl.whandshake) {
