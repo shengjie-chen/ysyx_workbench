@@ -27,7 +27,6 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   val sram7 = Module(new S011HD1P_X32Y2D128_BW)
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   val axi_pmem  = Module(new AxiSlaveMem)
-  val axi_pmem2 = Module(new AxiSlaveMem)
 
   io.pc      <> core.io.pc
   io.ebreak  <> core.io.ebreak
@@ -133,40 +132,8 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   axi_pmem.io.S_AXI_RRESP   <> core.io.master.rresp
   axi_pmem.io.S_AXI_RLAST   <> core.io.master.rlast
 
-  axi_pmem2.io.S_AXI_ACLK    <> clock
-  axi_pmem2.io.S_AXI_ARESETN <> !reset.asBool()
-  axi_pmem2.io.S_AXI_AWVALID <> core.io.master2.awvalid
-  axi_pmem2.io.S_AXI_AWREADY <> core.io.master2.awready
-  axi_pmem2.io.S_AXI_AWID    <> core.io.master2.awid
-  axi_pmem2.io.S_AXI_AWADDR  <> core.io.master2.awaddr
-  axi_pmem2.io.S_AXI_AWLEN   <> core.io.master2.awlen
-  axi_pmem2.io.S_AXI_AWSIZE  <> core.io.master2.awsize
-  axi_pmem2.io.S_AXI_AWBURST <> core.io.master2.awburst
-  axi_pmem2.io.S_AXI_WVALID  <> core.io.master2.wvalid
-  axi_pmem2.io.S_AXI_WREADY  <> core.io.master2.wready
-  axi_pmem2.io.S_AXI_WDATA   <> core.io.master2.wdata
-  axi_pmem2.io.S_AXI_WSTRB   <> core.io.master2.wstrb
-  axi_pmem2.io.S_AXI_WLAST   <> core.io.master2.wlast
-  axi_pmem2.io.S_AXI_BVALID  <> core.io.master2.bvalid
-  axi_pmem2.io.S_AXI_BREADY  <> core.io.master2.bready
-  axi_pmem2.io.S_AXI_BID     <> core.io.master2.bid
-  axi_pmem2.io.S_AXI_BRESP   <> core.io.master2.bresp
-  axi_pmem2.io.S_AXI_ARVALID <> core.io.master2.arvalid
-  axi_pmem2.io.S_AXI_ARREADY <> core.io.master2.arready
-  axi_pmem2.io.S_AXI_ARID    <> core.io.master2.arid
-  axi_pmem2.io.S_AXI_ARADDR  <> core.io.master2.araddr
-  axi_pmem2.io.S_AXI_ARLEN   <> core.io.master2.arlen
-  axi_pmem2.io.S_AXI_ARSIZE  <> core.io.master2.arsize
-  axi_pmem2.io.S_AXI_ARBURST <> core.io.master2.arburst
-  axi_pmem2.io.S_AXI_RVALID  <> core.io.master2.rvalid
-  axi_pmem2.io.S_AXI_RREADY  <> core.io.master2.rready
-  axi_pmem2.io.S_AXI_RID     <> core.io.master2.rid
-  axi_pmem2.io.S_AXI_RDATA   <> core.io.master2.rdata
-  axi_pmem2.io.S_AXI_RRESP   <> core.io.master2.rresp
-  axi_pmem2.io.S_AXI_RLAST   <> core.io.master2.rlast
 
-  axi_pmem.io.PC  <> core.io.if_pc
-  axi_pmem2.io.PC <> core.io.mem_pc
+  axi_pmem.io.PC  <> core.io.axi_pc
 
 }
 

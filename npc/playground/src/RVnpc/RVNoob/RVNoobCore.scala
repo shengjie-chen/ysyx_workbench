@@ -1,6 +1,6 @@
 package RVnpc.RVNoob
 
-import RVnpc.RVNoob.Axi.{AxiIO, AxiMaster}
+import RVnpc.RVNoob.Axi.{AxiCrossBar, AxiIO, AxiMaster}
 import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, DCacheI, JudgeLoad}
 import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
@@ -12,13 +12,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val ebreak  = Output(Bool())
     val diff_en = Output(Bool())
     val diff_pc = Output(UInt(64.W))
-    val if_pc   = Output(UInt(64.W))
-    val mem_pc  = Output(UInt(64.W))
+    val axi_pc  = Output(UInt(64.W))
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
     val master = new AxiIO
-    val master2 = new AxiIO
     val slave  = Flipped(new AxiIO)
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
     val sram0 = new CacheSramIO
@@ -60,7 +58,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc   = Wire(UInt(64.W))
   val icache = DCacheI(true)
-  val maxi   = Module(new AxiMaster)
+
   //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
@@ -107,9 +105,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     ex_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.mem_reg_ctrl.en
   )
-  val dcache = Module(new DCacheI(deviceId = 1))
-  val maxi2   = Module(new AxiMaster)
-
+  val dcache       = Module(new DCacheI(deviceId = 1))
+  val maxi         = Module(new AxiMaster)
+  val axi_crossbar = Module(new AxiCrossBar)
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
     mem_reg.out.pc,
@@ -143,11 +141,17 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
 
-  maxi.io.maxi  <> io.master
-  maxi.io.rctrl <> icache.io.axi_rctrl
-  maxi.io.wctrl <> icache.io.axi_wctrl
+  axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
+  axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
+  axi_crossbar.in1.pc    <> pc
+  axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
+  axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
+  axi_crossbar.in2.pc    <> mem_reg.out.pc
+  maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
+  maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
+  maxi.io.maxi           <> io.master
 
-  io.if_pc      <> pc
+  io.axi_pc <> axi_crossbar.maxi.pc
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -217,11 +221,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
 
-  maxi2.io.maxi  <> io.master2
-  maxi2.io.rctrl <> dcache.io.axi_rctrl
-  maxi2.io.wctrl <> dcache.io.axi_wctrl
-
-  io.mem_pc <> mem_reg.out.pc
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
