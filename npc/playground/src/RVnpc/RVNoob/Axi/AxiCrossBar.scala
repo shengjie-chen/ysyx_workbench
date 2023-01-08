@@ -46,7 +46,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     is(sInit) {
       when(in1_request && in2_request) {
         state := sWait
-      }.otherwise {
+      }.elsewhen(in1_request || in2_request){
         state := sNowait
       }
     }
