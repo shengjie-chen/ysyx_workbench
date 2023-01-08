@@ -19,9 +19,9 @@
 // #define CONFIG_DIFFTEST_REF_MEM_POINT
 
 // 1M --> 1.6GB
-// #define CONFIG_DUMPVCD
+#define CONFIG_DUMPVCD
 // #define CONFIG_DUMPSTART 0
-// #define CONFIG_DUMPSTART 1200000
+#define CONFIG_DUMPSTART 1200000
 
 // ---------------------------->switch end
 
