@@ -198,7 +198,7 @@ class DCacheI(
   io.axi_wctrl.id   := deviceId.U
   io.axi_wctrl.size := 3.U
   val wbuf_ready = RegInit(0.B)
-  when(mmio_write_valid || replace === 2.U) {
+  when(mmio_write_valid || replace_cnt === 2.U) {
     wbuf_ready := 1.B
   }.elsewhen(pmem_write_ok) {
     wbuf_ready := 0.B
