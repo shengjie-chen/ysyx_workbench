@@ -47,7 +47,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
   }
 
 //  maxi <> Mux(choose, in2, in1)
-  when(!maxi.busy && in1_wait) {
+  when(RegNext(!maxi.busy && in1_wait)) {
     maxi.rctrl.en := in1_ren_reg
     maxi.wctrl.en := in1_wen_reg
   }.otherwise {
