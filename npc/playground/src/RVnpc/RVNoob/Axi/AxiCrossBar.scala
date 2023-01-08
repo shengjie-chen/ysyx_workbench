@@ -39,7 +39,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
 
   val choose     = Wire(Bool())
   val choose_reg = RegInit(0.B)
-  choose := in2_request || choose_reg
+  choose := in2_request || (choose_reg && maxi.busy)
   when(in2_request) {
     choose_reg := 1.B
   }.elsewhen(!maxi.busy && choose_reg) {
