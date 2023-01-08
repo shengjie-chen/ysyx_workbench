@@ -66,6 +66,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     }
   }
 
+  choose := choose_reg
   switch(state) {
     is(sInit) {
       choose     := in2_request
@@ -75,12 +76,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
       when(finish) {
         choose     := !choose_reg
         choose_reg := !choose_reg
-      }.otherwise {
-        choose := choose_reg
       }
-    }
-    is(sNowait) {
-      choose := choose_reg
     }
   }
 
