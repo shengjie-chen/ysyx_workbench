@@ -21,38 +21,75 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     val busy  = Input(Bool())
   })
 
+  val sInit :: sWait :: sNowait :: Nil = Enum(3)
+  val state                            = RegInit(sInit)
+
+  val finish = !maxi.busy && RegNext(maxi.busy)
+
   val in1_request = in1.rctrl.en || in1.wctrl.en
   val in2_request = in2.rctrl.en || in2.wctrl.en
 
-  val in1_wait    = RegInit(0.B)
-  val in1_ren_reg = Reg(Bool())
-  val in1_wen_reg = Reg(Bool())
-  when(in1_request && in2_request) {
-    in1_wait    := 1.B
-    in1_ren_reg := in1.rctrl.en
-    in1_wen_reg := in1.wctrl.en
-  }.elsewhen(!maxi.busy && in1_wait) {
-    in1_wait    := 0.B
-    in1_ren_reg := 0.B
-    in1_wen_reg := 0.B
-  }
-
+  val in_ren_reg = Reg(Bool())
+  val in_wen_reg = Reg(Bool())
   val choose     = Wire(Bool())
   val choose_reg = RegInit(0.B)
-  choose := in2_request || (choose_reg && maxi.busy)
-  when(in2_request) {
-    choose_reg := 1.B
-  }.elsewhen(!maxi.busy && choose_reg) {
-    choose_reg := 0.B
+
+  when(in1_request) {
+    in_ren_reg := in1.rctrl.en
+    in_wen_reg := in1.wctrl.en
+  }.elsewhen(in2_request) {
+    in_ren_reg := in2.rctrl.en
+    in_wen_reg := in2.wctrl.en
   }
 
-//  maxi <> Mux(choose, in2, in1)
-  when(!maxi.busy && in1_wait) {
-    maxi.rctrl.en := in1_ren_reg
-    maxi.wctrl.en := in1_wen_reg
+  switch(state) {
+    is(sInit) {
+      when(in1_request && in2_request) {
+        state := sWait
+      }.otherwise {
+        state := sNowait
+      }
+    }
+    is(sWait) {
+      when(finish && !in1_request && !in2_request) {
+        state := sNowait
+      }
+    }
+    is(sNowait) {
+      when(finish) {
+        when(!in1_request && !in2_request) {
+          state := sInit
+        }
+      }.elsewhen(in1_request || in2_request) {
+        state := sWait
+      }
+    }
+  }
+
+  switch(state) {
+    is(sInit) {
+      choose     := in2_request
+      choose_reg := in2_request
+    }
+    is(sWait) {
+      when(finish) {
+        choose     := !choose_reg
+        choose_reg := !choose_reg
+      }.otherwise {
+        choose := choose_reg
+      }
+    }
+    is(sNowait) {
+      choose := choose_reg
+    }
+  }
+
+  when(state === sWait && finish) {
+    maxi.rctrl.en := in_ren_reg
+    maxi.wctrl.en := in_wen_reg
   }.otherwise {
     maxi.rctrl.en := Mux(choose, in2.rctrl.en, in1.rctrl.en)
-    maxi.wctrl.en := Mux(choose, in2.wctrl.en, in2.wctrl.en)
+    maxi.wctrl.en := Mux(choose, in2.wctrl.en, in1.wctrl.en)
   }
 
   when(choose) {
@@ -107,4 +144,28 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     in1.wctrl.bhandshake := maxi.wctrl.bhandshake
   }
 
+  //  maxi <> Mux(choose, in2, in1)
+//  when(!maxi.busy && in_wait) {
+//    maxi.rctrl.en := in_ren_reg
+//    maxi.wctrl.en := in_wen_reg
+//  }.otherwise {
+//    maxi.rctrl.en := Mux(choose, in2.rctrl.en, in1.rctrl.en)
+//    maxi.wctrl.en := Mux(choose, in2.wctrl.en, in2.wctrl.en)
+//  }
+//  val in_wait    = RegInit(0.B)
+//  when(in1_request && in2_request) {
+//    in_wait    := 1.B
+//    in_ren_reg := in1.rctrl.en
+//    in_wen_reg := in1.wctrl.en
+//  }.elsewhen(!maxi.busy && in_wait) {
+//    in_wait    := 0.B
+//    in_ren_reg := 0.B
+//    in_wen_reg := 0.B
+//  }
+//  choose := in2_request || (choose_reg && maxi.busy)
+//  when(in2_request) {
+//    choose_reg := 1.B
+//  }.elsewhen(!maxi.busy && choose_reg) {
+//    choose_reg := 0.B
+//  }
 }
