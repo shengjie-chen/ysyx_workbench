@@ -197,7 +197,7 @@ class DCacheI(
   io.axi_wctrl.en         := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write))
   io.axi_wctrl.id         := deviceId.U
   io.axi_wctrl.size       := 3.U
-  io.axi_wctrl.wbuf_ready := mmio_write_valid || (replace_cnt === 2.U)
+  io.axi_wctrl.wbuf_ready := mmio_write || (replace_cnt === 2.U)
   when(mmio_write) {
     io.axi_wctrl.burst := 0.U
     io.axi_wctrl.addr  := io.addr & (~0x7.U(addrWidth.W)).asUInt()
