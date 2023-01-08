@@ -74,7 +74,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     in1.rctrl.handshake  := 0.B
     in1.rctrl.data       := 0.U
     in1.wctrl.whandshake := 0.B
-    in1.wctrl.whandshake := 0.B
+    in1.wctrl.bhandshake := 0.B
 
     in2.rctrl.handshake  := maxi.rctrl.handshake
     in2.rctrl.data       := maxi.rctrl.data
@@ -99,7 +99,7 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
     in2.rctrl.handshake  := 0.B
     in2.rctrl.data       := 0.U
     in2.wctrl.whandshake := 0.B
-    in2.wctrl.whandshake := 0.B
+    in2.wctrl.bhandshake := 0.B
 
     in1.rctrl.handshake  := maxi.rctrl.handshake
     in1.rctrl.data       := maxi.rctrl.data

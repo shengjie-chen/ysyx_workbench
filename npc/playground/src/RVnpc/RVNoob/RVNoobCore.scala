@@ -147,6 +147,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
   axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
   axi_crossbar.in2.pc    <> mem_reg.out.pc
+  axi_crossbar.maxi.busy <> maxi.io.busy
   maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
   maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
   maxi.io.maxi           <> io.master
