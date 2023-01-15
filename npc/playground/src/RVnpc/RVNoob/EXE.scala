@@ -7,12 +7,12 @@ import firrtl.transforms.BlackBoxInlineAnno
 
 class EXE extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val src1 = Input(UInt(xlen.W))
-    val src2 = Input(UInt(xlen.W))
-    val imm = Input(UInt(xlen.W))
+    val src1     = Input(UInt(xlen.W))
+    val src2     = Input(UInt(xlen.W))
+    val imm      = Input(UInt(xlen.W))
     val mem_addr = Output(UInt(xlen.W))
 
-    val pc = Input(UInt(xlen.W))
+    val pc   = Input(UInt(xlen.W))
     val snpc = Input(UInt(xlen.W))
 
     val gp_out = Output(UInt(xlen.W))
@@ -21,23 +21,24 @@ class EXE extends Module with RVNoobConfig {
     val B_en = Output(Bool())
 
     val waiting = Output(Bool())
+    val valid   = Input(Bool())
 
   })
   val alu_src1 = Wire(UInt(xlen.W))
   val alu_src2 = Wire(UInt(xlen.W))
-  val alu_out = Wire(UInt(xlen.W))
+  val alu_out  = Wire(UInt(xlen.W))
   alu_src1 := Mux(io.ctrl.alu_src1_mux, io.pc, io.src1)
   alu_src2 := Mux(io.ctrl.alu_src2_mux, io.imm, io.src2)
 
   val alu = Module(new ALU)
-  alu.io.src1 <> alu_src1
-  alu.io.src2 <> alu_src2
-  alu.io.result <> alu_out
+  alu.io.src1     <> alu_src1
+  alu.io.src2     <> alu_src2
+  alu.io.result   <> alu_out
   alu.io.mem_addr <> io.mem_addr
 
   alu.io.ctrl.judge_mux <> io.ctrl.judge_mux
-  alu.io.ctrl.judge_op <> io.ctrl.judge_op
-  alu.io.ctrl.alu_op <> io.ctrl.alu_op
+  alu.io.ctrl.judge_op  <> io.ctrl.judge_op
+  alu.io.ctrl.alu_op    <> io.ctrl.alu_op
 
   alu.io.B_en <> io.B_en
 
@@ -45,17 +46,19 @@ class EXE extends Module with RVNoobConfig {
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 
   io.waiting := alu.io.waiting
+  io.valid   := alu.io.valid
 }
 
 class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Judge_op {
   val io = IO(new Bundle {
-    val src1 = Input(UInt(xlen.W))
-    val src2 = Input(UInt(xlen.W))
-    val ctrl = Input(new ALUCtrlIO)
-    val result = Output(UInt(xlen.W))
-    val B_en = Output(Bool())
+    val src1     = Input(UInt(xlen.W))
+    val src2     = Input(UInt(xlen.W))
+    val ctrl     = Input(new ALUCtrlIO)
+    val result   = Output(UInt(xlen.W))
+    val B_en     = Output(Bool())
     val mem_addr = Output(UInt(xlen.W))
-    val waiting = Output(Bool())
+    val waiting  = Output(Bool())
+    val valid    = Input(Bool())
   })
   val add = io.ctrl.alu_op === op_add
   val sub = io.ctrl.alu_op === op_sub
@@ -63,34 +66,34 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   val srl = io.ctrl.alu_op === op_srl // right_shift_logical
   val sra = io.ctrl.alu_op === op_sra // right_shift_arithmetic
   val xor = io.ctrl.alu_op === op_xor
-  val or = io.ctrl.alu_op === op_or
+  val or  = io.ctrl.alu_op === op_or
   val and = io.ctrl.alu_op === op_and
   val mul = io.ctrl.alu_op === op_mul
   val div = io.ctrl.alu_op === op_div
   val rem = io.ctrl.alu_op === op_rem
 
-  val mulh = io.ctrl.alu_op === op_mulh
-  val mulhs = io.ctrl.alu_op === op_mulhs
+  val mulh   = io.ctrl.alu_op === op_mulh
+  val mulhs  = io.ctrl.alu_op === op_mulhs
   val mulhsu = io.ctrl.alu_op === op_mulhsu
-  val divs = io.ctrl.alu_op === op_divs
-  val divsw = io.ctrl.alu_op === op_divsw
-  val divw = io.ctrl.alu_op === op_divw
-  val rems = io.ctrl.alu_op === op_rems
-  val remsw = io.ctrl.alu_op === op_remsw
-  val remw = io.ctrl.alu_op === op_remw
-  val srlw = io.ctrl.alu_op === op_srlw
-  val sraw = io.ctrl.alu_op === op_sraw
-  val sllw = io.ctrl.alu_op === op_sllw
+  val divs   = io.ctrl.alu_op === op_divs
+  val divsw  = io.ctrl.alu_op === op_divsw
+  val divw   = io.ctrl.alu_op === op_divw
+  val rems   = io.ctrl.alu_op === op_rems
+  val remsw  = io.ctrl.alu_op === op_remsw
+  val remw   = io.ctrl.alu_op === op_remw
+  val srlw   = io.ctrl.alu_op === op_srlw
+  val sraw   = io.ctrl.alu_op === op_sraw
+  val sllw   = io.ctrl.alu_op === op_sllw
   val andinv = io.ctrl.alu_op === op_andinv
 
   val alu_src1 = Wire(UInt(xlen.W))
   val alu_src2 = Wire(UInt(xlen.W))
-  val add_res = Wire(UInt((xlen + 1).W))
+  val add_res  = Wire(UInt((xlen + 1).W))
 
   // 这里巨大优化空间，但等到后面再说
-  alu_src1 := io.src1
-  alu_src2 := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
-  add_res := alu_src1 +& alu_src2
+  alu_src1    := io.src1
+  alu_src2    := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
+  add_res     := alu_src1 +& alu_src2
   io.mem_addr := add_res(63, 0)
 
   //  // alu type
@@ -107,15 +110,15 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
     Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
   )
 
-  val mul_er = Module(new BoothShiftMultiplier)
-  val mul_op = mulhsu || mulhs || mulh || mul
-  val mul_valid = mul_op && !RegNext(mul_op)
-  mul_er.io.mul_valid := mul_valid && mul_er.io.mul_ready
-  mul_er.io.flush := 0.B
-  mul_er.io.mulw := mul
-  mul_er.io.mul_signed := Mux(mul || mulhs, 3.U, Mux(mulhsu, 2.U, 0.U))
+  val mul_er    = Module(new BoothShiftMultiplier)
+  val mul_op    = mulhsu || mulhs || mulh || mul
+  val mul_valid = mul_op && io.valid && mul_er.io.mul_ready
+  mul_er.io.mul_valid    := mul_valid
+  mul_er.io.flush        := 0.B
+  mul_er.io.mulw         := mul
+  mul_er.io.mul_signed   := Mux(mul || mulhs, 3.U, Mux(mulhsu, 2.U, 0.U))
   mul_er.io.multiplicand := alu_src1
-  mul_er.io.multiplier := alu_src2
+  mul_er.io.multiplier   := alu_src2
   val alu_mul_res = Wire(UInt(xlen.W))
   alu_mul_res := Mux(mul, mul_er.io.result_lo, mul_er.io.result_hi)
 
@@ -160,7 +163,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
     )
   )
   val u_less = (io.ctrl.judge_op === jop_sltu) || (io.ctrl.judge_op === jop_bgeu) || (io.ctrl.judge_op === jop_bltu)
-  val less = Wire(Bool())
+  val less   = Wire(Bool())
   when(u_less) {
     less := Mux(io.src2 === 0.U, add_res(64), !add_res(64))
   }.otherwise {
@@ -181,10 +184,10 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   //      }
 
   val judge = Module(new Judge)
-  judge.io.less <> less
-  judge.io.old_res <> alu_res
+  judge.io.less     <> less
+  judge.io.old_res  <> alu_res
   judge.io.judge_op <> io.ctrl.judge_op
-  judge.io.B_en <> io.B_en
+  judge.io.B_en     <> io.B_en
 
   io.result := Mux(io.ctrl.judge_mux, judge.io.new_res, alu_res)
 
@@ -192,11 +195,11 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
 
 class Judge extends Module with RVNoobConfig with Judge_op with ext_function {
   val io = IO(new Bundle {
-    val less = Input(Bool())
-    val old_res = Input(UInt(64.W))
+    val less     = Input(Bool())
+    val old_res  = Input(UInt(64.W))
     val judge_op = Input(UInt(jdg_op_w.W))
-    val new_res = Output(UInt(64.W))
-    val B_en = Output(Bool())
+    val new_res  = Output(UInt(64.W))
+    val B_en     = Output(Bool())
   })
   val zero = io.old_res === 0.U
   io.B_en := MuxCase(

@@ -201,10 +201,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   exe.io.src1 <> exe_src1
   exe.io.src2 <> exe_src2
 
-  exe.io.imm  <> ex_reg.out.imm
-  exe.io.pc   <> ex_reg.out.pc
-  exe.io.snpc <> ex_reg.out.snpc
-  exe.io.ctrl <> ex_reg.out.exe_ctrl
+  exe.io.imm   <> ex_reg.out.imm
+  exe.io.pc    <> ex_reg.out.pc
+  exe.io.snpc  <> ex_reg.out.snpc
+  exe.io.ctrl  <> ex_reg.out.exe_ctrl
+  exe.io.valid <> ex_reg.out.valid
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   mem_reg.reset <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
