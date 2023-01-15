@@ -46,7 +46,7 @@ class EXE extends Module with RVNoobConfig {
   io.gp_out := Mux(io.ctrl.exe_out_mux, dir_out, alu_out)
 
   io.waiting := alu.io.waiting
-  io.valid   := alu.io.valid
+  io.valid   <> alu.io.valid
 }
 
 class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Judge_op {
