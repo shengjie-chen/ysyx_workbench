@@ -109,8 +109,8 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
 
   val mul_er = Module(new BoothShiftMultiplier)
   val mul_op = mulhsu || mulhs || mulh || mul
-  val mul_valid = mul_op && mul_er.io.mul_ready
-  mul_er.io.mul_valid := mul_valid && !RegNext(mul_valid)
+  val mul_valid = mul_op && !RegNext(mul_op)
+  mul_er.io.mul_valid := mul_valid && mul_er.io.mul_ready
   mul_er.io.flush := 0.B
   mul_er.io.mulw := mul
   mul_er.io.mul_signed := Mux(mul || mulhs, 3.U, Mux(mulhsu, 2.U, 0.U))

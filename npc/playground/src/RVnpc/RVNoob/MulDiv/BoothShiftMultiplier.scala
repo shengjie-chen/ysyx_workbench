@@ -12,6 +12,7 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
     val mul_signed   = Input(UInt(2.W))
     val multiplicand = Input(UInt(xlen.W))
     val multiplier   = Input(UInt(xlen.W))
+
     val mul_ready    = Output(Bool())
     val out_valid    = Output(Bool())
     val result_hi    = Output(UInt(xlen.W))
