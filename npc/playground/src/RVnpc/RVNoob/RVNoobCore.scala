@@ -165,7 +165,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ppl_ctrl.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
   ppl_ctrl.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
   ppl_ctrl.io.dnpc_en         <> dnpc_en
-  ppl_ctrl.io.miss            <> cache_miss
+  ppl_ctrl.io.miss            <> (cache_miss || exe.io.waiting)
 
   id_reg.reset <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
 
