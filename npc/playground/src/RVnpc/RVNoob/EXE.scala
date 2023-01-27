@@ -1,6 +1,6 @@
 package RVnpc.RVNoob
 
-import RVnpc.RVNoob.MulDiv.BoothShiftMultiplier
+import RVnpc.RVNoob.MulDiv.{BoothShiftMultiplier, ShiftDivider}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxCase}
 import firrtl.transforms.BlackBoxInlineAnno
@@ -103,12 +103,19 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   //  val alu_div  = divs
   val alu_res = Wire(UInt(xlen.W))
 
+  val div_er    = Module(new ShiftDivider)
+  val div_op    = div || divs || divw || divsw || rem || rems || remw || remsw
+  val div_valid = div_op && io.valid && div_er.io.div_ready
+  div_er.io.div_valid  := div_valid
+  div_er.io.flush      := 0.B
+  div_er.io.dividend   := alu_src1
+  div_er.io.divisor    := alu_src2
+  div_er.io.divw       := divw || divsw || remw || remsw
+  div_er.io.div_signed := divs || divsw || rems || remsw
   val alu_div_res = Wire(UInt(xlen.W))
-  alu_div_res := Mux(
-    div || divs,
-    Mux(div, (alu_src1 / alu_src2), (alu_src1.asSInt() / alu_src2.asSInt()).asUInt()),
-    Mux(divw, (alu_src1(31, 0) / alu_src2(31, 0)), (alu_src1(31, 0).asSInt() / alu_src2(31, 0).asSInt()).asUInt())
-  )
+  val alu_rem_res = Wire(UInt(xlen.W))
+  alu_div_res := div_er.io.quotient
+  alu_rem_res := div_er.io.remainder
 
   val mul_er    = Module(new BoothShiftMultiplier)
   val mul_op    = mulhsu || mulhs || mulh || mul
@@ -122,14 +129,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   val alu_mul_res = Wire(UInt(xlen.W))
   alu_mul_res := Mux(mul, mul_er.io.result_lo, mul_er.io.result_hi)
 
-  io.waiting := mul_op && !mul_er.io.out_valid
-
-  val alu_rem_res = Wire(UInt(xlen.W))
-  alu_rem_res := Mux(
-    remw || remsw,
-    Mux(remw, (alu_src1(31, 0) % alu_src2(31, 0)), (alu_src1(31, 0).asSInt() % alu_src2(31, 0).asSInt()).asUInt()),
-    Mux(rems, (alu_src1.asSInt() % alu_src2.asSInt()).asUInt(), (alu_src1 % alu_src2))
-  )
+  io.waiting := mul_op && !mul_er.io.out_valid || div_op && !div_er.io.out_valid
 
   alu_res := MuxCase(
     0.U,

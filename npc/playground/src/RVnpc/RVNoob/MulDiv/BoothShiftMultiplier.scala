@@ -45,7 +45,6 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
       multiplier   := VecInit(Seq.fill(2)(io.multiplier.head(1))).asUInt() ## io.multiplier ## 0.B
       multiplicand := VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
     }
-
   }.elsewhen(multing_state) {
     multiplier   := multiplier >> 2
     multiplicand := multiplicand << 2
