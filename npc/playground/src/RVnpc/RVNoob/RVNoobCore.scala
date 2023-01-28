@@ -6,13 +6,13 @@ import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
 
-class RVNoobCore extends Module with ext_function with RVNoobConfig {
+class RVNoobCore(difftest: Boolean = true) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc      = Output(UInt(64.W))
-    val ebreak  = Output(Bool())
-    val diff_en = Output(Bool())
-    val diff_pc = Output(UInt(64.W))
-    val axi_pc  = Output(UInt(64.W))
+      val pc      = if(difftest) Output(UInt(64.W)) else Output(UInt(0.W))
+      val ebreak  = Output(Bool())
+      val diff_en = Output(Bool())
+      val diff_pc = Output(UInt(64.W))
+      val axi_pc  = Output(UInt(64.W))
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
