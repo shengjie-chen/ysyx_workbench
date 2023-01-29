@@ -6,13 +6,13 @@ import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
 
-class RVNoobCore(difftest: Boolean = true) extends Module with ext_function with RVNoobConfig {
+class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-      val pc      = if(difftest) Output(UInt(64.W)) else Output(UInt(0.W))
-      val ebreak  = Output(Bool())
-      val diff_en = Output(Bool())
-      val diff_pc = Output(UInt(64.W))
-      val axi_pc  = Output(UInt(64.W))
+    val pc      = if (!tapeout) Some(Output(UInt(64.W))) else None
+    val ebreak  = if (!tapeout) Some(Output(Bool())) else None
+    val diff_en = if (!tapeout) Some(Output(Bool())) else None
+    val diff_pc = if (!tapeout) Some(Output(UInt(64.W))) else None
+    val axi_pc  = if (!tapeout) Some(Output(UInt(64.W))) else None
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
@@ -122,17 +122,20 @@ class RVNoobCore(difftest: Boolean = true) extends Module with ext_function with
   )
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
-  val U_ebreak      = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak)
-
+  if (!tapeout) {
+    val U_ebreak = Ebreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak.get)
+  }
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc    := pc + 4.U
   dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || exe.io.B_en
   pc_en   := ppl_ctrl.io.pc_en
   npc     := Mux(dnpc_en, dnpc, snpc)
-  io.pc   := pc
-  val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
-  dpi_npc.io.npc <> npc
+  if (!tapeout) {
+    io.pc.get := pc
+    val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
+    dpi_npc.io.npc <> npc
+  }
 
   icache.io.addr    <> pc
   icache.io.ren     <> !reset.asBool()
@@ -152,7 +155,9 @@ class RVNoobCore(difftest: Boolean = true) extends Module with ext_function with
   maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
   maxi.io.maxi           <> io.master
 
-  io.axi_pc <> axi_crossbar.maxi.pc
+  if (!tapeout) {
+    io.axi_pc.get <> axi_crossbar.maxi.pc
+  }
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
@@ -240,38 +245,31 @@ class RVNoobCore(difftest: Boolean = true) extends Module with ext_function with
   csr.io.mcause      <> 11.U
   csr.io.csr_wdata   <> wb_reg.out.alu_res
 
-  // ********************************** Difftest **********************************
-  val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
-  val cache_miss_first     = cache_miss && !RegNext(cache_miss)
+  if (!tapeout) {
+    // ********************************** Difftest **********************************
+    val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
+    val cache_miss_first     = cache_miss && !RegNext(cache_miss)
 
-  val diff_pc = Reg(UInt(64.W))
+    val diff_pc = Reg(UInt(64.W))
 
-  // wb 写完成的周期
-  //    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
-  //    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
-  io.diff_en := RegNext(wb_reg.out.valid)
-  io.diff_pc := diff_pc
-  when(wb_reg.out.valid) {
-    when(mem_reg.out.valid) {
-      diff_pc := mem_reg.out.pc
-    }.elsewhen(ex_reg.out.valid) {
-      diff_pc := ex_reg.out.pc
-    }.elsewhen(id_reg.out.valid) {
-      diff_pc := id_reg.out.pc
-    }.otherwise {
-      diff_pc := pc
+    // wb 写完成的周期
+    //    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
+    //    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
+    io.diff_en.get := RegNext(wb_reg.out.valid)
+    io.diff_pc.get := diff_pc
+    when(wb_reg.out.valid) {
+      when(mem_reg.out.valid) {
+        diff_pc := mem_reg.out.pc
+      }.elsewhen(ex_reg.out.valid) {
+        diff_pc := ex_reg.out.pc
+      }.elsewhen(id_reg.out.valid) {
+        diff_pc := id_reg.out.pc
+      }.otherwise {
+        diff_pc := pc
+      }
     }
   }
 
-  //    when(wb_reg.out.pc =/= 0.U) {
-  //      io.diff_pc := wb_reg.out.pc
-  //    }.elsewhen(ShiftRegister(dnpc_en, 3, 1.B)) {
-  //      io.diff_pc := ShiftRegister(pc, 2, 1.B)
-  //    }.elsewhen(mem_reg.out.pc =/= 0.U) {
-  //      io.diff_pc := mem_reg.out.pc
-  //    }.otherwise {
-  //      io.diff_pc := ex_reg.out.pc
-  //    }
 }
 
 object RVNoobCore {
@@ -304,6 +302,14 @@ object RVNoobCore {
 
     core
   }
+}
+
+object RVNoobCoreGen extends App {
+  (new chisel3.stage.ChiselStage)
+    .execute(
+      Array("--target-dir", "./build/soc"),
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RVNoobCore(true)))
+    )
 }
 
 class DpiNpc extends BlackBox with HasBlackBoxInline {

@@ -3,7 +3,7 @@ import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 
-class AxiCrossBar extends MultiIOModule with RVNoobConfig {
+class AxiCrossBar(tapeout: Boolean = false) extends MultiIOModule with RVNoobConfig {
   val in1 = IO(new Bundle {
     val rctrl = new AxiReadCtrlIO
     val wctrl = new AxiWriteCtrlIO
