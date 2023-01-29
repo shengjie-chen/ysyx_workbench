@@ -28,10 +28,10 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   val axi_pmem  = Module(new AxiSlaveMem)
 
-  io.pc      <> core.io.pc
-  io.ebreak  <> core.io.ebreak
-  io.diff_en <> core.io.diff_en
-  io.diff_pc <> core.io.diff_pc
+  io.pc      <> core.io.pc.get
+  io.ebreak  <> core.io.ebreak.get
+  io.diff_en <> core.io.diff_en.get
+  io.diff_pc <> core.io.diff_pc.get
 
   // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
   sram0.io.CLK  <> clock
@@ -133,7 +133,7 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   axi_pmem.io.S_AXI_RLAST   <> core.io.master.rlast
 
 
-  axi_pmem.io.PC  <> core.io.axi_pc
+  axi_pmem.io.PC  <> core.io.axi_pc.get
 
 }
 
