@@ -1,7 +1,7 @@
 package RVnpc.RVNoob
 
 import RVnpc.RVNoob.Axi.{AxiCrossBar, AxiIO, AxiMaster}
-import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, DCacheI, JudgeLoad}
+import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad}
 import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
@@ -30,6 +30,8 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     val sram7 = new CacheSramIO
 
   })
+  printf(p"Class Name : ${this.getClass}")
+//  override def desiredName = if(tapeout) "ysyx_22040495" else
 
   /* **********************************
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
@@ -57,7 +59,7 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
   val pc_en  = Wire(Bool())
   val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc   = Wire(UInt(64.W))
-  val icache = DCacheI(true)
+  val icache = DCache(true)
 
   //  val icache = Module(new ICache)
 
@@ -105,7 +107,7 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     ex_reg.out.wb_csr_ctrl,
     ppl_ctrl.io.mem_reg_ctrl.en
   )
-  val dcache       = Module(new DCacheI(deviceId = 1))
+  val dcache       = Module(new DCache(deviceId = 1))
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<

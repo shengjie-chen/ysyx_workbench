@@ -5,7 +5,7 @@ import chisel3._
 import chisel3.util._
 import scala.math.pow
 
-class DCache(
+class DCacheOld(
   val addrWidth:     Int = 32,
   val cacheSize:     Int = 4 * pow(2, 10).toInt,
   val cacheLineSize: Int = 32,
@@ -276,9 +276,9 @@ class DCache(
 
 }
 
-object DCache {
-  def apply(isICache: Boolean): DCache = {
-    val cache = Module(new DCache)
+object DCacheOld {
+  def apply(isICache: Boolean): DCacheOld = {
+    val cache = Module(new DCacheOld)
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
@@ -289,10 +289,10 @@ object DCache {
   }
 }
 
-object DCacheGen extends App {
+object DCacheOldGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(
       Array("--target-dir", "./build/test"),
-      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new DCache()))
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new DCacheOld()))
     )
 }

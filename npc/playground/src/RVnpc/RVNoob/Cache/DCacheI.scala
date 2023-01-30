@@ -13,7 +13,7 @@ class TagArrays(tagWidth: Int) extends Bundle {
   val tag       = UInt(tagWidth.W)
 }
 
-class DCacheI(
+class DCache(
   val deviceId:      Int = 0,
   val addrWidth:     Int = 32,
   val cacheSize:     Int = 4 * pow(2, 10).toInt,
@@ -319,9 +319,9 @@ class S011HD1P_X32Y2D128_BW extends BlackBox {
 //  }
 //}
 
-object DCacheI {
-  def apply(isICache: Boolean, deviceId: Int = 0): DCacheI = {
-    val cache = Module(new DCacheI(deviceId = deviceId))
+object DCache {
+  def apply(isICache: Boolean, deviceId: Int = 0): DCache = {
+    val cache = Module(new DCache(deviceId = deviceId))
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
@@ -332,10 +332,10 @@ object DCacheI {
   }
 }
 
-object DCacheIGen extends App {
+object DCacheGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(
       Array("--target-dir", "./build/test"),
-      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new DCacheI()))
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new DCache()))
     )
 }
