@@ -3,7 +3,7 @@ import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 
-class AxiCrossBar(tapeout: Boolean = false) extends MultiIOModule with RVNoobConfig {
+class AxiCrossBar extends MultiIOModule with RVNoobConfig {
   val in1 = IO(new Bundle {
     val rctrl = new AxiReadCtrlIO
     val wctrl = new AxiWriteCtrlIO
@@ -24,13 +24,13 @@ class AxiCrossBar(tapeout: Boolean = false) extends MultiIOModule with RVNoobCon
   val sInit :: sWait :: sNowait :: Nil = Enum(3)
   val state                            = RegInit(sInit)
 
-  val finish = !maxi.busy && RegNext(maxi.busy)
+  val finish = !maxi.busy && RegNext(maxi.busy, 0.B)
 
   val in1_request = in1.rctrl.en || in1.wctrl.en
   val in2_request = in2.rctrl.en || in2.wctrl.en
 
-  val in_ren_reg = Reg(Bool())
-  val in_wen_reg = Reg(Bool())
+  val in_ren_reg = RegInit(0.B)
+  val in_wen_reg = RegInit(0.B)
   val choose     = Wire(Bool())
   val choose_reg = RegInit(0.B)
 
@@ -46,7 +46,7 @@ class AxiCrossBar(tapeout: Boolean = false) extends MultiIOModule with RVNoobCon
     is(sInit) {
       when(in1_request && in2_request) {
         state := sWait
-      }.elsewhen(in1_request || in2_request){
+      }.elsewhen(in1_request || in2_request) {
         state := sNowait
       }
     }
@@ -139,6 +139,8 @@ class AxiCrossBar(tapeout: Boolean = false) extends MultiIOModule with RVNoobCon
     in1.wctrl.whandshake := maxi.wctrl.whandshake
     in1.wctrl.bhandshake := maxi.wctrl.bhandshake
   }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
   //  maxi <> Mux(choose, in2, in1)
 //  when(!maxi.busy && in_wait) {

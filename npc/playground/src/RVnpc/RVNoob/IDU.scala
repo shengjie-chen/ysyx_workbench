@@ -16,8 +16,11 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val wb_rf_ctrl  = Output(new WbRfCtrlIO)
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
   })
-  val dpi_inst = Module(new DpiInst)
-  dpi_inst.io.inst <> io.inst
+  if(!tapeout){
+    val dpi_inst = Module(new DpiInst)
+    dpi_inst.io.inst <> io.inst
+  }
+
 
   val opcode = Wire(UInt(7.W))
   val fun3   = Wire(UInt(3.W))
@@ -253,6 +256,8 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.dnpc_ctrl.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret // 出现pc=的指令
   io.dnpc_ctrl.dnpc_jalr := rvi_jalr
   io.dnpc_ctrl.dnpc_csr  := rvi_ecall || pri_mret
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

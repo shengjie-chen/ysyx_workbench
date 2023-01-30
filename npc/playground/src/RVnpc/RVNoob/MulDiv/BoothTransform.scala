@@ -27,6 +27,8 @@ class BoothTransform extends Module with RVNoobConfig {
   }
 
   io.part_product := Mux(sel_negative || sel_double_negative, p.asUInt() + 1.U, p.asUInt())
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }
 
 object BoothTransformGen extends App {

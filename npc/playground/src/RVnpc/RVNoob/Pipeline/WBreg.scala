@@ -30,8 +30,10 @@ class WBregInIO extends PipelineInIO with WBregSignal {
 class WBreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new WBregInIO))
   val out = IO(Output(new WBregOutIO))
-  dontTouch(in)
-  dontTouch(out)
+  if (!tapeout) {
+    dontTouch(in)
+    dontTouch(out)
+  }
 
   out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
   out.inst        := RegEnable(in.inst, 0.U, in.reg_en)
@@ -41,17 +43,21 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  val reset_t    = RegNext(reset.asBool())
-  val reg_en_t   = RegNext(in.reg_en.asBool())
-  val mem_data_t = RegNext(out.mem_data)
+  val reset_t    = RegNext(reset.asBool(), 0.B)
+  val reg_en_t   = RegNext(in.reg_en.asBool(), 0.B)
+  val mem_data_t = RegNext(out.mem_data, 0.U)
   out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
   out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
 
-  val dpi_wb = Module(new DpiWb)
-  dpi_wb.io.valid := out.valid
-  dpi_wb.io.pc    := out.pc
-  dpi_wb.io.inst  := out.inst
+  if (!tapeout) {
+    val dpi_wb = Module(new DpiWb)
+    dpi_wb.io.valid := out.valid
+    dpi_wb.io.pc    := out.pc
+    dpi_wb.io.inst  := out.inst
+  }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

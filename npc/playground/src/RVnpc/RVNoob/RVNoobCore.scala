@@ -6,7 +6,7 @@ import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
 import chisel3._
 import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
 
-class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with RVNoobConfig {
+class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val pc      = if (!tapeout) Some(Output(UInt(64.W))) else None
     val ebreak  = if (!tapeout) Some(Output(Bool())) else None
@@ -30,7 +30,6 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     val sram7 = new CacheSramIO
 
   })
-  override def desiredName = if(tapeout) ysyxid else getClassName
 
   /* **********************************
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
@@ -55,10 +54,12 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
   dontTouch(npc)
-  val pc_en  = Wire(Bool())
-  val pc     = RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
+  val pc_en = Wire(Bool())
+  val pc =
+    if (tapeout) RegEnable(npc, 0x30000000L.U(64.W), pc_en)
+    else RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
   val snpc   = Wire(UInt(64.W))
-  val icache = DCache(true)
+  val icache = DCache(isICache = true)
 
   //  val icache = Module(new ICache)
 
@@ -271,6 +272,8 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     }
   }
 
+  override def desiredName = if (tapeout) ysyxid else getClassName
+
 }
 
 object RVNoobCore {
@@ -309,7 +312,7 @@ object RVNoobCoreGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(
       Array("--target-dir", "./build/soc"),
-      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RVNoobCore(true)))
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RVNoobCore))
     )
 }
 

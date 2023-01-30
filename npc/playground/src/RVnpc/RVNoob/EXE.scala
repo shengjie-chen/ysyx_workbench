@@ -47,6 +47,9 @@ class EXE extends Module with RVNoobConfig {
 
   io.waiting := alu.io.waiting
   io.valid   <> alu.io.valid
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Judge_op {
@@ -191,6 +194,8 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
 
   io.result := Mux(io.ctrl.judge_mux, judge.io.new_res, alu_res)
 
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 class Judge extends Module with RVNoobConfig with Judge_op with ext_function {
@@ -227,6 +232,8 @@ class Judge extends Module with RVNoobConfig with Judge_op with ext_function {
       // (io.judge_op === jop_uextb) -> uext_64(io.old_res(7, 0))
     )
   )
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

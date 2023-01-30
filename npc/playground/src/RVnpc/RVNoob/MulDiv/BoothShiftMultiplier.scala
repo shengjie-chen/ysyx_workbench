@@ -13,16 +13,16 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
     val multiplicand = Input(UInt(xlen.W))
     val multiplier   = Input(UInt(xlen.W))
 
-    val mul_ready    = Output(Bool())
-    val out_valid    = Output(Bool())
-    val result_hi    = Output(UInt(xlen.W))
-    val result_lo    = Output(UInt(xlen.W))
+    val mul_ready = Output(Bool())
+    val out_valid = Output(Bool())
+    val result_hi = Output(UInt(xlen.W))
+    val result_lo = Output(UInt(xlen.W))
   })
 
-  val multiplier    = Reg(UInt(67.W))
-  val multiplicand  = Reg(UInt(128.W))
-  val result        = Reg(UInt(128.W))
-  val cnt           = Reg(UInt(6.W))
+  val multiplier    = RegInit(0.U(67.W))
+  val multiplicand  = RegInit(0.U(128.W))
+  val result        = RegInit(0.U(128.W))
+  val cnt           = RegInit(0.U(6.W))
   val multing_state = RegInit(0.B)
   val booth         = Module(new BoothTransform)
 
@@ -36,14 +36,14 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
   }.elsewhen(io.mul_valid) {
     result := 0.U
     when(io.mul_signed === 0.U) {
-      multiplier   := 0.U ## io.multiplier ## 0.B
-      multiplicand := 0.U ## io.multiplicand
+      multiplier   := io.multiplier ## 0.B
+      multiplicand := io.multiplicand
     }.elsewhen(io.mul_signed === 2.U) {
-      multiplier   := 0.U ## io.multiplier ## 0.B
-      multiplicand := VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
+      multiplier   := io.multiplier ## 0.B
+      multiplicand := Fill(64, io.multiplicand.head(1)) ## io.multiplicand // VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
     }.elsewhen(io.mul_signed === 3.U) {
-      multiplier   := VecInit(Seq.fill(2)(io.multiplier.head(1))).asUInt() ## io.multiplier ## 0.B
-      multiplicand := VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
+      multiplier   := Fill(2, io.multiplier.head(1)) ## io.multiplier ## 0.B
+      multiplicand := Fill(64,io.multiplicand.head(1)) ## io.multiplicand
     }
   }.elsewhen(multing_state) {
     multiplier   := multiplier >> 2
@@ -66,9 +66,11 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
   }
 
   io.mul_ready := !multing_state
-  io.out_valid := !multing_state && RegNext(multing_state)
+  io.out_valid := !multing_state && RegNext(multing_state, 0.B)
   io.result_hi := result(127, 64)
   io.result_lo := result(63, 0)
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

@@ -23,6 +23,7 @@ class DCache(
   val missDelay:     Int = 4)
     extends Module
     with RVNoobConfig {
+
   val cacheLineNum:    Int = cacheSize / cacheLineSize // 128
   val sets:            Int = cacheLineNum / ways // 32
   val byteOffsetWidth: Int = log2Ceil(cacheLineSize) // 5
@@ -56,7 +57,8 @@ class DCache(
   val data_addr  = Wire(UInt(6.W))
   val data_wdata = Wire(UInt(128.W))
   // >>>>>>>>>>>>>> tag array <<<<<<<<<<<<<<
-  val tag_arrays = Reg(Vec(ways, Vec(sets, new TagArrays(tagWidth))))
+  val tag_arrays =
+    RegInit(Vec(ways, Vec(sets, new TagArrays(tagWidth))), 0.B.asTypeOf(Vec(ways, Vec(sets, new TagArrays(tagWidth)))))
   // >>>>>>>>>>>>>> DPI PMEM / AXI <<<<<<<<<<<<<<
   val pmem_rdata   = Wire(UInt(xlen.W))
   val pmem_shift   = Wire(UInt(3.W))
@@ -113,8 +115,8 @@ class DCache(
   replace_tag := tag_arrays(replace_way)(addr_index).tag
   dontTouch(replace_tag)
 
-  val replace_buffer = Reg(Vec(4, UInt(64.W)))
-  val replace_addr   = Reg(UInt(addrWidth.W))
+  val replace_buffer = RegInit(Vec(4, UInt(64.W)), 0.B.asTypeOf(Vec(4, UInt(64.W))))
+  val replace_addr   = RegInit(UInt(addrWidth.W), 0.U)
   val replace_cnt    = RegInit(0.U(3.W))
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
   val allocate_state = inpmem_miss && !replace_dirty
@@ -178,8 +180,8 @@ class DCache(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  pmem_rdata        := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), pmem_read_ok)
-  io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state)) || mmio_read_valid
+  pmem_rdata        := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), 0.U, pmem_read_ok)
+  io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
   io.axi_rctrl.id   := deviceId.U
   io.axi_rctrl.size := 3.U
   when(mmio_read) {
@@ -194,7 +196,7 @@ class DCache(
 
   // Write signal
   val replace_axi_write = replace_cnt === 3.U
-  io.axi_wctrl.en   := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write))
+  io.axi_wctrl.en   := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write, 0.B))
   io.axi_wctrl.id   := deviceId.U
   io.axi_wctrl.size := 3.U
   val wbuf_ready = RegInit(0.B)
@@ -282,11 +284,13 @@ class DCache(
   // ********************************** Output **********************************
   io.miss := inpmem_miss || mmio_read || mmio_write
 
-  when(RegNext(inpmem)) {
-    io.rdata := (io.sram(RegNext(hit_way)).rdata >> RegNext(data_shift))
+  when(RegNext(inpmem, 0.B)) {
+    io.rdata := (io.sram(RegNext(hit_way, 0.U)).rdata >> RegNext(data_shift, 0.U))
   }.otherwise {
     io.rdata := pmem_rdata
   }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 
@@ -302,22 +306,6 @@ class S011HD1P_X32Y2D128_BW extends BlackBox {
   })
 
 }
-
-//object S011HD1P_X32Y2D128_BW {
-//  def apply(
-//    clk:    Clock,
-//    inst:   UInt,
-//    a0:     UInt,
-//    ebreak: Bool
-//  ): S011HD1P_X32Y2D128_BW = {
-//    val data = Module(new S011HD1P_X32Y2D128_BW)
-//    data.io.clk    <> clk
-//    data.io.inst   <> inst
-//    data.io.a0     <> a0
-//    data.io.ebreak <> ebreak
-//    data
-//  }
-//}
 
 object DCache {
   def apply(isICache: Boolean, deviceId: Int = 0): DCache = {

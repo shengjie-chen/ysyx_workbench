@@ -9,7 +9,7 @@ class RegCtrl extends Bundle {
 }
 
 // maybe name PipeLineCtrl
-class PipelineCtrl extends Module {
+class PipelineCtrl extends Module with RVNoobConfig {
   val io = IO(new Bundle {
     val idu_rf          = Input(new IdRfCtrlIO)
     val idu_csr         = Input(new IdCsrCtrlIO)
@@ -51,8 +51,8 @@ class PipelineCtrl extends Module {
 
   // Forward
   val forward1 =
-    RegEnable(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U)), !io.miss) // ex_hazard优先级大于mem_hazard
-  val forward2 = RegEnable(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)), !io.miss)
+    RegEnable(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U)), 0.U, !io.miss) // ex_hazard优先级大于mem_hazard
+  val forward2 = RegEnable(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)), 0.U, !io.miss)
   io.forward1 := forward1
   io.forward2 := forward2
 
@@ -127,6 +127,8 @@ class PipelineCtrl extends Module {
       }
     }
   }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

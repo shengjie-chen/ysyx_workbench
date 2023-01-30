@@ -33,15 +33,17 @@ class RegisterFile(
   })
   // init reg
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
-  val rf      = Reg(Vec(reg_num, UInt(DATA_WIDTH.W)))
-  val rf_read = Module(new RF_read) // dpi rf
-  rf_read.io.rf <> rf
-
-  when(reset.asBool) {
-    for (i <- 1 to 31) {
-      rf(i) := i.U
-    }
+  val rf = RegInit(Vec(reg_num, UInt(DATA_WIDTH.W)), 0.U.asTypeOf(Vec(reg_num, UInt(DATA_WIDTH.W))))
+  if (!tapeout) {
+    val rf_read = Module(new RF_read) // dpi rf
+    rf_read.io.rf <> rf
   }
+
+//  when(reset.asBool) {
+//    for (i <- 1 to 31) {
+//      rf(i) := i.U
+//    }
+//  }
   // read src1 and src2
   val rdata1 = Wire(UInt(DATA_WIDTH.W))
   val rdata2 = Wire(UInt(DATA_WIDTH.W))
@@ -65,6 +67,8 @@ class RegisterFile(
 
   io.a0 := rf(10)
   rf(0) := 0.U
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

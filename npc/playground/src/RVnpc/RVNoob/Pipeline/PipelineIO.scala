@@ -23,9 +23,9 @@ class PipelineOutIO extends PipelineIO {
 //TODO
 // need to optimization, can delete one state
 /**
- *  for pipeline reg, if reg_en=0 or reset, next clock valid is 0
- */
-class PipelineValid extends Module {
+  *  for pipeline reg, if reg_en=0 or reset, next clock valid is 0
+  */
+class PipelineValid extends Module with RVNoobConfig {
   val io = IO(new Bundle {
     val reg_en = Input(Bool())
     val valid  = Output(Bool())
@@ -55,6 +55,7 @@ class PipelineValid extends Module {
       }
     }
   }
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

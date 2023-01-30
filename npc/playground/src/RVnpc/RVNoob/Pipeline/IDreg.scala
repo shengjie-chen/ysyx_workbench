@@ -23,18 +23,23 @@ class IDregInIO extends PipelineInIO with IDregSignal {
 class IDreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new IDregInIO))
   val out = IO(Output(new IDregOutIO))
-  dontTouch(in)
-  dontTouch(out)
+  if (!tapeout) {
+    dontTouch(in)
+    dontTouch(out)
+  }
 
   out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
   out.snpc := RegEnable(in.snpc, 0.U, in.reg_en)
 
-  val reset_t  = RegNext(reset.asBool())
-  val reg_en_t = RegNext(in.reg_en.asBool())
-  val inst_t   = RegNext(out.inst)
+  val reset_t  = RegNext(reset.asBool(), 0.B)
+  val reg_en_t = RegNext(in.reg_en.asBool(), 0.B)
+  val inst_t   = RegNext(out.inst, 0.U)
   out.inst := Mux(reset_t, 0.U, Mux(reg_en_t, in.inst, inst_t))
 
   out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 object IDreg {

@@ -34,8 +34,10 @@ class MEMregInIO extends PipelineInIO with MEMregSignal {
 class MEMreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new MEMregInIO))
   val out = IO(Output(new MEMregOutIO))
-  dontTouch(in)
-  dontTouch(out)
+  if (!tapeout) {
+    dontTouch(in)
+    dontTouch(out)
+  }
 
   out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
   out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
@@ -49,8 +51,12 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
 
   out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
 
-  val dpi_mem_pc = Module(new DpiMemPc)
-  dpi_mem_pc.io.pc := out.pc
+  if (!tapeout) {
+    val dpi_mem_pc = Module(new DpiMemPc)
+    dpi_mem_pc.io.pc := out.pc
+  }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 

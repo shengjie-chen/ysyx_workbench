@@ -23,13 +23,15 @@ class CSR extends Module with RVNoobConfig with Csr_op {
 
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
-  val csr      = Reg(Vec(4, UInt(xlen.W)))
+  val csr      = RegInit(Vec(4, UInt(xlen.W)), 0.U.asTypeOf(Vec(4, UInt(xlen.W))))
   val csr_read = Wire(Vec(4, UInt(xlen.W)))
   csr_read := csr
 
   //  val csr = RegInit(Vec(4, UInt(xlen.W)),VecInit(0xa00001800L.U,0.U,0.U,0.U))
-  val csr_read_dpi = Module(new CSR_read_dpi)
-  csr_read_dpi.io.csr <> csr
+  if (!tapeout) {
+    val csr_read_dpi = Module(new CSR_read_dpi)
+    csr_read_dpi.io.csr <> csr
+  }
 
   val csr_waddr = MuxCase(
     0.U,
@@ -61,4 +63,7 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   )
   io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read(csr_raddr), 0.U)
   io.csr_dnpc  := Mux(io.id_csr_ctrl.ecall, csr_read(1), csr_read(2)) // this 2 signal can mix
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }

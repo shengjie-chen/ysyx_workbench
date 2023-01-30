@@ -16,11 +16,11 @@ class AxiMaster extends Module with RVNoobConfig {
   //Write Address Channel
   //--------------------
   //  val start_single_burst_write == io.wctrl.en
-  val awid               = RegEnable(io.wctrl.id, io.wctrl.en)
-  val awaddr             = RegEnable(io.wctrl.addr, io.wctrl.en)
-  val awlen              = RegEnable(io.wctrl.len, io.wctrl.en)
-  val awsize             = RegEnable(io.wctrl.size, io.wctrl.en)
-  val awburst            = RegEnable(Cat(0.U(1.W), io.wctrl.burst), io.wctrl.en)
+  val awid               = RegEnable(io.wctrl.id, 0.U, io.wctrl.en)
+  val awaddr             = RegEnable(io.wctrl.addr, 0.U, io.wctrl.en)
+  val awlen              = RegEnable(io.wctrl.len, 0.U, io.wctrl.en)
+  val awsize             = RegEnable(io.wctrl.size, 0.U, io.wctrl.en)
+  val awburst            = RegEnable(Cat(0.U(1.W), io.wctrl.burst), 0.U, io.wctrl.en)
   val awvalid            = RegInit(0.B)
   val busrt_write_active = RegInit(0.B)
 
@@ -88,11 +88,11 @@ class AxiMaster extends Module with RVNoobConfig {
   //----------------------------
   //Read Address Channel
   //----------------------------
-  val arid              = RegEnable(io.rctrl.id, io.rctrl.en)
-  val araddr            = RegEnable(io.rctrl.addr, io.rctrl.en)
-  val arlen             = RegEnable(io.rctrl.len, io.rctrl.en)
-  val arsize            = RegEnable(io.rctrl.size, io.rctrl.en)
-  val arburst           = RegEnable(Cat(0.U(1.W), io.rctrl.burst), io.rctrl.en)
+  val arid              = RegEnable(io.rctrl.id, 0.U, io.rctrl.en)
+  val araddr            = RegEnable(io.rctrl.addr, 0.U, io.rctrl.en)
+  val arlen             = RegEnable(io.rctrl.len, 0.U, io.rctrl.en)
+  val arsize            = RegEnable(io.rctrl.size, 0.U, io.rctrl.en)
+  val arburst           = RegEnable(Cat(0.U(1.W), io.rctrl.burst), 0.U, io.rctrl.en)
   val arvalid           = RegInit(0.B)
   val busrt_read_active = RegInit(0.B)
 
@@ -134,4 +134,6 @@ class AxiMaster extends Module with RVNoobConfig {
   io.rctrl.handshake := io.maxi.rready && io.maxi.rvalid
   io.rctrl.data      := io.maxi.rdata
   io.busy            := busrt_read_active || busrt_write_active
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }

@@ -19,13 +19,13 @@ class ShiftDivider extends Module with RVNoobConfig {
     val remainder = Output(UInt(xlen.W))
   })
 
-  val divisor          = Reg(UInt(64.W))
-  val result           = Reg(UInt(128.W))
-  val remainder_signed = Reg(Bool())
-  val quotient_signed  = Reg(Bool())
+  val divisor          = RegInit(0.U(64.W))
+  val result           = RegInit(0.U(128.W))
+  val remainder_signed = RegInit(0.B)
+  val quotient_signed  = RegInit(0.B)
   val neg_divisor      = Wire(UInt(64.W))
   val neg_dividend     = Wire(UInt(64.W))
-  val cnt              = Reg(UInt(6.W))
+  val cnt              = RegInit(0.U(6.W))
   val diving_state     = RegInit(0.B)
   val sub_res          = Wire(UInt(65.W))
   val sub_in1          = Wire(UInt(65.W))
@@ -93,7 +93,7 @@ class ShiftDivider extends Module with RVNoobConfig {
   }
 
   io.div_ready := !diving_state
-  io.out_valid := !diving_state && RegNext(diving_state)
+  io.out_valid := !diving_state && RegNext(diving_state, 0.B)
   io.quotient := Mux(
     io.divw,
     Mux(quotient_signed, (~result(31, 0)).asUInt() + 1.U, result(31, 0)),
@@ -104,6 +104,9 @@ class ShiftDivider extends Module with RVNoobConfig {
     Mux(remainder_signed, (~result(63, 32)).asUInt() + 1.U, result(63, 32)),
     Mux(remainder_signed, (~result(127, 64)).asUInt() + 1.U, result(127, 64))
   )
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 object ShiftDividerGen extends App {

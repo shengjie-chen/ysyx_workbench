@@ -92,4 +92,6 @@ class JudgeLoad extends Module with RVNoobConfig with ext_function with Judge_Lo
       (io.judge_load_op === jlop_uextb) -> uext_64(io.mem_data(7, 0))
     )
   )
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
