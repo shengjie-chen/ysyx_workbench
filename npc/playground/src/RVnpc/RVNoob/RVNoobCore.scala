@@ -30,7 +30,7 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     val sram7 = new CacheSramIO
 
   })
-  printf(p"Class Name : ${this.getClass}")
+  printf(p"Class Name : ${this.getClass}\n")
 //  override def desiredName = if(tapeout) "ysyx_22040495" else
 
   /* **********************************
