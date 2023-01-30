@@ -10,7 +10,8 @@ trait RVNoobConfig {
   val xlen       = 64
   val inst_w     = 32
   val gpr_addr_w = 5
-
+  val ysyxid = "ysyx_22040495"
+  def getClassName = this.getClass.toString.split("\\.").last
 }
 
 trait ALU_op {

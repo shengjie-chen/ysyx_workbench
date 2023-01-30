@@ -30,8 +30,7 @@ class RVNoobCore(tapeout: Boolean = false) extends Module with ext_function with
     val sram7 = new CacheSramIO
 
   })
-  printf(p"Class Name : ${this.getClass}\n")
-//  override def desiredName = if(tapeout) "ysyx_22040495" else
+  override def desiredName = if(tapeout) ysyxid else getClassName
 
   /* **********************************
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
