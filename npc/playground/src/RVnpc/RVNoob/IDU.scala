@@ -155,7 +155,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       (rvi_xori || rvi_xor) -> op_xor,
       (rvi_ori || rvi_or || rvi_csrrs || rvi_csrrsi) -> op_or,
       (rvi_andi || rvi_and) -> op_and,
-      (rvm_mul)-> op_mul,
+      (rvm_mul) -> op_mul,
       (rvm_mulw) -> op_mulw,
       (rvm_mulhu) -> op_mulh,
       (rvm_mulh) -> op_mulhs,
