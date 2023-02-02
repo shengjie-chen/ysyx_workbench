@@ -69,10 +69,10 @@ class DCache(
   val pmem_writeback_ok = Wire(Bool())
   // ********************************** Main Signal Define **********************************
   // >>>>>>>>>>>>>> fencei 控制信号 <<<<<<<<<<<<<<
+  val fencei_ok    = Wire(Bool())
   val fencei_valid = io.fencei && io.valid && !fencei_ok
   val fencei_reg   = RegInit(0.B)
   val fencei_state = fencei_reg || fencei_valid
-  val fencei_ok    = Wire(Bool())
   when(fencei_valid) {
     fencei_reg := 1.B
   }.elsewhen(fencei_state && fencei_ok) {
