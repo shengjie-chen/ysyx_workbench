@@ -223,6 +223,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.ren        <> mem_reg.out.mem_ctrl.r_pmem
   dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
+  dcache.io.fencei     <> mem_reg.out.mem_ctrl.fencei
   dcache.io.valid      <> mem_reg.out.valid
 
   dcache.io.sram(0) <> io.sram4

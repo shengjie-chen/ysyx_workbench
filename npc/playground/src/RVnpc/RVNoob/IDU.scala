@@ -16,11 +16,10 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val wb_rf_ctrl  = Output(new WbRfCtrlIO)
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
   })
-  if(!tapeout){
+  if (!tapeout) {
     val dpi_inst = Module(new DpiInst)
     dpi_inst.io.inst <> io.inst
   }
-
 
   val opcode = Wire(UInt(7.W))
   val fun3   = Wire(UInt(3.W))
@@ -67,6 +66,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val rvi_sra    = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
   val rvi_or     = opcode === "b0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
   val rvi_and    = opcode === "b0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
+  val rvi_fencei = io.inst === "b00000000000000000001000000001111".U
   val rvi_ecall  = io.inst === "b00000000000000000000000001110011".U
   val rvi_csrrs  = opcode === "b1110011".U && fun3 === "b010".U // csr
   val rvi_csrrw  = opcode === "b1110011".U && fun3 === "b001".U
@@ -111,7 +111,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
 
   // ********************************** Inst Type **********************************
   val type_I =
-    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || io.wb_csr_ctrl.csr_wen || rvi_ecall // TYPE_I addi
+    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || io.wb_csr_ctrl.csr_wen || rvi_ecall || rvi_fencei // TYPE_I addi
   val type_U = rvi_lui || rvi_auipc // TYPE_U auipc
   val type_S = rvi_sb || rvi_sh || rvi_sw || rvi_sd // TYPE_S
   val type_J = rvi_jal // TYPE_J
@@ -228,6 +228,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       rvi_sd -> 3.U
     )
   )
+  io.mem_ctrl.fencei := rvi_fencei
 
   // >>>>>>>>>>>>>> WbCsrCtrlIO <<<<<<<<<<<<<<
   io.wb_csr_ctrl.ecall     := rvi_ecall
@@ -304,6 +305,7 @@ class MemCtrlIO extends Bundle with RVNoobConfig {
   val r_pmem        = Bool()
   val w_pmem        = Bool()
   val judge_load_op = UInt(jdgl_op_w.W)
+  val fencei        = Bool()
 }
 
 class WbCsrCtrlIO extends Bundle with RVNoobConfig {

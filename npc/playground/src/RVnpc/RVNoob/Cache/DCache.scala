@@ -39,6 +39,7 @@ class DCache(
     val wen        = Input(Bool())
     val wdata      = Input(UInt(xlen.W))
     val zero_ex_op = Input(UInt(2.W))
+    val fencei     = Input(Bool())
     val valid      = Input(Bool())
 
     val miss  = Output(Bool())
@@ -67,6 +68,32 @@ class DCache(
   val pmem_write_ok     = Wire(Bool())
   val pmem_writeback_ok = Wire(Bool())
   // ********************************** Main Signal Define **********************************
+  // >>>>>>>>>>>>>> fencei 控制信号 <<<<<<<<<<<<<<
+  val fencei_valid = io.fencei && io.valid && !fencei_ok
+  val fencei_reg   = RegInit(0.B)
+  val fencei_state = fencei_reg || fencei_valid
+  val fencei_ok    = Wire(Bool())
+  when(fencei_valid) {
+    fencei_reg := 1.B
+  }.elsewhen(fencei_state && fencei_ok) {
+    fencei_reg := 0.B
+  }
+  val dirty_set = Wire(Vec(sets, Bool()))
+  for (i <- 0 until sets) {
+    dirty_set[i] := tag_arrays(0)(i).dirty_bit || tag_arrays(1)(i).dirty_bit ||
+    tag_arrays(2)(i).dirty_bit || tag_arrays(3)(i).dirty_bit
+  }
+  fencei_ok := !dirty_set.asUInt().orR()
+  val fencei_set = PriorityEncoder(dirty_set.asUInt())
+  val fencei_way = PriorityEncoder(
+    Seq(
+      tag_arrays(0)(fencei_set).dirty_bit,
+      tag_arrays(1)(fencei_set).dirty_bit,
+      tag_arrays(2)(fencei_set).dirty_bit,
+      tag_arrays(3)(fencei_set).dirty_bit
+    )
+  )
+
   // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
   val inpmem          = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
   val inpmem_op       = (io.ren || io.wen) && inpmem
@@ -88,7 +115,7 @@ class DCache(
   }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
   val addr_tag    = io.addr(addrWidth - 1, addrWidth - tagWidth)
-  val addr_index  = io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth)
+  val addr_index  = Mux(fencei_state, fencei_set, io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth))
   val addr_offset = io.addr(byteOffsetWidth - 1, 0)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
   val hit_oh  = Wire(Vec(ways, Bool()))
@@ -254,9 +281,13 @@ class DCache(
       PLRU_bits(addr_index)(2) := hit_oh.asUInt()(2)
     }
   }
-  replace_way := Cat(
-    PLRU_bits(addr_index)(0),
-    Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
+  replace_way := Mux(
+    fencei_state,
+    fencei_way,
+    Cat(
+      PLRU_bits(addr_index)(0),
+      Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
+    )
   )
   when(inpmem_miss && replace_dirty) {
     replace_addr := Cat(replace_tag, addr_index, 0.U(5.W))
@@ -282,7 +313,7 @@ class DCache(
   }
 
   // ********************************** Output **********************************
-  io.miss := inpmem_miss || mmio_read || mmio_write
+  io.miss := inpmem_miss || mmio_read || mmio_write || fencei_state
 
   when(RegNext(inpmem, 0.B)) {
     io.rdata := (io.sram(RegNext(hit_way, 0.U)).rdata >> RegNext(data_shift, 0.U))
@@ -315,6 +346,7 @@ object DCache {
       cache.io.wen        := 0.B
       cache.io.zero_ex_op := 3.U
       cache.io.valid      := 1.B
+      cache.io.fencei     := 0.B
     }
     cache
   }
