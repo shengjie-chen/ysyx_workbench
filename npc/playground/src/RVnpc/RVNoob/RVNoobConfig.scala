@@ -11,7 +11,7 @@ trait RVNoobConfig {
   val inst_w     = 32
   val gpr_addr_w = 5
 
-  val tapeout : Boolean = false
+  val tapeout: Boolean = false
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
 }
@@ -20,38 +20,39 @@ trait ALU_op {
   //  val sNone :: sOne1 :: sTwo1s :: Nil = Enum(3)
   val op_x = 0.U
   // + -
-  val op_add = 1.U
-  val op_sub = 2.U
+  val op_add = 1.U // 00001
+  val op_sub = 3.U // 00011
   // shift
-  val op_sll = 3.U //left_shift
-  val op_srl = 4.U // right_shift_logical
-  val op_sra = 5.U // right_shift_arithmetic
-  // logic
-  val op_xor = 6.U
-  val op_or  = 7.U // csr
-  val op_and = 8.U
-  //x / %
-  val op_mul = 9.U
-  val op_div = 10.U
-  val op_rem = 11.U
-  // mulh
-  val op_mulh   = 12.U
-  val op_mulhs  = 13.U
-  val op_mulhsu = 14.U
-  //  div
-  val op_divs  = 15.U
-  val op_divsw = 16.U
-  val op_divw  = 17.U
-  // rem
-  val op_rems  = 18.U
-  val op_remsw = 19.U
-  val op_remw  = 20.U
+  val op_sll = 2.U // 00010 left_shift
+  val op_srl = 4.U // 00100 right_shift_logical
+  val op_sra = 5.U // 00101 right_shift_arithmetic
   // shift w
-  val op_srlw = 21.U
-  val op_sraw = 22.U
-  val op_sllw = 23.U
+  val op_srlw = 9.U // 01001
+  val op_sraw = 10.U // 01010
+  val op_sllw = 11.U // 01011
+  // mul
+  val op_mul    = 8.U  // 01000
+  val op_mulw   = 12.U // 01100
+  val op_mulh   = 13.U // 01101
+  val op_mulhs  = 14.U // 01110
+  val op_mulhsu = 15.U // 01111
+  //  div
+  val op_div   = 16.U // 10000
+  val op_divs  = 17.U // 10001
+  val op_divsw = 18.U // 10010
+  val op_divw  = 19.U // 10011
+  // rem
+  val op_rem   = 20.U // 10100
+  val op_rems  = 21.U // 10101
+  val op_remsw = 22.U // 10110
+  val op_remw  = 23.U // 10111
+  // logic
+  val op_xor = 6.U  // 00110
+  val op_or  = 7.U  // 00111 csr
+  val op_and = 24.U // 11000
   // csr
-  val op_andinv = 24.U
+  val op_andinv = 25.U // 11001
+
 }
 
 trait Judge_op {
@@ -60,16 +61,16 @@ trait Judge_op {
   val jop_x = 0.U
   // B
   val jop_beq  = 1.U
-  val jop_bne  = 2.U
-  val jop_blt  = 3.U
-  val jop_bge  = 4.U
-  val jop_bltu = 5.U
-  val jop_bgeu = 6.U
+  val jop_bne  = 3.U
+  val jop_blt  = 2.U
+  val jop_bltu = 6.U
+  val jop_bge  = 7.U
+  val jop_bgeu = 5.U
   // set
-  val jop_slt  = 7.U
-  val jop_sltu = 8.U
+  val jop_slt  = 4.U
+  val jop_sltu = 12.U
   // sext
-  val jop_sextw = 9.U
+  val jop_sextw = 13.U // 截取32位做符号位拓展
   // val jop_sexthw = 7.U
   // val jop_sextb  = 8.U
   // uext
