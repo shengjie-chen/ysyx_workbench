@@ -80,7 +80,7 @@ class DCache(
   }
   val dirty_set = Wire(Vec(sets, Bool()))
   for (i <- 0 until sets) {
-    dirty_set[i] := tag_arrays(0)(i).dirty_bit || tag_arrays(1)(i).dirty_bit ||
+    dirty_set(i) := tag_arrays(0)(i).dirty_bit || tag_arrays(1)(i).dirty_bit ||
     tag_arrays(2)(i).dirty_bit || tag_arrays(3)(i).dirty_bit
   }
   fencei_ok := !dirty_set.asUInt().orR()
