@@ -31,7 +31,7 @@ trait ALU_op {
   val op_sraw = 10.U // 01010
   val op_sllw = 11.U // 01011
   // mul
-  val op_mul    = 8.U  // 01000
+  val op_mul    = 8.U // 01000
   val op_mulw   = 12.U // 01100
   val op_mulh   = 13.U // 01101
   val op_mulhs  = 14.U // 01110
@@ -47,8 +47,8 @@ trait ALU_op {
   val op_remsw = 22.U // 10110
   val op_remw  = 23.U // 10111
   // logic
-  val op_xor = 6.U  // 00110
-  val op_or  = 7.U  // 00111 csr
+  val op_xor = 6.U // 00110
+  val op_or  = 7.U // 00111 csr
   val op_and = 24.U // 11000
   // csr
   val op_andinv = 25.U // 11001
