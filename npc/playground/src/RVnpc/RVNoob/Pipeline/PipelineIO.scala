@@ -31,14 +31,21 @@ class PipelineValid extends Module with RVNoobConfig {
     val valid  = Output(Bool())
   })
 
-  val sValid :: sInvalid :: Nil = Enum(2)
-  val state                     = RegInit(sInvalid)
+  val sValid :: sInvalid :: sDelay :: Nil = Enum(3)
+  val state                               = RegInit(sInvalid)
 
   io.valid := state === sValid
 
   switch(state) {
     is(sValid) {
       when(!io.reg_en) {
+        state := sDelay
+      }
+    }
+    is(sDelay) {
+      when(io.reg_en) {
+        state := sValid
+      }.otherwise {
         state := sInvalid
       }
     }
