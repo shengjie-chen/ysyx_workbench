@@ -48,7 +48,7 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   val mem_data_t = RegNext(out.mem_data, 0.U)
   out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
-  out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
 
   if (!tapeout) {
     val dpi_wb = Module(new DpiWb)
