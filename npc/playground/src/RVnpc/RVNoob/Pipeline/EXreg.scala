@@ -57,7 +57,7 @@ class EXreg extends MultiIOModule with RVNoobConfig {
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
   out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.reg_en)
 
-  out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
