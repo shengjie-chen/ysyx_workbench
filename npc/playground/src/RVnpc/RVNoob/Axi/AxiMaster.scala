@@ -20,7 +20,7 @@ class AxiMaster extends Module with RVNoobConfig {
   val awaddr             = RegEnable(io.wctrl.addr, 0.U, io.wctrl.en)
   val awlen              = RegEnable(io.wctrl.len, 0.U, io.wctrl.en)
   val awsize             = RegEnable(io.wctrl.size, 0.U, io.wctrl.en)
-  val awburst            = RegEnable(Cat(0.U(1.W), io.wctrl.burst), 0.U, io.wctrl.en)
+  val awburst            = RegEnable(io.wctrl.burst, 0.U, io.wctrl.en)
   val awvalid            = RegInit(0.B)
   val busrt_write_active = RegInit(0.B)
 
@@ -92,7 +92,7 @@ class AxiMaster extends Module with RVNoobConfig {
   val araddr            = RegEnable(io.rctrl.addr, 0.U, io.rctrl.en)
   val arlen             = RegEnable(io.rctrl.len, 0.U, io.rctrl.en)
   val arsize            = RegEnable(io.rctrl.size, 0.U, io.rctrl.en)
-  val arburst           = RegEnable(Cat(0.U(1.W), io.rctrl.burst), 0.U, io.rctrl.en)
+  val arburst           = RegEnable(io.rctrl.burst, 0.U, io.rctrl.en)
   val arvalid           = RegInit(0.B)
   val busrt_read_active = RegInit(0.B)
 

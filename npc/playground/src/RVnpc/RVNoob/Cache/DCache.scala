@@ -140,7 +140,9 @@ class DCache(
   val replace_dirty   = tag_arrays(replace_way)(addr_index).dirty_bit
   val replace_tag     = Wire(UInt(tagWidth.W))
   replace_tag := tag_arrays(replace_way)(addr_index).tag
-  dontTouch(replace_tag)
+  if(!tapeout){
+    dontTouch(replace_tag)
+  }
 
   val replace_buffer = RegInit(Vec(4, UInt(64.W)), 0.B.asTypeOf(Vec(4, UInt(64.W))))
   val replace_addr   = RegInit(UInt(addrWidth.W), 0.U)
