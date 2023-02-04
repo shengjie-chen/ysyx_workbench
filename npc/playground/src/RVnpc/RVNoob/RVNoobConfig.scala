@@ -11,7 +11,7 @@ trait RVNoobConfig {
   val inst_w     = 32
   val gpr_addr_w = 5
 
-  val tapeout: Boolean = false
+  val tapeout: Boolean = true
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
 }
