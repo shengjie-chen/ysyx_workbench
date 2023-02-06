@@ -5,7 +5,10 @@ import chisel3._
 import chisel3.util._
 
 trait IDregSignal extends RVNoobConfig {
-  val snpc = UInt(xlen.W)
+  val pc   = UInt(addr_w.W)
+  val inst = UInt(inst_w.W)
+
+  val snpc = UInt(addr_w.W)
 }
 
 class IDregOutIO extends PipelineOutIO with IDregSignal {}
