@@ -5,8 +5,6 @@ import chisel3._
 import chisel3.util._
 import scala.math.pow
 
-
-
 // ICache module, have discarded, DCache instead
 class ICacheOld(
   val addrWidth:     Int = 32,

@@ -42,8 +42,9 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
     dontTouch(out)
   }
 
-  out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
-  out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
+  out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
+  out.inst := RegEnable(in.inst, 0.U, in.reg_en)
+
   out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
   out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
   out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)

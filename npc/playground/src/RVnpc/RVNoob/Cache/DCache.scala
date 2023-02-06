@@ -268,7 +268,7 @@ class DCache(
 
   // Other
   when(mmio_read || mmio_write) {
-    pmem_shift := io.addr
+    pmem_shift := io.addr(2, 0)
   }.otherwise {
     pmem_shift := 0.U
   }
