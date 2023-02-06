@@ -109,9 +109,10 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
     return;
   }
 
-  if (waddr == VGACTL_ADDR) {
-    assert(wmask == (char)0xf0);
-    vgactl_port_base_syn = wdata >> 32;
+  if (waddr == VGACTL_ADDR + 4) {
+    // assert(wmask == (char)0xf0);
+    if(wmask == (char)0x0f)
+    vgactl_port_base_syn = wdata;
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref(pc);
 #endif
