@@ -5,6 +5,9 @@ import chisel3._
 import chisel3.util._
 
 trait IDregSignal extends RVNoobConfig {
+  val pc   = UInt(xlen.W)
+  val inst = UInt(inst_w.W)
+
   val snpc = UInt(xlen.W)
 }
 

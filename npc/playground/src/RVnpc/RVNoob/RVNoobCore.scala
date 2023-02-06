@@ -53,7 +53,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val dnpc_en = Wire(Bool())
   val npc     = Wire(UInt(64.W))
-  dontTouch(npc)
+  if (!tapeout) { dontTouch(npc) }
   val pc_en = Wire(Bool())
   val pc =
     if (tapeout) RegEnable(npc, 0x30000000L.U(64.W), pc_en)

@@ -5,6 +5,9 @@ import chisel3._
 import chisel3.util._
 
 trait EXregSignal extends RVNoobConfig {
+  val pc   = UInt(xlen.W)
+  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+
   val snpc     = UInt(xlen.W)
   val src1     = UInt(xlen.W)
   val src2     = UInt(xlen.W)

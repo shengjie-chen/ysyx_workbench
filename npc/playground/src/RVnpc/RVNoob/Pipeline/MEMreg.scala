@@ -5,8 +5,11 @@ import chisel3._
 import chisel3.util._
 
 trait MEMregSignal extends RVNoobConfig {
+  val pc   = UInt(xlen.W)
+  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+
   val src2     = UInt(xlen.W)
-  val mem_addr = UInt(xlen.W)
+  val mem_addr = UInt(32.W)
   val alu_res  = UInt(xlen.W)
 
   val mem_ctrl    = new MemCtrlIO
@@ -39,8 +42,9 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
     dontTouch(out)
   }
 
-  out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
-  out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
+  out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
+  out.inst := RegEnable(in.inst, 0.U, in.reg_en)
+
   out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
   out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
   out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)

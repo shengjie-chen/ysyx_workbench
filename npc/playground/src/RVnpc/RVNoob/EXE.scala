@@ -10,7 +10,7 @@ class EXE extends Module with RVNoobConfig {
     val src1     = Input(UInt(xlen.W))
     val src2     = Input(UInt(xlen.W))
     val imm      = Input(UInt(xlen.W))
-    val mem_addr = Output(UInt(xlen.W))
+    val mem_addr = Output(UInt(addr_w.W))
 
     val pc   = Input(UInt(xlen.W))
     val snpc = Input(UInt(xlen.W))
@@ -59,7 +59,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
     val ctrl     = Input(new ALUCtrlIO)
     val result   = Output(UInt(xlen.W))
     val B_en     = Output(Bool())
-    val mem_addr = Output(UInt(xlen.W))
+    val mem_addr = Output(UInt(addr_w.W))
     val waiting  = Output(Bool())
     val valid    = Input(Bool())
   })
@@ -98,7 +98,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   alu_src1    := io.src1
   alu_src2    := Mux(sub, ((~io.src2).asUInt() + 1.U), io.src2)
   add_res     := alu_src1 +& alu_src2
-  io.mem_addr := add_res(63, 0)
+  io.mem_addr := add_res
 
   //  // alu type
   //  val alu_base = add || sub || sll || srl || sra || xor || or || and

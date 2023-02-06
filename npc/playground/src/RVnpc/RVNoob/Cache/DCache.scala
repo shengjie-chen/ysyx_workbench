@@ -14,13 +14,14 @@ class TagArrays(tagWidth: Int) extends Bundle {
 }
 
 class DCache(
-  val deviceId:      Int = 0,
-  val addrWidth:     Int = 32,
-  val cacheSize:     Int = 4 * pow(2, 10).toInt,
-  val cacheLineSize: Int = 32,
-  val ways:          Int = 4,
-  val axiDataWidth:  Int = 64,
-  val missDelay:     Int = 4)
+  val isICache:      Boolean = false,
+  val deviceId:      Int     = 0,
+  val addrWidth:     Int     = 32,
+  val cacheSize:     Int     = 4 * pow(2, 10).toInt,
+  val cacheLineSize: Int     = 32,
+  val ways:          Int     = 4,
+  val axiDataWidth:  Int     = 64,
+  val missDelay:     Int     = 4)
     extends Module
     with RVNoobConfig {
 
@@ -43,7 +44,7 @@ class DCache(
     val valid      = Input(Bool())
 
     val miss  = Output(Bool())
-    val rdata = Output(UInt(xlen.W))
+    val rdata = Output(if (isICache) UInt(32.W) else UInt(xlen.W))
 
     val sram = Vec(4, new CacheSramIO)
 
@@ -140,7 +141,7 @@ class DCache(
   val replace_dirty   = tag_arrays(replace_way)(addr_index).dirty_bit
   val replace_tag     = Wire(UInt(tagWidth.W))
   replace_tag := tag_arrays(replace_way)(addr_index).tag
-  if(!tapeout){
+  if (!tapeout) {
     dontTouch(replace_tag)
   }
 
@@ -267,7 +268,7 @@ class DCache(
 
   // Other
   when(mmio_read || mmio_write) {
-    pmem_shift := io.addr
+    pmem_shift := io.addr(2, 0)
   }.otherwise {
     pmem_shift := 0.U
   }
@@ -342,7 +343,7 @@ class S011HD1P_X32Y2D128_BW extends BlackBox {
 
 object DCache {
   def apply(isICache: Boolean, deviceId: Int = 0): DCache = {
-    val cache = Module(new DCache(deviceId = deviceId))
+    val cache = Module(new DCache(isICache = isICache, deviceId = deviceId))
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
