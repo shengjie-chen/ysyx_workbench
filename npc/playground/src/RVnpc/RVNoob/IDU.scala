@@ -223,10 +223,10 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.mem_ctrl.zero_ex_op := MuxCase(
     DontCare,
     Array(
-      rvi_sb -> 0.U,
-      rvi_sh -> 1.U,
-      rvi_sw -> 2.U,
-      rvi_sd -> 3.U
+      (rvi_sb || rvi_lb || rvi_lbu)-> 0.U,
+      (rvi_sh || rvi_lh || rvi_lhu)-> 1.U,
+      (rvi_sw || rvi_lw || rvi_lwu)-> 2.U,
+      (rvi_sd || rvi_ld)-> 3.U
     )
   )
   io.mem_ctrl.fencei := rvi_fencei

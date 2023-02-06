@@ -44,7 +44,7 @@ class DCache(
     val valid      = Input(Bool())
 
     val miss  = Output(Bool())
-    val rdata = Output(if (isICache) UInt(32.W) else UInt(xlen.W))
+    val rdata = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
 
     val sram = Vec(4, new CacheSramIO)
 
@@ -63,7 +63,6 @@ class DCache(
     RegInit(Vec(ways, Vec(sets, new TagArrays(tagWidth))), 0.B.asTypeOf(Vec(ways, Vec(sets, new TagArrays(tagWidth)))))
   // >>>>>>>>>>>>>> DPI PMEM / AXI <<<<<<<<<<<<<<
   val pmem_rdata   = Wire(UInt(xlen.W))
-  val pmem_shift   = Wire(UInt(3.W))
   val pmem_read_ok = Wire(Bool())
   //  val pmem_read_ok_addr = Wire(UInt(addrWidth.W))
   val pmem_write_ok     = Wire(Bool())
@@ -210,15 +209,16 @@ class DCache(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  pmem_rdata        := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), 0.U, pmem_read_ok)
-  io.axi_rctrl.en   := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
-  io.axi_rctrl.id   := deviceId.U
-  io.axi_rctrl.size := 3.U
+  pmem_rdata      := RegEnable(io.axi_rctrl.data, 0.U, pmem_read_ok)
+  io.axi_rctrl.en := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
+  io.axi_rctrl.id := deviceId.U
   when(mmio_read) {
-    io.axi_rctrl.addr  := io.addr & (~0x7.U(addrWidth.W)).asUInt()
+    io.axi_rctrl.size  := io.zero_ex_op
+    io.axi_rctrl.addr  := io.addr
     io.axi_rctrl.burst := 0.U
     io.axi_rctrl.len   := 0.U
   }.otherwise {
+    io.axi_rctrl.size  := 3.U
     io.axi_rctrl.addr  := io.addr & (~0x1f.U(addrWidth.W)).asUInt()
     io.axi_rctrl.burst := 1.U
     io.axi_rctrl.len   := 3.U
@@ -238,16 +238,16 @@ class DCache(
   io.axi_wctrl.wbuf_ready := wbuf_ready
   when(mmio_write) {
     io.axi_wctrl.burst := 0.U
-    io.axi_wctrl.addr  := io.addr & (~0x7.U(addrWidth.W)).asUInt()
+    io.axi_wctrl.addr  := io.addr
     io.axi_wctrl.len   := 0.U
-    io.axi_wctrl.data  := (io.wdata << (pmem_shift * 8.U))
+    io.axi_wctrl.data  := io.wdata
     io.axi_wctrl.strb := MuxCase(
       "b11111111".U,
       Array(
         (io.zero_ex_op === 3.U) -> "b11111111".U, // write double word
-        (io.zero_ex_op === 2.U) -> ("b1111".U << pmem_shift), // write word
-        (io.zero_ex_op === 1.U) -> ("b11".U << pmem_shift), // write half word
-        (io.zero_ex_op === 0.U) -> ("b1".U << pmem_shift) // write byte
+        (io.zero_ex_op === 2.U) -> "b1111".U, // write word
+        (io.zero_ex_op === 1.U) -> "b11".U, // write half word
+        (io.zero_ex_op === 0.U) -> "b1".U // write byte
       )
     )
   }.otherwise {
@@ -267,11 +267,6 @@ class DCache(
   }
 
   // Other
-  when(mmio_read || mmio_write) {
-    pmem_shift := io.addr(2, 0)
-  }.otherwise {
-    pmem_shift := 0.U
-  }
   pmem_read_ok      := io.axi_rctrl.handshake
   pmem_write_ok     := io.axi_wctrl.whandshake
   pmem_writeback_ok := io.axi_wctrl.bhandshake
