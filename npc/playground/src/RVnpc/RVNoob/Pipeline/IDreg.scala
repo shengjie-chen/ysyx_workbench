@@ -36,7 +36,7 @@ class IDreg extends MultiIOModule with RVNoobConfig {
   val inst_t   = RegNext(out.inst, 0.U)
   out.inst := Mux(reset_t, 0.U, Mux(reg_en_t, in.inst, inst_t))
 
-  out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U)
+  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
