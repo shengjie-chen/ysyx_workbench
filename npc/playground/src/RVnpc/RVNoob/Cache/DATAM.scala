@@ -61,7 +61,7 @@ class DATAM extends Module with RVNoobConfig {
 class DpiPmem extends BlackBox with RVNoobConfig {
   val io = IO(new Bundle {
     val clk    = Input(Clock())
-    val pc     = Input(UInt(xlen.W))
+    val pc     = Input(UInt(64.W))
     val raddr  = Input(UInt(xlen.W))
     val rdata  = Output(UInt(xlen.W))
     val r_pmem = Input(Bool())

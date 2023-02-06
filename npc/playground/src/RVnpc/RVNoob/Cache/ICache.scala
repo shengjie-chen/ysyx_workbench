@@ -8,7 +8,7 @@ import scala.math.pow
 
 
 // ICache module, have discarded, DCache instead
-class ICache(
+class ICacheOld(
   val addrWidth:     Int = 32,
   val cacheSize:     Int = 4 * pow(2, 10).toInt,
   val cacheLineSize: Int = 32,
@@ -119,10 +119,10 @@ class ICache(
 
 }
 
-object ICacheGen extends App {
+object ICacheOldGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(
       Array("--target-dir", "./build/test"),
-      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new ICache()))
+      Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new ICacheOld()))
     )
 }

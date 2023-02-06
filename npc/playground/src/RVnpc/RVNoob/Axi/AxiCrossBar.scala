@@ -7,17 +7,17 @@ class AxiCrossBar extends MultiIOModule with RVNoobConfig {
   val in1 = IO(new Bundle {
     val rctrl = new AxiReadCtrlIO
     val wctrl = new AxiWriteCtrlIO
-    val pc    = Input(UInt(64.W))
+    val pc    = Input(UInt(addr_w.W))
   })
   val in2 = IO(new Bundle {
     val rctrl = new AxiReadCtrlIO
     val wctrl = new AxiWriteCtrlIO
-    val pc    = Input(UInt(64.W))
+    val pc    = Input(UInt(addr_w.W))
   })
   val maxi = IO(new Bundle {
     val rctrl = Flipped(new AxiReadCtrlIO)
     val wctrl = Flipped(new AxiWriteCtrlIO)
-    val pc    = Output(UInt(64.W))
+    val pc    = Output(UInt(addr_w.W))
     val busy  = Input(Bool())
   })
 

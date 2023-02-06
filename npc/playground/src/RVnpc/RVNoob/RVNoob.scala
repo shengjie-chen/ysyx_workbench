@@ -4,14 +4,14 @@ import chisel3._
 import chisel3.util._
 import Pipeline._
 import RVnpc.RVNoob.Axi.AxiSlaveMem
-import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, ICache, JudgeLoad, S011HD1P_X32Y2D128_BW}
+import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad, S011HD1P_X32Y2D128_BW}
 
 class RVNoob extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc      = Output(UInt(64.W))
+    val pc      = Output(UInt(addr_w.W))
     val ebreak  = Output(Bool())
     val diff_en = Output(Bool())
-    val diff_pc = Output(UInt(64.W))
+    val diff_pc = Output(UInt(addr_w.W))
   })
   // >>>>>>>>>>>>>> RVNoobCore <<<<<<<<<<<<<<
   val core = RVNoobCore()
@@ -26,7 +26,7 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   val sram6 = Module(new S011HD1P_X32Y2D128_BW)
   val sram7 = Module(new S011HD1P_X32Y2D128_BW)
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
-  val axi_pmem  = Module(new AxiSlaveMem)
+  val axi_pmem = Module(new AxiSlaveMem)
 
   io.pc      <> core.io.pc.get
   io.ebreak  <> core.io.ebreak.get
@@ -132,8 +132,7 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   axi_pmem.io.S_AXI_RRESP   <> core.io.master.rresp
   axi_pmem.io.S_AXI_RLAST   <> core.io.master.rlast
 
-
-  axi_pmem.io.PC  <> core.io.axi_pc.get
+  axi_pmem.io.PC <> core.io.axi_pc.get
 
 }
 
