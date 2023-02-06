@@ -97,12 +97,8 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
 
   if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size)) {
     // printf("wmask = %x\n", wmask);
-    assert((wmask == 0x0f) || (wmask == (char)0xf0));
-    if (wmask == 0x0f) {
-      *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR) = wdata;
-    } else if (wmask == (char)0xf0) {
-      *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR + 4) = wdata >> 32;
-    }
+    assert(wmask == 0x0f);
+    *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref(pc);
 #endif
