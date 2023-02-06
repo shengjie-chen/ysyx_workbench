@@ -8,11 +8,11 @@ import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc      = if (!tapeout) Some(Output(UInt(64.W))) else None
+    val pc      = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
     val ebreak  = if (!tapeout) Some(Output(Bool())) else None
     val diff_en = if (!tapeout) Some(Output(Bool())) else None
-    val diff_pc = if (!tapeout) Some(Output(UInt(64.W))) else None
-    val axi_pc  = if (!tapeout) Some(Output(UInt(64.W))) else None
+    val diff_pc = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val axi_pc  = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
@@ -52,13 +52,13 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // ********************************** Instance **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   val dnpc_en = Wire(Bool())
-  val npc     = Wire(UInt(64.W))
+  val npc     = Wire(UInt(addr_w.W))
   if (!tapeout) { dontTouch(npc) }
   val pc_en = Wire(Bool())
   val pc =
-    if (tapeout) RegEnable(npc, 0x30000000L.U(64.W), pc_en)
-    else RegEnable(npc, 0x80000000L.U(64.W), pc_en) //2147483648
-  val snpc   = Wire(UInt(64.W))
+    if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
+    else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
+  val snpc   = Wire(UInt(addr_w.W))
   val icache = DCache(isICache = true)
 
   //  val icache = Module(new ICache)
@@ -72,8 +72,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val cache_miss = Wire(Bool())
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  val dnpc        = Wire(UInt(64.W))
-  val npc_add_res = Wire(UInt(64.W))
+  val dnpc        = Wire(UInt(addr_w.W))
+  val npc_add_res = Wire(UInt(addr_w.W))
   val ex_reg: EXreg = EXreg(
     id_reg.out.pc,
     id_reg.out.inst,
@@ -188,7 +188,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dnpc := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
     ex_reg.out.csr_dnpc,
-    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, Cat(npc_add_res(63, 1), 0.U(1.W)), npc_add_res)
+    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, Cat(npc_add_res(addr_w - 1, 1), 0.U(1.W)), npc_add_res)
   )
 
   npc_add_res := ex_reg.out.imm +
@@ -253,7 +253,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
     val cache_miss_first     = cache_miss && !RegNext(cache_miss)
 
-    val diff_pc = Reg(UInt(64.W))
+    val diff_pc = Reg(UInt(addr_w.W))
 
     // wb 写完成的周期
     //    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&

@@ -5,7 +5,7 @@ import chisel3._
 import chisel3.util._
 
 trait MEMregSignal extends RVNoobConfig {
-  val pc   = UInt(xlen.W)
+  val pc   = UInt(addr_w.W)
   val inst = UInt(if (tapeout) 0.W else inst_w.W)
 
   val src2     = UInt(xlen.W)

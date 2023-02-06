@@ -14,9 +14,9 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   val io = IO(new Bundle {
     val csr_rdata   = Output(UInt(xlen.W))
     val id_csr_ctrl = Input(new IdCsrCtrlIO)
-    val csr_dnpc    = Output(UInt(xlen.W))
+    val csr_dnpc    = Output(UInt(addr_w.W))
 
-    val pc          = Input(UInt(xlen.W))
+    val pc          = Input(UInt(addr_w.W))
     val mcause      = Input(UInt(xlen.W))
     val wb_csr_ctrl = Input(new WbCsrCtrlIO)
     val csr_wdata   = Input(UInt(xlen.W))
