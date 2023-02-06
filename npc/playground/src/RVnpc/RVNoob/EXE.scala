@@ -75,6 +75,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   val div = io.ctrl.alu_op === op_div
   val rem = io.ctrl.alu_op === op_rem
 
+  val mulw   = io.ctrl.alu_op === op_mulw
   val mulh   = io.ctrl.alu_op === op_mulh
   val mulhs  = io.ctrl.alu_op === op_mulhs
   val mulhsu = io.ctrl.alu_op === op_mulhsu
@@ -121,16 +122,16 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   alu_rem_res := div_er.io.remainder
 
   val mul_er    = Module(new BoothShiftMultiplier)
-  val mul_op    = mulhsu || mulhs || mulh || mul
+  val mul_op    = mulhsu || mulhs || mulh || mul || mulw
   val mul_valid = mul_op && io.valid && mul_er.io.mul_ready
   mul_er.io.mul_valid    := mul_valid
   mul_er.io.flush        := 0.B
-  mul_er.io.mulw         := mul
-  mul_er.io.mul_signed   := Mux(mul || mulhs, 3.U, Mux(mulhsu, 2.U, 0.U))
+  mul_er.io.mulw         := mulw
+  mul_er.io.mul_signed   := Mux(mul || mulw || mulhs, 3.U, Mux(mulhsu, 2.U, 0.U))
   mul_er.io.multiplicand := alu_src1
   mul_er.io.multiplier   := alu_src2
   val alu_mul_res = Wire(UInt(xlen.W))
-  alu_mul_res := Mux(mul, mul_er.io.result_lo, mul_er.io.result_hi)
+  alu_mul_res := Mux(mul || mulw, mul_er.io.result_lo, mul_er.io.result_hi)
 
   io.waiting := mul_op && !mul_er.io.out_valid || div_op && !div_er.io.out_valid
 

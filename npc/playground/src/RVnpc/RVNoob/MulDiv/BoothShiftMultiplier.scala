@@ -55,7 +55,7 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
     multing_state := 0.B
   }.elsewhen(io.mul_valid) {
     multing_state := 1.B
-  }.elsewhen(multing_state && (io.mulw && cnt === 31.U || !io.mulw && cnt === 32.U)) {
+  }.elsewhen(multing_state && (io.mulw && cnt === 15.U || !io.mulw && cnt === 32.U)) {
     multing_state := 0.B
   }
 
