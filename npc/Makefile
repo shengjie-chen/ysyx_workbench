@@ -55,6 +55,7 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 verilog:
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
+	rm -rf $(GEN_DIR)
 	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 
@@ -90,7 +91,6 @@ sim_npc_vcd: verilog
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 sim_npc_vcd_without_gtk: verilog
-	rm -rf $(GEN_DIR)
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 	sed -i '1i\/* verilator lint_off WIDTH */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查div处的错误
