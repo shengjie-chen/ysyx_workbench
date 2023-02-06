@@ -120,6 +120,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   val alu_rem_res = Wire(UInt(xlen.W))
   alu_div_res := div_er.io.quotient
   alu_rem_res := div_er.io.remainder
+  val alu_div_state = div_valid || !div_er.io.div_ready
 
   val mul_er    = Module(new BoothShiftMultiplier)
   val mul_op    = mulhsu || mulhs || mulh || mul || mulw
@@ -132,8 +133,9 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
   mul_er.io.multiplier   := alu_src2
   val alu_mul_res = Wire(UInt(xlen.W))
   alu_mul_res := Mux(mul || mulw, mul_er.io.result_lo, mul_er.io.result_hi)
+  val alu_mul_state = mul_valid || !mul_er.io.mul_ready
 
-  io.waiting := mul_op && !mul_er.io.out_valid || div_op && !div_er.io.out_valid
+  io.waiting := alu_mul_state || alu_div_state
 
   alu_res := MuxCase(
     0.U,
