@@ -90,7 +90,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     ppl_ctrl.io.ex_reg_ctrl.en
   )
   val exe      = Module(new EXE)
-  val exe_src1 = Wire(UInt(xlen.W))
+//  val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
@@ -191,10 +191,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, Cat(npc_add_res(addr_w - 1, 1), 0.U(1.W)), npc_add_res)
   )
 
-  npc_add_res := ex_reg.out.imm +
-    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, exe_src1, ex_reg.out.pc)
+  npc_add_res := ex_reg.out.imm(addr_w - 1, 0) +
+    Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, exe.io.src1(addr_w - 1, 0), ex_reg.out.pc)
 
-  exe_src1 := MuxLookup(
+  exe.io.src1 := MuxLookup(
     ppl_ctrl.io.forward1,
     ex_reg.out.src1,
     Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
@@ -205,7 +205,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
   )
 
-  exe.io.src1 <> exe_src1
   exe.io.src2 <> exe_src2
 
   exe.io.imm   <> ex_reg.out.imm
