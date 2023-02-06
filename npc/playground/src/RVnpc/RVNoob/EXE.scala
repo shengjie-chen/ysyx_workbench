@@ -145,7 +145,7 @@ class ALU extends Module with ALU_op with ext_function with RVNoobConfig with Ju
       xor -> (alu_src1 ^ alu_src2),
       or -> (alu_src1 | alu_src2),
       and -> (alu_src1 & alu_src2),
-      (mul || mulh || mulhs || mulhsu) -> alu_mul_res,
+      mul_op -> alu_mul_res,
       (div || divs || divw || divsw) -> alu_div_res,
       (rem || rems || remw || remsw) -> alu_rem_res,
       srlw -> (alu_src1(31, 0) >> alu_src2(4, 0)),
