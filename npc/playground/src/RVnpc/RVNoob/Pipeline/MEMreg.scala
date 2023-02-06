@@ -53,9 +53,7 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  // 逻辑应该是等价的，不知道为什么前者运行时出问题
-  if (tapeout) { out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U) }
-  else { out.valid := PipelineValid(reset.asBool(), in.reg_en) && (out.inst =/= 0.U) }
+  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
 
   if (!tapeout) {
     val dpi_mem_pc = Module(new DpiMemPc)
