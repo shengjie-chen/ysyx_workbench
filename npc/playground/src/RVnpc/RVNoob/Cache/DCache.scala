@@ -51,6 +51,7 @@ class DCache(
     val axi_rctrl = Flipped(new AxiReadCtrlIO)
     val axi_wctrl = Flipped(new AxiWriteCtrlIO)
   })
+
   // ********************************** Main Mem Define **********************************
   // >>>>>>>>>>>>>> data array <<<<<<<<<<<<<<
   val data_cen   = Wire(Vec(4, Bool()))

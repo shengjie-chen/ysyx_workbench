@@ -145,7 +145,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
-  icache.io.valid   <> RegNext(!icache.io.miss, 0.B)
+  icache.io.valid   <> RegNext(pc_en, 0.B)
 
   axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
   axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
