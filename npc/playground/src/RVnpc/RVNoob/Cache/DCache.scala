@@ -165,6 +165,8 @@ class DCache(
         data_cen(replace_way) := 1.B
       }
     }
+  }.elsewhen(fencei_state && replace_cnt <= 1.U){
+    data_cen(replace_way) := 1.B
   }
   // WEN
   data_wen := (!replace_dirty && !hit) || (hit && io.wen)
