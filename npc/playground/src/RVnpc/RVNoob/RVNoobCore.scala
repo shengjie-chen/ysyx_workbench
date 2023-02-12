@@ -89,7 +89,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     idu.io.dnpc_ctrl,
     ppl_ctrl.io.ex_reg_ctrl.en
   )
-  val exe      = Module(new EXE)
+  val exe = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
 
@@ -145,6 +145,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
+  icache.io.valid   <> RegNext(!icache.io.miss, 0.B)
 
   axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
   axi_crossbar.in1.wctrl <> icache.io.axi_wctrl

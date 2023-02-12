@@ -95,7 +95,9 @@ class DCache(
   )
 
   // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
-  val inpmem          = (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
+  val inpmem =
+    if (tapeout) (io.addr >= 0x80000000L.U)
+    else (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
   val inpmem_op       = (io.ren || io.wen) && inpmem
   val mmio_read_valid = !inpmem && io.ren && io.valid
   val mmio_read_reg   = RegInit(0.B)
@@ -213,7 +215,7 @@ class DCache(
   io.axi_rctrl.en := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
   io.axi_rctrl.id := deviceId.U
   when(mmio_read) {
-    io.axi_rctrl.size  := io.zero_ex_op
+    io.axi_rctrl.size := io.zero_ex_op
     io.axi_rctrl.addr  := io.addr
     io.axi_rctrl.burst := 0.U
     io.axi_rctrl.len   := 0.U
@@ -226,9 +228,8 @@ class DCache(
 
   // Write signal
   val replace_axi_write = replace_cnt === 3.U
-  io.axi_wctrl.en   := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write, 0.B))
-  io.axi_wctrl.id   := deviceId.U
-  io.axi_wctrl.size := 3.U
+  io.axi_wctrl.en := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write, 0.B))
+  io.axi_wctrl.id := deviceId.U
   val wbuf_ready = RegInit(0.B)
   when(mmio_write_valid || replace_cnt === 2.U) {
     wbuf_ready := 1.B
@@ -237,6 +238,7 @@ class DCache(
   }
   io.axi_wctrl.wbuf_ready := wbuf_ready
   when(mmio_write) {
+    io.axi_wctrl.size  := io.zero_ex_op
     io.axi_wctrl.burst := 0.U
     io.axi_wctrl.addr  := io.addr
     io.axi_wctrl.len   := 0.U
@@ -251,6 +253,7 @@ class DCache(
       )
     )
   }.otherwise {
+    io.axi_wctrl.size  := 3.U
     io.axi_wctrl.burst := 1.U
     io.axi_wctrl.addr  := replace_addr
     io.axi_wctrl.len   := 3.U
@@ -342,8 +345,8 @@ object DCache {
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
-      cache.io.zero_ex_op := 3.U
-      cache.io.valid      := 1.B
+      cache.io.zero_ex_op := 2.U
+//      cache.io.valid      := 1.B
       cache.io.fencei     := 0.B
     }
     cache
