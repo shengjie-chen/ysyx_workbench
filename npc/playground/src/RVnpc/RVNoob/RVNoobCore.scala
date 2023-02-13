@@ -75,19 +75,19 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val dnpc        = Wire(UInt(addr_w.W))
   val npc_add_res = Wire(UInt(addr_w.W))
   val ex_reg: EXreg = EXreg(
-    id_reg.out.pc,
-    id_reg.out.inst,
-    id_reg.out.snpc,
-    Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1),
-    Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2),
-    idu.io.imm,
-    csr.io.csr_dnpc,
-    idu.io.exe_ctrl,
-    idu.io.mem_ctrl,
-    idu.io.wb_rf_ctrl,
-    idu.io.wb_csr_ctrl,
-    idu.io.dnpc_ctrl,
-    ppl_ctrl.io.ex_reg_ctrl.en
+    pc          = id_reg.out.pc,
+    inst        = id_reg.out.inst,
+    snpc        = id_reg.out.snpc,
+    src1        = Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1),
+    src2        = Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2),
+    imm         = idu.io.imm,
+    csr_dnpc    = csr.io.csr_dnpc,
+    exe_ctrl    = idu.io.exe_ctrl,
+    mem_ctrl    = idu.io.mem_ctrl,
+    wb_rf_ctrl  = idu.io.wb_rf_ctrl,
+    wb_csr_ctrl = idu.io.wb_csr_ctrl,
+    dnpc_ctrl   = idu.io.dnpc_ctrl,
+    reg_en      = ppl_ctrl.io.ex_reg_ctrl.en
   )
   val exe = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
@@ -95,32 +95,32 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   val mem_reg: MEMreg = MEMreg(
-    ex_reg.out.pc,
-    ex_reg.out.inst,
-    exe_src2,
-    exe.io.mem_addr,
-    exe.io.gp_out,
-    exe.io.B_en,
-    ex_reg.out.dnpc_ctrl.pc_mux,
-    ex_reg.out.mem_ctrl,
-    ex_reg.out.wb_rf_ctrl,
-    ex_reg.out.wb_csr_ctrl,
-    ppl_ctrl.io.mem_reg_ctrl.en
+    pc          = ex_reg.out.pc,
+    inst        = ex_reg.out.inst,
+    src2        = exe_src2,
+    mem_addr    = exe.io.mem_addr,
+    alu_res     = exe.io.gp_out,
+    B_en        = exe.io.B_en,
+    pc_mux      = ex_reg.out.dnpc_ctrl.pc_mux,
+    mem_ctrl    = ex_reg.out.mem_ctrl,
+    wb_rf_ctrl  = ex_reg.out.wb_rf_ctrl,
+    wb_csr_ctrl = ex_reg.out.wb_csr_ctrl,
+    reg_en      = ppl_ctrl.io.mem_reg_ctrl.en
   )
   val dcache       = Module(new DCache(deviceId = 1))
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
-    mem_reg.out.pc,
-    mem_reg.out.inst,
-    mem_reg.out.src2,
-    mem_reg.out.alu_res,
-    dcache.io.rdata,
-    mem_reg.out.mem_ctrl,
-    mem_reg.out.wb_rf_ctrl,
-    mem_reg.out.wb_csr_ctrl,
-    ppl_ctrl.io.wb_reg_ctrl.en
+    pc          = mem_reg.out.pc,
+    inst        = mem_reg.out.inst,
+    src2        = mem_reg.out.src2,
+    alu_res     = mem_reg.out.alu_res,
+    mem_data    = dcache.io.rdata,
+    mem_ctrl    = mem_reg.out.mem_ctrl,
+    wb_rf_ctrl  = mem_reg.out.wb_rf_ctrl,
+    wb_csr_ctrl = mem_reg.out.wb_csr_ctrl,
+    reg_en      = ppl_ctrl.io.wb_reg_ctrl.en
   )
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
@@ -139,13 +139,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     dpi_npc.io.npc <> npc
   }
 
-  icache.io.addr    <> pc
-  icache.io.ren     <> !reset.asBool()
+  icache.io.addr  <> pc
+  icache.io.ren   <> !reset.asBool()
+  icache.io.valid <> RegNext(pc_en, 0.B)
+
   icache.io.sram(0) <> io.sram0
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
-  icache.io.valid   <> RegNext(pc_en, 0.B)
 
   axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
   axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
@@ -217,11 +218,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   mem_reg.reset <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
 
-  dcache.io.addr  <> mem_reg.out.mem_addr
-  dcache.io.wdata <> mem_reg.out.src2
-
+  dcache.io.addr       <> mem_reg.out.mem_addr
   dcache.io.ren        <> mem_reg.out.mem_ctrl.r_pmem
   dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
+  dcache.io.wdata      <> mem_reg.out.src2
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   dcache.io.fencei     <> mem_reg.out.mem_ctrl.fencei
   dcache.io.valid      <> mem_reg.out.valid

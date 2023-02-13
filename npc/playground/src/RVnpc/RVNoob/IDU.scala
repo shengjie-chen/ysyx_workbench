@@ -66,8 +66,8 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val rvi_sra    = opcode === "b0110011".U && fun3 === "b101".U && fun7 === "b0100000".U
   val rvi_or     = opcode === "b0110011".U && fun3 === "b110".U && fun7 === "b0000000".U
   val rvi_and    = opcode === "b0110011".U && fun3 === "b111".U && fun7 === "b0000000".U
-  val rvi_fencei = io.inst === "b00000000000000000001000000001111".U
-  val rvi_ecall  = io.inst === "b00000000000000000000000001110011".U
+  val rvi_fencei = io.inst === "b0000_0000_0000_00000_001_00000_0001111".U
+  val rvi_ecall  = io.inst === "b0000000000000_00000_00_00000_1110011".U
   val rvi_csrrs  = opcode === "b1110011".U && fun3 === "b010".U // csr
   val rvi_csrrw  = opcode === "b1110011".U && fun3 === "b001".U
   val rvi_csrrc  = opcode === "b1110011".U && fun3 === "b011".U

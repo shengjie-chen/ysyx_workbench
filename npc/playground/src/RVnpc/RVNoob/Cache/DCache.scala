@@ -16,27 +16,24 @@ class TagArrays(tagWidth: Int) extends Bundle {
 class DCache(
   val isICache:      Boolean = false,
   val deviceId:      Int     = 0,
-  val addrWidth:     Int     = 32,
   val cacheSize:     Int     = 4 * pow(2, 10).toInt,
   val cacheLineSize: Int     = 32,
-  val ways:          Int     = 4,
-  val axiDataWidth:  Int     = 64,
-  val missDelay:     Int     = 4)
-    extends Module
+  val ways:          Int     = 4
+//  val axiDataWidth:  Int     = 64,
+//  val missDelay:     Int     = 4
+) extends Module
     with RVNoobConfig {
-
   val cacheLineNum:    Int = cacheSize / cacheLineSize // 128
   val sets:            Int = cacheLineNum / ways // 32
   val byteOffsetWidth: Int = log2Ceil(cacheLineSize) // 5
   val indexWidth:      Int = log2Ceil(sets) //log2Ceil(sets) // 5
-  val tagWidth:        Int = addrWidth - indexWidth - byteOffsetWidth // 22
+  val tagWidth:        Int = inst_w - indexWidth - byteOffsetWidth // 22
   //  println(s"ways = $ways")
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
   val io = IO(new Bundle {
-    val addr = Input(UInt(addrWidth.W))
-    val ren  = Input(Bool())
-
+    val addr       = Input(UInt(inst_w.W))
+    val ren        = Input(Bool())
     val wen        = Input(Bool())
     val wdata      = Input(UInt(xlen.W))
     val zero_ex_op = Input(UInt(2.W))
@@ -46,8 +43,7 @@ class DCache(
     val miss  = Output(Bool())
     val rdata = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
 
-    val sram = Vec(4, new CacheSramIO)
-
+    val sram      = Vec(4, new CacheSramIO)
     val axi_rctrl = Flipped(new AxiReadCtrlIO)
     val axi_wctrl = Flipped(new AxiWriteCtrlIO)
   })
@@ -65,7 +61,7 @@ class DCache(
   // >>>>>>>>>>>>>> DPI PMEM / AXI <<<<<<<<<<<<<<
   val pmem_rdata   = Wire(UInt(xlen.W))
   val pmem_read_ok = Wire(Bool())
-  //  val pmem_read_ok_addr = Wire(UInt(addrWidth.W))
+  //  val pmem_read_ok_addr = Wire(UInt(inst_w.W))
   val pmem_write_ok     = Wire(Bool())
   val pmem_writeback_ok = Wire(Bool())
   // ********************************** Main Signal Define **********************************
@@ -94,7 +90,10 @@ class DCache(
       tag_arrays(3)(fencei_set).dirty_bit
     )
   )
-
+//  if (tapeout && !isICache) {
+//    dontTouch(fencei_state)
+//    dontTouch(io.fencei)
+//  }
   // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
   val inpmem =
     if (tapeout) (io.addr >= 0x80000000L.U)
@@ -117,8 +116,8 @@ class DCache(
     mmio_write_reg := 0.B
   }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
-  val addr_tag    = io.addr(addrWidth - 1, addrWidth - tagWidth)
-  val addr_index  = Mux(fencei_state, fencei_set, io.addr(addrWidth - tagWidth - 1, addrWidth - tagWidth - indexWidth))
+  val addr_tag    = io.addr(inst_w - 1, inst_w - tagWidth)
+  val addr_index  = Mux(fencei_state, fencei_set, io.addr(inst_w - tagWidth - 1, inst_w - tagWidth - indexWidth))
   val addr_offset = io.addr(byteOffsetWidth - 1, 0)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
   val hit_oh  = Wire(Vec(ways, Bool()))
@@ -137,18 +136,18 @@ class DCache(
   // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
   val waysWidth = log2Ceil(ways)
   //  println(s"waysWidth = $waysWidth")
-  val wordNumPerBurst = axiDataWidth / 32
-  val PLRU_bits       = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
-  val replace_way     = Wire(UInt(waysWidth.W))
-  val replace_dirty   = tag_arrays(replace_way)(addr_index).dirty_bit
-  val replace_tag     = Wire(UInt(tagWidth.W))
+//  val wordNumPerBurst = axiDataWidth / 32
+  val PLRU_bits     = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
+  val replace_way   = Wire(UInt(waysWidth.W))
+  val replace_dirty = tag_arrays(replace_way)(addr_index).dirty_bit
+  val replace_tag   = Wire(UInt(tagWidth.W))
   replace_tag := tag_arrays(replace_way)(addr_index).tag
   if (!tapeout) {
     dontTouch(replace_tag)
   }
 
   val replace_buffer = RegInit(Vec(4, UInt(64.W)), 0.B.asTypeOf(Vec(4, UInt(64.W))))
-  val replace_addr   = RegInit(UInt(addrWidth.W), 0.U)
+  val replace_addr   = RegInit(UInt(inst_w.W), 0.U)
   val replace_cnt    = RegInit(0.U(3.W))
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
   val allocate_state = inpmem_miss && !replace_dirty
@@ -165,7 +164,7 @@ class DCache(
         data_cen(replace_way) := 1.B
       }
     }
-  }.elsewhen(fencei_state && replace_cnt <= 1.U){
+  }.elsewhen(fencei_state && replace_cnt <= 1.U) {
     data_cen(replace_way) := 1.B
   }
   // WEN
@@ -218,13 +217,13 @@ class DCache(
   io.axi_rctrl.en := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
   io.axi_rctrl.id := deviceId.U
   when(mmio_read) {
-    io.axi_rctrl.size := io.zero_ex_op
+    io.axi_rctrl.size  := io.zero_ex_op
     io.axi_rctrl.addr  := io.addr
     io.axi_rctrl.burst := 0.U
     io.axi_rctrl.len   := 0.U
   }.otherwise {
     io.axi_rctrl.size  := 3.U
-    io.axi_rctrl.addr  := io.addr & (~0x1f.U(addrWidth.W)).asUInt()
+    io.axi_rctrl.addr  := io.addr & (~0x1f.U(inst_w.W)).asUInt()
     io.axi_rctrl.burst := 1.U
     io.axi_rctrl.len   := 3.U
   }
@@ -350,7 +349,7 @@ object DCache {
       cache.io.wen        := 0.B
       cache.io.zero_ex_op := 2.U
 //      cache.io.valid      := 1.B
-      cache.io.fencei     := 0.B
+      cache.io.fencei := 0.B
     }
     cache
   }
