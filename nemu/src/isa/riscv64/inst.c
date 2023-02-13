@@ -138,7 +138,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 110 ????? 01100 11", or, R, R(dest) = src1 | src2);
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and, R, R(dest) = src1 & src2);
   // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence  , I, R(dest) = Mr(src1 + src2, 8));
-  // INSTPAT("0000 ??? ????? 00000 000 00000 00011 11", fence.i, I, R(dest) = Mr(src1 + src2, 8));
+  INSTPAT("0000 0000 0000 00000 000 00000 00011 11", fence_i, I, );
   INSTPAT("000000000000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(11, s->pc));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   // CSR
