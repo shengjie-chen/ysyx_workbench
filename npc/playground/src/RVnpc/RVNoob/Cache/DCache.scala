@@ -293,7 +293,7 @@ class DCache(
       Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
     )
   )
-  when((inpmem_miss && replace_dirty) || fencei_state) {
+  when((inpmem_miss && replace_dirty) || (fencei_state && !fencei_ok)) {
     replace_addr := Cat(replace_tag, addr_index, 0.U(5.W))
     when(replace_cnt < 3.U) {
       replace_cnt := replace_cnt + 1.U
