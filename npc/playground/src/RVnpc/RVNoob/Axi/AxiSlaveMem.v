@@ -100,7 +100,7 @@ module AxiSlaveMem #
   //ADDR_LSB is used for addressing 32/64 bit registers/memories
   //ADDR_LSB = 2 for 32 bits (n downto 2)
   //ADDR_LSB = 3 for 42 bits (n downto 3)
-  localparam integer ADDR_LSB = (C_S_AXI_DATA_WIDTH/32)+ 1; // 为保证对齐，低ADDR_LSB地址保持0
+  localparam integer ADDR_LSB = (C_S_AXI_DATA_WIDTH/32)+ 1; // 为保证对齐，低ADDR_LSB地址保持0 3
 
 
   // I/O Connections assignments

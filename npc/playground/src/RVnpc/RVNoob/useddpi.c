@@ -42,6 +42,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata, long long pc) {
     if (raddr == VGACTL_ADDR) {
       *rdata = vgactl_port_base;
     } else {
+      printf("这里有一个bug,但一直没有触发!如果触发需要改掉这一分支. <useddpi.c>\n")
       *rdata = vgactl_port_base >> 16;
     }
 #ifdef CONFIG_MTRACE
@@ -97,8 +98,12 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
 
   if (waddr >= FB_ADDR && waddr < (FB_ADDR + screen_size)) {
     // printf("wmask = %x\n", wmask);
-    assert(wmask == 0x0f);
-    *(uint32_t *)((uint8_t *)vmem + waddr - FB_ADDR) = wdata;
+    assert((wmask == 0x0f) || (wmask == (char)0xf0));
+    if (wmask == 0x0f) {
+      *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR) = wdata;
+    } else if (wmask == (char)0xf0) {
+      *(uint32_t *)((uint8_t *)vmem + (waddr & ~0x7ull) - FB_ADDR + 4) = wdata >> 32;
+    }
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref(pc);
 #endif
@@ -106,9 +111,9 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
   }
 
   if (waddr == VGACTL_ADDR + 4) {
-    // assert(wmask == (char)0xf0);
-    if(wmask == (char)0x0f)
-    vgactl_port_base_syn = wdata;
+     assert(wmask == (char)0xf0);
+//    if(wmask == (char)0x0f)
+    vgactl_port_base_syn = wdata >> 32;
 #ifdef CONFIG_DIFFTEST
     difftest_skip_ref(pc);
 #endif

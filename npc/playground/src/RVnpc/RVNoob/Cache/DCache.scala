@@ -60,6 +60,7 @@ class DCache(
     RegInit(Vec(ways, Vec(sets, new TagArrays(tagWidth))), 0.B.asTypeOf(Vec(ways, Vec(sets, new TagArrays(tagWidth)))))
   // >>>>>>>>>>>>>> DPI PMEM / AXI <<<<<<<<<<<<<<
   val pmem_rdata   = Wire(UInt(xlen.W))
+  val pmem_shift   = Wire(UInt(3.W))
   val pmem_read_ok = Wire(Bool())
   //  val pmem_read_ok_addr = Wire(UInt(inst_w.W))
   val pmem_write_ok     = Wire(Bool())
@@ -213,7 +214,7 @@ class DCache(
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
-  pmem_rdata      := RegEnable(io.axi_rctrl.data, 0.U, pmem_read_ok)
+  pmem_rdata      := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), 0.U, pmem_read_ok)
   io.axi_rctrl.en := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
   io.axi_rctrl.id := deviceId.U
   when(mmio_read) {
@@ -244,14 +245,14 @@ class DCache(
     io.axi_wctrl.burst := 0.U
     io.axi_wctrl.addr  := io.addr
     io.axi_wctrl.len   := 0.U
-    io.axi_wctrl.data  := io.wdata
+    io.axi_wctrl.data  := (io.wdata << (pmem_shift * 8.U))
     io.axi_wctrl.strb := MuxCase(
       "b11111111".U,
       Array(
         (io.zero_ex_op === 3.U) -> "b11111111".U, // write double word
-        (io.zero_ex_op === 2.U) -> "b1111".U, // write word
-        (io.zero_ex_op === 1.U) -> "b11".U, // write half word
-        (io.zero_ex_op === 0.U) -> "b1".U // write byte
+        (io.zero_ex_op === 2.U) -> ("b1111".U << pmem_shift), // write word
+        (io.zero_ex_op === 1.U) -> ("b11".U << pmem_shift), // write half word
+        (io.zero_ex_op === 0.U) -> ("b1".U << pmem_shift) // write byte
       )
     )
   }.otherwise {
@@ -272,6 +273,11 @@ class DCache(
   }
 
   // Other
+  when(mmio_read || mmio_write) {
+    pmem_shift := io.addr(2, 0)
+  }.otherwise {
+    pmem_shift := 0.U
+  }
   pmem_read_ok      := io.axi_rctrl.handshake
   pmem_write_ok     := io.axi_wctrl.whandshake
   pmem_writeback_ok := io.axi_wctrl.bhandshake
