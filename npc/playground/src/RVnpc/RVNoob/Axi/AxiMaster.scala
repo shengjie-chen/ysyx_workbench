@@ -76,13 +76,13 @@ class AxiMaster extends Module with RVNoobConfig {
   //----------------------------
   //Write Response (B) Channel
   //----------------------------
-  val bready = RegInit(0.B)
-  when(io.maxi.bvalid && !bready) {
-    bready := 1.B
-  }.elsewhen(bready) {
-    bready := 0.B
-  }
-  io.maxi.bready      := bready
+//  val bready = RegInit(0.B)
+//  when(io.maxi.bvalid && !bready) {
+//    bready := 1.B
+//  }.elsewhen(bready) {
+//    bready := 0.B
+//  }
+  io.maxi.bready      := 1.B
   io.wctrl.bhandshake := io.maxi.bready && io.maxi.bvalid
 
   //----------------------------
@@ -116,21 +116,21 @@ class AxiMaster extends Module with RVNoobConfig {
   //--------------------------------
   //Read Data (and Response) Channel
   //--------------------------------
-  val rready     = RegInit(0.B)
+//  val rready     = RegInit(0.B)
   val read_index = RegInit(0.U(2.W))
-  when(io.maxi.rvalid) {
-    when(io.maxi.rlast && rready) {
-      rready := 0.B
-    }.otherwise {
-      rready := 1.B
-    }
-  }
+//  when(io.maxi.rvalid) {
+//    when(io.maxi.rlast && rready) {
+//      rready := 0.B
+//    }.otherwise {
+//      rready := 1.B
+//    }
+//  }
   when(io.rctrl.en) {
     read_index := 0.U
   }.elsewhen(io.rctrl.handshake && read_index =/= arlen) {
     read_index := read_index + 1.U
   }
-  io.maxi.rready     := rready
+  io.maxi.rready     := 1.B
   io.rctrl.handshake := io.maxi.rready && io.maxi.rvalid
   io.rctrl.data      := io.maxi.rdata
   io.busy            := busrt_read_active || busrt_write_active

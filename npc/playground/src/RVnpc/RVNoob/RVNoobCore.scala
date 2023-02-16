@@ -65,7 +65,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl   = Module(new PipelineCtrl)
-  val id_reg     = IDreg(pc, icache.io.rdata, snpc, ppl_ctrl.io.id_reg_ctrl.en)
+  val id_reg     = IDreg(
+    pc     = pc, 
+    inst   = icache.io.rdata, 
+    snpc   = snpc, 
+    reg_en = ppl_ctrl.io.id_reg_ctrl.en
+  )
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
