@@ -39,12 +39,7 @@ extern "C" void pmem_read_dpi(long long raddr, long long *rdata, long long pc) {
   }
 
   if (raddr == VGACTL_ADDR || raddr == (VGACTL_ADDR + 2)) {
-    if (raddr == VGACTL_ADDR) {
-      *rdata = vgactl_port_base;
-    } else {
-      printf("这里有一个bug,但一直没有触发!如果触发需要改掉这一分支. <useddpi.c>\n");
-      *rdata = vgactl_port_base >> 16;
-    }
+    *rdata = vgactl_port_base;
 #ifdef CONFIG_MTRACE
     fprintf(mtrace_fp, "read  vgactrl ## addr: %llx", raddr & ~0x7ull);
     fprintf(mtrace_fp, " -> 0x%08llx \n", *rdata);
