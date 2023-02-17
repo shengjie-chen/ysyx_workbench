@@ -1,10 +1,10 @@
 package RVnpc.RVNoob
 
-import RVnpc.RVNoob.Axi.{AxiCrossBar, AxiIO, AxiMaster}
-import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad}
-import RVnpc.RVNoob.Pipeline.{EXreg, IDreg, MEMreg, PipelineCtrl, WBreg}
+import RVnpc.RVNoob.Axi._
+import RVnpc.RVNoob.Cache._
+import RVnpc.RVNoob.Pipeline._
 import chisel3._
-import chisel3.util.{Cat, HasBlackBoxInline, MuxLookup, RegEnable, ShiftRegister}
+import chisel3.util._
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
@@ -127,25 +127,23 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
 
-  def axi_connect_zero(axi: AxiIO): Unit = {
-    axi.awvalid := 0.U.asTypeOf(axi.awvalid)
-    axi.awaddr  := 0.U.asTypeOf(axi.awaddr)
-    axi.awid    := 0.U.asTypeOf(axi.awid)
-    axi.awlen   := 0.U.asTypeOf(axi.awlen)
-    axi.awsize  := 0.U.asTypeOf(axi.awsize)
-    axi.awburst := 0.U.asTypeOf(axi.awburst)
-    axi.wvalid  := 0.U.asTypeOf(axi.wvalid)
-    axi.wdata   := 0.U.asTypeOf(axi.wdata)
-    axi.wstrb   := 0.U.asTypeOf(axi.wstrb)
-    axi.wlast   := 0.U.asTypeOf(axi.wlast)
-    axi.bready  := 0.U.asTypeOf(axi.bready)
-    axi.arvalid := 0.U.asTypeOf(axi.arvalid)
-    axi.araddr  := 0.U.asTypeOf(axi.araddr)
-    axi.arid    := 0.U.asTypeOf(axi.arid)
-    axi.arlen   := 0.U.asTypeOf(axi.arlen)
-    axi.arsize  := 0.U.asTypeOf(axi.arsize)
-    axi.arburst := 0.U.asTypeOf(axi.arburst)
-    axi.rready  := 0.U.asTypeOf(axi.rready)
+  def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
+    wctrl.en         := 0.U.asTypeOf(wctrl.en)
+    wctrl.id         := 0.U.asTypeOf(wctrl.id)
+    wctrl.size       := 0.U.asTypeOf(wctrl.size)
+    wctrl.wbuf_ready := 0.U.asTypeOf(wctrl.wbuf_ready)
+    wctrl.burst      := 0.U.asTypeOf(wctrl.burst)
+    wctrl.addr       := 0.U.asTypeOf(wctrl.addr)
+    wctrl.len        := 0.U.asTypeOf(wctrl.len)
+    wctrl.data       := 0.U.asTypeOf(wctrl.data)
+    wctrl.strb       := 0.U.asTypeOf(wctrl.strb)
+
+    rctrl.en    := 0.U.asTypeOf(rctrl.en)
+    rctrl.id    := 0.U.asTypeOf(rctrl.id)
+    rctrl.size  := 0.U.asTypeOf(rctrl.size)
+    rctrl.addr  := 0.U.asTypeOf(rctrl.addr)
+    rctrl.burst := 0.U.asTypeOf(rctrl.burst)
+    rctrl.len   := 0.U.asTypeOf(rctrl.len)
   }
   if (!tapeout) {
     val U_ebreak = DpiEbreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak.get)
@@ -181,9 +179,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   when(axi_crossbar.maxi.rctrl.addr.head(4) === 0.U || axi_crossbar.maxi.wctrl.addr.head(4) === 0.U) {
     clint.io.wctrl <> axi_crossbar.maxi.wctrl
     clint.io.rctrl <> axi_crossbar.maxi.rctrl
+    axictrl_connect_zero(maxi.io.rctrl, maxi.io.wctrl)
   }.otherwise {
     maxi.io.rctrl <> axi_crossbar.maxi.rctrl
     maxi.io.wctrl <> axi_crossbar.maxi.wctrl
+    axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
   }
   maxi.io.maxi <> io.master
 
