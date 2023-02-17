@@ -1,5 +1,5 @@
 import "DPI-C" function void set_csr_ptr(input logic [63:0] a []);
-module CSR_read_dpi(
+module DpiCsrRead(
     input [63:0] csr_0 ,
     input [63:0] csr_1 ,
     input [63:0] csr_2 ,

@@ -5,7 +5,7 @@ import chisel3.util.HasBlackBoxInline
 
 import scala.math._
 
-class RF_read(
+class DpiRfRead(
   val ADDR_WIDTH: Int = 5,
   val DATA_WIDTH: Int = 64)
     extends BlackBox {
@@ -35,7 +35,7 @@ class RegisterFile(
   val reg_num: Int = pow(2, ADDR_WIDTH).toInt
   val rf = RegInit(Vec(reg_num, UInt(DATA_WIDTH.W)), 0.U.asTypeOf(Vec(reg_num, UInt(DATA_WIDTH.W))))
   if (!tapeout) {
-    val rf_read = Module(new RF_read) // dpi rf
+    val rf_read = Module(new DpiRfRead) // dpi rf
     rf_read.io.rf <> rf
   }
 

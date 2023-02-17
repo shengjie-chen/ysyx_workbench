@@ -2,7 +2,7 @@ package RVnpc.RVNoob
 
 import chisel3._
 
-class Ebreak extends BlackBox {
+class DpiEbreak extends BlackBox {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val inst = Input(UInt(32.W))
@@ -12,14 +12,14 @@ class Ebreak extends BlackBox {
 
 }
 
-object Ebreak {
+object DpiEbreak {
   def apply(
              clk: Clock,
              inst: UInt,
              a0: UInt,
              ebreak: Bool
-           ): Ebreak = {
-    val u_ebreak = Module(new Ebreak)
+           ): DpiEbreak = {
+    val u_ebreak = Module(new DpiEbreak)
     u_ebreak.io.clk <> clk
     u_ebreak.io.inst <> inst
     u_ebreak.io.a0 <> a0

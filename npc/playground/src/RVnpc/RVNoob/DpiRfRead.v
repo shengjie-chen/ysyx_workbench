@@ -1,5 +1,5 @@
 import "DPI-C" function void set_gpr_ptr(input logic [63:0] a []);
-module RF_read(
+module DpiRfRead(
     input [63:0] rf_0 ,
     input [63:0] rf_1 ,
     input [63:0] rf_2 ,

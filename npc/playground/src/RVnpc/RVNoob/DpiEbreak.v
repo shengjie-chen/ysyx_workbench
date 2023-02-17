@@ -1,6 +1,6 @@
 //import "DPI-C" function int add (input int a, input int b);
 import "DPI-C" function void npc_ebreak();
-module Ebreak(
+module DpiEbreak(
     input clk,
     input [31:0] inst,
     input [63:0] a0,

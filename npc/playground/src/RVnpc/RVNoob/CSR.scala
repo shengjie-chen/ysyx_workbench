@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import scala.math._
 
-class CSR_read_dpi extends BlackBox with RVNoobConfig {
+class DpiCsrRead extends BlackBox with RVNoobConfig {
   val io = IO(new Bundle {
     val csr = Input(Vec(4, UInt(xlen.W)))
   })
@@ -33,11 +33,11 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   val read_mcause  = Wire(UInt(xlen.W))
 
   if (!tapeout) {
-    val csr_read_dpi = Module(new CSR_read_dpi)
-    csr_read_dpi.io.csr(0) <> mstatus
-    csr_read_dpi.io.csr(1) <> mtvec
-    csr_read_dpi.io.csr(2) <> mepc
-    csr_read_dpi.io.csr(3) <> mcause
+    val DpiCsrRead = Module(new DpiCsrRead)
+    DpiCsrRead.io.csr(0) <> mstatus
+    DpiCsrRead.io.csr(1) <> mtvec
+    DpiCsrRead.io.csr(2) <> mepc
+    DpiCsrRead.io.csr(3) <> mcause
   }
 
   when(io.wb_csr_ctrl.csr_wen) {
