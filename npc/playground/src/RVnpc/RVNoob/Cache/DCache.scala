@@ -100,7 +100,7 @@ class DCache(
     if (tapeout) (io.addr >= 0x80000000L.U)
     else (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
   val inpmem_op       = (io.ren || io.wen) && inpmem
-  val mmio_read_valid = !inpmem && io.ren && io.valid && !pmem_read_ok
+  val mmio_read_valid = !inpmem && io.ren && io.valid
   val mmio_read_reg   = RegInit(0.B)
   val mmio_read       = mmio_read_valid || mmio_read_reg
   when(mmio_read_valid) {
@@ -108,7 +108,7 @@ class DCache(
   }.elsewhen(pmem_read_ok) {
     mmio_read_reg := 0.B
   }
-  val mmio_write_valid = !inpmem && io.wen && io.valid && !pmem_writeback_ok
+  val mmio_write_valid = !inpmem && io.wen && io.valid
   val mmio_write_reg   = RegInit(0.B)
   val mmio_write       = mmio_write_valid || mmio_write_reg
   when(mmio_write_valid) {
