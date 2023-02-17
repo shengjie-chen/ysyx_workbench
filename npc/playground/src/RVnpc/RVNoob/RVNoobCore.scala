@@ -176,7 +176,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
   axi_crossbar.in2.pc    <> mem_reg.out.pc
   axi_crossbar.maxi.busy <> maxi.io.busy
-  when(axi_crossbar.maxi.rctrl.addr(31, 28) === 0.U || axi_crossbar.maxi.wctrl.addr(31, 28) === 0.U) {
+  when(
+    (axi_crossbar.maxi.rctrl.addr(31, 28) === 0.U && axi_crossbar.maxi.rctrl.en) ||
+      (axi_crossbar.maxi.wctrl.addr(31, 28) === 0.U && axi_crossbar.maxi.wctrl.en)
+  ) {
     clint.io.wctrl <> axi_crossbar.maxi.wctrl
     clint.io.rctrl <> axi_crossbar.maxi.rctrl
     axictrl_connect_zero(maxi.io.rctrl, maxi.io.wctrl)
