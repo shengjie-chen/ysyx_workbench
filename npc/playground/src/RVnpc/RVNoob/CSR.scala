@@ -40,6 +40,10 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     DpiCsrRead.io.csr(3) <> mcause
   }
 
+  read_mstatus := mstatus
+  read_mtvec   := mtvec
+  read_mepc    := mepc
+  read_mcause  := mcause
   when(io.wb_csr_ctrl.csr_wen) {
     switch(io.wb_csr_ctrl.csr_waddr) {
       is(0x300.U) {
@@ -69,11 +73,6 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   }.elsewhen(io.wb_csr_ctrl.mret) {
     mstatus      := read_mstatus
     read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
-  }.otherwise {
-    read_mstatus := mstatus
-    read_mtvec   := mtvec
-    read_mepc    := mepc
-    read_mcause  := mcause
   }
 
   val csr_read = MuxCase(
