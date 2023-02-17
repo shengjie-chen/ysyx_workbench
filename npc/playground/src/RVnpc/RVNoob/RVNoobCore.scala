@@ -250,7 +250,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   csr.io.wb_csr_ctrl <> wb_reg.out.wb_csr_ctrl
   csr.io.pc          <> wb_reg.out.pc
-  csr.io.mcause      <> 11.U
   csr.io.csr_wdata   <> wb_reg.out.alu_res
 
   if (!tapeout) {

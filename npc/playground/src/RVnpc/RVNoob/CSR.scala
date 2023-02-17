@@ -17,52 +17,71 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     val csr_dnpc    = Output(UInt(addr_w.W))
 
     val pc          = Input(UInt(addr_w.W))
-    val mcause      = Input(UInt(xlen.W))
     val wb_csr_ctrl = Input(new WbCsrCtrlIO)
     val csr_wdata   = Input(UInt(xlen.W))
 
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
-  val csr      = RegInit(Vec(4, UInt(xlen.W)), 0.U.asTypeOf(Vec(4, UInt(xlen.W))))
-  val csr_read = Wire(Vec(4, UInt(xlen.W)))
-  csr_read := csr
+  val mstatus = RegInit(UInt(xlen.W), 0xa00001800L.U)
+  val mtvec   = RegInit(UInt(xlen.W), 0.U)
+  val mepc    = RegInit(UInt(inst_w.W), 0.U)
+  val mcause  = RegInit(UInt(xlen.W), 0.U)
 
-  //  val csr = RegInit(Vec(4, UInt(xlen.W)),VecInit(0xa00001800L.U,0.U,0.U,0.U))
+  val read_mstatus = Wire(UInt(xlen.W))
+  val read_mtvec   = Wire(UInt(xlen.W))
+  val read_mepc    = Wire(UInt(inst_w.W))
+  val read_mcause  = Wire(UInt(xlen.W))
+
   if (!tapeout) {
     val csr_read_dpi = Module(new CSR_read_dpi)
-    csr_read_dpi.io.csr <> csr
+    csr_read_dpi.io.csr(0) <> mstatus
+    csr_read_dpi.io.csr(1) <> mtvec
+    csr_read_dpi.io.csr(2) <> mepc
+    csr_read_dpi.io.csr(3) <> mcause
   }
 
-  val csr_waddr = MuxCase(
-    0.U,
-    Array(
-      (io.wb_csr_ctrl.csr_waddr === 0x300.U) -> 0.U,
-      (io.wb_csr_ctrl.csr_waddr === 0x305.U) -> 1.U,
-      (io.wb_csr_ctrl.csr_waddr === 0x341.U) -> 2.U,
-      (io.wb_csr_ctrl.csr_waddr === 0x342.U) -> 3.U
-    )
-  )
   when(io.wb_csr_ctrl.csr_wen) {
-    csr(csr_waddr)      := io.csr_wdata
-    csr_read(csr_waddr) := io.csr_wdata
+    switch(io.wb_csr_ctrl.csr_waddr) {
+      is(0x300.U) {
+        mstatus      := io.csr_wdata
+        read_mstatus := io.csr_wdata
+      }
+      is(0x305.U) {
+        mtvec      := io.csr_wdata
+        read_mtvec := io.csr_wdata
+      }
+      is(0x341.U) {
+        mepc      := io.csr_wdata
+        read_mepc := io.csr_wdata
+      }
+      is(0x342.U) {
+        mcause      := io.csr_wdata
+        read_mcause := io.csr_wdata
+      }
+    }
   }.elsewhen(io.wb_csr_ctrl.ecall) {
-    csr(2)      := io.pc
-    csr(3)      := io.mcause
-    csr_read(2) := io.pc
-    csr_read(3) := io.mcause
+    mstatus      := read_mstatus
+    read_mstatus := mstatus(xlen - 1, 8) ## mstatus(3) ## mstatus(6, 4) ## 0.B ## mstatus(2, 0)
+    mepc         := io.pc
+    read_mepc    := io.pc
+    mcause       := 11.U
+    read_mcause  := 11.U
+  }.elsewhen(io.wb_csr_ctrl.mret) {
+    mstatus      := read_mstatus
+    read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
   }
 
-  val csr_raddr = MuxCase(
+  val csr_read = MuxCase(
     0.U,
     Array(
-      (io.id_csr_ctrl.csr_raddr === 0x300.U) -> 0.U, // mstatus
-      (io.id_csr_ctrl.csr_raddr === 0x305.U) -> 1.U, // mtvec
-      (io.id_csr_ctrl.csr_raddr === 0x341.U) -> 2.U, // mepc
-      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> 3.U // mcause
+      (io.id_csr_ctrl.csr_raddr === 0x300.U) -> read_mstatus, // mstatus
+      (io.id_csr_ctrl.csr_raddr === 0x305.U) -> read_mtvec, // mtvec
+      (io.id_csr_ctrl.csr_raddr === 0x341.U) -> read_mepc, // mepc
+      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> read_mcause // mcause
     )
   )
-  io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read(csr_raddr), 0.U)
-  io.csr_dnpc  := Mux(io.id_csr_ctrl.ecall, csr_read(1), csr_read(2)) // this 2 signal can mix
+  io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read, 0.U)
+  io.csr_dnpc  := Mux(io.id_csr_ctrl.ecall, read_mtvec, read_mepc) // this 2 signal can mix
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 

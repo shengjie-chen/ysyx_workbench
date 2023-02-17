@@ -223,10 +223,10 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.mem_ctrl.zero_ex_op := MuxCase(
     DontCare,
     Array(
-      (rvi_sb || rvi_lb || rvi_lbu)-> 0.U,
-      (rvi_sh || rvi_lh || rvi_lhu)-> 1.U,
-      (rvi_sw || rvi_lw || rvi_lwu)-> 2.U,
-      (rvi_sd || rvi_ld)-> 3.U
+      (rvi_sb || rvi_lb || rvi_lbu) -> 0.U,
+      (rvi_sh || rvi_lh || rvi_lhu) -> 1.U,
+      (rvi_sw || rvi_lw || rvi_lwu) -> 2.U,
+      (rvi_sd || rvi_ld) -> 3.U
     )
   )
   io.mem_ctrl.fencei := rvi_fencei
@@ -312,6 +312,7 @@ class MemCtrlIO extends Bundle with RVNoobConfig {
 class WbCsrCtrlIO extends Bundle with RVNoobConfig {
 //  val mcause = UInt()
   val ecall     = Bool()
+  val mret      = Bool()
   val csr_wen   = Bool()
   val csr_waddr = UInt(12.W)
 }
