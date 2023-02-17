@@ -26,11 +26,15 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   val mtvec   = RegInit(UInt(xlen.W), 0.U)
   val mepc    = RegInit(UInt(inst_w.W), 0.U)
   val mcause  = RegInit(UInt(xlen.W), 0.U)
+  val mip     = RegInit(UInt(xlen.W), 0.U)
+  val mie     = RegInit(UInt(xlen.W), 0.U)
 
   val read_mstatus = Wire(UInt(xlen.W))
   val read_mtvec   = Wire(UInt(xlen.W))
   val read_mepc    = Wire(UInt(inst_w.W))
   val read_mcause  = Wire(UInt(xlen.W))
+  val read_mip     = Wire(UInt(xlen.W))
+  val read_mie     = Wire(UInt(xlen.W))
 
   if (!tapeout) {
     val DpiCsrRead = Module(new DpiCsrRead)
@@ -44,11 +48,17 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   read_mtvec   := mtvec
   read_mepc    := mepc
   read_mcause  := mcause
+  read_mip     := mip
+  read_mie     := mie
   when(io.wb_csr_ctrl.csr_wen) {
     switch(io.wb_csr_ctrl.csr_waddr) {
       is(0x300.U) {
         mstatus      := io.csr_wdata
         read_mstatus := io.csr_wdata
+      }
+      is(0x304.U) {
+        mie      := io.csr_wdata
+        read_mie := io.csr_wdata
       }
       is(0x305.U) {
         mtvec      := io.csr_wdata
@@ -61,6 +71,10 @@ class CSR extends Module with RVNoobConfig with Csr_op {
       is(0x342.U) {
         mcause      := io.csr_wdata
         read_mcause := io.csr_wdata
+      }
+      is(0x344.U) {
+        mip      := io.csr_wdata
+        read_mip := io.csr_wdata
       }
     }
   }.elsewhen(io.wb_csr_ctrl.ecall) {
@@ -79,9 +93,11 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     0.U,
     Array(
       (io.id_csr_ctrl.csr_raddr === 0x300.U) -> read_mstatus, // mstatus
+      (io.id_csr_ctrl.csr_raddr === 0x304.U) -> read_mie, // mie
       (io.id_csr_ctrl.csr_raddr === 0x305.U) -> read_mtvec, // mtvec
       (io.id_csr_ctrl.csr_raddr === 0x341.U) -> read_mepc, // mepc
-      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> read_mcause // mcause
+      (io.id_csr_ctrl.csr_raddr === 0x342.U) -> read_mcause, // mcause
+      (io.id_csr_ctrl.csr_raddr === 0x344.U) -> read_mip // mip
     )
   )
   io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read, 0.U)

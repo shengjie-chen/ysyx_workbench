@@ -9,6 +9,9 @@ Context *__am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
+    case 0x8000000000000007: 
+      ev.event = EVENT_IRQ_TIMER;
+      break;
     case 11: {
       register intptr_t type asm("a7"); // or use c->GPR1
       if (type == -1) {
@@ -56,4 +59,11 @@ bool ienabled() {
 }
 
 void iset(bool enable) {
+  if(enable){
+    asm volatile("csrsi mstatus ,8"); // set mstatus[3] MIE
+    asm volatile("csrrs x0, mie, %[mask]":: [mask] "r" (1 << 7):); // set mie[7] MTIE
+  }else{
+    asm volatile("csrci mstatus ,8");
+    asm volatile("csrrc x0, mie ,%[mask]":: [mask] "r" (1 << 7):);
+  }
 }

@@ -30,6 +30,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val sram7 = new CacheSramIO
 
   })
+  // ********************************** Instance **********************************
+  // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
+  val dnpc_en = Wire(Bool())
 
   /* **********************************
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
@@ -48,34 +51,28 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   io.slave.rdata   := 0.U
   io.slave.rlast   := 0.B
   io.slave.rid     := 0.U
-
-  // ********************************** Instance **********************************
-  // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
-  val dnpc_en = Wire(Bool())
-  val npc     = Wire(UInt(addr_w.W))
-  if (!tapeout) { dontTouch(npc) }
+  val npc   = Wire(UInt(addr_w.W))
   val pc_en = Wire(Bool())
+  if (!tapeout) { dontTouch(npc) }
   val pc =
     if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
     else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
   val snpc   = Wire(UInt(addr_w.W))
   val icache = DCache(isICache = true)
+  // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+  val ppl_ctrl = Module(new PipelineCtrl)
 
   //  val icache = Module(new ICache)
-
-  // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val ppl_ctrl   = Module(new PipelineCtrl)
-  val id_reg     = IDreg(
-    pc     = pc, 
-    inst   = icache.io.rdata, 
-    snpc   = snpc, 
+  val id_reg = IDreg(
+    pc     = pc,
+    inst   = icache.io.rdata,
+    snpc   = snpc,
     reg_en = ppl_ctrl.io.id_reg_ctrl.en
   )
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
   val cache_miss = Wire(Bool())
-
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val dnpc        = Wire(UInt(addr_w.W))
   val npc_add_res = Wire(UInt(addr_w.W))
@@ -97,7 +94,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val exe = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
-
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
   val mem_reg: MEMreg = MEMreg(
     pc          = ex_reg.out.pc,
@@ -115,6 +111,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val dcache       = Module(new DCache(deviceId = 1))
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
+  val clint        = Module(new Clint)
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
     pc          = mem_reg.out.pc,
@@ -129,6 +126,27 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   )
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
+
+  def axi_connect_zero(axi: AxiIO): Unit = {
+    axi.awvalid := 0.U.asTypeOf(axi.awvalid)
+    axi.awaddr  := 0.U.asTypeOf(axi.awaddr)
+    axi.awid    := 0.U.asTypeOf(axi.awid)
+    axi.awlen   := 0.U.asTypeOf(axi.awlen)
+    axi.awsize  := 0.U.asTypeOf(axi.awsize)
+    axi.awburst := 0.U.asTypeOf(axi.awburst)
+    axi.wvalid  := 0.U.asTypeOf(axi.wvalid)
+    axi.wdata   := 0.U.asTypeOf(axi.wdata)
+    axi.wstrb   := 0.U.asTypeOf(axi.wstrb)
+    axi.wlast   := 0.U.asTypeOf(axi.wlast)
+    axi.bready  := 0.U.asTypeOf(axi.bready)
+    axi.arvalid := 0.U.asTypeOf(axi.arvalid)
+    axi.araddr  := 0.U.asTypeOf(axi.araddr)
+    axi.arid    := 0.U.asTypeOf(axi.arid)
+    axi.arlen   := 0.U.asTypeOf(axi.arlen)
+    axi.arsize  := 0.U.asTypeOf(axi.arsize)
+    axi.arburst := 0.U.asTypeOf(axi.arburst)
+    axi.rready  := 0.U.asTypeOf(axi.rready)
+  }
   if (!tapeout) {
     val U_ebreak = DpiEbreak(clock, wb_reg.out.inst, ShiftRegister(rf.io.a0, 3, 1.B), io.ebreak.get)
   }
@@ -160,9 +178,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
   axi_crossbar.in2.pc    <> mem_reg.out.pc
   axi_crossbar.maxi.busy <> maxi.io.busy
-  maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
-  maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
-  maxi.io.maxi           <> io.master
+  when(axi_crossbar.maxi.rctrl.addr.head(4) === 0.U || axi_crossbar.maxi.wctrl.addr.head(4) === 0.U) {
+    clint.io.wctrl <> axi_crossbar.maxi.wctrl
+    clint.io.rctrl <> axi_crossbar.maxi.rctrl
+  }.otherwise {
+    maxi.io.rctrl <> axi_crossbar.maxi.rctrl
+    maxi.io.wctrl <> axi_crossbar.maxi.wctrl
+  }
+  maxi.io.maxi <> io.master
 
   if (!tapeout) {
     io.axi_pc.get <> axi_crossbar.maxi.pc
