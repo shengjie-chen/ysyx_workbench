@@ -82,8 +82,8 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     read_mstatus := mstatus(xlen - 1, 8) ## mstatus(3) ## mstatus(6, 4) ## 0.B ## mstatus(2, 0)
     mepc         := io.pc
     read_mepc    := io.pc
-    mcause       := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W))
-    read_mcause  := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W))
+    mcause       := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
+    read_mcause  := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
   }.elsewhen(io.wb_csr_ctrl.mret) {
     mstatus      := read_mstatus
     read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
