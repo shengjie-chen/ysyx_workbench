@@ -15,6 +15,7 @@ class Clint extends Module with RVNoobConfig {
 
   val mtime    = RegInit(UInt(64.W), 0.U)
   val mtimecmp = RegInit(UInt(64.W), 0x100000.U)
+  mtime := mtime + 1.U
 
   val time_interrupt = Wire(Bool())
   time_interrupt    := mtime >= mtimecmp && io.mstatus_mie && io.mie_mtie
