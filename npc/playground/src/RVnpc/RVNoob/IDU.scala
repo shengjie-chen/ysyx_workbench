@@ -233,6 +233,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
 
   // >>>>>>>>>>>>>> WbCsrCtrlIO <<<<<<<<<<<<<<
   io.wb_csr_ctrl.ecall     := rvi_ecall
+  io.wb_csr_ctrl.mret      := pri_mret
   io.wb_csr_ctrl.csr_wen   := rvi_csrrs || rvi_csrrw || rvi_csrrc || rvi_csrrsi || rvi_csrrwi || rvi_csrrci
   io.wb_csr_ctrl.csr_waddr := io.inst(31, 20)
 
