@@ -210,6 +210,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   id_reg.reset <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
 
   idu.io.inst <> id_reg.out.inst
+  idu.io.intr <> clint.io.time_interrupt
 
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
 
@@ -261,6 +262,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(1) <> io.sram5
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
+
+  clint.io.mstatus_mie <> csr.io.mstatus_mie
+  clint.io.mie_mtie    <> csr.io.mie_mtie
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())

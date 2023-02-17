@@ -15,11 +15,11 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     val csr_rdata   = Output(UInt(xlen.W))
     val id_csr_ctrl = Input(new IdCsrCtrlIO)
     val csr_dnpc    = Output(UInt(addr_w.W))
-
     val pc          = Input(UInt(addr_w.W))
     val wb_csr_ctrl = Input(new WbCsrCtrlIO)
     val csr_wdata   = Input(UInt(xlen.W))
-
+    val mstatus_mie = Output(Bool())
+    val mie_mtie    = Output(Bool())
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
   val mstatus = RegInit(UInt(xlen.W), 0xa00001800L.U)
@@ -77,13 +77,13 @@ class CSR extends Module with RVNoobConfig with Csr_op {
         read_mip := io.csr_wdata
       }
     }
-  }.elsewhen(io.wb_csr_ctrl.ecall) {
+  }.elsewhen(io.wb_csr_ctrl.ecall || io.wb_csr_ctrl.intr) {
     mstatus      := read_mstatus
     read_mstatus := mstatus(xlen - 1, 8) ## mstatus(3) ## mstatus(6, 4) ## 0.B ## mstatus(2, 0)
     mepc         := io.pc
     read_mepc    := io.pc
-    mcause       := 11.U
-    read_mcause  := 11.U
+    mcause       := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.U)
+    read_mcause  := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.U)
   }.elsewhen(io.wb_csr_ctrl.mret) {
     mstatus      := read_mstatus
     read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
@@ -100,8 +100,10 @@ class CSR extends Module with RVNoobConfig with Csr_op {
       (io.id_csr_ctrl.csr_raddr === 0x344.U) -> read_mip // mip
     )
   )
-  io.csr_rdata := Mux(io.id_csr_ctrl.csr_ren, csr_read, 0.U)
-  io.csr_dnpc  := Mux(io.id_csr_ctrl.ecall, read_mtvec, read_mepc) // this 2 signal can mix
+  io.csr_rdata   := Mux(io.id_csr_ctrl.csr_ren, csr_read, 0.U)
+  io.csr_dnpc    := Mux(io.id_csr_ctrl.ecall || io.id_csr_ctrl.intr, read_mtvec, read_mepc) // this 2 signal can mix
+  io.mstatus_mie := mstatus(3)
+  io.mie_mtie    := mie(7)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 

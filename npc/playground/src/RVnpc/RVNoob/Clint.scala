@@ -9,12 +9,16 @@ class Clint extends Module with RVNoobConfig {
     val rctrl          = new AxiReadCtrlIO
     val wctrl          = new AxiWriteCtrlIO
     val time_interrupt = Output(Bool())
+    val mstatus_mie    = Input(Bool())
+    val mie_mtie       = Input(Bool())
   })
 
   val mtime    = RegInit(UInt(64.W), 0.U)
   val mtimecmp = RegInit(UInt(64.W), 0x100000.U)
 
-  io.time_interrupt := mtime >= mtimecmp
+  val time_interrupt = Wire(Bool())
+  time_interrupt    := mtime >= mtimecmp && io.mstatus_mie && io.mie_mtie
+  io.time_interrupt := time_interrupt && !RegNext(time_interrupt)
 
   io.rctrl.data      := 0.U
   io.rctrl.handshake := 0.B

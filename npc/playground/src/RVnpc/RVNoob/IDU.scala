@@ -15,6 +15,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val id_rf_ctrl  = Output(new IdRfCtrlIO)
     val wb_rf_ctrl  = Output(new WbRfCtrlIO)
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
+    val intr = Input(Bool())
   })
   if (!tapeout) {
     val dpi_inst = Module(new DpiInst)
@@ -234,18 +235,20 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> WbCsrCtrlIO <<<<<<<<<<<<<<
   io.wb_csr_ctrl.ecall     := rvi_ecall
   io.wb_csr_ctrl.mret      := pri_mret
-  io.wb_csr_ctrl.csr_wen   := rvi_csrrs || rvi_csrrw || rvi_csrrc || rvi_csrrsi || rvi_csrrwi || rvi_csrrci
+  io.wb_csr_ctrl.intr      := io.intr
+  io.wb_csr_ctrl.csr_wen   := rvi_csrrs || rvi_csrrw || rvi_csrrc || rvi_csrrsi || rvi_csrrwi || rvi_csrrci && !io.intr
   io.wb_csr_ctrl.csr_waddr := io.inst(31, 20)
 
   // >>>>>>>>>>>>>> IdCsrCtrlIO <<<<<<<<<<<<<<
   io.id_csr_ctrl.ecall     := rvi_ecall
   io.id_csr_ctrl.mret      := pri_mret
+  io.id_csr_ctrl.intr      := io.intr
   io.id_csr_ctrl.zimm_en   := rvi_csrrsi || rvi_csrrwi || rvi_csrrci
   io.id_csr_ctrl.csr_raddr := io.inst(31, 20)
   io.id_csr_ctrl.csr_ren   := io.wb_csr_ctrl.csr_wen
 
   // >>>>>>>>>>>>>> WbRfCtrlIO <<<<<<<<<<<<<<
-  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U && (!io.id_csr_ctrl.zimm_en)
+  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U && (!io.id_csr_ctrl.zimm_en) && !io.intr
   io.wb_rf_ctrl.rd  := io.inst(11, 7)
 
   // >>>>>>>>>>>>>> IdRfCtrlIO <<<<<<<<<<<<<<
@@ -256,9 +259,9 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.id_rf_ctrl.rs2  := io.inst(24, 20)
 
   // >>>>>>>>>>>>>> DnpcCtrlIO <<<<<<<<<<<<<<
-  io.dnpc_ctrl.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret // 出现pc=的指令
+  io.dnpc_ctrl.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret || io.intr// 出现pc=的指令
   io.dnpc_ctrl.dnpc_jalr := rvi_jalr
-  io.dnpc_ctrl.dnpc_csr  := rvi_ecall || pri_mret
+  io.dnpc_ctrl.dnpc_csr  := rvi_ecall || pri_mret || io.intr
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
@@ -314,6 +317,7 @@ class WbCsrCtrlIO extends Bundle with RVNoobConfig {
 //  val mcause = UInt()
   val ecall     = Bool()
   val mret      = Bool()
+  val intr      = Bool()
   val csr_wen   = Bool()
   val csr_waddr = UInt(12.W)
 }
@@ -321,6 +325,7 @@ class WbCsrCtrlIO extends Bundle with RVNoobConfig {
 class IdCsrCtrlIO extends Bundle with RVNoobConfig {
   val ecall = Bool()
   val mret  = Bool()
+  val intr  = Bool()
   //  val csr_en = Bool()   // all csr reg inst
   val zimm_en   = Bool()
   val csr_raddr = UInt(12.W)
