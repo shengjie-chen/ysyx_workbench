@@ -103,10 +103,10 @@ class DCache(
   val mmio_read_valid = !inpmem && io.ren && io.valid
   val mmio_read_reg   = RegInit(0.B)
   val mmio_read       = mmio_read_valid || mmio_read_reg
-  when(mmio_read_valid) {
-    mmio_read_reg := 1.B
-  }.elsewhen(pmem_read_ok) {
+  when(pmem_read_ok) {
     mmio_read_reg := 0.B
+  }.elsewhen(mmio_read_valid) {
+    mmio_read_reg := 1.B
   }
   val mmio_write_valid = !inpmem && io.wen && io.valid
   val mmio_write_reg   = RegInit(0.B)
