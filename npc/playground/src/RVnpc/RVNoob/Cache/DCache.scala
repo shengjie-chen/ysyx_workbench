@@ -111,10 +111,10 @@ class DCache(
   val mmio_write_valid = !inpmem && io.wen && io.valid
   val mmio_write_reg   = RegInit(0.B)
   val mmio_write       = mmio_write_valid || mmio_write_reg
-  when(mmio_write_valid) {
-    mmio_write_reg := 1.B
-  }.elsewhen(pmem_writeback_ok) {
+  when(pmem_writeback_ok) {
     mmio_write_reg := 0.B
+  }.elsewhen(mmio_write_valid) {
+    mmio_write_reg := 1.B
   }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
   val addr_tag    = io.addr(inst_w - 1, inst_w - tagWidth)
