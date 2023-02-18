@@ -176,18 +176,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
   axi_crossbar.in2.pc    <> mem_reg.out.pc
   axi_crossbar.maxi.busy <> maxi.io.busy
-  when(
-    (axi_crossbar.maxi.rctrl.addr(31, 28) === 0.U && axi_crossbar.maxi.rctrl.en) ||
-      (axi_crossbar.maxi.wctrl.addr(31, 28) === 0.U && axi_crossbar.maxi.wctrl.en)
-  ) {
-    clint.io.wctrl <> axi_crossbar.maxi.wctrl
-    clint.io.rctrl <> axi_crossbar.maxi.rctrl
-    axictrl_connect_zero(maxi.io.rctrl, maxi.io.wctrl)
-  }.otherwise {
-    maxi.io.rctrl <> axi_crossbar.maxi.rctrl
-    maxi.io.wctrl <> axi_crossbar.maxi.wctrl
-    axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
-  }
+  maxi.io.rctrl <> axi_crossbar.maxi.rctrl
+  maxi.io.wctrl <> axi_crossbar.maxi.wctrl
   maxi.io.maxi <> io.master
 
   if (!tapeout) {
@@ -262,6 +252,19 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(1) <> io.sram5
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
+
+  when(
+    (dcache.io.axi_rctrl.addr(31, 28) === 0.U && dcache.io.axi_rctrl.en) ||
+      (dcache.io.axi_wctrl.addr(31, 28) === 0.U && dcache.io.axi_wctrl.en)
+  ) {
+    clint.io.wctrl <> dcache.io.axi_wctrl
+    clint.io.rctrl <> dcache.io.axi_rctrl
+    axictrl_connect_zero(axi_crossbar.in2.rctrl, axi_crossbar.in2.wctrl)
+  }.otherwise {
+    axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
+    axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
+    axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
+  }
 
   clint.io.mstatus_mie <> csr.io.mstatus_mie
   clint.io.mie_mtie    <> csr.io.mie_mtie
