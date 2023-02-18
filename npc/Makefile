@@ -51,12 +51,16 @@ $(BIN_BOARD):$(VSRCS) $(CSRCS_BOARD) $(NVBOARD_ARCHIVE)
 				$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 				--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN_BOARD))
 
+echo_val:
+	echo $(GEN_DIR)
+	echo $(OBJ_DIR)
+	echo $(VERILOG_OBJ_DIR)
 
 verilog:
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
 	sed -i 's/val tapeout: Boolean = true/val tapeout: Boolean = false/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
-	#rm -rf $(GEN_DIR)
+	rm -rf $(VERILOG_OBJ_DIR)
 	mkdir -p $(VERILOG_OBJ_DIR)
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 	sed -i 's/val tapeout: Boolean = false/val tapeout: Boolean = true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
