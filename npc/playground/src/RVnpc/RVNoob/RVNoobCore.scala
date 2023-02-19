@@ -269,7 +269,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   clint.io.mstatus_mie      <> csr.io.mstatus_mie
   clint.io.mie_mtie         <> csr.io.mie_mtie
   clint.io.id_reg_pc        <> id_reg.out.pc
-  clint.io.ex_reg_in_reg_en <> ex_reg.in.reg_en
+  clint.io.ex_reg_in_reg_en <> ppl_ctrl.io.ex_reg_ctrl.en
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
