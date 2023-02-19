@@ -24,10 +24,10 @@ class Clint extends Module with RVNoobConfig {
   io.rctrl.data      := 0.U
   io.rctrl.handshake := 0.B
   when(io.rctrl.en) {
-    when(io.rctrl.addr >= 0x02000000.U || io.rctrl.addr < 0x02000008.U) {
+    when(io.rctrl.addr >= 0x02000000.U && io.rctrl.addr < 0x02000008.U) {
       io.rctrl.data      := mtime
       io.rctrl.handshake := 1.B
-    }.elsewhen(io.rctrl.addr >= 0x02000008.U || io.rctrl.addr < 0x02000010.U) {
+    }.elsewhen(io.rctrl.addr >= 0x02000008.U && io.rctrl.addr < 0x02000010.U) {
       io.rctrl.data      := mtimecmp
       io.rctrl.handshake := 1.B
     }
