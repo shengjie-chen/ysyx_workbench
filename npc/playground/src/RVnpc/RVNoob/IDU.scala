@@ -229,8 +229,8 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_uextb -> jlop_uextb
     )
   )
-  io.mem_ctrl.r_pmem := instset_load // all load inst
-  io.mem_ctrl.w_pmem := type_S
+  io.mem_ctrl.r_pmem := instset_load && !io.intr // all load inst
+  io.mem_ctrl.w_pmem := type_S && !io.intr
   io.mem_ctrl.zero_ex_op := MuxCase(
     DontCare,
     Array(
