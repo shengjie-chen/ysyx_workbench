@@ -26,7 +26,7 @@ class Clint extends Module with RVNoobConfig {
   }.elsewhen(io.id_reg_pc =/= 0.U){
     time_interrupt_reg := 0.B
   }
-  io.time_interrupt := (time_interrupt && !RegNext(time_interrupt)) || ((io.id_reg_pc === 0.U) && time_interrupt_reg)
+  io.time_interrupt := (time_interrupt && !RegNext(time_interrupt) && (io.id_reg_pc =/= 0.U)) || ((io.id_reg_pc =/= 0.U) && time_interrupt_reg)
 
   io.rctrl.data      := 0.U
   io.rctrl.handshake := 0.B
