@@ -11,7 +11,7 @@ class Clint extends Module with RVNoobConfig {
     val time_interrupt = Output(Bool())
     val mstatus_mie    = Input(Bool())
     val mie_mtie       = Input(Bool())
-    val id_reg_pc      = Input(Bool())
+    val id_reg_pc      = Input(UInt(addr_w.W))
   })
 
   val mtime    = RegInit(UInt(64.W), 0.U)
