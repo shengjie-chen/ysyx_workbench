@@ -38,11 +38,11 @@ class Clint extends Module with RVNoobConfig {
   val strb = Wire(UInt(64.W))
   strb := FillInterleaved(8, io.wctrl.strb)
   when(io.wctrl.en) {
-    when(io.wctrl.addr >= 0x02000000.U || io.wctrl.addr < 0x02000008.U) {
+    when(io.wctrl.addr >= 0x02000000.U && io.wctrl.addr < 0x02000008.U) {
       mtime               := io.wctrl.data & strb | mtime & (~strb).asUInt()
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
-    }.elsewhen(io.rctrl.addr >= 0x02000008.U || io.rctrl.addr < 0x02000010.U) {
+    }.elsewhen(io.rctrl.addr >= 0x02000008.U && io.rctrl.addr < 0x02000010.U) {
       mtimecmp            := io.wctrl.data & strb | mtime & (~mtimecmp).asUInt()
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
