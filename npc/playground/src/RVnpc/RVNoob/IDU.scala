@@ -185,7 +185,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val jpg_uexthw = rvi_lhu
   val jpg_uextb  = rvi_lbu
   io.exe_ctrl.judge_mux := jpg_slt || jpg_sltu || jpg_sextw
-  io.exe_ctrl.judge_op := MuxCase(
+  io.exe_ctrl.judge_op := Mux(io.intr, jop_x, MuxCase(
     jop_x,
     Array(
       rvi_beq -> jop_beq,
@@ -198,7 +198,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_sltu -> jop_sltu,
       jpg_sextw -> jop_sextw
     )
-  )
+  ))
 
   // >>>>>>>>>>>>>> EXECtrlIO <<<<<<<<<<<<<<
   io.exe_ctrl.exe_out_mux  := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
