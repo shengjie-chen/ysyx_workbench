@@ -27,6 +27,7 @@ class PipelineCtrl extends Module with RVNoobConfig {
     val pc_en           = Output(Bool())
     val forward1        = Output(UInt(2.W))
     val forward2        = Output(UInt(2.W))
+    val ex_csr_hazard   = Output(Bool())
   })
   val sNone :: sDH1 :: Nil = Enum(2) // Data Hazard
   val state                = RegInit(sNone)
@@ -76,11 +77,12 @@ class PipelineCtrl extends Module with RVNoobConfig {
     ns
   }
 
-  io.id_reg_ctrl  := normal_state
-  io.ex_reg_ctrl  := normal_state
-  io.mem_reg_ctrl := normal_state
-  io.wb_reg_ctrl  := normal_state
-  io.pc_en        := 1.B
+  io.id_reg_ctrl   := normal_state
+  io.ex_reg_ctrl   := normal_state
+  io.mem_reg_ctrl  := normal_state
+  io.wb_reg_ctrl   := normal_state
+  io.pc_en         := 1.B
+  io.ex_csr_hazard := 0.B
 
   def if_id_delay_ex_flush = { // if,id stop, ex flush
     io.id_reg_ctrl := delay_state
@@ -113,7 +115,8 @@ class PipelineCtrl extends Module with RVNoobConfig {
             state := sNone
           }.elsewhen(ex_csr_hazard) {
             if_id_delay_ex_flush
-            state := sDH1
+            state            := sDH1
+            io.ex_csr_hazard := 1.B
           }.elsewhen(mem_csr_hazard) {
             if_id_delay_ex_flush
             state := sNone

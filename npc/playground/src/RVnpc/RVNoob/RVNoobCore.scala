@@ -266,10 +266,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
   }
 
-  clint.io.mstatus_mie      <> csr.io.mstatus_mie
-  clint.io.mie_mtie         <> csr.io.mie_mtie
-  clint.io.id_reg_pc        <> id_reg.out.pc
-  clint.io.ex_reg_in_reg_en <> ppl_ctrl.io.ex_reg_ctrl.en
+  clint.io.mstatus_mie   <> csr.io.mstatus_mie
+  clint.io.mie_mtie      <> csr.io.mie_mtie
+  clint.io.id_reg_pc     <> id_reg.out.pc
+  clint.io.ex_csr_hazard <> ppl_ctrl.io.ex_csr_hazard
+  clint.io.dnpc_en       <> dnpc_en
+  clint.io.cache_miss    <> cache_miss
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())

@@ -15,7 +15,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val id_rf_ctrl  = Output(new IdRfCtrlIO)
     val wb_rf_ctrl  = Output(new WbRfCtrlIO)
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
-    val intr = Input(Bool())
+    val intr        = Input(Bool())
   })
   if (!tapeout) {
     val dpi_inst = Module(new DpiInst)
@@ -110,9 +110,15 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   // privileged
   val pri_mret = io.inst === "b00110000001000000000000001110011".U
 
+  // ********************************** Inst Set **********************************
+  val instset_load     = rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld
+  val instset_csr_zimm = rvi_csrrsi || rvi_csrrwi || rvi_csrrci
+  val instset_csr_reg  = rvi_csrrs || rvi_csrrw || rvi_csrrc
+  val instset_csr      = instset_csr_reg || instset_csr_zimm
+  val instset_jdnpc     = rvi_jal || rvi_jalr || rvi_ecall || pri_mret // jump dnpc inst, except type_B
   // ********************************** Inst Type **********************************
   val type_I =
-    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || io.wb_csr_ctrl.csr_wen || rvi_ecall || rvi_fencei // TYPE_I addi
+    rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || instset_csr || rvi_ecall || rvi_fencei // TYPE_I addi
   val type_U = rvi_lui || rvi_auipc // TYPE_U auipc
   val type_S = rvi_sb || rvi_sh || rvi_sw || rvi_sd // TYPE_S
   val type_J = rvi_jal // TYPE_J
@@ -148,8 +154,8 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.exe_ctrl.alu_op := MuxCase(
     op_x,
     Array(
-      (rvi_auipc || rvi_addi || rvi_add || rvi_addiw || rvi_addw || rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld || type_S) -> op_add,
-      (rvi_beq || rvi_bne || rvi_blt || rvi_bge || rvi_bltu || rvi_bgeu || rvi_slti || rvi_sltiu || rvi_sub || rvi_slt || rvi_sltu || rvi_subw) -> op_sub,
+      (rvi_auipc || rvi_addi || rvi_add || rvi_addiw || rvi_addw || instset_load || type_S) -> op_add,
+      (type_B || rvi_slti || rvi_sltiu || rvi_sub || rvi_slt || rvi_sltu || rvi_subw) -> op_sub,
       (rvi_sll || rvi_slli) -> op_sll,
       (rvi_srl || rvi_srli) -> op_srl,
       (rvi_sra || rvi_srai) -> op_sra,
@@ -185,27 +191,31 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val jpg_uexthw = rvi_lhu
   val jpg_uextb  = rvi_lbu
   io.exe_ctrl.judge_mux := jpg_slt || jpg_sltu || jpg_sextw
-  io.exe_ctrl.judge_op := Mux(io.intr, jop_x, MuxCase(
+  io.exe_ctrl.judge_op := Mux(
+    io.intr,
     jop_x,
-    Array(
-      rvi_beq -> jop_beq,
-      rvi_bne -> jop_bne,
-      rvi_blt -> jop_blt,
-      rvi_bge -> jop_bge,
-      rvi_bltu -> jop_bltu,
-      rvi_bgeu -> jop_bgeu,
-      jpg_slt -> jop_slt,
-      jpg_sltu -> jop_sltu,
-      jpg_sextw -> jop_sextw
+    MuxCase(
+      jop_x,
+      Array(
+        rvi_beq -> jop_beq,
+        rvi_bne -> jop_bne,
+        rvi_blt -> jop_blt,
+        rvi_bge -> jop_bge,
+        rvi_bltu -> jop_bltu,
+        rvi_bgeu -> jop_bgeu,
+        jpg_slt -> jop_slt,
+        jpg_sltu -> jop_sltu,
+        jpg_sextw -> jop_sextw
+      )
     )
-  ))
+  )
 
   // >>>>>>>>>>>>>> EXECtrlIO <<<<<<<<<<<<<<
   io.exe_ctrl.exe_out_mux  := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.dir_out_mux  := rvi_lui || rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.src1_bypass  := rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.alu_src1_mux := type_U
-  io.exe_ctrl.alu_src2_mux := (type_I || type_S || type_U) & !io.wb_csr_ctrl.csr_wen
+  io.exe_ctrl.alu_src2_mux := (type_I || type_S || type_U) & !instset_csr
 
   // >>>>>>>>>>>>>> MemCtrlIO <<<<<<<<<<<<<<
   io.mem_ctrl.judge_load_op := MuxCase(
@@ -219,7 +229,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       jpg_uextb -> jlop_uextb
     )
   )
-  io.mem_ctrl.r_pmem := rvi_lb || rvi_lh || rvi_lw || rvi_lbu || rvi_lhu || rvi_lwu || rvi_ld // all load inst
+  io.mem_ctrl.r_pmem := instset_load // all load inst
   io.mem_ctrl.w_pmem := type_S
   io.mem_ctrl.zero_ex_op := MuxCase(
     DontCare,
@@ -233,33 +243,33 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.mem_ctrl.fencei := rvi_fencei
 
   // >>>>>>>>>>>>>> WbCsrCtrlIO <<<<<<<<<<<<<<
-  io.wb_csr_ctrl.ecall     := rvi_ecall
+  io.wb_csr_ctrl.ecall     := rvi_ecall && !io.intr
   io.wb_csr_ctrl.mret      := pri_mret
   io.wb_csr_ctrl.intr      := io.intr
-  io.wb_csr_ctrl.csr_wen   := rvi_csrrs || rvi_csrrw || rvi_csrrc || rvi_csrrsi || rvi_csrrwi || rvi_csrrci && !io.intr
+  io.wb_csr_ctrl.csr_wen   := instset_csr && !io.intr
   io.wb_csr_ctrl.csr_waddr := io.inst(31, 20)
 
   // >>>>>>>>>>>>>> IdCsrCtrlIO <<<<<<<<<<<<<<
-  io.id_csr_ctrl.ecall     := rvi_ecall
+  io.id_csr_ctrl.ecall     := rvi_ecall && !io.intr
   io.id_csr_ctrl.mret      := pri_mret
   io.id_csr_ctrl.intr      := io.intr
-  io.id_csr_ctrl.zimm_en   := rvi_csrrsi || rvi_csrrwi || rvi_csrrci
+  io.id_csr_ctrl.zimm_en   := instset_csr_zimm
   io.id_csr_ctrl.csr_raddr := io.inst(31, 20)
-  io.id_csr_ctrl.csr_ren   := io.wb_csr_ctrl.csr_wen
+  io.id_csr_ctrl.csr_ren   := instset_csr && !io.intr
 
   // >>>>>>>>>>>>>> WbRfCtrlIO <<<<<<<<<<<<<<
-  io.wb_rf_ctrl.wen := type_R || type_I || type_J || type_U && (!io.id_csr_ctrl.zimm_en) && !io.intr
+  io.wb_rf_ctrl.wen := (type_R || type_I || type_J || type_U) && !io.intr
   io.wb_rf_ctrl.rd  := io.inst(11, 7)
 
   // >>>>>>>>>>>>>> IdRfCtrlIO <<<<<<<<<<<<<<
   // 是否写寄存器文件
-  io.id_rf_ctrl.ren1 := type_I || type_R || type_S || type_B
-  io.id_rf_ctrl.ren2 := type_S || type_R || type_B
+  io.id_rf_ctrl.ren1 := (type_I || type_R || type_S || type_B) && !io.intr
+  io.id_rf_ctrl.ren2 := (type_S || type_R || type_B) && !io.intr
   io.id_rf_ctrl.rs1  := io.inst(19, 15)
   io.id_rf_ctrl.rs2  := io.inst(24, 20)
 
   // >>>>>>>>>>>>>> DnpcCtrlIO <<<<<<<<<<<<<<
-  io.dnpc_ctrl.pc_mux    := rvi_jal || rvi_jalr || rvi_ecall || pri_mret || io.intr// 出现pc=的指令
+  io.dnpc_ctrl.pc_mux    := instset_jdnpc || io.intr // 出现pc=的指令
   io.dnpc_ctrl.dnpc_jalr := rvi_jalr
   io.dnpc_ctrl.dnpc_csr  := rvi_ecall || pri_mret || io.intr
 

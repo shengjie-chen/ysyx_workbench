@@ -6,13 +6,15 @@ import chisel3.util._
 class Clint extends Module with RVNoobConfig {
 
   val io = IO(new Bundle() {
-    val rctrl            = new AxiReadCtrlIO
-    val wctrl            = new AxiWriteCtrlIO
-    val time_interrupt   = Output(Bool())
-    val mstatus_mie      = Input(Bool())
-    val mie_mtie         = Input(Bool())
-    val id_reg_pc        = Input(UInt(addr_w.W))
-    val ex_reg_in_reg_en = Input(Bool())
+    val rctrl          = new AxiReadCtrlIO
+    val wctrl          = new AxiWriteCtrlIO
+    val time_interrupt = Output(Bool())
+    val mstatus_mie    = Input(Bool())
+    val mie_mtie       = Input(Bool())
+    val id_reg_pc      = Input(UInt(addr_w.W))
+    val ex_csr_hazard  = Input(Bool())
+    val dnpc_en        = Input(Bool())
+    val cache_miss     = Input(Bool())
   })
 
   val mtime    = RegInit(UInt(64.W), 0.U)
@@ -22,9 +24,10 @@ class Clint extends Module with RVNoobConfig {
   val time_intr_state     = Wire(Bool())
   val time_intr           = Wire(Bool())
   val time_intr_condition = Wire(Bool())
-  time_intr_state     := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
-  time_intr           := time_intr_state && !RegNext(time_intr_state)
-  time_intr_condition := io.id_reg_pc =/= 0.U && io.ex_reg_in_reg_en
+  time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
+  time_intr       := time_intr_state && !RegNext(time_intr_state)
+  time_intr_condition := io.id_reg_pc =/= 0.U && !RegNext(io.ex_csr_hazard) &&
+    !io.dnpc_en && !RegNext(io.dnpc_en) && !io.cache_miss
 
   val time_intr_reg = RegInit(0.B)
   when(time_intr && !time_intr_condition) {
