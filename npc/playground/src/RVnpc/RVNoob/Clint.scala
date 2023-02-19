@@ -35,13 +35,15 @@ class Clint extends Module with RVNoobConfig {
 
   io.wctrl.whandshake := 0.B
   io.wctrl.bhandshake := 0.B
+  val strb = Wire(UInt(64.W))
+  strb := FillInterleaved(8, io.wctrl.strb)
   when(io.wctrl.en) {
     when(io.wctrl.addr >= 0x02000000.U || io.wctrl.addr < 0x02000008.U) {
-      mtime               := io.wctrl.data & io.wctrl.strb
+      mtime               := io.wctrl.data & strb
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
     }.elsewhen(io.rctrl.addr >= 0x02000008.U || io.rctrl.addr < 0x02000010.U) {
-      mtimecmp            := io.wctrl.data & io.wctrl.strb
+      mtimecmp            := io.wctrl.data & strb
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
     }
