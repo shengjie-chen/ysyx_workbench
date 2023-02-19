@@ -18,15 +18,17 @@ class Clint extends Module with RVNoobConfig {
   val mtimecmp = RegInit(UInt(64.W), 0.U)
   mtime := mtime + 1.U
 
-  val time_interrupt = Wire(Bool())
-  time_interrupt    := mtime >= mtimecmp && io.mstatus_mie && io.mie_mtie
-  val time_interrupt_reg = RegInit(0.B)
-  when(time_interrupt && (io.id_reg_pc === 0.U)){
-    time_interrupt_reg := 1.B
-  }.elsewhen(io.id_reg_pc =/= 0.U){
-    time_interrupt_reg := 0.B
+  val time_intr_state = Wire(Bool())
+  val time_intr       = Wire(Bool())
+  time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
+  time_intr       := time_intr_state && !RegNext(time_intr_state)
+  val time_intr_reg = RegInit(0.B)
+  when(time_intr && (io.id_reg_pc === 0.U)) {
+    time_intr_reg := 1.B
+  }.elsewhen(io.id_reg_pc =/= 0.U) {
+    time_intr_reg := 0.B
   }
-  io.time_interrupt := (time_interrupt && !RegNext(time_interrupt) && (io.id_reg_pc =/= 0.U)) || ((io.id_reg_pc =/= 0.U) && time_interrupt_reg)
+  io.time_interrupt := ((time_intr || time_intr_reg) && (io.id_reg_pc =/= 0.U))
 
   io.rctrl.data      := 0.U
   io.rctrl.handshake := 0.B
