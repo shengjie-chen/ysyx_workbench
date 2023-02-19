@@ -176,9 +176,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
   axi_crossbar.in2.pc    <> mem_reg.out.pc
   axi_crossbar.maxi.busy <> maxi.io.busy
-  maxi.io.rctrl <> axi_crossbar.maxi.rctrl
-  maxi.io.wctrl <> axi_crossbar.maxi.wctrl
-  maxi.io.maxi <> io.master
+  maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
+  maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
+  maxi.io.maxi           <> io.master
 
   if (!tapeout) {
     io.axi_pc.get <> axi_crossbar.maxi.pc
@@ -268,6 +268,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   clint.io.mstatus_mie <> csr.io.mstatus_mie
   clint.io.mie_mtie    <> csr.io.mie_mtie
+  clint.io.id_reg_pc   <> id_reg.out.pc
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
