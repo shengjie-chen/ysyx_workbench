@@ -122,7 +122,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     mem_ctrl    = mem_reg.out.mem_ctrl,
     wb_rf_ctrl  = mem_reg.out.wb_rf_ctrl,
     wb_csr_ctrl = mem_reg.out.wb_csr_ctrl,
-    reg_en      = ppl_ctrl.io.wb_reg_ctrl.en
+    reg_en      = ppl_ctrl.io.wb_reg_ctrl.en,
+    valid       = mem_reg.out.inst_valid
   )
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
@@ -169,10 +170,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
 
-
-  maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
-  maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
-  maxi.io.maxi           <> io.master
+  maxi.io.rctrl <> axi_crossbar.maxi.rctrl
+  maxi.io.wctrl <> axi_crossbar.maxi.wctrl
+  maxi.io.maxi  <> io.master
 
   if (!tapeout) {
     io.axi_pc.get <> axi_crossbar.maxi.pc

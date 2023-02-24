@@ -6,7 +6,7 @@ import chisel3.util._
 
 trait MEMregSignal extends RVNoobConfig {
   val pc = UInt(addr_w.W)
-//  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
   val inst = UInt(inst_w.W)
 
   val src2     = UInt(xlen.W)
@@ -19,7 +19,9 @@ trait MEMregSignal extends RVNoobConfig {
 
 }
 
-class MEMregOutIO extends PipelineOutIO with MEMregSignal {}
+class MEMregOutIO extends PipelineOutIO with MEMregSignal {
+  val inst_valid = Bool()
+}
 
 class MEMregInIO extends PipelineInIO with MEMregSignal {
 //  val dnpc_en     = Bool()
@@ -49,7 +51,8 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
+  out.valid      := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
+  out.inst_valid := out.valid || RegEnable(1.B, 0.B, out.valid)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 

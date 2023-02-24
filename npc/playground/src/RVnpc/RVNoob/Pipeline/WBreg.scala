@@ -6,7 +6,7 @@ import chisel3.util._
 
 trait WBregSignal extends RVNoobConfig {
   val pc = UInt(addr_w.W)
-//  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
   val inst = UInt(inst_w.W)
 
   val src2        = UInt(xlen.W)
@@ -21,6 +21,8 @@ trait WBregSignal extends RVNoobConfig {
 class WBregOutIO extends PipelineOutIO with WBregSignal {}
 
 class WBregInIO extends PipelineInIO with WBregSignal {
+  val valid = Bool()
+
   //  val src2_en     = Bool()
   //  val alu_res_en  = Bool()
   //  val mem_data_en = Bool()
@@ -52,7 +54,7 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   val mem_data_t = RegNext(out.mem_data, 0.U)
   out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
 
-  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
+  out.valid := RegNext(in.reg_en && in.valid, 0.B)
 
   if (!tapeout) {
     val dpi_wb = Module(new DpiWb)
@@ -67,16 +69,17 @@ class WBreg extends MultiIOModule with RVNoobConfig {
 
 object WBreg {
   def apply(
-    pc:          UInt,
-    inst:        UInt,
-    src2:        UInt,
-    alu_res:     UInt,
-    mem_data:    UInt,
-    mem_ctrl:    MemCtrlIO,
-    wb_rf_ctrl:  WbRfCtrlIO,
-    wb_csr_ctrl: WbCsrCtrlIO,
-    reg_en:      Bool
-  ): WBreg = {
+             pc:          UInt,
+             inst:        UInt,
+             src2:        UInt,
+             alu_res:     UInt,
+             mem_data:    UInt,
+             mem_ctrl:    MemCtrlIO,
+             wb_rf_ctrl:  WbRfCtrlIO,
+             wb_csr_ctrl: WbCsrCtrlIO,
+             reg_en:      Bool,
+             valid:       Bool
+           ): WBreg = {
     val wb_reg = Module(new WBreg)
     wb_reg.in.pc          <> pc
     wb_reg.in.inst        <> inst
@@ -88,6 +91,7 @@ object WBreg {
     wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     wb_reg.in.reg_en <> reg_en
+    wb_reg.in.valid  <> valid
 
     wb_reg
   }
