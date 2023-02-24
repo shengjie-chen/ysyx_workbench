@@ -18,6 +18,7 @@ class CSR extends Module with RVNoobConfig with Csr_op {
     val pc          = Input(UInt(addr_w.W))
     val wb_csr_ctrl = Input(new WbCsrCtrlIO)
     val csr_wdata   = Input(UInt(xlen.W))
+    val wb_valid    = Input(Bool())
     val mstatus_mie = Output(Bool())
     val mie_mtie    = Output(Bool())
   })
@@ -50,43 +51,45 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   read_mcause  := mcause
   read_mip     := mip
   read_mie     := mie
-  when(io.wb_csr_ctrl.csr_wen) {
-    switch(io.wb_csr_ctrl.csr_waddr) {
-      is(0x300.U) {
-        mstatus      := io.csr_wdata
-        read_mstatus := io.csr_wdata
+  when(io.wb_valid) {
+    when(io.wb_csr_ctrl.csr_wen) {
+      switch(io.wb_csr_ctrl.csr_waddr) {
+        is(0x300.U) {
+          mstatus      := io.csr_wdata
+          read_mstatus := io.csr_wdata
+        }
+        is(0x304.U) {
+          mie      := io.csr_wdata
+          read_mie := io.csr_wdata
+        }
+        is(0x305.U) {
+          mtvec      := io.csr_wdata
+          read_mtvec := io.csr_wdata
+        }
+        is(0x341.U) {
+          mepc      := io.csr_wdata
+          read_mepc := io.csr_wdata
+        }
+        is(0x342.U) {
+          mcause      := io.csr_wdata
+          read_mcause := io.csr_wdata
+        }
+        is(0x344.U) {
+          mip      := io.csr_wdata
+          read_mip := io.csr_wdata
+        }
       }
-      is(0x304.U) {
-        mie      := io.csr_wdata
-        read_mie := io.csr_wdata
-      }
-      is(0x305.U) {
-        mtvec      := io.csr_wdata
-        read_mtvec := io.csr_wdata
-      }
-      is(0x341.U) {
-        mepc      := io.csr_wdata
-        read_mepc := io.csr_wdata
-      }
-      is(0x342.U) {
-        mcause      := io.csr_wdata
-        read_mcause := io.csr_wdata
-      }
-      is(0x344.U) {
-        mip      := io.csr_wdata
-        read_mip := io.csr_wdata
-      }
+    }.elsewhen(io.wb_csr_ctrl.ecall || io.wb_csr_ctrl.intr) {
+      mstatus      := read_mstatus
+      read_mstatus := mstatus(xlen - 1, 8) ## mstatus(3) ## mstatus(6, 4) ## 0.B ## mstatus(2, 0)
+      mepc         := io.pc
+      read_mepc    := io.pc
+      mcause       := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
+      read_mcause  := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
+    }.elsewhen(io.wb_csr_ctrl.mret) {
+      mstatus      := read_mstatus
+      read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
     }
-  }.elsewhen(io.wb_csr_ctrl.ecall || io.wb_csr_ctrl.intr) {
-    mstatus      := read_mstatus
-    read_mstatus := mstatus(xlen - 1, 8) ## mstatus(3) ## mstatus(6, 4) ## 0.B ## mstatus(2, 0)
-    mepc         := io.pc
-    read_mepc    := io.pc
-    mcause       := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
-    read_mcause  := Mux(io.wb_csr_ctrl.ecall, 11.U, 0x8000000000000007L.S(xlen.W).asUInt())
-  }.elsewhen(io.wb_csr_ctrl.mret) {
-    mstatus      := read_mstatus
-    read_mstatus := mstatus(xlen - 1, 4) ## mstatus(7) ## mstatus(2, 0)
   }
 
   val csr_read = MuxCase(

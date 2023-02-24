@@ -287,13 +287,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   csr.io.wb_csr_ctrl <> wb_reg.out.wb_csr_ctrl
   csr.io.pc          <> wb_reg.out.pc
   csr.io.csr_wdata   <> wb_reg.out.alu_res
+  csr.io.wb_valid    <> wb_reg.out.valid
 
   if (!tapeout) {
     // ********************************** Difftest **********************************
     val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
     val cache_miss_first     = cache_miss && !RegNext(cache_miss)
 
-    val diff_pc = Reg(UInt(addr_w.W))
+    val diff_pc = RegInit(UInt(addr_w.W), 0x80000000L.U)
 
     // wb 写完成的周期
     //    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
