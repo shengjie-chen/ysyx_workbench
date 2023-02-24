@@ -6,7 +6,7 @@ import chisel3.util._
 
 trait EXregSignal extends RVNoobConfig {
   val pc = UInt(addr_w.W)
-//  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
   val inst = UInt(inst_w.W)
 
   val snpc     = UInt(addr_w.W)
@@ -22,19 +22,7 @@ trait EXregSignal extends RVNoobConfig {
   val dnpc_ctrl   = new DnpcCtrlIO
 }
 
-class EXregInIO extends PipelineInIO with EXregSignal {
-//  val snpc_en     = Bool()
-//  val src1_en     = Bool()
-//  val src2_en     = Bool()
-//  val imm_en      = Bool()
-//  val csr_dnpc_en = Bool()
-//
-//  val exe_ctrl_en    = Bool()
-//  val mem_ctrl_en    = Bool()
-//  val wb_rf_ctrl_en  = Bool()
-//  val wb_csr_ctrl_en = Bool()
-//  val dnpc_ctrl_en   = Bool()
-}
+class EXregInIO extends PipelineInIO with EXregSignal {}
 
 class EXregOutIO extends PipelineOutIO with EXregSignal {}
 
@@ -61,7 +49,8 @@ class EXreg extends MultiIOModule with RVNoobConfig {
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
   out.dnpc_ctrl   := RegEnable(in.dnpc_ctrl, 0.U.asTypeOf(new DnpcCtrlIO), in.reg_en)
 
-  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
+  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
+  out.inst_valid := (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
@@ -81,7 +70,8 @@ object EXreg {
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
     dnpc_ctrl:   DnpcCtrlIO,
-    reg_en:      Bool
+    reg_en:      Bool,
+    valid:       Bool
   ): EXreg = {
     val ex_reg = Module(new EXreg)
     ex_reg.in.pc          <> pc
@@ -98,6 +88,7 @@ object EXreg {
     ex_reg.in.dnpc_ctrl   <> dnpc_ctrl
 
     ex_reg.in.reg_en <> reg_en
+    ex_reg.in.valid  <> valid
 
     ex_reg
   }

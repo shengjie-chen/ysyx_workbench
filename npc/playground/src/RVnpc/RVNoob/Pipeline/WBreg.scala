@@ -20,18 +20,7 @@ trait WBregSignal extends RVNoobConfig {
 
 class WBregOutIO extends PipelineOutIO with WBregSignal {}
 
-class WBregInIO extends PipelineInIO with WBregSignal {
-  val valid = Bool()
-
-  //  val src2_en     = Bool()
-  //  val alu_res_en  = Bool()
-  //  val mem_data_en = Bool()
-  //  val r_pmem_en   = Bool()
-  //
-  //  val wb_rf_ctrl_en  = Bool()
-  //  val wb_csr_ctrl_en = Bool()
-
-}
+class WBregInIO extends PipelineInIO with WBregSignal {}
 
 class WBreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new WBregInIO))
@@ -49,12 +38,12 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  val reset_t    = RegNext(reset.asBool(), 0.B)
   val reg_en_t   = RegNext(in.reg_en.asBool(), 0.B)
   val mem_data_t = RegNext(out.mem_data, 0.U)
-  out.mem_data := Mux(reset_t, 0.U, Mux(reg_en_t, in.mem_data, mem_data_t))
+  out.mem_data := Mux(reg_en_t, in.mem_data, mem_data_t)
 
-  out.valid := RegNext(in.reg_en && in.valid, 0.B)
+  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
+  out.inst_valid := (out.inst =/= 0.U)
 
   if (!tapeout) {
     val dpi_wb = Module(new DpiWb)
@@ -69,17 +58,17 @@ class WBreg extends MultiIOModule with RVNoobConfig {
 
 object WBreg {
   def apply(
-             pc:          UInt,
-             inst:        UInt,
-             src2:        UInt,
-             alu_res:     UInt,
-             mem_data:    UInt,
-             mem_ctrl:    MemCtrlIO,
-             wb_rf_ctrl:  WbRfCtrlIO,
-             wb_csr_ctrl: WbCsrCtrlIO,
-             reg_en:      Bool,
-             valid:       Bool
-           ): WBreg = {
+    pc:          UInt,
+    inst:        UInt,
+    src2:        UInt,
+    alu_res:     UInt,
+    mem_data:    UInt,
+    mem_ctrl:    MemCtrlIO,
+    wb_rf_ctrl:  WbRfCtrlIO,
+    wb_csr_ctrl: WbCsrCtrlIO,
+    reg_en:      Bool,
+    valid:       Bool
+  ): WBreg = {
     val wb_reg = Module(new WBreg)
     wb_reg.in.pc          <> pc
     wb_reg.in.inst        <> inst

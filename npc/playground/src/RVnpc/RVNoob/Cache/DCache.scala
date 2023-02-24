@@ -38,10 +38,11 @@ class DCache(
     val wdata      = Input(UInt(xlen.W))
     val zero_ex_op = Input(UInt(2.W))
     val fencei     = Input(Bool())
-    val valid      = Input(Bool())
+    val in_valid   = Input(Bool())
 
-    val miss  = Output(Bool())
-    val rdata = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
+    val miss       = Output(Bool())
+    val rdata      = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
+    val out_rvalid = Output(Bool())
 
     val sram      = Vec(4, new CacheSramIO)
     val axi_rctrl = Flipped(new AxiReadCtrlIO)
@@ -68,7 +69,7 @@ class DCache(
   // ********************************** Main Signal Define **********************************
   // >>>>>>>>>>>>>> fencei 控制信号 <<<<<<<<<<<<<<
   val fencei_ok    = Wire(Bool())
-  val fencei_valid = io.fencei && io.valid && !fencei_ok
+  val fencei_valid = io.fencei && io.in_valid && !fencei_ok
   val fencei_reg   = RegInit(0.B)
   val fencei_state = fencei_reg || fencei_valid
   when(fencei_valid) {
@@ -99,16 +100,24 @@ class DCache(
   val inpmem =
     if (tapeout) (io.addr >= 0x80000000L.U)
     else (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
-  val inpmem_op       = (io.ren || io.wen) && inpmem
-  val mmio_read_valid = !inpmem && io.ren && io.valid
-  val mmio_read_reg   = RegInit(0.B)
-  val mmio_read       = mmio_read_valid || mmio_read_reg
+  val inpmem_op           = (io.ren || io.wen) && inpmem
+  val mmio_read_valid     = !inpmem && io.ren && io.in_valid
+  val mmio_read_reg       = RegInit(0.B)
+  val mmio_read           = mmio_read_valid || mmio_read_reg
+  val mmio_read_ready_reg = RegInit(0.B)
+  val mmio_read_ready     = Wire(Bool())
   when(pmem_read_ok) {
     mmio_read_reg := 0.B
   }.elsewhen(mmio_read_valid) {
     mmio_read_reg := 1.B
   }
-  val mmio_write_valid = !inpmem && io.wen && io.valid
+  when(pmem_read_ok && mmio_read_reg) {
+    mmio_read_ready_reg := 1.B
+  }.elsewhen(io.in_valid) {
+    mmio_read_ready_reg := 0.B
+  }
+  mmio_read_ready := mmio_read_ready_reg && !io.in_valid
+  val mmio_write_valid = !inpmem && io.wen && io.in_valid
   val mmio_write_reg   = RegInit(0.B)
   val mmio_write       = mmio_write_valid || mmio_write_reg
   when(pmem_writeback_ok) {
@@ -322,7 +331,8 @@ class DCache(
   }
 
   // ********************************** Output **********************************
-  io.miss := inpmem_miss || mmio_read || mmio_write || fencei_state
+  io.miss       := inpmem_miss || mmio_read || mmio_write || fencei_state
+  io.out_rvalid := (hit && inpmem && io.ren) || mmio_read_ready
 
   when(RegNext(inpmem, 0.B)) {
     io.rdata := (io.sram(RegNext(hit_way, 0.U)).rdata >> RegNext(data_shift, 0.U))
@@ -354,7 +364,7 @@ object DCache {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
       cache.io.zero_ex_op := 2.U
-//      cache.io.valid      := 1.B
+//      cache.io.in_valid      := 1.B
       cache.io.fencei := 0.B
     }
     cache

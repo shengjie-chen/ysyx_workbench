@@ -67,7 +67,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     pc     = pc,
     inst   = icache.io.rdata,
     snpc   = snpc,
-    reg_en = ppl_ctrl.io.id_reg_ctrl.en
+    reg_en = ppl_ctrl.io.id_reg_ctrl.en,
+    valid  = icache.io.out_rvalid
   )
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
@@ -89,7 +90,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     wb_rf_ctrl  = idu.io.wb_rf_ctrl,
     wb_csr_ctrl = idu.io.wb_csr_ctrl,
     dnpc_ctrl   = idu.io.dnpc_ctrl,
-    reg_en      = ppl_ctrl.io.ex_reg_ctrl.en
+    reg_en      = ppl_ctrl.io.ex_reg_ctrl.en,
+    valid       = id_reg.out.inst_valid
   )
   val exe = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
@@ -106,7 +108,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     mem_ctrl    = ex_reg.out.mem_ctrl,
     wb_rf_ctrl  = ex_reg.out.wb_rf_ctrl,
     wb_csr_ctrl = ex_reg.out.wb_csr_ctrl,
-    reg_en      = ppl_ctrl.io.mem_reg_ctrl.en
+    reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
+    valid       = ex_reg.out.inst_valid
   )
   val dcache       = Module(new DCache(deviceId = 1))
   val maxi         = Module(new AxiMaster)
@@ -161,9 +164,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     dpi_npc.io.npc <> npc
   }
 
-  icache.io.addr  <> pc
-  icache.io.ren   <> !reset.asBool()
-  icache.io.valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
+  icache.io.addr     <> pc
+  icache.io.ren      <> !reset.asBool()
+  icache.io.in_valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
 
   icache.io.sram(0) <> io.sram0
   icache.io.sram(1) <> io.sram1
@@ -240,7 +243,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.wdata      <> mem_reg.out.src2
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   dcache.io.fencei     <> mem_reg.out.mem_ctrl.fencei
-  dcache.io.valid      <> mem_reg.out.valid
+  dcache.io.in_valid   <> mem_reg.out.valid
 
   dcache.io.sram(0) <> io.sram4
   dcache.io.sram(1) <> io.sram5

@@ -7,15 +7,12 @@ import chisel3.util._
 trait IDregSignal extends RVNoobConfig {
   val pc   = UInt(addr_w.W)
   val inst = UInt(inst_w.W)
-
   val snpc = UInt(addr_w.W)
 }
 
 class IDregOutIO extends PipelineOutIO with IDregSignal {}
 
-class IDregInIO extends PipelineInIO with IDregSignal {
-//  val snpc_en = Bool()
-}
+class IDregInIO extends PipelineInIO with IDregSignal {}
 
 //class CombRegEnable() extends Module{
 //  val io = IO(new Bundle{
@@ -34,25 +31,32 @@ class IDreg extends MultiIOModule with RVNoobConfig {
   out.pc   := RegEnable(in.pc, 0.U, in.reg_en)
   out.snpc := RegEnable(in.snpc, 0.U, in.reg_en)
 
-  val reset_t  = RegNext(reset.asBool(), 0.B)
   val reg_en_t = RegNext(in.reg_en.asBool(), 0.B)
   val inst_t   = RegNext(out.inst, 0.U)
-  out.inst := Mux(reset_t, 0.U, Mux(reg_en_t, in.inst, inst_t))
+  out.inst := Mux(reg_en_t, in.inst, inst_t)
 
-  out.valid := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
+  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
+  out.inst_valid := (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 
 object IDreg {
-  def apply(pc: UInt, inst: UInt, snpc: UInt, reg_en: Bool): IDreg = {
+  def apply(
+    pc:     UInt,
+    inst:   UInt,
+    snpc:   UInt,
+    reg_en: Bool,
+    valid:  Bool
+  ): IDreg = {
     val id_reg = Module(new IDreg)
     id_reg.in.pc   <> pc
     id_reg.in.inst <> inst
     id_reg.in.snpc <> snpc
 
     id_reg.in.reg_en <> reg_en
+    id_reg.in.valid  <> valid
 
     id_reg
   }

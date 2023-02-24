@@ -7,12 +7,10 @@ import chisel3.util._
 trait MEMregSignal extends RVNoobConfig {
   val pc = UInt(addr_w.W)
   //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
-  val inst = UInt(inst_w.W)
-
-  val src2     = UInt(xlen.W)
-  val mem_addr = UInt(addr_w.W)
-  val alu_res  = UInt(xlen.W)
-
+  val inst        = UInt(inst_w.W)
+  val src2        = UInt(xlen.W)
+  val mem_addr    = UInt(addr_w.W)
+  val alu_res     = UInt(xlen.W)
   val mem_ctrl    = new MemCtrlIO
   val wb_rf_ctrl  = new WbRfCtrlIO
   val wb_csr_ctrl = new WbCsrCtrlIO
@@ -20,22 +18,9 @@ trait MEMregSignal extends RVNoobConfig {
 }
 
 class MEMregOutIO extends PipelineOutIO with MEMregSignal {
-  val inst_valid = Bool()
 }
 
-class MEMregInIO extends PipelineInIO with MEMregSignal {
-//  val dnpc_en     = Bool()
-//  val src2_en     = Bool()
-//  val mem_addr_en = Bool()
-//  val alu_res_en  = Bool()
-//  val B_en_en     = Bool()
-//  val pc_mux_en   = Bool()
-//
-//  val mem_ctrl_en    = Bool()
-//  val wb_rf_ctrl_en  = Bool()
-//  val wb_csr_ctrl_en = Bool()
-
-}
+class MEMregInIO extends PipelineInIO with MEMregSignal {}
 
 class MEMreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new MEMregInIO))
@@ -51,10 +36,7 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  out.valid      := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
-
-//  val inst_valid = out.inst =/= 0.U
-//  out.inst_valid := out.valid || RegEnable(1.B, 0.B, out.valid)
+  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
   out.inst_valid := (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
@@ -73,7 +55,8 @@ object MEMreg {
     mem_ctrl:    MemCtrlIO,
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
-    reg_en:      Bool
+    reg_en:      Bool,
+    valid:       Bool
   ): MEMreg = {
     val mem_reg = Module(new MEMreg)
     mem_reg.in.pc          <> pc
@@ -86,6 +69,7 @@ object MEMreg {
     mem_reg.in.wb_csr_ctrl <> wb_csr_ctrl
 
     mem_reg.in.reg_en <> reg_en
+    mem_reg.in.valid  <> valid
 
     mem_reg
   }
