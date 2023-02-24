@@ -162,20 +162,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   icache.io.addr  <> pc
   icache.io.ren   <> !reset.asBool()
-  icache.io.valid <> RegNext(pc_en, 0.B)
+  icache.io.valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
 
   icache.io.sram(0) <> io.sram0
   icache.io.sram(1) <> io.sram1
   icache.io.sram(2) <> io.sram2
   icache.io.sram(3) <> io.sram3
 
-  axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
-  axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
-  axi_crossbar.in1.pc    <> pc
-  axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
-  axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
-  axi_crossbar.in2.pc    <> mem_reg.out.pc
-  axi_crossbar.maxi.busy <> maxi.io.busy
+
   maxi.io.rctrl          <> axi_crossbar.maxi.rctrl
   maxi.io.wctrl          <> axi_crossbar.maxi.wctrl
   maxi.io.maxi           <> io.master
@@ -253,6 +247,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
 
+  axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
+  axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
+  axi_crossbar.in1.pc    <> pc
+  axi_crossbar.in2.pc    <> mem_reg.out.pc
+  axi_crossbar.maxi.busy <> maxi.io.busy
   when(
     (dcache.io.axi_rctrl.addr(31, 28) === 0.U && dcache.io.axi_rctrl.en) ||
       (dcache.io.axi_wctrl.addr(31, 28) === 0.U && dcache.io.axi_wctrl.en)

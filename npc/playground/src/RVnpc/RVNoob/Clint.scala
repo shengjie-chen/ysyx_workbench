@@ -16,6 +16,15 @@ class Clint extends Module with RVNoobConfig {
     val dnpc_en        = Input(Bool())
     val cache_miss     = Input(Bool())
   })
+  /* 0000 msip hart 0
+   * 0004 msip hart 1
+   * 4000 mtimecmp hart 0 lo
+   * 4004 mtimecmp hart 0 hi
+   * 4008 mtimecmp hart 1 lo
+   * 400c mtimecmp hart 1 hi
+   * bff8 mtime lo
+   * bffc mtime hi
+   */
 
   val mtime    = RegInit(UInt(64.W), 0.U)
   val mtimecmp = RegInit(UInt(64.W), 0.U)
@@ -40,10 +49,10 @@ class Clint extends Module with RVNoobConfig {
   io.rctrl.data      := 0.U
   io.rctrl.handshake := 0.B
   when(io.rctrl.en) {
-    when(io.rctrl.addr >= 0x02000000.U && io.rctrl.addr < 0x02000008.U) {
+    when(io.rctrl.addr >= 0x0200bff8.U && io.rctrl.addr < 0x0200c000.U) {
       io.rctrl.data      := mtime
       io.rctrl.handshake := 1.B
-    }.elsewhen(io.rctrl.addr >= 0x02000008.U && io.rctrl.addr < 0x02000010.U) {
+    }.elsewhen(io.rctrl.addr >= 0x02004000.U && io.rctrl.addr < 0x02004010.U) {
       io.rctrl.data      := mtimecmp
       io.rctrl.handshake := 1.B
     }
@@ -54,11 +63,11 @@ class Clint extends Module with RVNoobConfig {
   val strb = Wire(UInt(64.W))
   strb := FillInterleaved(8, io.wctrl.strb)
   when(io.wctrl.en) {
-    when(io.wctrl.addr >= 0x02000000.U && io.wctrl.addr < 0x02000008.U) {
+    when(io.wctrl.addr >= 0x0200bff8.U && io.wctrl.addr < 0x0200c000.U) {
       mtime               := io.wctrl.data & strb | mtime & (~strb).asUInt()
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
-    }.elsewhen(io.wctrl.addr >= 0x02000008.U && io.wctrl.addr < 0x02000010.U) {
+    }.elsewhen(io.wctrl.addr >= 0x02004000.U && io.wctrl.addr < 0x02004010.U) {
       mtimecmp            := io.wctrl.data & strb | mtime & (~mtimecmp).asUInt()
       io.wctrl.whandshake := 1.B
       io.wctrl.bhandshake := 1.B
