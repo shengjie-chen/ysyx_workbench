@@ -52,7 +52,10 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
   out.valid      := RegNext(in.reg_en, 0.B) && (out.inst =/= 0.U)
-  out.inst_valid := out.valid || RegEnable(1.B, 0.B, out.valid)
+
+//  val inst_valid = out.inst =/= 0.U
+//  out.inst_valid := out.valid || RegEnable(1.B, 0.B, out.valid)
+  out.inst_valid := (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
