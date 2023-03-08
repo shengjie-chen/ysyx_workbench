@@ -12,6 +12,9 @@ class AxiMaster extends Module with RVNoobConfig {
     val busy  = Output(Bool())
   })
 
+  val rready = 1.B
+  val bready = 1.B
+
   //--------------------
   //Write Address Channel
   //--------------------
@@ -31,7 +34,7 @@ class AxiMaster extends Module with RVNoobConfig {
   }
   when(io.wctrl.en) {
     busrt_write_active := 1.B
-  }.elsewhen(io.maxi.bvalid && io.maxi.bready) {
+  }.elsewhen(io.maxi.bvalid && bready) {
     busrt_write_active := 0.B
   }
 
@@ -76,14 +79,8 @@ class AxiMaster extends Module with RVNoobConfig {
   //----------------------------
   //Write Response (B) Channel
   //----------------------------
-//  val bready = RegInit(0.B)
-//  when(io.maxi.bvalid && !bready) {
-//    bready := 1.B
-//  }.elsewhen(bready) {
-//    bready := 0.B
-//  }
-  io.maxi.bready      := 1.B
-  io.wctrl.bhandshake := io.maxi.bready && io.maxi.bvalid
+  io.maxi.bready      := bready
+  io.wctrl.bhandshake := bready && io.maxi.bvalid
 
   //----------------------------
   //Read Address Channel
@@ -103,7 +100,7 @@ class AxiMaster extends Module with RVNoobConfig {
   }
   when(io.rctrl.en) {
     busrt_read_active := 1.B
-  }.elsewhen(io.maxi.rvalid && io.maxi.rready && io.maxi.rlast) {
+  }.elsewhen(io.maxi.rvalid && rready && io.maxi.rlast) {
     busrt_read_active := 0.B
   }
   io.maxi.arvalid <> arvalid
@@ -116,22 +113,14 @@ class AxiMaster extends Module with RVNoobConfig {
   //--------------------------------
   //Read Data (and Response) Channel
   //--------------------------------
-//  val rready     = RegInit(0.B)
   val read_index = RegInit(0.U(2.W))
-//  when(io.maxi.rvalid) {
-//    when(io.maxi.rlast && rready) {
-//      rready := 0.B
-//    }.otherwise {
-//      rready := 1.B
-//    }
-//  }
   when(io.rctrl.en) {
     read_index := 0.U
   }.elsewhen(io.rctrl.handshake && read_index =/= arlen) {
     read_index := read_index + 1.U
   }
-  io.maxi.rready     := 1.B
-  io.rctrl.handshake := io.maxi.rready && io.maxi.rvalid
+  io.maxi.rready     := rready
+  io.rctrl.handshake := rready && io.maxi.rvalid
   io.rctrl.data      := io.maxi.rdata
   io.busy            := busrt_read_active || busrt_write_active
 

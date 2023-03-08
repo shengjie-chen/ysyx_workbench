@@ -5,9 +5,7 @@ import chisel3._
 import chisel3.util._
 
 trait MEMregSignal extends RVNoobConfig {
-  val pc = UInt(addr_w.W)
-  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
-  val inst        = UInt(inst_w.W)
+  val pc          = UInt(addr_w.W)
   val src2        = UInt(xlen.W)
   val mem_addr    = UInt(addr_w.W)
   val alu_res     = UInt(xlen.W)
@@ -18,16 +16,18 @@ trait MEMregSignal extends RVNoobConfig {
 }
 
 class MEMregOutIO extends PipelineOutIO with MEMregSignal {
+  val inst = UInt(if (tapeout) 0.W else inst_w.W)
 }
 
-class MEMregInIO extends PipelineInIO with MEMregSignal {}
+class MEMregInIO extends PipelineInIO with MEMregSignal {
+  val inst = UInt(inst_w.W)
+}
 
 class MEMreg extends MultiIOModule with RVNoobConfig {
   val in  = IO(Input(new MEMregInIO))
   val out = IO(Output(new MEMregOutIO))
 
   out.pc       := RegEnable(in.pc, 0.U, in.reg_en)
-  out.inst     := RegEnable(in.inst, 0.U, in.reg_en)
   out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
   out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
   out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)
@@ -36,8 +36,11 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
   out.wb_csr_ctrl := RegEnable(in.wb_csr_ctrl, 0.U.asTypeOf(new WbCsrCtrlIO), in.reg_en)
 
-  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
-  out.inst_valid := (out.inst =/= 0.U)
+  out.valid := RegNext(in.reg_en && in.valid, 0.B)
+
+  val inst = RegEnable(in.inst, 0.U, in.reg_en)
+  out.inst       := inst
+  out.inst_valid := (inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
