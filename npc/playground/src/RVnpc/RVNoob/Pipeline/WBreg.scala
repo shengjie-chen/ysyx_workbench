@@ -5,10 +5,9 @@ import chisel3._
 import chisel3.util._
 
 trait WBregSignal extends RVNoobConfig {
-  val pc = UInt(addr_w.W)
-  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
-  val inst = UInt(inst_w.W)
-
+  val pc   = UInt(addr_w.W)
+  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+//  val inst = UInt(inst_w.W)
   val src2        = UInt(xlen.W)
   val alu_res     = UInt(xlen.W)
   val mem_data    = UInt(xlen.W)
@@ -31,7 +30,6 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   }
 
   out.pc          := RegEnable(in.pc, 0.U, in.reg_en)
-  out.inst        := RegEnable(in.inst, 0.U, in.reg_en)
   out.src2        := RegEnable(in.src2, 0.U, in.reg_en)
   out.alu_res     := RegEnable(in.alu_res, 0.U, in.reg_en)
   out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
@@ -42,7 +40,9 @@ class WBreg extends MultiIOModule with RVNoobConfig {
   val mem_data_t = RegNext(out.mem_data, 0.U)
   out.mem_data := Mux(reg_en_t, in.mem_data, mem_data_t)
 
-  out.valid      := RegNext(in.reg_en && in.valid, 0.B)
+  out.valid := RegNext(in.reg_en && in.valid, 0.B)
+
+  out.inst       := RegEnable(in.inst, 0.U, in.reg_en)
   out.inst_valid := (out.inst =/= 0.U)
 
   if (!tapeout) {

@@ -34,9 +34,9 @@ class Clint extends Module with RVNoobConfig {
   val time_intr           = Wire(Bool())
   val time_intr_condition = Wire(Bool())
   time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
-  time_intr       := time_intr_state && !RegNext(time_intr_state)
-  time_intr_condition := io.id_reg_pc =/= 0.U && !RegNext(io.ex_csr_hazard) &&
-    !io.dnpc_en && !RegNext(io.dnpc_en) && !io.cache_miss
+  time_intr       := time_intr_state && !RegNext(time_intr_state, 0.B)
+  time_intr_condition := io.id_reg_pc =/= 0.U && !RegNext(io.ex_csr_hazard, 0.B) &&
+    !io.dnpc_en && !RegNext(io.dnpc_en, 0.B) && !io.cache_miss
 
   val time_intr_reg = RegInit(0.B)
   when(time_intr && !time_intr_condition) {
@@ -73,4 +73,6 @@ class Clint extends Module with RVNoobConfig {
       io.wctrl.bhandshake := 1.B
     }
   }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }

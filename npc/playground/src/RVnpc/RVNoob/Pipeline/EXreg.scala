@@ -6,7 +6,7 @@ import chisel3.util._
 
 trait EXregSignal extends RVNoobConfig {
   val pc = UInt(addr_w.W)
-  //  val inst = UInt(if (tapeout) 0.W else inst_w.W)
+//  val inst = UInt(if (tapeout) 0.W else inst_w.W)
   val inst = UInt(inst_w.W)
 
   val snpc     = UInt(addr_w.W)
@@ -53,7 +53,6 @@ class EXreg extends MultiIOModule with RVNoobConfig {
   out.inst_valid := (out.inst =/= 0.U)
 
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
-
 }
 
 object EXreg {

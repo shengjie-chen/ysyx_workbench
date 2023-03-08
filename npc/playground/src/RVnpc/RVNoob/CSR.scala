@@ -24,15 +24,15 @@ class CSR extends Module with RVNoobConfig with Csr_op {
   })
   // 0 mstatus; 1 mtvec; 2 mepc; 3 mcause;
   val mstatus = RegInit(UInt(xlen.W), 0xa00001800L.U)
-  val mtvec   = RegInit(UInt(xlen.W), 0.U)
-  val mepc    = RegInit(UInt(inst_w.W), 0.U)
+  val mtvec   = RegInit(UInt(addr_w.W), 0.U)
+  val mepc    = RegInit(UInt(addr_w.W), 0.U)
   val mcause  = RegInit(UInt(xlen.W), 0.U)
   val mip     = RegInit(UInt(xlen.W), 0.U)
   val mie     = RegInit(UInt(xlen.W), 0.U)
 
   val read_mstatus = Wire(UInt(xlen.W))
-  val read_mtvec   = Wire(UInt(xlen.W))
-  val read_mepc    = Wire(UInt(inst_w.W))
+  val read_mtvec   = Wire(UInt(addr_w.W))
+  val read_mepc    = Wire(UInt(addr_w.W))
   val read_mcause  = Wire(UInt(xlen.W))
   val read_mip     = Wire(UInt(xlen.W))
   val read_mie     = Wire(UInt(xlen.W))
@@ -63,12 +63,12 @@ class CSR extends Module with RVNoobConfig with Csr_op {
           read_mie := io.csr_wdata
         }
         is(0x305.U) {
-          mtvec      := io.csr_wdata
-          read_mtvec := io.csr_wdata
+          mtvec      := io.csr_wdata(addr_w - 1, 0)
+          read_mtvec := io.csr_wdata(addr_w - 1, 0)
         }
         is(0x341.U) {
-          mepc      := io.csr_wdata
-          read_mepc := io.csr_wdata
+          mepc      := io.csr_wdata(addr_w - 1, 0)
+          read_mepc := io.csr_wdata(addr_w - 1, 0)
         }
         is(0x342.U) {
           mcause      := io.csr_wdata
