@@ -112,6 +112,7 @@ void print_watchpoint()
   WP *temp = head;
   if (temp == NULL) {
     printf("no checkpoint!\n");
+    return ;
   }
   int i;
   for (i = 0; i < NR_WP; i++) {
