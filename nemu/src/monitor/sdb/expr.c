@@ -166,7 +166,7 @@ static uint32_t eval(int p, int q)
   if (p > q) {
     panic("Bad expression\n");
     return 0;
-  } else if (p == q) {
+  } else if (p == q) { // Sigle expression
     if (tokens[p].type == DEC_NUM) {
       uint32_t val;
       sscanf(tokens[p].str, "%d", &val);
@@ -190,7 +190,7 @@ static uint32_t eval(int p, int q)
     int i;
     int op = 0;
     int op_type = 0;
-    for (i = p; i <= q;) {
+    for (i = p; i <= q;) { // find operation and its position
       switch (tokens[i].type) {
       case '(':
         i = find_right_brackets(i, q);
