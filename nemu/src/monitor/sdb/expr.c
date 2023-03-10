@@ -78,6 +78,7 @@ typedef struct token {
 static Token tokens[1024] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
+// 使用正则工具解析字符串，转化为tokens数组
 static bool make_token(char *e)
 {
   int position = 0;
@@ -159,6 +160,7 @@ static uint32_t eval_deref(uint32_t val){
   return *addr;
 }
 
+// compute expression
 static uint32_t eval(int p, int q)
 {
   if (p > q) {
