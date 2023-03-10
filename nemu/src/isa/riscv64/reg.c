@@ -22,7 +22,7 @@ word_t isa_reg_str2val(const char *s, bool *success)
   char *reg = 0;
   if (*(s + 1) > 48 && *(s + 1) < 57) {
     sscanf(s + 1, "%d", &reg_index);
-    if (reg_index > 32) {
+    if (reg_index >= 32) {
       *success = false;
       panic("reg index overflow\n");
     }
