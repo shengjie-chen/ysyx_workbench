@@ -140,7 +140,7 @@ int main(int argc, char **argv, char **env) {
   top->reset = 1;
   while (n-- > 0) {
     top->clock = 0;
-    top->eval();
+    // top->eval();
 #ifdef CONFIG_DUMPVCD
     tfp->dump(main_time);
 #endif
