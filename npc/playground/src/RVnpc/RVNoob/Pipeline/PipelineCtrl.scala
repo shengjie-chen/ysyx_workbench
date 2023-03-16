@@ -90,12 +90,6 @@ class PipelineCtrl extends Module with RVNoobConfig {
     io.pc_en       := 0.B
   }
 
-  def harard_do_1 = { // if,id,ex stop, ex flush
-    io.id_reg_ctrl := delay_state
-    io.ex_reg_ctrl := flush_state
-    io.pc_en       := 0.B
-  }
-
   when(io.miss) {
     io.id_reg_ctrl  := delay_state
     io.ex_reg_ctrl  := delay_state
