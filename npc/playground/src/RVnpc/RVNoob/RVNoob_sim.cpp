@@ -42,7 +42,9 @@ FILE *itrace_fp;
 #endif
 
 VRVNoob *top = new VRVNoob;
+#ifdef CONFIG_DUMPVCD
 VerilatedVcdC *tfp = new VerilatedVcdC;
+#endif
 
 /// @brief 仿真一个时钟周期
 void one_clock() {
@@ -52,7 +54,7 @@ void one_clock() {
     // top->io_inst = pmem_read(top->io_pc, 4);
   } else {
     printf("error happen!! time %ld read inst addr : %x\n", main_time, top->io_pc);
-    tfp->close();
+    // tfp->close();
     exit(1);
   }
   top->eval();
@@ -112,10 +114,10 @@ void one_clock() {
 int main(int argc, char **argv, char **env) {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-
+#ifdef CONFIG_DUMPVCD
   top->trace(tfp, 99);
   tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
-
+#endif
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   printf("%s\n", img_file);
@@ -139,12 +141,16 @@ int main(int argc, char **argv, char **env) {
   while (n-- > 0) {
     top->clock = 0;
     top->eval();
+#ifdef CONFIG_DUMPVCD
     tfp->dump(main_time);
+#endif
     main_time++;
 
     top->clock = 1;
     top->eval();
+#ifdef CONFIG_DUMPVCD
     tfp->dump(main_time);
+#endif
     main_time++;
   }
   top->reset = 0;
@@ -208,9 +214,11 @@ int main(int argc, char **argv, char **env) {
 // #endif
 
   free(vmem);
+#ifdef CONFIG_DUMPVCD
   tfp->close();
-  delete top;
   delete tfp;
+#endif
+  delete top;
   exit(0);
   return 0;
 }
