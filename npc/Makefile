@@ -86,6 +86,7 @@ ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=/home/jiexxpu/ysyx/ysyx-workbench/ne
 DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
 DISASM_LIBS = $(shell llvm-config --libs) -O3 -fsanitize=address -pie -ldl -lSDL2 -lpthread
+VERI_CFLAGS = -lpthread
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
@@ -120,7 +121,7 @@ sim_npc_vcd_without_regen_gtk:
 	# sed -i '1i\/* verilator lint_on UNOPTTHREADS */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查threads error
 	mkdir -p $(OBJ_DIR)
 	g++ -pthread -O3 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --threads 2 -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
+	verilator --threads 2 -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERI_CFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
 # sim_npc_vcd_without_regen_gdb:
