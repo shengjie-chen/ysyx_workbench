@@ -154,7 +154,7 @@ clean:
 	-rm -rf $(BUILD_DIR)
 
 clean_object:
-	rm $(BIN_BOARD)
+	rm -rf $(OBJ_DIR)
 
 .PHONY: test verilog help compile bsp reformat checkformat clean clean_object
 
