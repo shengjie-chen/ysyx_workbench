@@ -205,8 +205,8 @@ int main(int argc, char **argv, char **env) {
   }
   end = clock();
   int time = double(end - start) / CLOCKS_PER_SEC;
-  printf("simulation time: %d min %d s", time / 60, time % 60);
-  printf("average simulation speed: %d clock/s", main_time / 2 / time);
+  printf("simulation time: %d min %d s\n", time / 60, time % 60);
+  printf("average simulation speed: %d clock/s\n", main_time / 2 / time);
 #ifdef CONFIG_ITRACE
   fclose(itrace_fp);
 #endif
