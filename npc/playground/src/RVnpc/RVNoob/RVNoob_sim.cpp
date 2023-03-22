@@ -118,6 +118,9 @@ int main(int argc, char **argv, char **env) {
   top->trace(tfp, 99);
   tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
 #endif
+  clock_t start,end;
+  start = clock();
+
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
   img_file = *(argv + 1);
   printf("%s\n", img_file);
@@ -200,6 +203,10 @@ int main(int argc, char **argv, char **env) {
       one_clock();
     }
   }
+  end = clock();
+  int time = double(end - start) / CLOCKS_PER_SEC;
+  printf("simulation time: %d min %d s", time / 60, time % 60);
+  printf("average simulation speed: %d clock/s", main_time / 2 / time);
 #ifdef CONFIG_ITRACE
   fclose(itrace_fp);
 #endif
