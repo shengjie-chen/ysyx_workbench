@@ -85,7 +85,7 @@ SDB=sdb_n  # 跳过sdb则改为sdb_n, 否则是sdb_y
 ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so
 DISASM_CXXSRC = /home/jiexxpu/ysyx/ysyx-workbench/npc/playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
-DISASM_LIBS = $(shell llvm-config --libs) -O3 -fsanitize=address -pie -ldl -lSDL2 -lpthread
+DISASM_LIBS = $(shell llvm-config --libs) -O3 -fsanitize=address -pie -ldl -lSDL2
 VERI_CFLAGS = -lpthread
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
@@ -120,8 +120,8 @@ sim_npc_vcd_without_regen_gtk:
 	@echo "Write this Makefile by yourself."
 	# sed -i '1i\/* verilator lint_on UNOPTTHREADS */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查threads error
 	mkdir -p $(OBJ_DIR)
-	g++ -pthread -O3 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --threads 2 -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERI_CFLAGS))
+	g++ -O3 -MMD -Wall -Werror $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
+	verilator --threads 2 -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(VERI_CFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
 # sim_npc_vcd_without_regen_gdb:
