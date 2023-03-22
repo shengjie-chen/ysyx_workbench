@@ -119,7 +119,7 @@ sim_npc_vcd_without_regen_gtk:
 	@echo "Write this Makefile by yourself."
 	# sed -i '1i\/* verilator lint_on UNOPTTHREADS */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查threads error
 	mkdir -p $(OBJ_DIR)
-	g++ --pthread -O3 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
+	g++ -pthread -O3 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
 	verilator --threads 2 -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  # $(addprefix -CFLAGS ,$(CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
