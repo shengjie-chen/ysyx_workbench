@@ -12,7 +12,6 @@
 #include "time.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "verilated_threads.h"
 #include <sys/time.h>
 
 #include "RVNoob.h"
