@@ -27,7 +27,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   if (ev.keycode == AM_KEY_NONE) {
     return 0;
   }
-  char event_str[17]={0};
+  char event_str[17] = {0};
   strcat(event_str, ev.keydown ? "kd " : "ku ");
   strcat(event_str, keyname[ev.keycode]);
   strcat(event_str, "\n");
@@ -60,6 +60,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+#ifdef __ISA_NATIVE__ // navy-native use standard
   // printf("offset:%d, len:%d\n",offset,len);
   int screen_w = io_read(AM_GPU_CONFIG).width;
   size_t pxl_offset = offset / 4;
@@ -72,7 +73,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   int llx = (pxl_num + flx - 1) % screen_w; // last line x
   int lly = cross_line - 1 + fly;           // last line y
   if (cross_line != 0) {
-    if (cross_line == 1 ) {
+    if (cross_line == 1) {
       io_write(AM_GPU_FBDRAW, flx, fly, pxl, pxl_num, 1, true);
     } else {
       io_write(AM_GPU_FBDRAW, flx, fly, pxl, (screen_w - flx), 1, false);
@@ -83,6 +84,25 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
     }
   }
   return len;
+#else // am-native nemu npc  quick mode not standard
+  int screen_w = io_read(AM_GPU_CONFIG).width;
+  size_t pxl_offset = offset / 4;
+  int x = pxl_offset % screen_w; // first line x
+  int y = pxl_offset / screen_w; // first line y
+  int w = len >> 16;
+  int h = len & 0xFFFF;
+  // printf("nanos:\n");
+  // printf("w:%d\n",w);
+  // printf("h:%d\n",h);
+  // printf("x:%d\n",x);
+  // printf("y:%d\n",y);
+  // printf("offset:%ld\n", offset);
+  // printf("len:%ld\n", len);
+  // while(w*h==0);
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, w, h, true);
+  return w * h / 4;
+  // printf("%d: write offset %d\n", i, w * i);
+#endif
 }
 
 void init_device() {
