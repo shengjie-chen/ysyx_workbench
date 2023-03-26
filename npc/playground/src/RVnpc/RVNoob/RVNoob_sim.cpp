@@ -207,11 +207,12 @@ int main(int argc, char **argv, char **env) {
   int time = double(end - start) / CLOCKS_PER_SEC;
   vluint64_t inst_cnt = top->io_inst_cnt;
   vluint64_t clock_cnt = main_time / 2;
-  printf("sim clock num :%ld\n", clock_cnt);
-  printf("complete inst num :%ld\n", inst_cnt);
-  printf("npc ipc :%f\n", (double)inst_cnt / (double)clock_cnt);
-  printf("simulation time: %d min %d s\n", time / 60, time % 60);
-  printf("average simulation speed: %ld clock/s\n", clock_cnt / time);
+  printf("************ SIM SUMMARY ************\n");
+  printf("sim clock num            : %ld\n", clock_cnt);
+  printf("complete inst num        : %ld\n", inst_cnt);
+  printf("npc ipc                  : %f\n", (double)inst_cnt / (double)clock_cnt);
+  printf("simulation time          : %d min %d s\n", time / 60, time % 60);
+  printf("average simulation speed : %ld clock/s\n", clock_cnt / time);
 #ifdef CONFIG_ITRACE
   fclose(itrace_fp);
 #endif
