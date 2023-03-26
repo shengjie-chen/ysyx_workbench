@@ -25,7 +25,7 @@
 extern "C" void init_disasm(const char *triple);
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-vluint64_t main_time = 0; // 当前仿真时间
+vluint64_t main_time = 0;       // 当前仿真时间
 const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
 /// @brief NPC当前运行状态等
 NPCState npc_state;
@@ -69,8 +69,8 @@ void one_clock() {
 #endif
 
 #ifdef CONFIG_ITRACE
-  if (main_time > CONFIG_DUMPSTART){
-    if(wb_valid == 1){
+  if (main_time > CONFIG_DUMPSTART) {
+    if (wb_valid == 1) {
       memset(logbuf, 0, 128);
       char *p = logbuf;
       p += snprintf(p, sizeof(logbuf), "0x%016lx:", wb_pc);
@@ -118,7 +118,7 @@ int main(int argc, char **argv, char **env) {
   top->trace(tfp, 99);
   tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
 #endif
-  clock_t start,end;
+  clock_t start, end;
   start = clock();
 
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
@@ -205,6 +205,9 @@ int main(int argc, char **argv, char **env) {
   }
   end = clock();
   int time = double(end - start) / CLOCKS_PER_SEC;
+  int inst_cnt = top->io_inst_cnt;
+  printf("complete inst num :%d\n", inst_cnt);
+  printf("npc ipc :%f\n", inst_cnt / (main_time / 2));
   printf("simulation time: %d min %d s\n", time / 60, time % 60);
   printf("average simulation speed: %d clock/s\n", main_time / 2 / time);
 #ifdef CONFIG_ITRACE
@@ -216,9 +219,9 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_FTRACE
   fclose(ftrace_fp);
 #endif
-// #ifdef CONFIG_DUMPVCD
-//   sleep(1);
-// #endif
+  // #ifdef CONFIG_DUMPVCD
+  //   sleep(1);
+  // #endif
 
   free(vmem);
 #ifdef CONFIG_DUMPVCD

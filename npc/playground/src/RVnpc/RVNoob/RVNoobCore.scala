@@ -8,11 +8,12 @@ import chisel3.util._
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc      = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
-    val ebreak  = if (!tapeout) Some(Output(Bool())) else None
-    val diff_en = if (!tapeout) Some(Output(Bool())) else None
-    val diff_pc = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
-    val axi_pc  = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val pc       = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val ebreak   = if (!tapeout) Some(Output(Bool())) else None
+    val diff_en  = if (!tapeout) Some(Output(Bool())) else None
+    val diff_pc  = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val axi_pc   = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val inst_cnt = if (!tapeout) Some(Output(UInt(xlen.W))) else None
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
@@ -293,6 +294,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   csr.io.wb_valid    <> wb_reg.out.valid
 
   if (!tapeout) {
+    // ********************************** ipc **********************************
+    val inst_cnt = RegInit(0.U(xlen.W))
+    inst_cnt        := inst_cnt + wb_reg.out.inst_valid.asUInt()
+    io.inst_cnt.get := inst_cnt
+
     // ********************************** Difftest **********************************
     val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
     val cache_miss_first     = cache_miss && !RegNext(cache_miss)
