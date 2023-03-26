@@ -8,10 +8,11 @@ import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad, S011HD1P_X32Y2D128_BW
 
 class RVNoob extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc      = Output(UInt(addr_w.W))
-    val ebreak  = Output(Bool())
-    val diff_en = Output(Bool())
-    val diff_pc = Output(UInt(addr_w.W))
+    val pc       = Output(UInt(addr_w.W))
+    val ebreak   = Output(Bool())
+    val diff_en  = Output(Bool())
+    val diff_pc  = Output(UInt(addr_w.W))
+    val inst_cnt = Output(UInt(xlen.W))
   })
   // >>>>>>>>>>>>>> RVNoobCore <<<<<<<<<<<<<<
   val core = RVNoobCore()
@@ -28,10 +29,11 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   val axi_pmem = Module(new AxiSlaveMem)
 
-  io.pc      <> core.io.pc.get
-  io.ebreak  <> core.io.ebreak.get
-  io.diff_en <> core.io.diff_en.get
-  io.diff_pc <> core.io.diff_pc.get
+  io.pc       <> core.io.pc.get
+  io.ebreak   <> core.io.ebreak.get
+  io.diff_en  <> core.io.diff_en.get
+  io.diff_pc  <> core.io.diff_pc.get
+  io.inst_cnt <> core.io.inst_cnt.get
 
   // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
   sram0.io.CLK  <> clock
@@ -140,4 +142,3 @@ object RVNoobGen extends App {
   (new chisel3.stage.ChiselStage)
     .execute(args, Seq(chisel3.stage.ChiselGeneratorAnnotation(() => new RVNoob())))
 }
-
