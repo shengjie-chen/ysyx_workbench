@@ -81,7 +81,7 @@ LD        = $(CROSS_COMPILE)ld
 ### Compilation flags
 INC_PATH += $(WORK_DIR)/include $(foreach l,$(LIBS_INC),$(NAVY_HOME)/libs/$(l)/include/)
 INCFLAGS += $(addprefix -I, $(INC_PATH))
-CFLAGS   += -O2 -MMD $(INCFLAGS) -static -D__NAVY__ \
+CFLAGS   += -O3 -MMD $(INCFLAGS) -static -D__NAVY__ \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector  
 # CFLAGS   += -g -MMD $(INCFLAGS) -static -D__NAVY__ \
@@ -170,9 +170,11 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 ### nslider menu nterm bird pal
-APPS = nslider menu nterm bird pal
+# APPS = nslider menu nterm bird pal
+APPS = pal
 ### dummy hello file-test timer-test event-test bmp-test fixedptc-test
-TESTS = dummy hello file-test timer-test event-test bmp-test fixedptc-test 
+# TESTS = dummy hello file-test timer-test event-test bmp-test fixedptc-test 
+TESTS = dummy hello
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
