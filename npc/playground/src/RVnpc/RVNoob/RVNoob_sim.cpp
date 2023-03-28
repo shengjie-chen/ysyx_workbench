@@ -26,7 +26,7 @@ extern "C" void init_disasm(const char *triple);
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 vluint64_t main_time = 0;       // 当前仿真时间
-const vluint64_t sim_time = 10000000; // 最高仿真时间 可选：100
+const vluint64_t sim_time = 50000000; // 最高仿真时间 可选：100
 /// @brief NPC当前运行状态等
 NPCState npc_state;
 /// @brief NPC寄存器状态
