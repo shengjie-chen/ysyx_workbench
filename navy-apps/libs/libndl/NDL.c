@@ -83,17 +83,12 @@ void NDL_OpenCanvas(int *w, int *h) {
 static int fb_fd;
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-
   // printf("w:%d\n", w);
-  // printf("width:%d\n", width);
-
-#ifdef __ISA_NATIVE__ // navy-native use standard
   if (w == width) {
     assert(x == 0);
     assert((h + y) <= height);
     lseek(fb_fd, (y * width) * 4, SEEK_SET);
     write(fb_fd, pixels, w * h * 4);
-    // printf("draw complete line!\n");
   } else {
     for (int i = 0; i < h; i++) {
       lseek(fb_fd, (x + y * width + i * width) * 4, SEEK_SET);
@@ -101,22 +96,6 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
       // printf("%d: write offset %d\n", i, w * i);
     }
   }
-#else // am-native nemu npc  quick mode not standard
-  // printf("navy:\n");
-  // printf("w:%d\n", w);
-  // printf("h:%d\n", h);
-  // printf("x:%d\n", x);
-  // printf("y:%d\n", y);
-  unsigned long offset = (x + y * width) * 4;
-  // printf("offset:%ld\n", offset);
-  lseek(fb_fd, offset, SEEK_SET);
-  unsigned long len = ((unsigned long)w << 16 | (unsigned long)h);
-  // printf("len:%ld\n", len);
-  write(fb_fd, pixels, len);
-
-  // printf("use trick to draw fb\n");
-  // printf("%d: write offset %d\n", i, w * i);
-#endif
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
