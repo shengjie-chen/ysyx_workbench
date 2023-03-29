@@ -25,7 +25,7 @@ static int iringbuf_ptr = 0;
 void device_update();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-  printf("run diff s->pc:%lx\n",_this->pc);
+  // printf("run diff s->pc:%lx\n",_this->pc); // debug skip
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
@@ -109,10 +109,10 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc) {
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
-  printf("****\n");
-  printf("run s->pc:%lx\n",s->pc);
+  // printf("****\n");// debug skip
+  // printf("run s->pc:%lx\n",s->pc);// debug skip
   isa_exec_once(s);
-  printf("run finish s->pc:%lx\n",s->pc);
+  // printf("run finish s->pc:%lx\n",s->pc);// debug skip
   cpu.pc = s->dnpc;
 #ifdef CONFIG_FTRACE
   ftrace_call_ret(s, pc);
