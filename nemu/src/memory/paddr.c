@@ -106,7 +106,7 @@ word_t paddr_read(paddr_t addr, int len) {
   //   }
   // #endif
 
-  IFDEF(CONFIG_DEVICE, difftest_skip_ref(); return mmio_read(addr, len));
+  IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) return mmio_read(addr, len));
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, " -> addr is out of bound!\n");
 #endif
@@ -120,7 +120,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     pmem_write(addr, len, data);
     return;
   }
-  IFDEF(CONFIG_DEVICE, difftest_skip_ref(); mmio_write(addr, len, data); return);
+  IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) mmio_write(addr, len, data); return);
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, " -> addr is out of bound!\n");
 #endif
