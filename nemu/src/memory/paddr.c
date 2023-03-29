@@ -97,7 +97,7 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
-    printf("in mem\n");
+    // printf("in mem\n");// debug skip
     return pmem_read(addr, len);
   }
   // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
