@@ -153,10 +153,11 @@ static void execute(uint64_t n) {
   for (; n > 0; n--) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst++;
-    IFDEF(CONFIG_DEVICE, device_update());
+    printf("s->pc:%lx\n",s.pc);
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
+    IFDEF(CONFIG_DEVICE, device_update());
   }
 }
 
