@@ -26,6 +26,7 @@ extern FILE *mtrace_fp;
 
 /* bus interface */
 word_t mmio_read(paddr_t addr, int len) {
+  printf("in mmio\n");
   word_t mem_value = map_read(addr, len, fetch_mmio_map(addr));
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, "read  mmio ## addr: %x", addr);
