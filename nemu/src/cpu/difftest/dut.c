@@ -37,7 +37,7 @@ void difftest_skip_ref() {
 //   Let REF run `nr_ref` instructions first.
 //   We expect that DUT will catch up with REF within `nr_dut` instructions.
 void difftest_skip_dut(int nr_ref, int nr_dut) {
-  printf("difftest_skip_dut\n");
+  // printf("difftest_skip_dut\n");
   skip_dut_nr_inst += nr_dut;
 
   while (nr_ref -- > 0) {
