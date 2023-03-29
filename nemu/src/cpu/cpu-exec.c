@@ -106,9 +106,9 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc) {
 #endif
 
 static void exec_once(Decode *s, vaddr_t pc) {
-  printf("****\n");
   s->pc = pc;
   s->snpc = pc;
+  printf("****\n");
   printf("s->pc:%lx\n",s->pc);
   isa_exec_once(s);
   cpu.pc = s->dnpc;
