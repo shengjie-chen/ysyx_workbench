@@ -25,6 +25,7 @@ static int iringbuf_ptr = 0;
 void device_update();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  printf("run diff s->pc:%lx\n",_this->pc);
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
@@ -109,8 +110,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   printf("****\n");
-  printf("s->pc:%lx\n",s->pc);
+  printf("run s->pc:%lx\n",s->pc);
   isa_exec_once(s);
+  printf("run finish s->pc:%lx\n",s->pc);
   cpu.pc = s->dnpc;
 #ifdef CONFIG_FTRACE
   ftrace_call_ret(s, pc);
@@ -153,7 +155,6 @@ static void execute(uint64_t n) {
   for (; n > 0; n--) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst++;
-    printf("s->pc:%lx\n",s.pc);
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
