@@ -9,7 +9,7 @@
 !scripts/*.mk
 build/
 repo/
-!libs/libc/
+!libs/libc/**
 !apps/pal/repo
 !apps/bird/repo
 !/fsimg/share/files/num
