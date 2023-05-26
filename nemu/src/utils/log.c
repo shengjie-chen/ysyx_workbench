@@ -5,23 +5,23 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 #ifdef CONFIG_MTRACE
-char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-log.txt";
+char *mtrace_file = "../../build/nemu-mtrace-log.txt";
 FILE *mtrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_DTRACE
-char *dtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-dtrace-log.txt";
+char *dtrace_file = "../../build/nemu-dtrace-log.txt";
 FILE *dtrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_ETRACE
-char *etrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-etrace-log.txt";
+char *etrace_file = "../../build/nemu-etrace-log.txt";
 FILE *etrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
-char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-ftrace-log.txt";
+char *ftrace_file = "../../build/nemu-ftrace-log.txt";
 int ftrace_depth = 0;
 int ftrace_func_num;
 #define MAX_FUNC_NUM 100

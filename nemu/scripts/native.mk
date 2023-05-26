@@ -45,6 +45,14 @@ count:
 	@echo Total H file valid lines: $(CURR_H_LINE)
 	@echo New H file valid lines: $(NEW_H_LINE)
 
+clean:
+	-rm -rf $(BUILD_DIR)
+
+clean-temp:
+	rm $(NEMU_HOME)/*.s
+	rm $(NEMU_HOME)/*.i
+	rm $(NEMU_HOME)/*.ii
+
 clean-tools = $(dir $(shell find ./tools -maxdepth 2 -mindepth 2 -name "Makefile"))
 $(clean-tools):
 	-@$(MAKE) -s -C $@ clean

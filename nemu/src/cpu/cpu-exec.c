@@ -42,7 +42,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     char *ptr = iringbuf[iringbuf_ptr];
     memcpy(ptr, " --> ", 5);
 
-    char *iringbuf_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-iringbuf-log.txt";
+    char *iringbuf_file = "../../build/nemu-iringbuf-log.txt";
     FILE *iringbuf_fp = fopen(iringbuf_file, "w");
     Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
     int i;

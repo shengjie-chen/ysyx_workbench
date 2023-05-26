@@ -57,11 +57,4 @@ $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
 	@$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
 
-clean:
-	-rm -rf $(BUILD_DIR)
-
-clean-temp:
-	rm $(NEMU_HOME)/*.s
-	rm $(NEMU_HOME)/*.i
-	rm $(NEMU_HOME)/*.ii
 
