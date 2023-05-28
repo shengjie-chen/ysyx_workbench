@@ -5,7 +5,7 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 #ifdef CONFIG_MTRACE
-char *mtrace_file = "../../build/nemu-mtrace-log.txt";
+char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-log.txt";
 FILE *mtrace_fp = NULL;
 #endif
 
@@ -183,7 +183,7 @@ void init_log(const char *log_file) {
   Log("Mem Trace Log is written to %s", mtrace_file);
   realpath_bool = realpath(mtrace_file, resolved_path);
   printf("1\n");
-  if (realpath_bool == NULL) {
+  if (realpath_bool != NULL) {
   printf("1\n");
 
     Log("Mem Trace Log is written to %s", resolved_path);
