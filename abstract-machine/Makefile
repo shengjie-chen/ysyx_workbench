@@ -62,7 +62,7 @@ LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
-$(info "  depends on LIBS:$(LIBS)")
+$(info   ---depends on LIBS:$(LIBS))
 
 ## 3. General Compilation Flags
 
