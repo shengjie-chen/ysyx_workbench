@@ -17,7 +17,7 @@ endif
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
 
 ### Print build info message
-$(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)] depends on LIBS:$(LIBS))
+$(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)])
 
 ### Check: environment variable `$AM_HOME` looks sane
 ifeq ($(wildcard $(AM_HOME)/am/include/am.h),)
@@ -62,6 +62,7 @@ LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
+$(info "  depends on LIBS:$(LIBS)")
 
 ## 3. General Compilation Flags
 
