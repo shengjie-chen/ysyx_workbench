@@ -179,6 +179,7 @@ void init_log(const char *log_file) {
   char *realpath_bool;
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
+  printf("1");
   realpath_bool = realpath(mtrace_file, resolved_path);
   if (realpath_bool) {
     Log("Mem Trace Log is written to %s", resolved_path);
