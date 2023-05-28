@@ -175,7 +175,7 @@ void init_log(const char *log_file) {
     log_fp = fp;
   }
   Log("Inst Trace Log is written to %s", log_file ? log_file : "stdout");
-  char resolved_path[512];
+  char resolved_path[2048];
   char *realpath_bool;
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
