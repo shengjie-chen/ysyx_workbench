@@ -141,7 +141,7 @@ $(ARCHIVE): print_objs $(OBJS)
 ## 6. Miscellaneous
 
 print_objs:
-	$(info # OBJS: $(notdir $(addsuffix .o, $(basename $(SRCS)))))
+	$(info ## OBJS: $(notdir $(addsuffix .o, $(basename $(SRCS)))))
 
 ### Build order control
 image: image-dep
