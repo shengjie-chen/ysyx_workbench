@@ -5,24 +5,27 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 #ifdef CONFIG_MTRACE
-#define MTRACE_FILE NEMU_HOME "/build/nemu-mtrace-log.txt"
-char *mtrace_file = MTRACE_FILE;
+#define MTRACE_PATH NEMU_HOME "/build/nemu-mtrace-log.txt"
+char *mtrace_file = MTRACE_PATH;
 FILE *mtrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_DTRACE
-char *dtrace_file = "../../build/nemu-dtrace-log.txt";
+#define DTRACE_PATH NEMU_HOME "/build/nemu-dtrace-log.txt"
+char *dtrace_file = DTRACE_PATH;
 FILE *dtrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_ETRACE
-char *etrace_file = "../../build/nemu-etrace-log.txt";
+#define ETRACE_PATH NEMU_HOME "/build/nemu-etrace-log.txt"
+char *etrace_file = ETRACE_PATH;
 FILE *etrace_fp = NULL;
 #endif
 
 #ifdef CONFIG_FTRACE
 FILE *ftrace_fp = NULL;
-char *ftrace_file = "../../build/nemu-ftrace-log.txt";
+#define FTRACE_PATH NEMU_HOME "/build/nemu-ftrace-log.txt"
+char *ftrace_file = FTRACE_PATH;
 int ftrace_depth = 0;
 int ftrace_func_num;
 #define MAX_FUNC_NUM 100
@@ -38,12 +41,7 @@ void init_ftrace(const char *elf_file) {
   // }
   Assert(fp, "Can not open '%s'", elf_file);
   ftrace_fp = fopen(ftrace_file, "w");
-  char resolved_path[256];
-  char *realpath_bool;
-  realpath_bool = realpath(ftrace_file, resolved_path);
-  if (realpath_bool) {
-    Log("Function Trace Log is written to %s", resolved_path);
-  }
+  Log("Function Trace Log is written to %s", ftrace_file);
 
   // 解析head
   Elf64_Ehdr elf_head;
@@ -176,33 +174,17 @@ void init_log(const char *log_file) {
     log_fp = fp;
   }
   Log("Inst Trace Log is written to %s", log_file ? log_file : "stdout");
-  char resolved_path[204800];
-  char *realpath_bool;
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
-  printf("1\n");
   Log("Mem Trace Log is written to %s", mtrace_file);
-  realpath_bool = realpath(mtrace_file, resolved_path);
-  printf("1\n");
-  if (realpath_bool != NULL) {
-  printf("1\n");
-
-    Log("Mem Trace Log is written to %s", resolved_path);
-  }
 #endif
 #ifdef CONFIG_DTRACE
   dtrace_fp = fopen(dtrace_file, "w");
-  realpath_bool = realpath(dtrace_file, resolved_path);
-  if (realpath_bool) {
-    Log("Device Trace Log is written to %s", resolved_path);
-  }
+  Log("Device Trace Log is written to %s", dtrace_file);
 #endif
 #ifdef CONFIG_ETRACE
   etrace_fp = fopen(etrace_file, "w");
-  realpath_bool = realpath(etrace_file, resolved_path);
-  if (realpath_bool) {
-    Log("Exception Trace Log is written to %s", resolved_path);
-  }
+  Log("Exception Trace Log is written to %s", etrace_file);
 #endif
 }
 
