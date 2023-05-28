@@ -39,6 +39,8 @@ void init_ftrace(const char *elf_file)
   Assert(fp, "Can not open '%s'", elf_file);
   ftrace_fp = fopen(ftrace_file, "w");
 
+  Log("Function Trace Log is written to %s", ftrace_file);
+
   // 解析head
   Elf64_Ehdr elf_head;
   int a;
@@ -171,15 +173,18 @@ void init_log(const char *log_file)
     Assert(fp, "Can not open '%s'", log_file);
     log_fp = fp;
   }
-  Log("Log is written to %s", log_file ? log_file : "stdout");
+  Log("Inst Trace Log is written to %s", log_file ? log_file : "stdout");
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
+  Log("Mem Trace Log is written to %s", mtrace_file);
 #endif
 #ifdef CONFIG_DTRACE
   dtrace_fp = fopen(dtrace_file, "w");
+  Log("Device Trace Log is written to %s", dtrace_file);
 #endif
 #ifdef CONFIG_ETRACE
   etrace_fp = fopen(etrace_file, "w");
+  Log("Exception Trace Log is written to %s", etrace_file);
 #endif
 }
 

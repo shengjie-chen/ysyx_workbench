@@ -43,6 +43,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     memcpy(ptr, " --> ", 5);
 
     char *iringbuf_file = "../../build/nemu-iringbuf-log.txt";
+    Log("iringbuf Log is written to %s", iringbuf_file);
     FILE *iringbuf_fp = fopen(iringbuf_file, "w");
     Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
     int i;

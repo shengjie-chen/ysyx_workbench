@@ -128,7 +128,7 @@ $(LIBS): %:
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
 $(IMAGE).elf: print_objs $(OBJS) am $(LIBS)
-	@echo IMAGE: $(notdir $(IMAGE).elf) "<-" $(notdir $(LINKAGE))
+	@echo ## IMAGE: $(notdir $(IMAGE).elf) "<-" $(notdir $(LINKAGE))
 	@echo + LD "->" $(IMAGE_REL).elf
 	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 
