@@ -182,6 +182,7 @@ void init_log(const char *log_file) {
   printf("1\n");
   Log("Mem Trace Log is written to %s", mtrace_file);
   realpath_bool = realpath(mtrace_file, resolved_path);
+  printf("1\n");
   if (realpath_bool) {
     Log("Mem Trace Log is written to %s", resolved_path);
   }
