@@ -5,7 +5,7 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 #ifdef CONFIG_MTRACE
-char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/nemu/build/nemu-mtrace-log.txt";
+char *mtrace_file = "NEMU_HOME/build/nemu-mtrace-log.txt";
 FILE *mtrace_fp = NULL;
 #endif
 
