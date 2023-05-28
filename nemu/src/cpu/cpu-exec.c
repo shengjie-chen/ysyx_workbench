@@ -43,7 +43,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     memcpy(ptr, " --> ", 5);
 
     char *iringbuf_file = "../../build/nemu-iringbuf-log.txt";
-    Log("iringbuf Log is written to %s", iringbuf_file);
+    char resolved_path[256];
+    char *realpath_bool;
+    realpath_bool = realpath(iringbuf_file, resolved_path);
+    if (realpath_bool) {
+      Log("iringbuf Log is written to %s", resolved_path);
+    }
     FILE *iringbuf_fp = fopen(iringbuf_file, "w");
     Assert(iringbuf_fp, "Can not open '%s'", iringbuf_file);
     int i;
@@ -52,7 +57,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
       // printf("%s\n", iringbuf[i]);
     }
   } else {
-    if (iringbuf_ptr == (IRBUF_DEPTH-1)) {
+    if (iringbuf_ptr == (IRBUF_DEPTH - 1)) {
       iringbuf_ptr = 0;
     } else {
       iringbuf_ptr++;
@@ -136,8 +141,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
   p += space_len;
 
   extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-              MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+  disassemble(p, s->logbuf + sizeof(s->logbuf) - p, MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val,
+              ilen);
 #endif
 
 #ifdef CONFIG_IRINGBUF
@@ -206,7 +211,9 @@ void cpu_exec(uint64_t n) {
   case NEMU_END:
   case NEMU_ABORT:
     Log("nemu: %s at pc = " FMT_WORD,
-        (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
+        (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED)
+                                        : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN)
+                                                                    : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
         nemu_state.halt_pc);
     // fall through
   case NEMU_QUIT:

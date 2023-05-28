@@ -29,8 +29,7 @@ char symname[MAX_FUNC_NUM][20];
 vaddr_t symaddr[MAX_FUNC_NUM];
 vaddr_t symaddr_end[MAX_FUNC_NUM];
 
-void init_ftrace(const char *elf_file)
-{
+void init_ftrace(const char *elf_file) {
   FILE *fp = fopen(elf_file, "r");
   // if (NULL == fp) {
   //   printf("fail to open the elf file");
@@ -38,24 +37,27 @@ void init_ftrace(const char *elf_file)
   // }
   Assert(fp, "Can not open '%s'", elf_file);
   ftrace_fp = fopen(ftrace_file, "w");
-
-  Log("Function Trace Log is written to %s", ftrace_file);
+  char resolved_path[256];
+  char *realpath_bool;
+  realpath_bool = realpath(ftrace_file, resolved_path);
+  if (realpath_bool) {
+    Log("Function Trace Log is written to %s", resolved_path);
+  }
 
   // 解析head
   Elf64_Ehdr elf_head;
   int a;
 
   // 读取 head 到elf_head
-  a = fread(&elf_head, sizeof(Elf64_Ehdr), 1, fp); // fread参数1：读取内容存储地址，参数2：读取内容大小，参数3：读取次数，参数4：文件读取引擎
+  a = fread(&elf_head, sizeof(Elf64_Ehdr), 1,
+            fp); // fread参数1：读取内容存储地址，参数2：读取内容大小，参数3：读取次数，参数4：文件读取引擎
   if (0 == a) {
     printf("fail to read head\n");
     exit(0);
   }
 
   // 判断elf文件类型
-  if (elf_head.e_ident[0] != 0x7F ||
-      elf_head.e_ident[1] != 'E' ||
-      elf_head.e_ident[2] != 'L' ||
+  if (elf_head.e_ident[0] != 0x7F || elf_head.e_ident[1] != 'E' || elf_head.e_ident[2] != 'L' ||
       elf_head.e_ident[3] != 'F') {
     printf("Not a ELF file\n");
     exit(0);
@@ -104,7 +106,7 @@ void init_ftrace(const char *elf_file)
     temp = shstrtab;
     temp = temp + shdr[i].sh_name;
     if (strcmp(temp, ".strtab") != 0)
-      continue; //该section名称
+      continue; // 该section名称
     strtab_data = (uint8_t *)malloc(sizeof(uint8_t) * shdr[i].sh_size);
     // 依据此段在文件中的偏移读取出
     fseek(fp, shdr[i].sh_offset, SEEK_SET);
@@ -121,7 +123,7 @@ void init_ftrace(const char *elf_file)
     temp = shstrtab;
     temp = temp + shdr[i].sh_name;
     if (strcmp(temp, ".symtab") != 0)
-      continue; //该section名称
+      continue; // 该section名称
     else
       break;
   }
@@ -165,8 +167,7 @@ void init_ftrace(const char *elf_file)
 }
 #endif
 
-void init_log(const char *log_file)
-{
+void init_log(const char *log_file) {
   log_fp = stdout;
   if (log_file != NULL) {
     FILE *fp = fopen(log_file, "w");
@@ -174,21 +175,31 @@ void init_log(const char *log_file)
     log_fp = fp;
   }
   Log("Inst Trace Log is written to %s", log_file ? log_file : "stdout");
+  char resolved_path[256];
+  char *realpath_bool;
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
-  Log("Mem Trace Log is written to %s", mtrace_file);
+  realpath_bool = realpath(mtrace_file, resolved_path);
+  if (realpath_bool) {
+    Log("Mem Trace Log is written to %s", resolved_path);
+  }
 #endif
 #ifdef CONFIG_DTRACE
   dtrace_fp = fopen(dtrace_file, "w");
-  Log("Device Trace Log is written to %s", dtrace_file);
+  realpath_bool = realpath(dtrace_file, resolved_path);
+  if (realpath_bool) {
+    Log("Device Trace Log is written to %s", resolved_path);
+  }
 #endif
 #ifdef CONFIG_ETRACE
   etrace_fp = fopen(etrace_file, "w");
-  Log("Exception Trace Log is written to %s", etrace_file);
+  realpath_bool = realpath(etrace_file, resolved_path);
+  if (realpath_bool) {
+    Log("Exception Trace Log is written to %s", resolved_path);
+  }
 #endif
 }
 
-bool log_enable()
-{
+bool log_enable() {
   return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= CONFIG_TRACE_START) && (g_nr_guest_inst <= CONFIG_TRACE_END), false);
 }
