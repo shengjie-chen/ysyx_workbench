@@ -62,7 +62,7 @@ LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
-$(info   ---depends on LIBS:$(LIBS))
+$(info ---depends on LIBS:$(LIBS))
 
 ## 3. General Compilation Flags
 
@@ -142,7 +142,7 @@ $(ARCHIVE): print_objs $(OBJS)
 ## 6. Miscellaneous
 
 print_objs:
-	$(info ## OBJS: $(notdir $(addsuffix .o, $(basename $(SRCS)))))
+	$(info ---OBJS: $(notdir $(addsuffix .o, $(basename $(SRCS)))))
 
 ### Build order control
 image: image-dep
