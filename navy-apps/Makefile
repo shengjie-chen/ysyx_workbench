@@ -177,7 +177,10 @@ APPS = pal
 TESTS = dummy hello
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
-	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
+	-for t in $^; do \
+		echo + MAKE "->" $$t; \
+		$(MAKE) -s -C $(NAVY_HOME)/$$t install; \
+	done
 
 RAMDISK = build/ramdisk.img
 RAMDISK_H = build/ramdisk.h
