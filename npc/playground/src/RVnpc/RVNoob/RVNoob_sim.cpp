@@ -25,7 +25,7 @@
 extern "C" void init_disasm(const char *triple);
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-#define _NPC_HOME_ (NPC_HOME)
+#define _NPC_HOME_ "\"" NPC_HOME "\""
 
 vluint64_t main_time = 0;       // 当前仿真时间
 const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
