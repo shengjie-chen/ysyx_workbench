@@ -133,11 +133,11 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_ITRACE
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen(itrace_file, "w+");
-  printf("[ log ]Inst Trace Log is written to %s\n", itrace_file);
+  printf("[ log ] Inst Trace Log is written to %s\n", itrace_file);
 #endif
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
-  printf("[ log ]Mem Trace Log is written to %s\n", mtrace_file);
+  printf("[ log ] Mem Trace Log is written to %s\n", mtrace_file);
 #endif
 
   init_i8042();
@@ -195,7 +195,7 @@ int main(int argc, char **argv, char **env) {
   if (elf_en) {
     elf_file = *(argv + 3) + 4;
     printf("%s\n", elf_file);
-    printf("[ log ]Function Trace Log is written to %s\n", ftrace_file);
+    printf("[ log ] Function Trace Log is written to %s\n", ftrace_file);
     init_ftrace(elf_file);
   }
 #endif
