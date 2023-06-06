@@ -32,7 +32,7 @@ NPCState npc_state;
 /// @brief NPC寄存器状态
 CPU_state cpu_state;
 
-#define NPC_HOME "/home/jiexxpu/ysyx/ysyx-workbench/npc"
+#define NPC_HOME /home/jiexxpu/ysyx/ysyx-workbench/npc
 
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
