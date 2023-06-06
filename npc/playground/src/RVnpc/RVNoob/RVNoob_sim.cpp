@@ -41,7 +41,7 @@ extern FILE *mtrace_fp;
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
-#define ITRACE_PATH "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt"
+#define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
 char *itrace_file = ITRACE_PATH;
 #endif
 
@@ -133,11 +133,11 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_ITRACE
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen(itrace_file, "w+");
-  printf("Inst Trace Log is written to %s", itrace_file);
+  printf("[ log ]Inst Trace Log is written to %s\n", itrace_file);
 #endif
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
-  printf("Mem Trace Log is written to %s", mtrace_file);
+  printf("[ log ]Mem Trace Log is written to %s\n", mtrace_file);
 #endif
 
   init_i8042();
@@ -195,7 +195,7 @@ int main(int argc, char **argv, char **env) {
   if (elf_en) {
     elf_file = *(argv + 3) + 4;
     printf("%s\n", elf_file);
-    printf("Function Trace Log is written to %s", ftrace_file);
+    printf("[ log ]Function Trace Log is written to %s\n", ftrace_file);
     init_ftrace(elf_file);
   }
 #endif
