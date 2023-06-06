@@ -39,6 +39,8 @@ extern FILE *mtrace_fp;
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
+#define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
+char *itrace_file = ITRACE_PATH;
 #endif
 
 VRVNoob *top = new VRVNoob;
@@ -127,10 +129,9 @@ int main(int argc, char **argv, char **env) {
   long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
-  #define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
   init_disasm("riscv64-pc-linux-gnu");
-  itrace_fp = fopen(ITRACE_PATH, "w+");
-  printf("Inst Trace Log is written to %s", ITRACE_PATH);
+  itrace_fp = fopen(itrace_file, "w+");
+  printf("Inst Trace Log is written to %s", itrace_file);
 #endif
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
