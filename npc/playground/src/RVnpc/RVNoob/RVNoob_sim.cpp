@@ -32,7 +32,7 @@ NPCState npc_state;
 /// @brief NPC寄存器状态
 CPU_state cpu_state;
 
-#define NPC_HOME '/home/jiexxpu/ysyx/ysyx-workbench/npc'
+#define NPC_HOME "/home/jiexxpu/ysyx/ysyx-workbench/npc"
 
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
@@ -41,7 +41,7 @@ extern FILE *mtrace_fp;
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 FILE *itrace_fp;
-#define ITRACE_PATH NPC_HOME ## "/build/RVnpc/RVNoob/npc-itrace-log.txt"
+#define ITRACE_PATH "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt"
 char *itrace_file = ITRACE_PATH;
 #endif
 
