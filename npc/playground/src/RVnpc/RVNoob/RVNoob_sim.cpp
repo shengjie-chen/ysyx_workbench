@@ -25,8 +25,6 @@
 extern "C" void init_disasm(const char *triple);
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-#define _NPC_HOME_ "\"" NPC_HOME "\""
-
 vluint64_t main_time = 0;       // 当前仿真时间
 const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
 /// @brief NPC当前运行状态等
@@ -39,7 +37,7 @@ extern FILE *mtrace_fp;
 #endif
 
 #ifdef CONFIG_ITRACE
-#define ITRACE_PATH _NPC_HOME_ "/build/RVnpc/RVNoob/npc-itrace-log.txt"
+#define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
 char logbuf[128];
 FILE *itrace_fp;
 char *itrace_file = ITRACE_PATH;
