@@ -11,9 +11,9 @@
 
 // ---------------------------->switch
 
- #define CONFIG_ITRACE
-#define CONFIG_FTRACE
-#define CONFIG_MTRACE
+// #define CONFIG_ITRACE
+// #define CONFIG_FTRACE
+// #define CONFIG_MTRACE
 
 #ifdef CONFIG_ITRACE  
 #define CONFIG_DUMPSTART 0 
