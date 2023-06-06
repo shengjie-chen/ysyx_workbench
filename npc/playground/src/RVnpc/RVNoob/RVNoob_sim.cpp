@@ -127,7 +127,7 @@ int main(int argc, char **argv, char **env) {
   long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
-  #define ITRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-itrace-log.txt"
+  #define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
   init_disasm("riscv64-pc-linux-gnu");
   itrace_fp = fopen(ITRACE_PATH, "w+");
   printf("Inst Trace Log is written to %s", ITRACE_PATH);

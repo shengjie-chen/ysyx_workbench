@@ -2,14 +2,14 @@
 #include <elf.h>
 
 #ifdef CONFIG_MTRACE
-#define MTRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-mtrace-log.txt"
+#define MTRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-mtrace-log.txt"
 char *mtrace_file = MTRACE_PATH;
 FILE *mtrace_fp = NULL;
 #endif
 
 
 #ifdef CONFIG_FTRACE
-#define FTRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-ftrace-log.txt"
+#define FTRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-ftrace-log.txt"
 char *elf_file = NULL;
 FILE *ftrace_fp = NULL;
 const char *ftrace_file = FTRACE_PATH;
