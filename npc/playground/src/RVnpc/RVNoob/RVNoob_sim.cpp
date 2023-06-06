@@ -37,9 +37,9 @@ extern FILE *mtrace_fp;
 #endif
 
 #ifdef CONFIG_ITRACE
+#define ITRACE_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt"
 char logbuf[128];
 FILE *itrace_fp;
-#define ITRACE_PATH (NPC_HOME "/build/RVnpc/RVNoob/npc-itrace-log.txt")
 char *itrace_file = ITRACE_PATH;
 #endif
 
