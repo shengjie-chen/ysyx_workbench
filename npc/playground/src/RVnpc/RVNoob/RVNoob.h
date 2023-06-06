@@ -2,23 +2,6 @@
 #define __RVNOOB_H__
 #include "common.h"
 #include "verilated_dpi.h"
-//#include "/home/jiexxpu/ysyx/ysyx-workbench/nemu/src/cpu/difftest/ref.c"
-// typedef signed char __int8_t;
-// typedef unsigned char __uint8_t;
-// typedef signed short int __int16_t;
-// typedef unsigned short int __uint16_t;
-// typedef signed int __int32_t;
-// typedef unsigned int __uint32_t;
-// typedef signed long int __int64_t;
-// typedef unsigned long int __uint64_t;
-// typedef __uint8_t uint8_t;
-// typedef __uint16_t uint16_t;
-// typedef __uint32_t uint32_t;
-// typedef __uint64_t uint64_t;
-//#define PG_ALIGN __attribute((aligned(4096)))
-//#define IFDEF(macro, ...) MUXDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__)
-//#define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
-//#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
 
 #define CONFIG_RT_CHECK 1
 

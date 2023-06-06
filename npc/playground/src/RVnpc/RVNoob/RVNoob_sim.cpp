@@ -127,11 +127,14 @@ int main(int argc, char **argv, char **env) {
   long img_size = load_img();
 
 #ifdef CONFIG_ITRACE
+  #define ITRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-itrace-log.txt"
   init_disasm("riscv64-pc-linux-gnu");
-  itrace_fp = fopen("/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-itrace-log.txt", "w+");
+  itrace_fp = fopen(ITRACE_PATH, "w+");
+  printf("Inst Trace Log is written to %s", ITRACE_PATH);
 #endif
 #ifdef CONFIG_MTRACE
   mtrace_fp = fopen(mtrace_file, "w");
+  printf("Mem Trace Log is written to %s", mtrace_file);
 #endif
 
   init_i8042();
@@ -189,6 +192,7 @@ int main(int argc, char **argv, char **env) {
   if (elf_en) {
     elf_file = *(argv + 3) + 4;
     printf("%s\n", elf_file);
+    printf("Function Trace Log is written to %s", ftrace_file);
     init_ftrace(elf_file);
   }
 #endif

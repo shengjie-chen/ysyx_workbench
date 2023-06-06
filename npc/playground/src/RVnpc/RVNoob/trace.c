@@ -2,15 +2,17 @@
 #include <elf.h>
 
 #ifdef CONFIG_MTRACE
-char *mtrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-mtrace-log.txt";
+#define MTRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-mtrace-log.txt"
+char *mtrace_file = MTRACE_PATH;
 FILE *mtrace_fp = NULL;
 #endif
 
 
 #ifdef CONFIG_FTRACE
+#define FTRACE_PATH NPC_HOME "build/RVnpc/RVNoob/npc-ftrace-log.txt"
 char *elf_file = NULL;
 FILE *ftrace_fp = NULL;
-const char *ftrace_file = "/home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/npc-ftrace-log.txt";
+const char *ftrace_file = FTRACE_PATH;
 int ftrace_depth = 0;
 int ftrace_func_num;
 #define MAX_FUNC_NUM 100
