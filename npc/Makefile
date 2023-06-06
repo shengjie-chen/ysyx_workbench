@@ -87,7 +87,7 @@ ARGS=$(SDB) elf=$(basename $(IMG)).elf diff=../nemu/build/riscv64-nemu-interpret
 DISASM_CXXSRC = ./playground/src/RVnpc/RVNoob/disasm.cc
 DISASM_CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
 DISASM_LIBS = $(shell llvm-config --libs) -O3 -fsanitize=address -pie -ldl -lSDL2
-VERILAOTR_CXXFLAGS = -DNPC_HOME=\"$(NPC_HOME)\"
+VERILAOTR_CXXFLAGS = -DNPC_HOME=\\"$(NPC_HOME)\\"
 sim_npc_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
