@@ -36,7 +36,7 @@ CSRCS_BOARD += $(SRC_AUTO_BIND)
 CSRCS_VCD = $(shell find $(abspath $(SRC_CODE_DIR)) -name  "$(TOPNAME)_sim.cpp")
 
 # rules for NVBoard
-include $(NVBOARD_HOME)/scripts/nvboard.mk
+# include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
