@@ -188,6 +188,7 @@ fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 RAMDISK = build/ramdisk.img
 RAMDISK_H = build/ramdisk.h
 $(RAMDISK): fsimg
+	echo "INC_PATH= " $(INC_PATH)
 	$(eval FSIMG_FILES := $(shell find -L ./fsimg -type f))
 	@mkdir -p $(@D)
 	@cat $(FSIMG_FILES) > $@

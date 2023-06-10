@@ -148,7 +148,7 @@ print_objs:
 ### Build order control
 image: image-dep
 archive: $(ARCHIVE)
-image-dep: $(OBJS) am $(LIBS)
+image-dep: print_objs $(OBJS) am $(LIBS)
 	@echo \# Creating image [$(ARCH)]
 .PHONY: image image-dep archive run $(LIBS)
 
