@@ -20,7 +20,7 @@
     ioe_read(reg, &__io_param); \
     __io_param; })
 // io_read(AM_GPU_CONFIG) 
-// AM_GPU_CONFIG_T {__io_param; ioe_read(AM_GPU_CONFIG, &__io_param);__io_param;}
+// {AM_GPU_CONFIG_T __io_param; ioe_read(AM_GPU_CONFIG, &__io_param);__io_param;}
 
 #define io_write(reg, ...) \
   ({ reg##_T __io_param = (reg##_T) { __VA_ARGS__ }; \
