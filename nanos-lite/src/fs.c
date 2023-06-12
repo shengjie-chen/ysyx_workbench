@@ -85,7 +85,7 @@ fs_lseek(int fd, size_t offset, int whence) {
     file_table[fd].open_offset += offset;
     break;
   case SEEK_END:
-    if (file_table[fd].size + file_table[fd].open_offset > file_table[fd].size) {
+    if (file_table[fd].size + offset > file_table[fd].size) {
       panic("lseek file size overflow!\n");
     }
     file_table[fd].open_offset = file_table[fd].size + offset;
