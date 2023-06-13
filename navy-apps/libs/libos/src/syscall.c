@@ -25,6 +25,48 @@
 #define GPR4 _args(4, ARGS_ARRAY)
 #define GPRx _args(5, ARGS_ARRAY)
 
+// // puts a int  HACK
+// # define DEVICE_BASE 0xa0000000
+// #define SERIAL_PORT     (DEVICE_BASE + 0x00003f8)
+
+// static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+
+// void putch(char ch) {
+//   outb(SERIAL_PORT, ch);
+// }
+
+// int int2char(int d, char *out) {
+//   int count = 0;
+//   int n = d;
+//   char m[10];
+//   if (d < 0) {
+//     *out++ = '-';
+//     n = -d;
+//   }
+//   while (n != 0) {
+//     m[count] = n % 10 + 48;
+//     n /= 10;
+//     ++count;
+//   }
+//   int i;
+//   for (i = 0; i < count; i++) {
+//     *(out + i) = m[count - i - 1];
+//   }
+//   if (d < 0) {
+//     return count + 1;
+//   } else {
+//     return count;
+//   }
+// }
+
+// void printf_int(int a) {
+//   char out[10];
+//   int2char(a, out);
+//   for (int i = 0; i < 10; i++) {
+//     putch(out[i]);
+//   }
+// }
+
 // ISA-depedent definitions
 #if defined(__ISA_X86__)
 #define ARGS_ARRAY ("int $0x80", "eax", "ebx", "ecx", "edx", "eax")
@@ -92,6 +134,7 @@ void *_sbrk(intptr_t increment) {
 }
 
 int _read(int fd, void *buf, size_t count) {
+  // printf_int(count);
   return _syscall_(SYS_read, fd, buf, count);
   // return 0;
 }

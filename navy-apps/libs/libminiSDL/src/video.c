@@ -134,7 +134,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
       }
     }
   } else {
-    pixels = s->pixels;
+    pixels = s->pixels; // maybe bug?
   }
 
   NDL_DrawRect(pixels, x, y, u_w, u_h);
