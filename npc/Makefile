@@ -94,7 +94,7 @@ sim_npc_vcd: verilog
 	# sed -i '1i\/* verilator lint_off WIDTH */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查div处的错误
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
@@ -104,7 +104,7 @@ sim_npc_vcd_without_gtk: verilog
 	#sed -i '1i\/* verilator lint_off WIDTH */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查div处的错误
 	mkdir -p $(OBJ_DIR)
 	g++ -O3 -MMD -Wall -Werror $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
 sim_npc_vcd_without_regen:
@@ -112,7 +112,7 @@ sim_npc_vcd_without_regen:
 	@echo "Write this Makefile by yourself."
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
@@ -122,7 +122,7 @@ sim_npc_vcd_without_regen_gtk:
 	# sed -i '1i\/* verilator lint_on UNOPTTHREADS */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查threads error
 	mkdir -p $(OBJ_DIR)
 	g++ -O3 -MMD -Wall -Werror $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
 # sim_npc_vcd_without_regen_gdb:
