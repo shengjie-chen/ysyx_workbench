@@ -145,6 +145,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     io.pc.get := pc
     val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
     dpi_npc.io.npc <> npc
+    if(spmu_en){
+      val dpi_branch_error = Module(new DpiBranchError)
+      dpi_branch_error.io.clk <> clock
+      dpi_branch_error.io.valid <> dnpc_en
+    }
   }
 
   icache.io.addr     <> pc
@@ -173,6 +178,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   idu.io.inst <> id_reg.out.inst
   idu.io.intr <> clint.io.time_interrupt
+  idu.io.valid.get <> id_reg.out.inst_valid
 
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
 
@@ -383,6 +389,28 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
       |module DpiNpc(input [63:0] npc);
       |
       | always @* npc_change(npc);
+      |
+      |endmodule
+            """.stripMargin
+  )
+}
+
+class DpiBranchError extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clk = Input(Clock())
+    val valid = Input(Bool())
+  })
+  setInline(
+    "DpiBranchError.v",
+    """
+      |import "DPI-C" function void find_branch_error();
+      |module DpiBranchError(input clk, input valid);
+      |
+      |always@(posedge clk) begin
+      |    if(valid == 1'b1) begin
+      |        find_branch_error();
+      |    end
+      |end
       |
       |endmodule
             """.stripMargin

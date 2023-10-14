@@ -96,11 +96,11 @@ class DCache(
 //    dontTouch(fencei_state)
 //    dontTouch(io.fencei)
 //  }
-  // >>>>>>>>>>>>>> mmio 控制信号 <<<<<<<<<<<<<<
   val inpmem =
     if (tapeout) (io.addr >= 0x80000000L.U)
     else (io.addr >= 0x80000000L.U) && (io.addr < 0x88000000L.U)
-  val inpmem_op           = (io.ren || io.wen) && inpmem
+  val inpmem_op = (io.ren || io.wen) && inpmem
+  // >>>>>>>>>>>>>> mmio read 控制信号 <<<<<<<<<<<<<<
   val mmio_read_valid     = !inpmem && io.ren && io.in_valid
   val mmio_read_reg       = RegInit(0.B)
   val mmio_read           = mmio_read_valid || mmio_read_reg
@@ -117,6 +117,7 @@ class DCache(
     mmio_read_ready_reg := 0.B
   }
   mmio_read_ready := mmio_read_ready_reg && !io.in_valid
+  // >>>>>>>>>>>>>> mmio write 控制信号 <<<<<<<<<<<<<<
   val mmio_write_valid = !inpmem && io.wen && io.in_valid
   val mmio_write_reg   = RegInit(0.B)
   val mmio_write       = mmio_write_valid || mmio_write_reg
@@ -340,6 +341,16 @@ class DCache(
     io.rdata := pmem_rdata
   }
 
+  // ********************************** Software PMU **********************************
+  if (!tapeout && spmu_en) {
+//    val write_valid_posedge = io.wen && !RegNext(io.wen, 0.B)
+//    val read_valid_posedge  = io.ren && !RegNext(io.ren, 0.B)
+    val dpi_cache_cnt       = if (isICache) Module(new DpiICacheCnt) else Module(new DpiDCacheCnt)
+    dpi_cache_cnt.io.clk   := clock
+    dpi_cache_cnt.io.valid := io.in_valid && (io.wen || io.ren) && inpmem
+    dpi_cache_cnt.io.miss  := inpmem_miss
+  }
+
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
@@ -355,6 +366,22 @@ class S011HD1P_X32Y2D128_BW extends BlackBox {
     val D    = Input(UInt(128.W))
   })
 
+}
+
+class DpiDCacheCnt extends BlackBox {
+  val io = IO(new Bundle {
+    val clk   = Input(Clock())
+    val valid = Input(Bool())
+    val miss  = Input(Bool())
+  })
+}
+
+class DpiICacheCnt extends BlackBox {
+  val io = IO(new Bundle {
+    val clk   = Input(Clock())
+    val valid = Input(Bool())
+    val miss  = Input(Bool())
+  })
 }
 
 object DCache {

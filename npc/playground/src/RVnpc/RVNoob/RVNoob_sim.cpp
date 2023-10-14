@@ -212,12 +212,27 @@ int main(int argc, char **argv, char **env) {
   int time = double(end - start) / CLOCKS_PER_SEC;
   vluint64_t inst_cnt = top->io_inst_cnt;
   vluint64_t clock_cnt = main_time / 2;
-  printf("************ SIM SUMMARY ************\n");
+  if(time == 0)    time = 1;
+  printf("\n\033[;31m************ SIM SUMMARY ************\n\033[0m");
+  printf("simulation time          : %d min %d s\n", time / 60, time % 60);
   printf("sim clock num            : %ld\n", clock_cnt);
   printf("complete inst num        : %ld\n", inst_cnt);
   printf("npc ipc                  : %f\n", (double)inst_cnt / (double)clock_cnt);
-  printf("simulation time          : %d min %d s\n", time / 60, time % 60);
-  printf("average simulation speed : %ld clock/s\n", clock_cnt / time);
+  printf("average clk speed        : %ld clock/s\n", clock_cnt / time);
+  printf("average inst speed       : %ld insts/s\n", inst_cnt / time);
+#ifdef SPMU_ENABLE
+  printf("\n\033[;31m************ Software PMU ************\n\033[0m");
+  printf("icache hit               : %ld\n", icache_hit);
+  printf("icache miss              : %ld\n", icache_miss);
+  printf("dcache hit               : %ld\n", dcache_hit);
+  printf("dcache miss              : %ld\n", dcache_miss);
+  printf("\033[;34micache hit rate          : %f\n\033[0m", (double)icache_hit/(double)(icache_hit + icache_miss));
+  printf("\033[;34mdcache hit rate          : %f\n\033[0m", (double)dcache_hit/(double)(dcache_hit + dcache_miss));
+  printf("branch inst num          : %ld\n", branch_inst);
+  printf("branch error num         : %ld\n", branch_error);
+  printf("\033[;34mbranch error rate        : %f\n\033[0m", (double)branch_error/(double)branch_inst);
+#endif
+  printf("\n");
 #ifdef CONFIG_ITRACE
   fclose(itrace_fp);
 #endif

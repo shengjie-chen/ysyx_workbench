@@ -12,13 +12,16 @@ class DpiCsrRead extends BlackBox with RVNoobConfig {
 
 class CSR extends Module with RVNoobConfig with Csr_op {
   val io = IO(new Bundle {
-    val csr_rdata   = Output(UInt(xlen.W))
+    // >>>>>>>>>>>>>> id <<<<<<<<<<<<<<
     val id_csr_ctrl = Input(new IdCsrCtrlIO)
+    val csr_rdata   = Output(UInt(xlen.W))
     val csr_dnpc    = Output(UInt(addr_w.W))
-    val pc          = Input(UInt(addr_w.W))
-    val wb_csr_ctrl = Input(new WbCsrCtrlIO)
-    val csr_wdata   = Input(UInt(xlen.W))
+    // >>>>>>>>>>>>>> wb <<<<<<<<<<<<<<
     val wb_valid    = Input(Bool())
+    val wb_csr_ctrl = Input(new WbCsrCtrlIO)
+    val pc          = Input(UInt(addr_w.W))
+    val csr_wdata   = Input(UInt(xlen.W))
+    // >>>>>>>>>>>>>> clint <<<<<<<<<<<<<<
     val mstatus_mie = Output(Bool())
     val mie_mtie    = Output(Bool())
   })

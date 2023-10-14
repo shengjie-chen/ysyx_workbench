@@ -56,7 +56,23 @@ echo_val:
 	echo $(OBJ_DIR)
 	echo $(VERILOG_OBJ_DIR)
 
-verilog:
+update_config_spmu:
+	@if grep -q "//\s*#define SPMU_ENABLE" $(SRC_CODE_DIR)/conf.h; then \
+    		sed -i 's/val spmu_en: Boolean = true/val spmu_en: Boolean = false/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
+    		echo "SPMU set to false"; \
+    else \
+    		sed -i 's/val spmu_en: Boolean = false/val spmu_en: Boolean = true/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
+    		echo "SPMU set to true"; \
+    fi
+
+# 将一个总的verilog拆分到多个verilog子文件
+SOURCES=$(VERILOG_OBJ_DIR)/$(TOPNAME).v
+split_verilog: $(SOURCES)
+	for file in $(SOURCES); do \
+		python3 split_modules.py $$file; \
+	done
+
+verilog: update_config_spmu
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
 	sed -i 's/val tapeout: Boolean = true/val tapeout: Boolean = false/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
@@ -65,6 +81,7 @@ verilog:
 	mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
 	sed -i 's/val tapeout: Boolean = false/val tapeout: Boolean = true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	sed -i '/initial begin/,/end /d;/`ifdef/,/`endif/d;/^\/\//d;/`ifndef/,/`endif/d' $(VERILOG_OBJ_DIR)/$(TOPNAME).v
+# 	make split_verilog
 
 # before run, make verilog
 sim_board:$(BIN_BOARD)
@@ -124,6 +141,19 @@ sim_npc_vcd_without_regen_gtk:
 	g++ -O3 -MMD -Wall -Werror $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
 	verilator --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
+
+
+perf_sim_npc_nanoslite_pal:
+	mkdir -p $(OBJ_DIR)
+	verilator --prof-cfuncs --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	# $(BIN_VCD) $(IMG)
+	$(BIN_VCD) /home/jiexxpu/ysyx/ysyx-workbench/nanos-lite/build/nanos-lite-riscv64-npc.bin
+	gprof $(BIN_VCD) gmon.out > gprof.out
+	verilator_profcfunc gprof.out > report.out
+
+#	gprof $(BIN_VCD) gmon.out > gprof.out
+#	verilator_profcfunc gprof.out > report.out
+# perf record /home/jiexxpu/ysyx/ysyx-workbench/npc/build/RVnpc/RVNoob/RVNoob /home/jiexxpu/ysyx/ysyx-workbench/nanos-lite/build/nanos-lite-riscv64-npc.bin
 
 # sim_npc_vcd_without_regen_gdb:
 # 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!

@@ -170,3 +170,33 @@ extern "C" void wb_change(svLogic v, const svLogicVecVal *p, const svLogicVecVal
   wb_inst = *(uint32_t *)(i);
 }
 
+#ifdef SPMU_ENABLE
+/// @brief 软件性能监视SPMU（Soft Performence Monitor Unit）使能，增加cache miss概率检测
+uint64_t icache_hit=0, icache_miss=0;
+extern "C" void icache_access(svLogic miss){
+  if(miss){
+    icache_miss++;
+  }else{
+    icache_hit++;
+  }
+}
+
+uint64_t dcache_hit=0, dcache_miss=0;
+extern "C" void dcache_access(svLogic miss){
+  if(miss){
+    dcache_miss++;
+  }else{
+    dcache_hit++;
+  }
+}
+
+uint64_t branch_inst=0;
+extern "C" void find_branch_inst(){
+  branch_inst++;
+}
+
+uint64_t branch_error=0;
+extern "C" void find_branch_error(){
+  branch_error++;
+}
+#endif

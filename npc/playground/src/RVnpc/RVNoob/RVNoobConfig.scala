@@ -13,6 +13,7 @@ trait RVNoobConfig {
   val addr_w     = 32
 
   val tapeout: Boolean = true
+  val spmu_en: Boolean = true
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
 }
