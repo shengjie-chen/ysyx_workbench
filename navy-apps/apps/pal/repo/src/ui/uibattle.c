@@ -1743,7 +1743,7 @@ end:
    {
       if (g_Battle.UI.rgShowNum[i].wNum > 0)
       {
-         if ((SDL_GetTicks() - g_Battle.UI.rgShowNum[i].dwTime) / BATTLE_FRAME_TIME > 10)
+         if ((SDL_GetTicks() - g_Battle.UI.rgShowNum[i].dwTime) / BATTLE_FRAME_TIME > 1000)
          {
             g_Battle.UI.rgShowNum[i].wNum = 0;
          }
