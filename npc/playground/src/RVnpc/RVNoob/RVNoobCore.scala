@@ -235,44 +235,48 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.sram(2) <> io.sram6
   dcache.io.sram(3) <> io.sram7
 
-  def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
-    wctrl.en         := 0.U.asTypeOf(wctrl.en)
-    wctrl.id         := 0.U.asTypeOf(wctrl.id)
-    wctrl.size       := 0.U.asTypeOf(wctrl.size)
-    wctrl.wbuf_ready := 0.U.asTypeOf(wctrl.wbuf_ready)
-    wctrl.burst      := 0.U.asTypeOf(wctrl.burst)
-    wctrl.addr       := 0.U.asTypeOf(wctrl.addr)
-    wctrl.len        := 0.U.asTypeOf(wctrl.len)
-    wctrl.data       := 0.U.asTypeOf(wctrl.data)
-    wctrl.strb       := 0.U.asTypeOf(wctrl.strb)
-
-    rctrl.en    := 0.U.asTypeOf(rctrl.en)
-    rctrl.id    := 0.U.asTypeOf(rctrl.id)
-    rctrl.size  := 0.U.asTypeOf(rctrl.size)
-    rctrl.addr  := 0.U.asTypeOf(rctrl.addr)
-    rctrl.burst := 0.U.asTypeOf(rctrl.burst)
-    rctrl.len   := 0.U.asTypeOf(rctrl.len)
-  }
-  when(
-    (dcache.io.axi_rctrl.addr(31, 28) === 0.U && dcache.io.axi_rctrl.en) ||
-      (dcache.io.axi_wctrl.addr(31, 28) === 0.U && dcache.io.axi_wctrl.en)
-  ) {
-    clint.io.wctrl <> dcache.io.axi_wctrl
-    clint.io.rctrl <> dcache.io.axi_rctrl
-    axictrl_connect_zero(axi_crossbar.in2.rctrl, axi_crossbar.in2.wctrl)
-  }.otherwise {
+  if (simplify_design) {
     axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
     axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
-    axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
+  } else {
+    def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
+      wctrl.en         := 0.U.asTypeOf(wctrl.en)
+      wctrl.id         := 0.U.asTypeOf(wctrl.id)
+      wctrl.size       := 0.U.asTypeOf(wctrl.size)
+      wctrl.wbuf_ready := 0.U.asTypeOf(wctrl.wbuf_ready)
+      wctrl.burst      := 0.U.asTypeOf(wctrl.burst)
+      wctrl.addr       := 0.U.asTypeOf(wctrl.addr)
+      wctrl.len        := 0.U.asTypeOf(wctrl.len)
+      wctrl.data       := 0.U.asTypeOf(wctrl.data)
+      wctrl.strb       := 0.U.asTypeOf(wctrl.strb)
+
+      rctrl.en    := 0.U.asTypeOf(rctrl.en)
+      rctrl.id    := 0.U.asTypeOf(rctrl.id)
+      rctrl.size  := 0.U.asTypeOf(rctrl.size)
+      rctrl.addr  := 0.U.asTypeOf(rctrl.addr)
+      rctrl.burst := 0.U.asTypeOf(rctrl.burst)
+      rctrl.len   := 0.U.asTypeOf(rctrl.len)
+    }
+    when(
+      (dcache.io.axi_rctrl.addr(31, 28) === 0.U && dcache.io.axi_rctrl.en) ||
+        (dcache.io.axi_wctrl.addr(31, 28) === 0.U && dcache.io.axi_wctrl.en)
+    ) {
+      clint.io.wctrl <> dcache.io.axi_wctrl
+      clint.io.rctrl <> dcache.io.axi_rctrl
+      axictrl_connect_zero(axi_crossbar.in2.rctrl, axi_crossbar.in2.wctrl)
+    }.otherwise {
+      axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
+      axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
+      axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
+    }
+
+    clint.io.mstatus_mie   <> csr.io.mstatus_mie
+    clint.io.mie_mtie      <> csr.io.mie_mtie
+    clint.io.id_reg_pc     <> id_reg.out.pc
+    clint.io.ex_csr_hazard <> ppl_ctrl.io.ex_csr_hazard
+    clint.io.dnpc_en       <> dnpc_en
+    clint.io.cache_miss    <> cache_miss
   }
-
-  clint.io.mstatus_mie   <> csr.io.mstatus_mie
-  clint.io.mie_mtie      <> csr.io.mie_mtie
-  clint.io.id_reg_pc     <> id_reg.out.pc
-  clint.io.ex_csr_hazard <> ppl_ctrl.io.ex_csr_hazard
-  clint.io.dnpc_en       <> dnpc_en
-  clint.io.cache_miss    <> cache_miss
-
   axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
   axi_crossbar.in1.wctrl <> icache.io.axi_wctrl
   axi_crossbar.in1.pc    <> pc
