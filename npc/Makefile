@@ -144,6 +144,7 @@ sim_npc_vcd_without_regen_gtk:
 
 
 perf_sim_npc_nanoslite_pal:
+	make split_verilog
 	mkdir -p $(OBJ_DIR)
 	verilator --prof-cfuncs --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	# $(BIN_VCD) $(IMG)

@@ -17,6 +17,7 @@ endif
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html|init),)
 
 ### Print build info message
+$(info )
 $(info # Building $(NAME)-$(MAKECMDGOALS) [$(ISA)])
 
 ### Check: environment variable `$NAVY_HOME` looks sane
