@@ -14,6 +14,7 @@ trait RVNoobConfig {
 
   val tapeout: Boolean = true
   val spmu_en: Boolean = false
+  val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
 }

@@ -145,9 +145,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     io.pc.get := pc
     val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
     dpi_npc.io.npc <> npc
-    if(spmu_en){
+    if (spmu_en) {
       val dpi_branch_error = Module(new DpiBranchError)
-      dpi_branch_error.io.clk <> clock
+      dpi_branch_error.io.clk   <> clock
       dpi_branch_error.io.valid <> dnpc_en
     }
   }
@@ -178,7 +178,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   idu.io.inst <> id_reg.out.inst
   idu.io.intr <> clint.io.time_interrupt
-  if(!tapeout && spmu_en){
+  if (!tapeout && spmu_en) {
     idu.io.valid.get <> id_reg.out.inst_valid
   }
 
@@ -225,8 +225,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
   dcache.io.wdata      <> mem_reg.out.src2
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
-  dcache.io.fencei     <> mem_reg.out.mem_ctrl.fencei
-  dcache.io.in_valid   <> mem_reg.out.valid
+  if (!simplify_design) {
+    dcache.io.fencei <> 0.B
+  } else {
+    dcache.io.fencei <> mem_reg.out.mem_ctrl.fencei
+  }
+  dcache.io.in_valid <> mem_reg.out.valid
 
   dcache.io.sram(0) <> io.sram4
   dcache.io.sram(1) <> io.sram5
@@ -399,7 +403,7 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
 
 class DpiBranchError extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
-    val clk = Input(Clock())
+    val clk   = Input(Clock())
     val valid = Input(Bool())
   })
   setInline(
