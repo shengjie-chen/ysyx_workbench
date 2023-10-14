@@ -114,7 +114,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
     valid       = ex_reg.out.inst_valid
   )
-  val dcache       = Module(new DCache(deviceId = 1))
+  val dcache       = DCache(isICache = false, deviceId = 1)
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
   val clint        = Module(new Clint)
