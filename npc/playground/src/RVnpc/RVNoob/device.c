@@ -5,7 +5,7 @@
 
 extern NPCState npc_state;
 
-#define TIMER_HZ 60
+#define TIMER_HZ 10
 
 // --------------------------------> keyboard
 #define KEYDOWN_MASK 0x8000
