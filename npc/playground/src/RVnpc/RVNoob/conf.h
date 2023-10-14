@@ -15,7 +15,7 @@
 // #define CONFIG_FTRACE
 // #define CONFIG_MTRACE
 
-// #define SPMU_ENABLE
+#define SPMU_ENABLE
 
 #ifdef CONFIG_ITRACE  
 #define CONFIG_DUMPSTART 0 
