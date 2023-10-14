@@ -12,7 +12,7 @@ trait RVNoobConfig {
   val gpr_addr_w = 5
   val addr_w     = 32
 
-  val tapeout: Boolean = false
+  val tapeout: Boolean = true
   val spmu_en: Boolean = false
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
