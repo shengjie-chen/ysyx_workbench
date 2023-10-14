@@ -4,6 +4,7 @@ import RVnpc.RVNoob.Axi._
 import RVnpc.RVNoob.Cache._
 import RVnpc.RVNoob.Pipeline._
 import chisel3._
+import chisel3.util.BitPat.dontCare
 import chisel3.util._
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
@@ -238,6 +239,15 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   if (simplify_design) {
     axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
     axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
+
+    clint.io.wctrl         <> dontCare
+    clint.io.rctrl         <> dontCare
+    clint.io.mstatus_mie   <> dontCare
+    clint.io.mie_mtie      <> dontCare
+    clint.io.id_reg_pc     <> dontCare
+    clint.io.ex_csr_hazard <> dontCare
+    clint.io.dnpc_en       <> dontCare
+    clint.io.cache_miss    <> dontCare
   } else {
     def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
       wctrl.en         := 0.U.asTypeOf(wctrl.en)
