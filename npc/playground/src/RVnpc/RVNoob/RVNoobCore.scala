@@ -240,14 +240,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
     axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
 
-    dontCare(clint.io.wctrl)
-    dontCare(clint.io.rctrl)
-    dontCare(clint.io.mstatus_mie)
-    dontCare(clint.io.mie_mtie)
-    dontCare(clint.io.id_reg_pc)
-    dontCare(clint.io.ex_csr_hazard)
-    dontCare(clint.io.dnpc_en)
-    dontCare(clint.io.cache_miss)
+    clint.io.wctrl         <> 0.U.asTypeOf(clint.io.wctrl)
+    clint.io.rctrl         <> 0.U.asTypeOf(clint.io.rctrl)
+    clint.io.mstatus_mie   <> 0.U.asTypeOf(clint.io.mstatus_mie)
+    clint.io.mie_mtie      <> 0.U.asTypeOf(clint.io.mie_mtie)
+    clint.io.id_reg_pc     <> 0.U.asTypeOf(clint.io.id_reg_pc)
+    clint.io.ex_csr_hazard <> 0.U.asTypeOf(clint.io.ex_csr_hazard)
+    clint.io.dnpc_en       <> 0.U.asTypeOf(clint.io.dnpc_en)
+    clint.io.cache_miss    <> 0.U.asTypeOf(clint.io.cache_miss)
   } else {
     def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
       wctrl.en         := 0.U.asTypeOf(wctrl.en)
