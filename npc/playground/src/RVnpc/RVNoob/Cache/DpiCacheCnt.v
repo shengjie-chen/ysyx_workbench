@@ -1,11 +1,9 @@
-import "DPI-C" function void icache_access(input logic miss);
-import "DPI-C" function void dcache_access(input logic miss);
 module DpiDCacheCnt(
     input clk,
     input valid,
     input miss
 );
-
+import "DPI-C" function void dcache_access(input logic miss);
 always@(posedge clk) begin
     if(valid == 1'b1) begin
         dcache_access(miss);
@@ -19,7 +17,7 @@ module DpiICacheCnt(
     input valid,
     input miss
 );
-
+import "DPI-C" function void icache_access(input logic miss);
 always@(posedge clk) begin
     if(valid == 1'b1) begin
         icache_access(miss);
