@@ -384,7 +384,7 @@ class DpiICacheCnt extends BlackBox {
   })
 }
 
-object DCache {
+object DCache extends RVNoobConfig{
   def apply(isICache: Boolean, deviceId: Int = 0): DCache = {
     val cache = Module(new DCache(isICache = isICache, deviceId = deviceId))
     if (isICache) {
@@ -393,6 +393,10 @@ object DCache {
       cache.io.zero_ex_op := 2.U
 //      cache.io.in_valid      := 1.B
       cache.io.fencei := 0.B
+    }else{
+      if(simplify_design){
+        cache.io.fencei := 0.B
+      }
     }
     cache
   }

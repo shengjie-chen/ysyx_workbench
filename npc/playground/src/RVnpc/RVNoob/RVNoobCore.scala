@@ -226,8 +226,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   dcache.io.wdata      <> mem_reg.out.src2
   dcache.io.zero_ex_op <> mem_reg.out.mem_ctrl.zero_ex_op
   if (!simplify_design) {
-    dcache.io.fencei <> 0.B
-  } else {
     dcache.io.fencei <> mem_reg.out.mem_ctrl.fencei
   }
   dcache.io.in_valid <> mem_reg.out.valid
