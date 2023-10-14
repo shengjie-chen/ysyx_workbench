@@ -178,7 +178,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   idu.io.inst <> id_reg.out.inst
   idu.io.intr <> clint.io.time_interrupt
-  idu.io.valid.get <> id_reg.out.inst_valid
+  if(!tapeout && spmu_en){
+    idu.io.valid.get <> id_reg.out.inst_valid
+  }
 
   rf.io.id_rf_ctrl <> idu.io.id_rf_ctrl
 
