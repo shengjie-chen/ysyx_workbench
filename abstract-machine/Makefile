@@ -17,6 +17,7 @@ endif
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
 
 ### Print build info message
+$(info )
 $(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)])
 
 ### Check: environment variable `$AM_HOME` looks sane
