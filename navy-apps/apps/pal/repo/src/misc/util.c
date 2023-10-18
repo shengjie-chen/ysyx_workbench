@@ -446,7 +446,7 @@ UTIL_OpenFileAtPathForMode(
 	// Construct full path according to lpszPath and lpszFileName
 	//
 	const char *path = UTIL_GetFullPathName(INTERNAL_BUFFER_SIZE_ARGS, lpszPath, lpszFileName);
-	printf("%s\n", path);
+
 	//
 	// If no matching path, check the open mode
 	//
