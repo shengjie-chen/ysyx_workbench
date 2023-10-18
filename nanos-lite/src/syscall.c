@@ -47,7 +47,7 @@ void do_syscall(Context *c) {
 
   case SYS_close: {
     //printf("sys_id:%ld, fd:%ld, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
-    printf("name : %s, id: %ld", "SYS_close\n", a[1]);
+    printf("name : %s, id: %ld\n", "SYS_close", a[1]);
     c->GPRx = fs_close(a[1]);
   } break;
   case SYS_lseek: {
