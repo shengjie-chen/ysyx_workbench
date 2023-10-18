@@ -171,6 +171,7 @@ PAL_InitGlobals(
    gpGlobals->f.fpF = UTIL_OpenRequiredFile("f.mkf");
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf");
    // gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
+   printf("1\n");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
 
    //
