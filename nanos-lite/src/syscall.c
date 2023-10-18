@@ -31,13 +31,13 @@ void do_syscall(Context *c) {
   case SYS_open: {
     //printf("sys_id:%ld, path:%lx, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
     c->GPRx = fs_open((char *)a[1], 0, 0);
-    //printf("name : %s, return fd : %d\n", "SYS_open", c->GPRx);
+    printf("name : %s, return fd : %d\n", "SYS_open", c->GPRx);
   } break;
 
   case SYS_read: {
     // printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
     c->GPRx = fs_read(a[1], (void *)a[2], a[3]);
-    // printf("name : %s, transfor data num: %d\n", "SYS_read", c->GPRx);
+    printf("name : %s, transfor data num: %d\n", "SYS_read", c->GPRx);
   } break;
   case SYS_write: {
     //printf("sys_id:%ld, fd:%ld, buf:%lx, count:%ld  ", a[0], a[1], a[2], a[3]);
@@ -47,7 +47,7 @@ void do_syscall(Context *c) {
 
   case SYS_close: {
     //printf("sys_id:%ld, fd:%ld, a2:%ld, a3:%ld  ", a[0], a[1], a[2], a[3]);
-    //printf("name : %s", "SYS_close\n");
+    printf("name : %s", "SYS_close\n");
     c->GPRx = fs_close(a[1]);
   } break;
   case SYS_lseek: {
