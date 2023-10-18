@@ -27,6 +27,7 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
+  printf("1\n");
   int fd = open("/dev/events", O_RDONLY);
   if (fd == -1) {
     printf("open file fail!\n");
