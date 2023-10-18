@@ -114,7 +114,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // printf("len:%ld\n", len);
   write(fb_fd, pixels, len);
 
-  printf("use trick to draw fb\n");
+  // printf("use trick to draw fb\n");
   // printf("%d: write offset %d\n", i, w * i);
 #endif
 }
