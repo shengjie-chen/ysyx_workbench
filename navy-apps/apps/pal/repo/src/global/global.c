@@ -166,11 +166,11 @@ PAL_InitGlobals(
    //
    gpGlobals->f.fpFBP = UTIL_OpenRequiredFile("fbp.mkf");
    gpGlobals->f.fpMGO = UTIL_OpenRequiredFile("mgo.mkf");
-   // gpGlobals->f.fpBALL = UTIL_OpenRequiredFile("ball.mkf");
+   gpGlobals->f.fpBALL = UTIL_OpenRequiredFile("ball.mkf");
    gpGlobals->f.fpDATA = UTIL_OpenRequiredFile("data.mkf");
    gpGlobals->f.fpF = UTIL_OpenRequiredFile("f.mkf");
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf");
-   // gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
+   gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
 
    //
