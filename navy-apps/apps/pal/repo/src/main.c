@@ -53,21 +53,17 @@ PAL_Init(
    //
    // Initialize subsystems.
    //
-   printf("1\n");
-
    e = PAL_InitGlobals();
    if (e != 0)
    {
 	   TerminateOnError("Could not initialize global data: %d.\n", e);
    }
-   printf("2\n");
 
    e = VIDEO_Startup();
    if (e != 0)
    {
       TerminateOnError("Could not initialize Video: %d.\n", e);
    }
-   printf("3\n");
 
    VIDEO_SetWindowTitle("Loading...");
 
@@ -76,27 +72,23 @@ PAL_Init(
    {
       TerminateOnError("Could not initialize UI subsystem: %d.\n", e);
    }
-   printf("4\n");
 
    e = PAL_InitText();
    if (e != 0)
    {
       TerminateOnError("Could not initialize text subsystem: %d.\n", e);
    }
-   printf("5\n");
 
    e = PAL_InitFont(&gConfig);
    if (e != 0)
    {
       TerminateOnError("Could not load fonts: %d.\n", e);
    }
-   printf("6\n");
 
    PAL_InitInput();
    PAL_InitResources();
    AUDIO_OpenDevice();
    PAL_AVIInit();
-   printf("7\n");
 
    VIDEO_SetWindowTitle(UTIL_va(UTIL_GlobalBuffer(0), PAL_GLOBAL_BUFFER_SIZE,
 	   "Pal %s%s%s%s",
