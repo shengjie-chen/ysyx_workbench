@@ -27,7 +27,6 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  printf("1\n");
   int fd = open("/dev/events", O_RDONLY);
   if (fd == -1) {
     printf("open file fail!\n");
@@ -115,7 +114,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // printf("len:%ld\n", len);
   write(fb_fd, pixels, len);
 
-  // printf("use trick to draw fb\n");
+  printf("use trick to draw fb\n");
   // printf("%d: write offset %d\n", i, w * i);
 #endif
 }
