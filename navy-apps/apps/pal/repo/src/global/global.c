@@ -173,6 +173,7 @@ PAL_InitGlobals(
    // gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
    printf("1\n");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
+   printf("1\n");
 
    //
    // Retrieve game resource version
