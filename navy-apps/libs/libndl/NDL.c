@@ -107,7 +107,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // printf("h:%d\n", h);
   // printf("x:%d\n", x);
   // printf("y:%d\n", y);
-  unsigned long offset = (x + y * width) * 4;
+  unsigned long offset = (x+40 + (y+50) * width) * 4;
   // printf("offset:%ld\n", offset);
   lseek(fb_fd, offset, SEEK_SET);
   unsigned long len = ((unsigned long)w << 16 | (unsigned long)h);
