@@ -202,7 +202,7 @@ int NDL_Init(uint32_t flags) {
   // printf("tv_sec: %ld,tv_usec: %ld\n",curr_time.tv_sec,curr_time.tv_usec);
   init_sec = curr_time.tv_sec;
   init_usec = curr_time.tv_usec;
-  // printf("screen width: %d, height: %d\n", width, height);
+  printf("screen width: %d, height: %d\n", width, height);
   return 0;
 }
 
