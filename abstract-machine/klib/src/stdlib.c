@@ -31,7 +31,7 @@ int atoi(const char *nptr) {
   return x;
 }
 
-#if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
+#ifndef __ISA_NATIVE__
 static char *addr_alloc;
 static int first = 0;
 // #endif
