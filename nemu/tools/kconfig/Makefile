@@ -17,6 +17,9 @@ endif
 
 include $(NEMU_HOME)/scripts/build.mk
 
+clean:
+	rm -rf $(BUILD_DIR)
+
 $(obj)/lexer.lex.o: $(obj)/parser.tab.h
 $(obj)/lexer.lex.c: lexer.l $(obj)/parser.tab.h
 	@echo + LEX $@

@@ -27,6 +27,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elf_head;
 
   // 读取 head 到elf_head
+  printf("loader software: %s\n",filename);
   int fd = fs_open(filename, 0, 0);
   fs_read(fd, &elf_head, sizeof(Elf_Ehdr));
 

@@ -6,3 +6,6 @@ CFLAGS += -DNEMU_HOME=\"$(NEMU_HOME)\" -DCONFIG_ISA_$(GUEST_ISA)
 INC_PATH += $(NEMU_HOME)/include
 
 include $(NEMU_HOME)/scripts/build.mk
+
+clean:
+	rm -rf $(BUILD_DIR)
