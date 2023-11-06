@@ -1743,16 +1743,17 @@ end:
    {
       if (g_Battle.UI.rgShowNum[i].wNum > 0)
       {
-         if ((SDL_GetTicks() - g_Battle.UI.rgShowNum[i].dwTime) / BATTLE_FRAME_TIME > 1000)
-         {
-            g_Battle.UI.rgShowNum[i].wNum = 0;
-         }
-         else
-         {
-            PAL_DrawNumber(g_Battle.UI.rgShowNum[i].wNum, 5,
-               PAL_XY(PAL_X(g_Battle.UI.rgShowNum[i].pos), PAL_Y(g_Battle.UI.rgShowNum[i].pos) - (SDL_GetTicks() - g_Battle.UI.rgShowNum[i].dwTime) / BATTLE_FRAME_TIME),
-               g_Battle.UI.rgShowNum[i].color, kNumAlignRight);
-         }
+        //  if ((SDL_GetTicks() - g_Battle.UI.rgShowNum[i].dwTime) / BATTLE_FRAME_TIME > 10)
+        //  {
+        //     g_Battle.UI.rgShowNum[i].wNum = 0;
+        //  }
+        //  else
+        //  {
+        PAL_DrawNumber(g_Battle.UI.rgShowNum[i].wNum, 5, 
+					PAL_XY(PAL_X(g_Battle.UI.rgShowNum[i].pos), PAL_Y(g_Battle.UI.rgShowNum[i].pos)),
+                    g_Battle.UI.rgShowNum[i].color, kNumAlignRight);
+		g_Battle.UI.rgShowNum[i].wNum = 0;
+        //  }
       }
    }
 

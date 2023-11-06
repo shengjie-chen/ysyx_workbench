@@ -79,7 +79,7 @@ typedef enum tagBATTLEUIACTION
 #define TIMEMETER_COLOR_SLOW             0x5B
 #define TIMEMETER_COLOR_HASTE            0x2A
 
-#define BATTLEUI_MAX_SHOWNUM             16
+#define BATTLEUI_MAX_SHOWNUM             1
 
 typedef struct tagSHOWNUM
 {
