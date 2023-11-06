@@ -122,7 +122,7 @@ sim_npc_vcd_without_gtk: verilog
 	mkdir -p $(OBJ_DIR)
 	g++ -O3 -MMD -Wall -Werror $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
 	verilator --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
-	sudo nice -n -20 $(BIN_VCD) $(IMG) $(ARGS)
+	$(BIN_VCD) $(IMG) $(ARGS)
 
 sim_npc_vcd_without_regen:
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!

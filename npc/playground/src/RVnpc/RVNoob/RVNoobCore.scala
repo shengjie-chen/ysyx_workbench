@@ -64,7 +64,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl = Module(new PipelineCtrl)
-  val icache   = DCache(isICache = true)
+  val icache   = DCache(isICache = true, sizeInKB = 1)
   //  val icache = Module(new ICache)
   val id_reg = IDreg(
     pc     = pc,
@@ -115,7 +115,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
     valid       = ex_reg.out.inst_valid
   )
-  val dcache       = DCache(isICache = false, deviceId = 1)
+  val dcache       = DCache(isICache = false, deviceId = 1, sizeInKB = 0.5)
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
   val clint        = Module(new Clint)

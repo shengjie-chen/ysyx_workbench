@@ -16,7 +16,7 @@ class TagArrays(tagWidth: Int) extends Bundle {
 class DCache(
   val isICache:      Boolean = false,
   val deviceId:      Int     = 0,
-  val cacheSize:     Int     = 4 * pow(2, 10).toInt,
+  val cacheSize:     Int     = (4 * pow(2, 10)).toInt,
   val cacheLineSize: Int     = 32,
   val ways:          Int     = 4
 //  val axiDataWidth:  Int     = 64,
@@ -345,7 +345,7 @@ class DCache(
   if (!tapeout && spmu_en) {
 //    val write_valid_posedge = io.wen && !RegNext(io.wen, 0.B)
 //    val read_valid_posedge  = io.ren && !RegNext(io.ren, 0.B)
-    val dpi_cache_cnt       = if (isICache) Module(new DpiICacheCnt) else Module(new DpiDCacheCnt)
+    val dpi_cache_cnt = if (isICache) Module(new DpiICacheCnt) else Module(new DpiDCacheCnt)
     dpi_cache_cnt.io.clk   := clock
     dpi_cache_cnt.io.valid := io.in_valid && (io.wen || io.ren) && inpmem
     dpi_cache_cnt.io.miss  := inpmem_miss
@@ -384,17 +384,18 @@ class DpiICacheCnt extends BlackBox {
   })
 }
 
-object DCache extends RVNoobConfig{
-  def apply(isICache: Boolean, deviceId: Int = 0): DCache = {
-    val cache = Module(new DCache(isICache = isICache, deviceId = deviceId))
+object DCache extends RVNoobConfig {
+  def apply(isICache: Boolean, deviceId: Int = 0, sizeInKB: Double = 4): DCache = {
+    val cacheSize: Int = (sizeInKB * pow(2, 10)).toInt
+    val cache = Module(new DCache(isICache = isICache, deviceId = deviceId, cacheSize = cacheSize))
     if (isICache) {
       cache.io.wdata      := 0.U
       cache.io.wen        := 0.B
       cache.io.zero_ex_op := 2.U
 //      cache.io.in_valid      := 1.B
       cache.io.fencei := 0.B
-    }else{
-      if(simplify_design){
+    } else {
+      if (simplify_design) {
         cache.io.fencei := 0.B
       }
     }
