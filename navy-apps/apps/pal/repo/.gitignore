@@ -239,7 +239,7 @@ resources
 
 unix/sdlpal
 sdlpal.cfg
-data
+!data/*
 
 generated.h
 
