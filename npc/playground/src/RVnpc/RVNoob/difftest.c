@@ -91,6 +91,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r) {
   }
   if (cpu_state.pc != ref_r->pc) {
     printf("!!!!!!!\n");
+    printf("main_time : %ld\n", main_time);
     printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
     printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
     printf("!!!!!!!\n");
@@ -99,6 +100,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r) {
   for (int i = 0; i < CSR_NUM; i++) {
     if (cpu_state.csr[i] != ref_r->csr[i]) {
       printf("!!!!!!!\n");
+      printf("main_time : %ld\n", main_time);
       printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
       printf("ref.csr[%d] is " FMT_WORD "\n", i, ref_r->csr[i]);
       printf("!!!!!!!\n");

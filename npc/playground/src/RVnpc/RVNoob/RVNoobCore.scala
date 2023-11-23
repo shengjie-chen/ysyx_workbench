@@ -61,11 +61,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val pc =
     if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
     else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
+  val icache   = DCache(isICache = true, sizeInKB = 1)
+  //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   val ppl_ctrl = Module(new PipelineCtrl)
-  val icache   = DCache(isICache = true, sizeInKB = 1)
-  //  val icache = Module(new ICache)
   val id_reg = IDreg(
     pc     = pc,
     inst   = icache.io.rdata,
@@ -149,7 +149,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     if (spmu_en) {
       val dpi_branch_error = Module(new DpiBranchError)
       dpi_branch_error.io.clk   <> clock
-      dpi_branch_error.io.valid <> dnpc_en
+      dpi_branch_error.io.valid <> (dnpc_en && ex_reg.out.valid)
     }
   }
 
