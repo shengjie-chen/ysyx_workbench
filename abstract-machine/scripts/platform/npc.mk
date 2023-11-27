@@ -23,14 +23,9 @@ image: $(IMAGE).elf
 run: image
 	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_gtk IMG=$(IMAGE).bin
 
-run_gtk: image
-	$(MAKE) -C $(NPC_HOME) sim_npc_vcd IMG=$(IMAGE).bin
-
-run_gtk_no_regen: image
-	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen IMG=$(IMAGE).bin
-
-run_no_regen: image
-	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen_gtk IMG=$(IMAGE).bin SDB=sdb_n
+# $(MAKE) -C $(NPC_HOME) sim_npc_vcd IMG=$(IMAGE).bin
+# $(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen IMG=$(IMAGE).bin
+# $(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_regen_gtk IMG=$(IMAGE).bin SDB=sdb_n
 	
 # gdb: image
 # 	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) gdb ARGS="$(NPCFLAGS)" IMG=$(IMAGE).bin
