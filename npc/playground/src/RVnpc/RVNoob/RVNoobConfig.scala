@@ -12,8 +12,14 @@ trait RVNoobConfig {
   val gpr_addr_w = 5
   val addr_w     = 32
 
+//  val ICacheSize = 1
+//  val DCacheSize = 0.5
+
+  val ICacheSize = 4
+  val DCacheSize = 4
+
   val tapeout: Boolean = true
-  val spmu_en: Boolean = true
+  val spmu_en: Boolean = false
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last

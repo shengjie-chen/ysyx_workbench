@@ -61,7 +61,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val pc =
     if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
     else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
-  val icache   = DCache(isICache = true, sizeInKB = 1)
+  val icache   = DCache(isICache = true, sizeInKB = ICacheSize)
   //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
@@ -115,7 +115,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
     valid       = ex_reg.out.inst_valid
   )
-  val dcache       = DCache(isICache = false, deviceId = 1, sizeInKB = 0.5)
+  val dcache       = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
   val maxi         = Module(new AxiMaster)
   val axi_crossbar = Module(new AxiCrossBar)
   val clint        = Module(new Clint)

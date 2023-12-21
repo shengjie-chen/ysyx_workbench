@@ -72,6 +72,12 @@ split_verilog: $(SOURCES)
 		python3 split_modules.py $$file; \
 	done
 
+# use /home/jiexxpu/ysyx/ysyx-workbench/ysyxSoC/ysyx/test
+tapeout:
+	sed -i 's/val spmu_en: Boolean = true/val spmu_en: Boolean = false/' $(SRC_CODE_DIR)/RVNoobConfig.scala
+	sed -i 's/val tapeout: Boolean = false/val tapeout: Boolean = true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
+	./mill -i __.test.runMain $(PACKAGE).RVNoobCoreGen
+
 verilog: update_config_spmu
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
