@@ -1,6 +1,6 @@
 package RVnpc.RVNoob
 
-import chisel3._
+import chisel3.{Module, _}
 import chisel3.util._
 
 trait RVNoobConfig {
@@ -18,8 +18,8 @@ trait RVNoobConfig {
   val ICacheSize = 4
   val DCacheSize = 4
 
-  val tapeout: Boolean = true
-  val spmu_en: Boolean = false
+  val tapeout: Boolean = false
+  val spmu_en: Boolean = true
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
@@ -140,4 +140,55 @@ trait ext_function {
   def uext(inst_p: UInt, valid_bit: Int, left_shift: Int = 0): UInt =
     VecInit(Seq.fill(64 - valid_bit - left_shift)(0.B)).asUInt()
 
+}
+
+//----------------------Get Rise Edge----------------------//
+class riseEdge extends Module {
+  val io = IO(new Bundle() {
+    val in   = Input(Bool())
+    val edge = Output(Bool())
+  })
+  io.edge := !RegNext(io.in) && io.in
+}
+
+object riseEdge {
+  def apply(in: Bool): Bool = {
+    val inst = Module(new riseEdge)
+    inst.io.in := in
+    inst.io.edge
+  }
+}
+
+//----------------------Get Fall Edge----------------------//
+class fallEdge extends Module {
+  val io = IO(new Bundle() {
+    val in   = Input(Bool())
+    val edge = Output(Bool())
+  })
+  io.edge := RegNext(io.in) && !io.in
+}
+
+object fallEdge {
+  def apply(in: Bool): Bool = {
+    val inst = Module(new fallEdge)
+    inst.io.in := in
+    inst.io.edge
+  }
+}
+
+//----------------------Get Dual Edge----------------------//
+class dualEdge extends Module {
+  val io = IO(new Bundle() {
+    val in   = Input(Bool())
+    val edge = Output(Bool())
+  })
+  io.edge := RegNext(io.in) ^ io.in
+}
+
+object dualEdge {
+  def apply(in: Bool): Bool = {
+    val inst = Module(new dualEdge)
+    inst.io.in := in
+    inst.io.edge
+  }
 }

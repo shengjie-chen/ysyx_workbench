@@ -1,7 +1,7 @@
 package RVnpc.RVNoob.Cache
 
 import RVnpc.RVNoob.Axi.{AxiReadCtrlIO, AxiWriteCtrlIO}
-import RVnpc.RVNoob.RVNoobConfig
+import RVnpc.RVNoob.{dualEdge, fallEdge, riseEdge, RVNoobConfig}
 import chisel3._
 import chisel3.util._
 
@@ -127,9 +127,10 @@ class DCache(
     mmio_write_reg := 1.B
   }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
-  val addr_tag    = io.addr(inst_w - 1, inst_w - tagWidth)
-  val addr_index  = Mux(fencei_state, fencei_set, io.addr(inst_w - tagWidth - 1, inst_w - tagWidth - indexWidth))
-  val addr_offset = io.addr(byteOffsetWidth - 1, 0)
+  val addr_tag     = io.addr(inst_w - 1, inst_w - tagWidth)
+  val addr_index   = Mux(fencei_state, fencei_set, io.addr(inst_w - tagWidth - 1, inst_w - tagWidth - indexWidth))
+  val addr_offset  = io.addr(byteOffsetWidth - 1, 0)
+  val addr_index_r = RegNext(addr_index)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
   val hit_oh  = Wire(Vec(ways, Bool()))
   val hit_way = OHToUInt(hit_oh)
@@ -148,40 +149,48 @@ class DCache(
   val waysWidth = log2Ceil(ways)
   //  println(s"waysWidth = $waysWidth")
 //  val wordNumPerBurst = axiDataWidth / 32
-  val PLRU_bits     = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
-  val replace_way   = Wire(UInt(waysWidth.W))
-  val replace_dirty = tag_arrays(replace_way)(addr_index).dirty_bit
-  val replace_tag   = Wire(UInt(tagWidth.W))
-  replace_tag := tag_arrays(replace_way)(addr_index).tag
+  val PLRU_bits = RegInit(VecInit(Seq.fill(sets)(VecInit(0.B, 0.B, 0.B)))) //sets, UInt(waysWidth.W)))
+
+  val sRE0 :: sRE1 :: sRE2 :: sRE3 :: sRE4 :: sRE5 :: Nil = Enum(6)
+
+  val replace_fsm_state = RegInit(sRE0)
+  val into_re_or_al     = inpmem_miss || (fencei_state && !fencei_ok) // into replace or allocate
+  val into_re_or_al_r   = RegNext(into_re_or_al, 0.B)
+  val replace_state     = RegInit(0.B)
+  val into_replace_r    = Wire(Bool())
+  val replace_way       = Wire(UInt(waysWidth.W))
+  val replace_way_r     = RegNext(replace_way)
+  val replace_dirty     = tag_arrays(replace_way_r)(addr_index_r).dirty_bit
+  val replace_tag       = Wire(UInt(tagWidth.W))
+  into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty
+  replace_tag    := tag_arrays(replace_way_r)(addr_index_r).tag
   if (!tapeout) {
     dontTouch(replace_tag)
   }
 
-  val replace_buffer = RegInit(Vec(4, UInt(64.W)), 0.B.asTypeOf(Vec(4, UInt(64.W))))
+  val replace_buffer = RegInit(Vec(3, UInt(64.W)), 0.B.asTypeOf(Vec(3, UInt(64.W))))
   val replace_addr   = RegInit(UInt(inst_w.W), 0.U)
-  val replace_cnt    = RegInit(0.U(3.W))
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
-  val allocate_state = inpmem_miss && !replace_dirty
-  val allocate_cnt   = RegInit(0.U(2.W))
+  val allocate_state  = Wire(Bool())
+  val allocate_reg    = RegInit(0.B)
+  val allocate_cnt    = RegInit(0.U(2.W))
+  val into_allocate_r = RegNext(inpmem_miss) && !allocate_reg && !replace_dirty
+
   // ********************************** Data Array / Single Port RAM x 4 **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // CEN
   data_cen := 0.B.asTypeOf(data_cen)
-  when(inpmem_op) {
-    when(hit) {
-      data_cen := hit_oh
-    }.otherwise {
-      when((replace_dirty && replace_cnt <= 1.U) || (!replace_dirty && pmem_read_ok)) {
-        data_cen(replace_way) := 1.B
-      }
-    }
-  }.elsewhen(fencei_state && replace_cnt <= 1.U) {
-    data_cen(replace_way) := 1.B
+  when(inpmem_op && hit) {
+    data_cen := hit_oh
+  }.elsewhen(into_replace_r || replace_fsm_state === sRE1) { // replace
+    data_cen(replace_way_r) := 1.B
+  }.elsewhen(allocate_state && pmem_read_ok) { // allocate
+    data_cen(replace_way_r) := 1.B
   }
   // WEN
-  data_wen := (!replace_dirty && !hit) || (hit && io.wen)
+  data_wen := allocate_state || (hit && io.wen)
   // BWEN
-  val data_shift = (Mux(!replace_dirty && !hit, Mux(allocate_cnt(0), 8.U, 0.U), addr_offset(3, 0)) << 3).asUInt()
+  val data_shift = (Mux(allocate_state, Mux(allocate_cnt(0), 8.U, 0.U), addr_offset(3, 0)) << 3).asUInt()
   val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
   data_bwen := MuxCase(
     0.U,
@@ -195,7 +204,7 @@ class DCache(
   // A
   data_addr := Mux(
     !hit,
-    Mux(replace_dirty, Cat(addr_index, replace_cnt(0)), Cat(addr_index, allocate_cnt(1))),
+    Mux(replace_dirty, Cat(addr_index_r, replace_fsm_state === sRE1), Cat(addr_index_r, allocate_cnt(1))),
     Cat(addr_index, addr_offset(byteOffsetWidth - 1))
   )
   // D
@@ -210,22 +219,22 @@ class DCache(
   }
 
   // ********************************** Tag Array **********************************
-  when(replace_cnt === 6.U && pmem_writeback_ok) {
-    tag_arrays(replace_way)(addr_index).dirty_bit := 0.B
+  when(replace_fsm_state === sRE5 && pmem_writeback_ok) {
+    tag_arrays(replace_way_r)(addr_index_r).dirty_bit := 0.B
   }
   when(inpmem_op && hit && io.wen) {
     tag_arrays(hit_way)(addr_index).dirty_bit := 1.B
   }
   when(allocate_cnt === 3.U && pmem_read_ok) {
-    tag_arrays(replace_way)(addr_index).valid := 1.B
-    tag_arrays(replace_way)(addr_index).tag   := addr_tag
+    tag_arrays(replace_way_r)(addr_index_r).valid := 1.B
+    tag_arrays(replace_way_r)(addr_index_r).tag   := addr_tag
   }
 
   // ********************************** DPI PMEM / AXI **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
   // Read signal
   pmem_rdata      := RegEnable((io.axi_rctrl.data >> (pmem_shift * 8.U)), 0.U, pmem_read_ok)
-  io.axi_rctrl.en := (allocate_state && !RegNext(allocate_state, 0.B)) || mmio_read_valid
+  io.axi_rctrl.en := into_allocate_r || mmio_read_valid
   io.axi_rctrl.id := deviceId.U
   when(mmio_read) {
     io.axi_rctrl.size  := io.zero_ex_op
@@ -240,11 +249,11 @@ class DCache(
   }
 
   // Write signal
-  val replace_axi_write = replace_cnt === 3.U
-  io.axi_wctrl.en := mmio_write_valid || (replace_axi_write && !RegNext(replace_axi_write, 0.B))
+  val replace_axi_write = replace_fsm_state === sRE1
+  io.axi_wctrl.en := mmio_write_valid || riseEdge(replace_axi_write)
   io.axi_wctrl.id := deviceId.U
   val wbuf_ready = RegInit(0.B)
-  when(mmio_write_valid || replace_cnt === 2.U) {
+  when(mmio_write_valid || into_replace_r) {
     wbuf_ready := 1.B
   }.elsewhen(pmem_write_ok) {
     wbuf_ready := 0.B
@@ -273,10 +282,10 @@ class DCache(
     io.axi_wctrl.data := MuxCase(
       0.U,
       Array(
-        (replace_cnt === 3.U) -> replace_buffer(0),
-        (replace_cnt === 4.U) -> replace_buffer(1),
-        (replace_cnt === 5.U) -> replace_buffer(2),
-        (replace_cnt === 6.U) -> replace_buffer(3)
+        (replace_fsm_state === sRE1 || replace_fsm_state === sRE2) -> io.sram(replace_way_r).rdata(63, 0),
+        (replace_fsm_state === sRE3) -> replace_buffer(0),
+        (replace_fsm_state === sRE4) -> replace_buffer(1),
+        (replace_fsm_state === sRE5) -> replace_buffer(2)
       )
     )
     io.axi_wctrl.strb := "b11111111".U
@@ -292,6 +301,41 @@ class DCache(
   pmem_write_ok     := io.axi_wctrl.whandshake
   pmem_writeback_ok := io.axi_wctrl.bhandshake
   // ********************************** Replace信号 **********************************
+  switch(replace_fsm_state) {
+    is(sRE0) {
+      when(replace_dirty && into_re_or_al_r) {
+        replace_fsm_state := sRE1
+      }
+    }
+    is(sRE1) {
+      when(pmem_write_ok) {
+        replace_fsm_state := sRE3
+      }.otherwise {
+        replace_fsm_state := sRE2
+      }
+    }
+    is(sRE2) {
+      when(pmem_write_ok) {
+        replace_fsm_state := sRE3
+      }
+    }
+    is(sRE3) {
+      when(pmem_write_ok) {
+        replace_fsm_state := sRE4
+      }
+    }
+    is(sRE4) {
+      when(pmem_write_ok) {
+        replace_fsm_state := sRE5
+      }
+    }
+    is(sRE5) {
+      when(pmem_writeback_ok) {
+        replace_fsm_state := sRE0
+      }
+    }
+  }
+
   when(inpmem_op && hit) {
     PLRU_bits(addr_index)(0) := hit_oh.asUInt()(1, 0).orR
     when(hit_oh.asUInt()(1, 0).orR) {
@@ -300,6 +344,7 @@ class DCache(
       PLRU_bits(addr_index)(2) := hit_oh.asUInt()(2)
     }
   }
+  replace_state := into_replace_r || replace_fsm_state =/= sRE0
   replace_way := Mux(
     fencei_state,
     fencei_way,
@@ -308,25 +353,24 @@ class DCache(
       Mux(PLRU_bits(addr_index)(0), PLRU_bits(addr_index)(2), PLRU_bits(addr_index)(1))
     )
   )
-  when((inpmem_miss && replace_dirty) || (fencei_state && !fencei_ok)) {
-    replace_addr := Cat(replace_tag, addr_index, 0.U(5.W))
-    when(replace_cnt < 3.U) {
-      replace_cnt := replace_cnt + 1.U
-      when(replace_cnt === 1.U) {
-        replace_buffer(1) := io.sram(replace_way).rdata(127, 64)
-        replace_buffer(0) := io.sram(replace_way).rdata(63, 0)
-      }.elsewhen(replace_cnt === 2.U) {
-        replace_buffer(3) := io.sram(replace_way).rdata(127, 64)
-        replace_buffer(2) := io.sram(replace_way).rdata(63, 0)
-      }
-    }.elsewhen((replace_cnt >= 3.U && replace_cnt < 6.U) && pmem_write_ok) {
-      replace_cnt := replace_cnt + 1.U
-    }.elsewhen(replace_cnt === 6.U && pmem_writeback_ok) {
-      replace_cnt := 0.U
-    }
+
+  when(replace_state) {
+    replace_addr := Cat(replace_tag, addr_index_r, 0.U(5.W))
+  }
+  when(replace_fsm_state === sRE1) {
+    replace_buffer(0) := io.sram(replace_way_r).rdata(127, 64)
+  }.elsewhen(replace_fsm_state === sRE2 || replace_fsm_state === sRE3) {
+    replace_buffer(2) := io.sram(replace_way_r).rdata(127, 64)
+    replace_buffer(1) := io.sram(replace_way_r).rdata(63, 0)
   }
 
   // ********************************** Allocate信号 **********************************
+  allocate_state := into_allocate_r || allocate_reg
+  when(into_allocate_r) {
+    allocate_reg := 1.B
+  }.elsewhen(allocate_cnt === 3.U && pmem_read_ok) {
+    allocate_reg := 0.B
+  }
   when(allocate_state && pmem_read_ok) {
     allocate_cnt := allocate_cnt + 1.U
   }
