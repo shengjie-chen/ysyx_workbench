@@ -171,10 +171,11 @@ class DCache(
   val replace_buffer = RegInit(Vec(3, UInt(64.W)), 0.B.asTypeOf(Vec(3, UInt(64.W))))
   val replace_addr   = RegInit(UInt(inst_w.W), 0.U)
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
-  val allocate_state  = Wire(Bool())
-  val allocate_reg    = RegInit(0.B)
-  val allocate_cnt    = RegInit(0.U(2.W))
-  val into_allocate_r = RegNext(inpmem_miss) && !allocate_reg && !replace_dirty
+  val allocate_state = Wire(Bool())
+  val allocate_reg   = RegInit(0.B)
+  val allocate_cnt   = RegInit(0.U(2.W))
+  val into_allocate_r = !replace_dirty &&
+    (RegNext(inpmem_miss && io.in_valid) || RegNext(pmem_writeback_ok && !fencei_state && replace_state))
 
   // ********************************** Data Array / Single Port RAM x 4 **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
