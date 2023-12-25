@@ -148,6 +148,8 @@ sim_npc_vcd_without_regen_gtk:
 	verilator --top $(TOPNAME) -O3 --cc $(VSRCS) --Mdir $(OBJ_DIR) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
 
+gtk:
+	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
 
 perf_sim_npc_nanoslite_pal:
 	make split_verilog

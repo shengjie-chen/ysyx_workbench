@@ -156,7 +156,7 @@ class DCache(
   val replace_fsm_state = RegInit(sRE0)
   val into_re_or_al     = inpmem_miss || (fencei_state && !fencei_ok) // into replace or allocate
   val into_re_or_al_r   = RegNext(into_re_or_al, 0.B)
-  val replace_state     = RegInit(0.B)
+  val replace_state     = Wire(Bool())
   val into_replace_r    = Wire(Bool())
   val replace_way       = Wire(UInt(waysWidth.W))
   val replace_way_r     = RegNext(replace_way)
@@ -168,7 +168,7 @@ class DCache(
     dontTouch(replace_tag)
   }
 
-  val replace_buffer = RegInit(Vec(3, UInt(64.W)), 0.B.asTypeOf(Vec(3, UInt(64.W))))
+  val replace_buffer = RegInit(Vec(4, UInt(64.W)), 0.B.asTypeOf(Vec(4, UInt(64.W))))
   val replace_addr   = RegInit(UInt(inst_w.W), 0.U)
   // >>>>>>>>>>>>>> Allocate信号 <<<<<<<<<<<<<<
   val allocate_state = Wire(Bool())
@@ -283,10 +283,10 @@ class DCache(
     io.axi_wctrl.data := MuxCase(
       0.U,
       Array(
-        (replace_fsm_state === sRE1 || replace_fsm_state === sRE2) -> io.sram(replace_way_r).rdata(63, 0),
-        (replace_fsm_state === sRE3) -> replace_buffer(0),
-        (replace_fsm_state === sRE4) -> replace_buffer(1),
-        (replace_fsm_state === sRE5) -> replace_buffer(2)
+        (replace_fsm_state === sRE2) -> replace_buffer(0),
+        (replace_fsm_state === sRE3) -> replace_buffer(1),
+        (replace_fsm_state === sRE4) -> replace_buffer(2),
+        (replace_fsm_state === sRE5) -> replace_buffer(3)
       )
     )
     io.axi_wctrl.strb := "b11111111".U
@@ -309,11 +309,7 @@ class DCache(
       }
     }
     is(sRE1) {
-      when(pmem_write_ok) {
-        replace_fsm_state := sRE3
-      }.otherwise {
         replace_fsm_state := sRE2
-      }
     }
     is(sRE2) {
       when(pmem_write_ok) {
@@ -359,10 +355,11 @@ class DCache(
     replace_addr := Cat(replace_tag, addr_index_r, 0.U(5.W))
   }
   when(replace_fsm_state === sRE1) {
-    replace_buffer(0) := io.sram(replace_way_r).rdata(127, 64)
-  }.elsewhen(replace_fsm_state === sRE2 || replace_fsm_state === sRE3) {
-    replace_buffer(2) := io.sram(replace_way_r).rdata(127, 64)
-    replace_buffer(1) := io.sram(replace_way_r).rdata(63, 0)
+    replace_buffer(0) := io.sram(replace_way_r).rdata(63, 0)
+    replace_buffer(1) := io.sram(replace_way_r).rdata(127, 64)
+  }.elsewhen(riseEdge(replace_fsm_state === sRE2)) {
+    replace_buffer(2) := io.sram(replace_way_r).rdata(63, 0)
+    replace_buffer(3) := io.sram(replace_way_r).rdata(127, 64)
   }
 
   // ********************************** Allocate信号 **********************************

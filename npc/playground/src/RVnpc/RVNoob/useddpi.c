@@ -116,7 +116,9 @@ extern "C" void pmem_write_dpi(long long waddr, long long wdata, char wmask, lon
   }
 
   if (waddr < CONFIG_MBASE || waddr >= (CONFIG_MBASE + CONFIG_MSIZE)) {
-    printf("!!! out of bound. write addr:%llx\n", waddr);
+    printf("!!! sim_time:%ld, out of bound. write addr:%llx\n", main_time, waddr);
+	npc_state.state = NPC_ABORT;
+	return;
   }
 
 #ifdef CONFIG_MTRACE

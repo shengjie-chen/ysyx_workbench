@@ -11,22 +11,22 @@
 
 // ---------------------------->switch
 
-#define CONFIG_ITRACE
-#define CONFIG_FTRACE
-#define CONFIG_MTRACE
+// #define CONFIG_ITRACE
+// #define CONFIG_FTRACE
+// #define CONFIG_MTRACE
 
-#define SPMU_ENABLE
+// #define SPMU_ENABLE
 
 #ifdef CONFIG_ITRACE  
 #define CONFIG_DUMPSTART 0 
 #endif
 
-#define CONFIG_DIFFTEST
+// #define CONFIG_DIFFTEST
 // #define CONFIG_DIFFTEST_REF_MEM_POINT
 
 // 1M --> 1.6GB
-#define CONFIG_DUMPVCD
-#define CONFIG_DUMPSTART 0
+// #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPSTART 0
 // #define CONFIG_DUMPSTART 10000000
 
 // ---------------------------->switch end

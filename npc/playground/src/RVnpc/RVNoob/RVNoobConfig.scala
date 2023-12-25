@@ -18,8 +18,8 @@ trait RVNoobConfig {
   val ICacheSize = 4
   val DCacheSize = 4
 
-  val tapeout: Boolean = false
-  val spmu_en: Boolean = true
+  val tapeout:         Boolean = true
+  val spmu_en:         Boolean = false
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
@@ -143,7 +143,7 @@ trait ext_function {
 }
 
 //----------------------Get Rise Edge----------------------//
-class riseEdge extends Module {
+class riseEdge extends Module with RVNoobConfig {
   val io = IO(new Bundle() {
     val in   = Input(Bool())
     val edge = Output(Bool())
@@ -160,7 +160,7 @@ object riseEdge {
 }
 
 //----------------------Get Fall Edge----------------------//
-class fallEdge extends Module {
+class fallEdge extends Module with RVNoobConfig {
   val io = IO(new Bundle() {
     val in   = Input(Bool())
     val edge = Output(Bool())
@@ -177,7 +177,7 @@ object fallEdge {
 }
 
 //----------------------Get Dual Edge----------------------//
-class dualEdge extends Module {
+class dualEdge extends Module with RVNoobConfig {
   val io = IO(new Bundle() {
     val in   = Input(Bool())
     val edge = Output(Bool())
