@@ -5,6 +5,9 @@ import chisel3.util._
 import Pipeline._
 import RVnpc.RVNoob.Axi.AxiSlaveMem
 import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad, S011HD1P_X32Y2D128_BW}
+import RVnpc.RVNoob.Fpga.SPRAM_WRAP
+
+import scala.math.pow
 
 class RVNoob extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
@@ -17,15 +20,24 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> RVNoobCore <<<<<<<<<<<<<<
   val core = RVNoobCore()
   // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
-  val sram0 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram1 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram2 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram3 = Module(new S011HD1P_X32Y2D128_BW)
+  val sram0 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram1 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram2 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram3 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
   // >>>>>>>>>>>>>> Data Cache Sram <<<<<<<<<<<<<<
-  val sram4 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram5 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram6 = Module(new S011HD1P_X32Y2D128_BW)
-  val sram7 = Module(new S011HD1P_X32Y2D128_BW)
+  val sram4 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram5 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram6 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  val sram7 = if (!fpga) Some(Module(new S011HD1P_X32Y2D128_BW)) else None
+  // >>>>>>>>>>>>>> FPGA Cache Bram <<<<<<<<<<<<<<
+  val i_bram =
+    if (fpga)
+      Some(Seq.fill(16)(Module(new SPRAM_WRAP(8, (ICacheSize * pow(2, 10) / (128 / 8)).toInt, "block"))))
+    else None
+  val d_bram =
+    if (fpga)
+      Some(Seq.fill(16)(Module(new SPRAM_WRAP(8, (DCacheSize * pow(2, 10) / (128 / 8)).toInt, "block"))))
+    else None
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   val axi_pmem = Module(new AxiSlaveMem)
 
@@ -35,72 +47,90 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   io.diff_pc  <> core.io.diff_pc.get
   io.inst_cnt <> core.io.inst_cnt.get
 
-  // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
-  sram0.io.CLK  <> clock
-  sram0.io.Q    <> core.io.sram0.rdata
-  sram0.io.CEN  <> core.io.sram0.cen
-  sram0.io.WEN  <> core.io.sram0.wen
-  sram0.io.BWEN <> core.io.sram0.wmask
-  sram0.io.A    <> core.io.sram0.addr
-  sram0.io.D    <> core.io.sram0.wdata
+  if (!fpga) {
+    // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
+    sram0.get.io.CLK  <> clock
+    sram0.get.io.Q    <> core.io.sram0.get.rdata
+    sram0.get.io.CEN  <> core.io.sram0.get.cen
+    sram0.get.io.WEN  <> core.io.sram0.get.wen
+    sram0.get.io.BWEN <> core.io.sram0.get.wmask
+    sram0.get.io.A    <> core.io.sram0.get.addr
+    sram0.get.io.D    <> core.io.sram0.get.wdata
 
-  sram1.io.CLK  <> clock
-  sram1.io.Q    <> core.io.sram1.rdata
-  sram1.io.CEN  <> core.io.sram1.cen
-  sram1.io.WEN  <> core.io.sram1.wen
-  sram1.io.BWEN <> core.io.sram1.wmask
-  sram1.io.A    <> core.io.sram1.addr
-  sram1.io.D    <> core.io.sram1.wdata
+    sram1.get.io.CLK  <> clock
+    sram1.get.io.Q    <> core.io.sram1.get.rdata
+    sram1.get.io.CEN  <> core.io.sram1.get.cen
+    sram1.get.io.WEN  <> core.io.sram1.get.wen
+    sram1.get.io.BWEN <> core.io.sram1.get.wmask
+    sram1.get.io.A    <> core.io.sram1.get.addr
+    sram1.get.io.D    <> core.io.sram1.get.wdata
 
-  sram2.io.CLK  <> clock
-  sram2.io.Q    <> core.io.sram2.rdata
-  sram2.io.CEN  <> core.io.sram2.cen
-  sram2.io.WEN  <> core.io.sram2.wen
-  sram2.io.BWEN <> core.io.sram2.wmask
-  sram2.io.A    <> core.io.sram2.addr
-  sram2.io.D    <> core.io.sram2.wdata
+    sram2.get.io.CLK  <> clock
+    sram2.get.io.Q    <> core.io.sram2.get.rdata
+    sram2.get.io.CEN  <> core.io.sram2.get.cen
+    sram2.get.io.WEN  <> core.io.sram2.get.wen
+    sram2.get.io.BWEN <> core.io.sram2.get.wmask
+    sram2.get.io.A    <> core.io.sram2.get.addr
+    sram2.get.io.D    <> core.io.sram2.get.wdata
 
-  sram3.io.CLK  <> clock
-  sram3.io.Q    <> core.io.sram3.rdata
-  sram3.io.CEN  <> core.io.sram3.cen
-  sram3.io.WEN  <> core.io.sram3.wen
-  sram3.io.BWEN <> core.io.sram3.wmask
-  sram3.io.A    <> core.io.sram3.addr
-  sram3.io.D    <> core.io.sram3.wdata
+    sram3.get.io.CLK  <> clock
+    sram3.get.io.Q    <> core.io.sram3.get.rdata
+    sram3.get.io.CEN  <> core.io.sram3.get.cen
+    sram3.get.io.WEN  <> core.io.sram3.get.wen
+    sram3.get.io.BWEN <> core.io.sram3.get.wmask
+    sram3.get.io.A    <> core.io.sram3.get.addr
+    sram3.get.io.D    <> core.io.sram3.get.wdata
 
-  // >>>>>>>>>>>>>> Data Cache Sram <<<<<<<<<<<<<<
-  sram4.io.CLK  <> clock
-  sram4.io.Q    <> core.io.sram4.rdata
-  sram4.io.CEN  <> core.io.sram4.cen
-  sram4.io.WEN  <> core.io.sram4.wen
-  sram4.io.BWEN <> core.io.sram4.wmask
-  sram4.io.A    <> core.io.sram4.addr
-  sram4.io.D    <> core.io.sram4.wdata
+    // >>>>>>>>>>>>>> Data Cache Sram <<<<<<<<<<<<<<
+    sram4.get.io.CLK  <> clock
+    sram4.get.io.Q    <> core.io.sram4.get.rdata
+    sram4.get.io.CEN  <> core.io.sram4.get.cen
+    sram4.get.io.WEN  <> core.io.sram4.get.wen
+    sram4.get.io.BWEN <> core.io.sram4.get.wmask
+    sram4.get.io.A    <> core.io.sram4.get.addr
+    sram4.get.io.D    <> core.io.sram4.get.wdata
 
-  sram5.io.CLK  <> clock
-  sram5.io.Q    <> core.io.sram5.rdata
-  sram5.io.CEN  <> core.io.sram5.cen
-  sram5.io.WEN  <> core.io.sram5.wen
-  sram5.io.BWEN <> core.io.sram5.wmask
-  sram5.io.A    <> core.io.sram5.addr
-  sram5.io.D    <> core.io.sram5.wdata
+    sram5.get.io.CLK  <> clock
+    sram5.get.io.Q    <> core.io.sram5.get.rdata
+    sram5.get.io.CEN  <> core.io.sram5.get.cen
+    sram5.get.io.WEN  <> core.io.sram5.get.wen
+    sram5.get.io.BWEN <> core.io.sram5.get.wmask
+    sram5.get.io.A    <> core.io.sram5.get.addr
+    sram5.get.io.D    <> core.io.sram5.get.wdata
 
-  sram6.io.CLK  <> clock
-  sram6.io.Q    <> core.io.sram6.rdata
-  sram6.io.CEN  <> core.io.sram6.cen
-  sram6.io.WEN  <> core.io.sram6.wen
-  sram6.io.BWEN <> core.io.sram6.wmask
-  sram6.io.A    <> core.io.sram6.addr
-  sram6.io.D    <> core.io.sram6.wdata
+    sram6.get.io.CLK  <> clock
+    sram6.get.io.Q    <> core.io.sram6.get.rdata
+    sram6.get.io.CEN  <> core.io.sram6.get.cen
+    sram6.get.io.WEN  <> core.io.sram6.get.wen
+    sram6.get.io.BWEN <> core.io.sram6.get.wmask
+    sram6.get.io.A    <> core.io.sram6.get.addr
+    sram6.get.io.D    <> core.io.sram6.get.wdata
 
-  sram7.io.CLK  <> clock
-  sram7.io.Q    <> core.io.sram7.rdata
-  sram7.io.CEN  <> core.io.sram7.cen
-  sram7.io.WEN  <> core.io.sram7.wen
-  sram7.io.BWEN <> core.io.sram7.wmask
-  sram7.io.A    <> core.io.sram7.addr
-  sram7.io.D    <> core.io.sram7.wdata
-
+    sram7.get.io.CLK  <> clock
+    sram7.get.io.Q    <> core.io.sram7.get.rdata
+    sram7.get.io.CEN  <> core.io.sram7.get.cen
+    sram7.get.io.WEN  <> core.io.sram7.get.wen
+    sram7.get.io.BWEN <> core.io.sram7.get.wmask
+    sram7.get.io.A    <> core.io.sram7.get.addr
+    sram7.get.io.D    <> core.io.sram7.get.wdata
+  }
+  // >>>>>>>>>>>>>> FPGA Cache Bram <<<<<<<<<<<<<<
+  if (fpga) {
+    for (i <- 0 to 15) {
+      i_bram.get(i).io.en    <> core.io.i_bram.get(i).en
+      i_bram.get(i).io.wr    <> core.io.i_bram.get(i).wr
+      i_bram.get(i).io.addr  <> core.io.i_bram.get(i).addr
+      i_bram.get(i).io.wdata <> core.io.i_bram.get(i).wdata
+      i_bram.get(i).io.rdata <> core.io.i_bram.get(i).rdata
+    }
+    for (i <- 0 to 15) {
+      d_bram.get(i).io.en    <> core.io.d_bram.get(i).en
+      d_bram.get(i).io.wr    <> core.io.d_bram.get(i).wr
+      d_bram.get(i).io.addr  <> core.io.d_bram.get(i).addr
+      d_bram.get(i).io.wdata <> core.io.d_bram.get(i).wdata
+      d_bram.get(i).io.rdata <> core.io.d_bram.get(i).rdata
+    }
+  }
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   axi_pmem.io.S_AXI_ACLK    <> clock
   axi_pmem.io.S_AXI_ARESETN <> !reset.asBool()

@@ -7,6 +7,8 @@ import chisel3._
 import chisel3.util.BitPat.dontCare
 import chisel3.util._
 
+import scala.math.pow
+
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
     val pc       = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
@@ -21,16 +23,19 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val master = new AxiIO
     val slave  = Flipped(new AxiIO)
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<
-    val sram0 = new CacheSramIO
-    val sram1 = new CacheSramIO
-    val sram2 = new CacheSramIO
-    val sram3 = new CacheSramIO
+    val sram0 = if (!fpga) Some(new CacheSramIO) else None
+    val sram1 = if (!fpga) Some(new CacheSramIO) else None
+    val sram2 = if (!fpga) Some(new CacheSramIO) else None
+    val sram3 = if (!fpga) Some(new CacheSramIO) else None
     // >>>>>>>>>>>>>> Data Cache Sram <<<<<<<<<<<<<<
-    val sram4 = new CacheSramIO
-    val sram5 = new CacheSramIO
-    val sram6 = new CacheSramIO
-    val sram7 = new CacheSramIO
+    val sram4 = if (!fpga) Some(new CacheSramIO) else None
+    val sram5 = if (!fpga) Some(new CacheSramIO) else None
+    val sram6 = if (!fpga) Some(new CacheSramIO) else None
+    val sram7 = if (!fpga) Some(new CacheSramIO) else None
 
+    // >>>>>>>>>>>>>> FPGA Cache Bram <<<<<<<<<<<<<<
+    val i_bram = if (fpga) Some(Vec(16, new BramIO((ICacheSize * pow(2, 10)).toInt))) else None
+    val d_bram = if (fpga) Some(Vec(16, new BramIO((DCacheSize * pow(2, 10)).toInt))) else None
   })
   /* **********************************
    * 没有实现io_interrupt和Core顶层AXI4 slave口，将这些接口输出置零，输入悬空
@@ -61,7 +66,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val pc =
     if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
     else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
-  val icache   = DCache(isICache = true, sizeInKB = ICacheSize)
+  val icache = DCache(isICache = true, sizeInKB = ICacheSize)
   //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
@@ -157,11 +162,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   icache.io.ren      <> !reset.asBool()
   icache.io.in_valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
 
-  icache.io.sram(0) <> io.sram0
-  icache.io.sram(1) <> io.sram1
-  icache.io.sram(2) <> io.sram2
-  icache.io.sram(3) <> io.sram3
-
+  if (fpga) {
+    icache.io.bram.get <> io.i_bram.get
+  } else {
+    icache.io.sram.get(0) <> io.sram0.get
+    icache.io.sram.get(1) <> io.sram1.get
+    icache.io.sram.get(2) <> io.sram2.get
+    icache.io.sram.get(3) <> io.sram3.get
+  }
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
 
@@ -231,10 +239,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   }
   dcache.io.in_valid <> mem_reg.out.valid
 
-  dcache.io.sram(0) <> io.sram4
-  dcache.io.sram(1) <> io.sram5
-  dcache.io.sram(2) <> io.sram6
-  dcache.io.sram(3) <> io.sram7
+  if (fpga) {
+    dcache.io.bram.get <> io.d_bram.get
+  } else {
+    dcache.io.sram.get(0) <> io.sram4.get
+    dcache.io.sram.get(1) <> io.sram5.get
+    dcache.io.sram.get(2) <> io.sram6.get
+    dcache.io.sram.get(3) <> io.sram7.get
+  }
 
   if (simplify_design) {
     axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl

@@ -18,6 +18,8 @@ trait RVNoobConfig {
   val ICacheSize = 4
   val DCacheSize = 4
 
+  // type : 0 - sim; 1 - tapeout; 2 - fpga
+  val fpga:            Boolean = false
   val tapeout:         Boolean = true
   val spmu_en:         Boolean = false
   val simplify_design: Boolean = !tapeout
@@ -149,6 +151,7 @@ class riseEdge extends Module with RVNoobConfig {
     val edge = Output(Bool())
   })
   io.edge := !RegNext(io.in, 0.B) && io.in
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }
 
 object riseEdge {
@@ -166,6 +169,7 @@ class fallEdge extends Module with RVNoobConfig {
     val edge = Output(Bool())
   })
   io.edge := RegNext(io.in, 0.B) && !io.in
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }
 
 object fallEdge {
@@ -183,6 +187,7 @@ class dualEdge extends Module with RVNoobConfig {
     val edge = Output(Bool())
   })
   io.edge := RegNext(io.in, 0.B) ^ io.in
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }
 
 object dualEdge {

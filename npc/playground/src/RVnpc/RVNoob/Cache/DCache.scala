@@ -44,7 +44,8 @@ class DCache(
     val rdata      = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
     val out_rvalid = Output(Bool())
 
-    val sram      = Vec(4, new CacheSramIO)
+    val sram      = if (!fpga) Some(Vec(4, new CacheSramIO)) else None
+    val bram      = if (fpga) Some(Vec(16, new BramIO(cacheSize))) else None
     val axi_rctrl = Flipped(new AxiReadCtrlIO)
     val axi_wctrl = Flipped(new AxiWriteCtrlIO)
   })
@@ -56,6 +57,12 @@ class DCache(
   val data_bwen  = Wire(UInt(128.W))
   val data_addr  = Wire(UInt(6.W))
   val data_wdata = Wire(UInt(128.W))
+  // >>>>>>>>>>>>>> fpga data array <<<<<<<<<<<<<<
+  val fpga_data_cen   = Wire(Bool())
+  val fpga_data_wen   = Wire(Bool())
+  val fpga_data_addr  = Wire(UInt(log2Ceil(cacheSize / (128 / 8)).W))
+  val fpga_data_wdata = Wire(UInt(128.W))
+  val fpga_data_rdata = Wire(UInt(128.W))
   // >>>>>>>>>>>>>> tag array <<<<<<<<<<<<<<
   val tag_arrays =
     RegInit(Vec(ways, Vec(sets, new TagArrays(tagWidth))), 0.B.asTypeOf(Vec(ways, Vec(sets, new TagArrays(tagWidth)))))
@@ -192,16 +199,30 @@ class DCache(
   data_wen := allocate_state || (hit && io.wen)
   // BWEN
   val data_shift = (Mux(allocate_state, Mux(allocate_cnt(0), 8.U, 0.U), addr_offset(3, 0)) << 3).asUInt()
-  val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
-  data_bwen := MuxCase(
+  val bwen_temp = MuxCase(
     0.U,
     Array(
-      (io.zero_ex_op === 3.U || !hit) -> (bwen_temp << data_shift), // write double word
-      (io.zero_ex_op === 2.U) -> (0xffffffffL.U(128.W) << data_shift), // write word
-      (io.zero_ex_op === 1.U) -> (0xffffL.U(128.W) << data_shift), // write half word
-      (io.zero_ex_op === 0.U) -> (0xffL.U(128.W) << data_shift) // write byte
+      (io.zero_ex_op === 3.U || !hit) -> (0xff.U << data_shift(6, 3)), // write double word
+      (io.zero_ex_op === 2.U) -> (0xf.U << data_shift(6, 3)), // write word
+      (io.zero_ex_op === 1.U) -> (0x3.U << data_shift(6, 3)), // write half word
+      (io.zero_ex_op === 0.U) -> (0x1.U << data_shift(6, 3)) // write byte
     )
   )
+  val expandedSignals = Wire(Vec(16, UInt(8.W)))
+  for (i <- 0 until 16) {
+    expandedSignals(i) := Fill(8, bwen_temp(i))
+  }
+  data_bwen := expandedSignals.asUInt
+//  val bwen_temp  = Cat(0.U(64.W), 0xffffffffffffffffL.S(64.W).asUInt())
+//  data_bwen := MuxCase(
+//    0.U,
+//    Array(
+//      (io.zero_ex_op === 3.U || !hit) -> (bwen_temp << data_shift), // write double word
+//      (io.zero_ex_op === 2.U) -> (0xffffffffL.U(128.W) << data_shift), // write word
+//      (io.zero_ex_op === 1.U) -> (0xffffL.U(128.W) << data_shift), // write half word
+//      (io.zero_ex_op === 0.U) -> (0xffL.U(128.W) << data_shift) // write byte
+//    )
+//  )
   // A
   data_addr := Mux(
     !hit,
@@ -210,13 +231,48 @@ class DCache(
   )
   // D
   data_wdata := Mux(!hit, io.axi_rctrl.data << data_shift, io.wdata << data_shift)
+  // >>>>>>>>>>>>>> Fpga <<<<<<<<<<<<<<
+  // CEN
+  fpga_data_cen := 0.B
+  when(inpmem_op && hit) {
+    fpga_data_cen := 1.B
+  }.elsewhen(into_replace_r || replace_fsm_state === sRE1) { // replace
+    fpga_data_cen := 1.B
+  }.elsewhen(allocate_state && pmem_read_ok) { // allocate
+    fpga_data_cen := 1.B
+  }
+  // WEN
+  fpga_data_wen := allocate_state || (hit && io.wen)
+  // A
+  fpga_data_addr := Mux(hit, hit_way, replace_way_r) ## data_addr
+  // D
+  fpga_data_wdata := Mux(!hit, io.axi_rctrl.data << data_shift, io.wdata << data_shift)
+  // Q
+  val fpga_data_rdata_tmp = if (fpga) Some(Wire(Vec(16, UInt(8.W)))) else None
+  if (fpga) {
+    for (i <- 0 until 16) {
+      fpga_data_rdata_tmp.get(i) := io.bram.get(i).rdata
+    }
+    fpga_data_rdata := fpga_data_rdata_tmp.get.asUInt
+  } else {
+    fpga_data_rdata := DontCare
+  }
   // >>>>>>>>>>>>>> Assign <<<<<<<<<<<<<<
-  for (i <- 0 to 3) {
-    io.sram(i).cen   := ~data_cen(i)
-    io.sram(i).wen   := ~data_wen
-    io.sram(i).wmask := ~data_bwen
-    io.sram(i).addr  := data_addr
-    io.sram(i).wdata := data_wdata
+  if (!fpga) {
+    for (i <- 0 to 3) {
+      io.sram.get(i).cen   := ~data_cen(i)
+      io.sram.get(i).wen   := ~data_wen
+      io.sram.get(i).wmask := ~data_bwen
+      io.sram.get(i).addr  := data_addr
+      io.sram.get(i).wdata := data_wdata
+    }
+  } else {
+    for (i <- 0 to 15) {
+      io.bram.get(i).en    := fpga_data_cen && (fpga_data_wen && bwen_temp(i) || !fpga_data_wen)
+      io.bram.get(i).wr    := ~fpga_data_wen
+      io.bram.get(i).addr  := fpga_data_addr
+      io.bram.get(i).wdata := fpga_data_wdata((i + 1) * 8 - 1, i * 8)
+    }
   }
 
   // ********************************** Tag Array **********************************
@@ -354,12 +410,22 @@ class DCache(
   when(replace_state) {
     replace_addr := Cat(replace_tag, addr_index_r, 0.U(5.W))
   }
-  when(replace_fsm_state === sRE1) {
-    replace_buffer(0) := io.sram(replace_way_r).rdata(63, 0)
-    replace_buffer(1) := io.sram(replace_way_r).rdata(127, 64)
-  }.elsewhen(riseEdge(replace_fsm_state === sRE2)) {
-    replace_buffer(2) := io.sram(replace_way_r).rdata(63, 0)
-    replace_buffer(3) := io.sram(replace_way_r).rdata(127, 64)
+  if (fpga) {
+    when(replace_fsm_state === sRE1) {
+      replace_buffer(0) := fpga_data_rdata(63, 0)
+      replace_buffer(1) := fpga_data_rdata(127, 64)
+    }.elsewhen(riseEdge(replace_fsm_state === sRE2)) {
+      replace_buffer(2) := fpga_data_rdata(63, 0)
+      replace_buffer(3) := fpga_data_rdata(127, 64)
+    }
+  } else {
+    when(replace_fsm_state === sRE1) {
+      replace_buffer(0) := io.sram.get(replace_way_r).rdata(63, 0)
+      replace_buffer(1) := io.sram.get(replace_way_r).rdata(127, 64)
+    }.elsewhen(riseEdge(replace_fsm_state === sRE2)) {
+      replace_buffer(2) := io.sram.get(replace_way_r).rdata(63, 0)
+      replace_buffer(3) := io.sram.get(replace_way_r).rdata(127, 64)
+    }
   }
 
   // ********************************** Allocate信号 **********************************
@@ -378,7 +444,11 @@ class DCache(
   io.out_rvalid := (hit && inpmem && io.ren) || mmio_read_ready
 
   when(RegNext(inpmem, 0.B)) {
-    io.rdata := (io.sram(RegNext(hit_way, 0.U)).rdata >> RegNext(data_shift, 0.U))
+    if (fpga) {
+      io.rdata := (fpga_data_rdata >> RegNext(data_shift, 0.U))
+    } else {
+      io.rdata := (io.sram.get(RegNext(hit_way, 0.U)).rdata >> RegNext(data_shift, 0.U))
+    }
   }.otherwise {
     io.rdata := pmem_rdata
   }

@@ -58,10 +58,10 @@ echo_val:
 
 update_config_spmu:
 	@if grep -q "//\s*#define SPMU_ENABLE" $(SRC_CODE_DIR)/conf.h; then \
-    		sed -i 's/val spmu_en: Boolean = true/val spmu_en: Boolean = false/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
+    		sed -i 's/\(val spmu_en: *Boolean = \)true/\1false/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
     		echo "SPMU set to false"; \
     else \
-    		sed -i 's/val spmu_en: Boolean = false/val spmu_en: Boolean = true/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
+    		sed -i 's/\(val spmu_en: *Boolean = \)false/\1true/' $(SRC_CODE_DIR)/RVNoobConfig.scala; \
     		echo "SPMU set to true"; \
     fi
 
@@ -74,14 +74,15 @@ split_verilog: $(SOURCES)
 
 # use /home/jiexxpu/ysyx/ysyx-workbench/ysyxSoC/ysyx/test
 tapeout:
-	sed -i 's/val spmu_en: Boolean = true/val spmu_en: Boolean = false/' $(SRC_CODE_DIR)/RVNoobConfig.scala
-	sed -i 's/val tapeout: Boolean = false/val tapeout: Boolean = true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
+	sed -i 's/\(val spmu_en: *Boolean = \)true/\1false/' $(SRC_CODE_DIR)/RVNoobConfig.scala
+	sed -i 's/\(val tapeout: *Boolean = \)false/\1true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	./mill -i __.test.runMain $(PACKAGE).RVNoobCoreGen
+	sed -i '/initial begin/,/end /d;/`ifdef/,/`endif/d;/^\/\//d;/`ifndef/,/`endif/d' /home/jiexxpu/ysyx/ysyx-workbench/npc/build/soc/ysyx_22040495.v
 
 verilog: update_config_spmu
 	$(call git_commit, "generate $(TOPNAME) verilog")
 #	echo $(SRC_CODE_DIR)
-	sed -i 's/val tapeout: Boolean = true/val tapeout: Boolean = false/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
+	sed -i 's/\(val tapeout: *Boolean = \)true/\1false/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	rm -rf $(VERILOG_OBJ_DIR)
 	mkdir -p $(VERILOG_OBJ_DIR)
 	./mill -i __.test.runMain $(PACKAGE).$(TOPMODULE_GEN) -td $(VERILOG_OBJ_DIR)
