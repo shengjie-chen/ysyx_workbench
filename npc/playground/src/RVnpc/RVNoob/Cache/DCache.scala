@@ -130,7 +130,7 @@ class DCache(
   val addr_tag     = io.addr(inst_w - 1, inst_w - tagWidth)
   val addr_index   = Mux(fencei_state, fencei_set, io.addr(inst_w - tagWidth - 1, inst_w - tagWidth - indexWidth))
   val addr_offset  = io.addr(byteOffsetWidth - 1, 0)
-  val addr_index_r = RegNext(addr_index)
+  val addr_index_r = RegNext(addr_index, 0.U)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
   val hit_oh  = Wire(Vec(ways, Bool()))
   val hit_way = OHToUInt(hit_oh)
@@ -159,7 +159,7 @@ class DCache(
   val replace_state     = Wire(Bool())
   val into_replace_r    = Wire(Bool())
   val replace_way       = Wire(UInt(waysWidth.W))
-  val replace_way_r     = RegNext(replace_way)
+  val replace_way_r     = RegNext(replace_way, 0.U)
   val replace_dirty     = tag_arrays(replace_way_r)(addr_index_r).dirty_bit
   val replace_tag       = Wire(UInt(tagWidth.W))
   into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty
@@ -175,7 +175,7 @@ class DCache(
   val allocate_reg   = RegInit(0.B)
   val allocate_cnt   = RegInit(0.U(2.W))
   val into_allocate_r = !replace_dirty &&
-    (RegNext(inpmem_miss && io.in_valid) || RegNext(pmem_writeback_ok && !fencei_state && replace_state))
+    (RegNext(inpmem_miss && io.in_valid, 0.B) || RegNext(pmem_writeback_ok && !fencei_state && replace_state, 0.B))
 
   // ********************************** Data Array / Single Port RAM x 4 **********************************
   // >>>>>>>>>>>>>> Input Logic <<<<<<<<<<<<<<
@@ -309,7 +309,7 @@ class DCache(
       }
     }
     is(sRE1) {
-        replace_fsm_state := sRE2
+      replace_fsm_state := sRE2
     }
     is(sRE2) {
       when(pmem_write_ok) {

@@ -148,7 +148,7 @@ class riseEdge extends Module with RVNoobConfig {
     val in   = Input(Bool())
     val edge = Output(Bool())
   })
-  io.edge := !RegNext(io.in) && io.in
+  io.edge := !RegNext(io.in, 0.B) && io.in
 }
 
 object riseEdge {
@@ -165,7 +165,7 @@ class fallEdge extends Module with RVNoobConfig {
     val in   = Input(Bool())
     val edge = Output(Bool())
   })
-  io.edge := RegNext(io.in) && !io.in
+  io.edge := RegNext(io.in, 0.B) && !io.in
 }
 
 object fallEdge {
@@ -182,7 +182,7 @@ class dualEdge extends Module with RVNoobConfig {
     val in   = Input(Bool())
     val edge = Output(Bool())
   })
-  io.edge := RegNext(io.in) ^ io.in
+  io.edge := RegNext(io.in, 0.B) ^ io.in
 }
 
 object dualEdge {
