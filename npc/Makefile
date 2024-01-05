@@ -74,6 +74,7 @@ split_verilog: $(SOURCES)
 
 # use /home/jiexxpu/ysyx/ysyx-workbench/ysyxSoC/ysyx/test
 tapeout:
+	rm -rf /home/jiexxpu/ysyx/ysyx-workbench/npc/build/soc
 	sed -i 's/\(val spmu_en: *Boolean = \)true/\1false/' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	sed -i 's/\(val tapeout: *Boolean = \)false/\1true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	./mill -i __.test.runMain $(PACKAGE).RVNoobCoreGen
