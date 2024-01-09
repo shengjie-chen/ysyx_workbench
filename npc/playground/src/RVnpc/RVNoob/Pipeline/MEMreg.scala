@@ -9,6 +9,8 @@ trait MEMregSignal extends RVNoobConfig {
   val src2        = UInt(xlen.W)
   val mem_addr    = UInt(addr_w.W)
   val alu_res     = UInt(xlen.W)
+  val B_en        = Bool()
+  val dnpc        = UInt(addr_w.W)
   val mem_ctrl    = new MemCtrlIO
   val wb_rf_ctrl  = new WbRfCtrlIO
   val wb_csr_ctrl = new WbCsrCtrlIO
@@ -31,6 +33,8 @@ class MEMreg extends MultiIOModule with RVNoobConfig {
   out.src2     := RegEnable(in.src2, 0.U, in.reg_en)
   out.mem_addr := RegEnable(in.mem_addr, 0.U, in.reg_en)
   out.alu_res  := RegEnable(in.alu_res, 0.U, in.reg_en)
+  out.B_en     := RegEnable(in.B_en, 0.U, in.reg_en)
+  out.dnpc     := RegEnable(in.dnpc, 0.U, in.reg_en)
 
   out.mem_ctrl    := RegEnable(in.mem_ctrl, 0.U.asTypeOf(new MemCtrlIO), in.reg_en)
   out.wb_rf_ctrl  := RegEnable(in.wb_rf_ctrl, 0.U.asTypeOf(new WbRfCtrlIO), in.reg_en)
@@ -54,7 +58,7 @@ object MEMreg {
     mem_addr:    UInt,
     alu_res:     UInt,
     B_en:        Bool,
-    pc_mux:      Bool,
+    dnpc:        UInt,
     mem_ctrl:    MemCtrlIO,
     wb_rf_ctrl:  WbRfCtrlIO,
     wb_csr_ctrl: WbCsrCtrlIO,
@@ -67,6 +71,8 @@ object MEMreg {
     mem_reg.in.src2        <> src2
     mem_reg.in.mem_addr    <> mem_addr
     mem_reg.in.alu_res     <> alu_res
+    mem_reg.in.B_en        <> B_en
+    mem_reg.in.dnpc        <> dnpc
     mem_reg.in.mem_ctrl    <> mem_ctrl
     mem_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
     mem_reg.in.wb_csr_ctrl <> wb_csr_ctrl

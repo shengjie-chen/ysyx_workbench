@@ -16,7 +16,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val wb_rf_ctrl  = Output(new WbRfCtrlIO)
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
     val intr        = Input(Bool())
-    val valid       = if(!tapeout && spmu_en) Some(Input(Bool())) else None
+    val valid       = if (!tapeout && spmu_en) Some(Input(Bool())) else None
   })
   if (!tapeout) {
     val dpi_inst = Module(new DpiInst)
@@ -116,7 +116,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   val instset_csr_zimm = rvi_csrrsi || rvi_csrrwi || rvi_csrrci
   val instset_csr_reg  = rvi_csrrs || rvi_csrrw || rvi_csrrc
   val instset_csr      = instset_csr_reg || instset_csr_zimm
-  val instset_jdnpc     = rvi_jal || rvi_jalr || rvi_ecall || pri_mret // jump dnpc inst, except type_B
+  val instset_jdnpc    = rvi_jal || rvi_jalr || rvi_ecall || pri_mret // jump dnpc inst, except type_B
   // ********************************** Inst Type **********************************
   val type_I =
     rvi_jalr || rvi_addi || rvi_slti || rvi_sltiu || rvi_xori || rvi_ori || rvi_andi || rvi_slli || rvi_srli || rvi_srai || rvi_addiw || rvi_slliw || rvi_srliw || rvi_sraiw || io.mem_ctrl.r_pmem || instset_csr || rvi_ecall || rvi_fencei // TYPE_I addi
@@ -217,6 +217,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.exe_ctrl.src1_bypass  := rvi_csrrw || rvi_csrrwi
   io.exe_ctrl.alu_src1_mux := type_U
   io.exe_ctrl.alu_src2_mux := (type_I || type_S || type_U) & !instset_csr
+  io.exe_ctrl.is_branch_inst     := type_B || instset_jdnpc
 
   // >>>>>>>>>>>>>> MemCtrlIO <<<<<<<<<<<<<<
   io.mem_ctrl.judge_load_op := MuxCase(
@@ -276,9 +277,9 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
 
   // ********************************** Software PMU **********************************
   if (!tapeout && spmu_en) {
-    val branch_inst = type_B || instset_jdnpc
+    val branch_inst      = type_B || instset_jdnpc
     val find_branch_inst = Module(new DpiBranchInst)
-    find_branch_inst.io.clk := clock
+    find_branch_inst.io.clk   := clock
     find_branch_inst.io.valid := branch_inst && io.valid.get
   }
 
@@ -308,7 +309,7 @@ class DpiInst extends BlackBox with HasBlackBoxInline {
 
 class DpiBranchInst extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
-    val clk = Input(Clock())
+    val clk   = Input(Clock())
     val valid = Input(Bool())
   })
   setInline(
@@ -342,7 +343,7 @@ class EXECtrlIO extends ALUCtrlIO with RVNoobConfig {
   val exe_out_mux  = Bool()
   val dir_out_mux  = Bool()
   val src1_bypass  = Bool()
-
+  val is_branch_inst     = Bool()
 }
 
 class MemCtrlIO extends Bundle with RVNoobConfig {

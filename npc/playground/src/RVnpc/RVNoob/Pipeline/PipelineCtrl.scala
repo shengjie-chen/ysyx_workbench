@@ -18,7 +18,8 @@ class PipelineCtrl extends Module with RVNoobConfig {
     val ex_reg_mem_ctrl = Input(new MemCtrlIO)
     val mem_reg_rf      = Input(new WbRfCtrlIO)
     val mem_reg_csr     = Input(new WbCsrCtrlIO)
-    val dnpc_en         = Input(Bool())
+    val B_en            = Input(Bool())
+    val pc_mux          = Input(Bool())
     val miss            = Input(Bool())
     val id_reg_ctrl     = Output(new RegCtrl)
     val ex_reg_ctrl     = Output(new RegCtrl)
@@ -27,7 +28,6 @@ class PipelineCtrl extends Module with RVNoobConfig {
     val pc_en           = Output(Bool())
     val forward1        = Output(UInt(2.W))
     val forward2        = Output(UInt(2.W))
-    val ex_csr_hazard   = Output(Bool())
   })
   val sNone :: sDH1 :: Nil = Enum(2) // Data Hazard
   val state                = RegInit(sNone)
@@ -82,7 +82,6 @@ class PipelineCtrl extends Module with RVNoobConfig {
   io.mem_reg_ctrl  := normal_state
   io.wb_reg_ctrl   := normal_state
   io.pc_en         := 1.B
-  io.ex_csr_hazard := 0.B
 
   def if_id_delay_ex_flush = { // if,id stop, ex flush
     io.id_reg_ctrl := delay_state
@@ -97,10 +96,11 @@ class PipelineCtrl extends Module with RVNoobConfig {
     io.wb_reg_ctrl  := delay_state
     io.pc_en        := 0.B
   }.otherwise {
-    when(io.dnpc_en) {
-      io.id_reg_ctrl := flush_state
-      io.ex_reg_ctrl := flush_state
-      state          := sNone
+    when(io.B_en || io.pc_mux) {
+      io.id_reg_ctrl  := flush_state
+      io.ex_reg_ctrl  := flush_state
+      io.mem_reg_ctrl := Mux(io.B_en, flush_state, normal_state)
+      state           := sNone
     }.otherwise {
       switch(state) {
         is(sNone) {
@@ -110,7 +110,6 @@ class PipelineCtrl extends Module with RVNoobConfig {
           }.elsewhen(ex_csr_hazard) {
             if_id_delay_ex_flush
             state            := sDH1
-            io.ex_csr_hazard := 1.B
           }.elsewhen(mem_csr_hazard) {
             if_id_delay_ex_flush
             state := sNone
@@ -137,7 +136,8 @@ object PipelineCtrl {
     ex_reg_csr:  WbCsrCtrlIO,
     mem_reg_rf:  WbRfCtrlIO,
     mem_reg_csr: WbCsrCtrlIO,
-    dnpc_en:     Bool
+    B_en:        Bool,
+    pc_mux:      Bool
   ): PipelineCtrl = {
     val hazard = Module(new PipelineCtrl)
     hazard.io.idu_rf      <> idu_rf
@@ -146,7 +146,8 @@ object PipelineCtrl {
     hazard.io.ex_reg_csr  <> ex_reg_csr
     hazard.io.mem_reg_rf  <> mem_reg_rf
     hazard.io.mem_reg_csr <> mem_reg_csr
-    hazard.io.dnpc_en     <> dnpc_en
+    hazard.io.B_en        <> B_en
+    hazard.io.pc_mux      <> pc_mux
 
     hazard
   }

@@ -7,7 +7,7 @@ import chisel3._
 import chisel3.util.BitPat.dontCare
 import chisel3.util._
 
-import scala.math.pow
+import scala.math.{exp, pow}
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
@@ -101,7 +101,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     reg_en      = ppl_ctrl.io.ex_reg_ctrl.en,
     valid       = id_reg.out.inst_valid
   )
-  val exe = Module(new EXE)
+  val dnpc_out = Wire(UInt(addr_w.W))
+  val exe      = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
 
@@ -113,7 +114,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     mem_addr    = exe.io.mem_addr,
     alu_res     = exe.io.gp_out,
     B_en        = exe.io.B_en,
-    pc_mux      = ex_reg.out.dnpc_ctrl.pc_mux,
+    dnpc        = dnpc_out,
     mem_ctrl    = ex_reg.out.mem_ctrl,
     wb_rf_ctrl  = ex_reg.out.wb_rf_ctrl,
     wb_csr_ctrl = ex_reg.out.wb_csr_ctrl,
@@ -144,8 +145,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   snpc    := pc + 4.U
-  dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || exe.io.B_en
+  dnpc_en := ex_reg.out.dnpc_ctrl.pc_mux || mem_reg.out.B_en
   pc_en   := ppl_ctrl.io.pc_en
+  dnpc    := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, dnpc_out)
   npc     := Mux(dnpc_en, dnpc, snpc)
   if (!tapeout) {
     io.pc.get := pc
@@ -154,7 +156,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     if (spmu_en) {
       val dpi_branch_error = Module(new DpiBranchError)
       dpi_branch_error.io.clk   <> clock
-      dpi_branch_error.io.valid <> (dnpc_en && ex_reg.out.valid)
+      dpi_branch_error.io.valid <> ((ex_reg.out.dnpc_ctrl.pc_mux && ex_reg.out.valid) || (mem_reg.out.B_en && mem_reg.out.valid))
     }
   }
 
@@ -180,7 +182,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ppl_ctrl.io.ex_reg_mem_ctrl <> ex_reg.out.mem_ctrl
   ppl_ctrl.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
   ppl_ctrl.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
-  ppl_ctrl.io.dnpc_en         <> dnpc_en
+  ppl_ctrl.io.B_en            <> mem_reg.out.B_en
+  ppl_ctrl.io.pc_mux          <> ex_reg.out.dnpc_ctrl.pc_mux
   ppl_ctrl.io.miss            <> (cache_miss || exe.io.waiting)
 
   id_reg.reset <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
@@ -198,7 +201,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.reset <> (ppl_ctrl.io.ex_reg_ctrl.flush || reset.asBool())
 
-  dnpc := Mux(
+  dnpc_out := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
     ex_reg.out.csr_dnpc,
     Mux(ex_reg.out.dnpc_ctrl.dnpc_jalr, Cat(npc_add_res(addr_w - 1, 1), 0.U(1.W)), npc_add_res)
@@ -252,14 +255,16 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     axi_crossbar.in2.rctrl <> dcache.io.axi_rctrl
     axi_crossbar.in2.wctrl <> dcache.io.axi_wctrl
 
-    clint.io.wctrl         <> 0.U.asTypeOf(clint.io.wctrl)
-    clint.io.rctrl         <> 0.U.asTypeOf(clint.io.rctrl)
-    clint.io.mstatus_mie   <> 0.U.asTypeOf(clint.io.mstatus_mie)
-    clint.io.mie_mtie      <> 0.U.asTypeOf(clint.io.mie_mtie)
-    clint.io.id_reg_pc     <> 0.U.asTypeOf(clint.io.id_reg_pc)
-    clint.io.ex_csr_hazard <> 0.U.asTypeOf(clint.io.ex_csr_hazard)
-    clint.io.dnpc_en       <> 0.U.asTypeOf(clint.io.dnpc_en)
-    clint.io.cache_miss    <> 0.U.asTypeOf(clint.io.cache_miss)
+    clint.io.wctrl             <> 0.U.asTypeOf(clint.io.wctrl)
+    clint.io.rctrl             <> 0.U.asTypeOf(clint.io.rctrl)
+    clint.io.mstatus_mie       <> 0.U.asTypeOf(clint.io.mstatus_mie)
+    clint.io.mie_mtie          <> 0.U.asTypeOf(clint.io.mie_mtie)
+    clint.io.id_reg_pc         <> 0.U.asTypeOf(clint.io.id_reg_pc)
+    clint.io.mem_B_en          <> 0.U.asTypeOf(clint.io.mem_B_en)
+    clint.io.ex_is_branch_inst <> 0.U.asTypeOf(clint.io.ex_is_branch_inst)
+    clint.io.ex_csr_wen        <> 0.U.asTypeOf(clint.io.ex_csr_wen)
+    clint.io.mem_csr_wen       <> 0.U.asTypeOf(clint.io.mem_csr_wen)
+    clint.io.miss              <> 0.U.asTypeOf(clint.io.miss)
   } else {
     def axictrl_connect_zero(rctrl: AxiReadCtrlIO, wctrl: AxiWriteCtrlIO): Unit = {
       wctrl.en         := 0.U.asTypeOf(wctrl.en)
@@ -292,12 +297,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
       axictrl_connect_zero(clint.io.rctrl, clint.io.wctrl)
     }
 
-    clint.io.mstatus_mie   <> csr.io.mstatus_mie
-    clint.io.mie_mtie      <> csr.io.mie_mtie
-    clint.io.id_reg_pc     <> id_reg.out.pc
-    clint.io.ex_csr_hazard <> ppl_ctrl.io.ex_csr_hazard
-    clint.io.dnpc_en       <> dnpc_en
-    clint.io.cache_miss    <> cache_miss
+    clint.io.mstatus_mie       <> csr.io.mstatus_mie
+    clint.io.mie_mtie          <> csr.io.mie_mtie
+    clint.io.id_reg_pc         <> id_reg.out.pc
+    clint.io.mem_B_en          <> mem_reg.out.B_en
+    clint.io.ex_is_branch_inst <> ex_reg.out.exe_ctrl.is_branch_inst
+    clint.io.ex_csr_wen        <> ex_reg.out.wb_csr_ctrl.csr_wen
+    clint.io.mem_csr_wen       <> mem_reg.out.wb_csr_ctrl.csr_wen
+    clint.io.miss              <> (cache_miss || exe.io.waiting)
   }
   axi_crossbar.in1.rctrl <> icache.io.axi_rctrl
   axi_crossbar.in1.wctrl <> icache.io.axi_wctrl

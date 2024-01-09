@@ -6,15 +6,19 @@ import chisel3.util._
 class Clint extends Module with RVNoobConfig {
 
   val io = IO(new Bundle() {
-    val rctrl          = new AxiReadCtrlIO
-    val wctrl          = new AxiWriteCtrlIO
-    val time_interrupt = Output(Bool())
-    val mstatus_mie    = Input(Bool())
-    val mie_mtie       = Input(Bool())
-    val id_reg_pc      = Input(UInt(addr_w.W))
-    val ex_csr_hazard  = Input(Bool())
-    val dnpc_en        = Input(Bool())
-    val cache_miss     = Input(Bool())
+    val rctrl             = new AxiReadCtrlIO
+    val wctrl             = new AxiWriteCtrlIO
+    val time_interrupt    = Output(Bool())
+
+    val mstatus_mie       = Input(Bool())
+    val mie_mtie          = Input(Bool())
+
+    val id_reg_pc         = Input(UInt(addr_w.W))
+    val mem_B_en          = Input(Bool())
+    val ex_is_branch_inst = Input(Bool())
+    val ex_csr_wen        = Input(Bool())
+    val mem_csr_wen       = Input(Bool())
+    val miss              = Input(Bool())
   })
   /* 0000 msip hart 0
    * 0004 msip hart 1
@@ -35,8 +39,8 @@ class Clint extends Module with RVNoobConfig {
   val time_intr_condition = Wire(Bool())
   time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
   time_intr       := time_intr_state && !RegNext(time_intr_state, 0.B)
-  time_intr_condition := io.id_reg_pc =/= 0.U && !RegNext(io.ex_csr_hazard, 0.B) &&
-    !io.dnpc_en && !RegNext(io.dnpc_en, 0.B) && !io.cache_miss
+  val ex_mem_not_write_csr = !(io.ex_csr_wen || io.mem_csr_wen)
+  time_intr_condition := (io.id_reg_pc =/= 0.U) && !(io.ex_is_branch_inst || io.mem_B_en) && ex_mem_not_write_csr && !io.miss
 
   val time_intr_reg = RegInit(0.B)
   when(time_intr && !time_intr_condition) {
