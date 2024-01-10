@@ -40,12 +40,12 @@ class Clint extends Module with RVNoobConfig {
   time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
   time_intr       := time_intr_state && !RegNext(time_intr_state, 0.B)
   val ex_mem_not_write_csr = !(io.ex_csr_wen || io.mem_csr_wen)
-  time_intr_condition := (io.id_reg_pc =/= 0.U) && !(io.ex_is_branch_inst || io.mem_B_en) && ex_mem_not_write_csr && !io.miss
+  time_intr_condition := (io.id_reg_pc =/= 0.U) && !(io.ex_is_branch_inst || io.mem_B_en) && ex_mem_not_write_csr
 
   val time_intr_reg = RegInit(0.B)
-  when(time_intr && !time_intr_condition) {
+  when(time_intr && (!time_intr_condition || io.miss) ) {
     time_intr_reg := 1.B
-  }.elsewhen(time_intr_condition) {
+  }.elsewhen(time_intr_condition && !io.miss) {
     time_intr_reg := 0.B
   }
   io.time_interrupt := ((time_intr || time_intr_reg) && time_intr_condition)
