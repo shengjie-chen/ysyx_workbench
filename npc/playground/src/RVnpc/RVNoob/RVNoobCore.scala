@@ -121,10 +121,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
     valid       = ex_reg.out.inst_valid
   )
-  val dcache       = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
-  val maxi         = Module(new AxiMaster)
-  val axi_crossbar = Module(new AxiCrossBar)
-  val clint        = Module(new Clint)
+  val dcache        = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
+  val maxi          = Module(new AxiMaster)
+  val axi_reg_slice = Module(new AxiRegSlice)
+  val axi_crossbar  = Module(new AxiCrossBar)
+  val clint         = Module(new Clint)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg = WBreg(
@@ -313,9 +314,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   axi_crossbar.in2.pc    <> mem_reg.out.pc
   axi_crossbar.maxi.busy <> maxi.io.busy
 
-  maxi.io.rctrl <> axi_crossbar.maxi.rctrl
-  maxi.io.wctrl <> axi_crossbar.maxi.wctrl
-  maxi.io.maxi  <> io.master
+  maxi.io.rctrl         <> axi_crossbar.maxi.rctrl
+  maxi.io.wctrl         <> axi_crossbar.maxi.wctrl
+  maxi.io.maxi          <> axi_reg_slice.io.saxi
+  axi_reg_slice.io.maxi <> io.master
 
   if (!tapeout) {
     io.axi_pc.get <> axi_crossbar.maxi.pc
