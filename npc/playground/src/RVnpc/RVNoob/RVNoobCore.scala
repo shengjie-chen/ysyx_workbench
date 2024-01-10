@@ -175,16 +175,17 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   cache_miss := icache.io.miss || dcache.io.miss
 
-  ppl_ctrl.io.idu_rf          <> idu.io.id_rf_ctrl
-  ppl_ctrl.io.idu_csr         <> idu.io.id_csr_ctrl
-  ppl_ctrl.io.ex_reg_rf       <> ex_reg.out.wb_rf_ctrl
-  ppl_ctrl.io.ex_reg_csr      <> ex_reg.out.wb_csr_ctrl
-  ppl_ctrl.io.ex_reg_mem_ctrl <> ex_reg.out.mem_ctrl
-  ppl_ctrl.io.mem_reg_rf      <> mem_reg.out.wb_rf_ctrl
-  ppl_ctrl.io.mem_reg_csr     <> mem_reg.out.wb_csr_ctrl
-  ppl_ctrl.io.B_en            <> mem_reg.out.B_en
-  ppl_ctrl.io.pc_mux          <> ex_reg.out.dnpc_ctrl.pc_mux
-  ppl_ctrl.io.miss            <> (cache_miss || exe.io.waiting)
+  ppl_ctrl.io.idu_rf           <> idu.io.id_rf_ctrl
+  ppl_ctrl.io.idu_csr          <> idu.io.id_csr_ctrl
+  ppl_ctrl.io.ex_reg_rf        <> ex_reg.out.wb_rf_ctrl
+  ppl_ctrl.io.ex_reg_csr       <> ex_reg.out.wb_csr_ctrl
+  ppl_ctrl.io.ex_reg_mem_ctrl  <> ex_reg.out.mem_ctrl
+  ppl_ctrl.io.mem_reg_rf       <> mem_reg.out.wb_rf_ctrl
+  ppl_ctrl.io.mem_reg_csr      <> mem_reg.out.wb_csr_ctrl
+  ppl_ctrl.io.mem_reg_mem_ctrl <> mem_reg.out.mem_ctrl
+  ppl_ctrl.io.B_en             <> mem_reg.out.B_en
+  ppl_ctrl.io.pc_mux           <> ex_reg.out.dnpc_ctrl.pc_mux
+  ppl_ctrl.io.miss             <> (cache_miss || exe.io.waiting)
 
   id_reg.reset <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
 
@@ -213,12 +214,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   exe.io.src1 := MuxLookup(
     ppl_ctrl.io.forward1,
     ex_reg.out.src1,
-    Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
+    Array(1.U -> wb_reg.out.alu_res, 2.U -> mem_reg.out.alu_res)
   )
   exe_src2 := MuxLookup(
     ppl_ctrl.io.forward2,
     ex_reg.out.src2,
-    Array(1.U -> not_csr_wdata, 2.U -> mem_reg.out.alu_res)
+    Array(1.U -> wb_reg.out.alu_res, 2.U -> mem_reg.out.alu_res)
   )
 
   exe.io.src2 <> exe_src2
@@ -363,7 +364,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
         diff_pc := mem_reg.out.pc
       }.elsewhen(ex_reg.out.valid) {
         diff_pc := ex_reg.out.pc
-      }.elsewhen(id_reg.out.valid) {
+      }.elsewhen(id_reg.out.pc =/= 0.U) {
         diff_pc := id_reg.out.pc
       }.otherwise {
         diff_pc := pc

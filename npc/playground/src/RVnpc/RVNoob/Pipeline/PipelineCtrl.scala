@@ -11,23 +11,24 @@ class RegCtrl extends Bundle {
 // maybe name PipeLineCtrl
 class PipelineCtrl extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val idu_rf          = Input(new IdRfCtrlIO)
-    val idu_csr         = Input(new IdCsrCtrlIO)
-    val ex_reg_rf       = Input(new WbRfCtrlIO)
-    val ex_reg_csr      = Input(new WbCsrCtrlIO)
-    val ex_reg_mem_ctrl = Input(new MemCtrlIO)
-    val mem_reg_rf      = Input(new WbRfCtrlIO)
-    val mem_reg_csr     = Input(new WbCsrCtrlIO)
-    val B_en            = Input(Bool())
-    val pc_mux          = Input(Bool())
-    val miss            = Input(Bool())
-    val id_reg_ctrl     = Output(new RegCtrl)
-    val ex_reg_ctrl     = Output(new RegCtrl)
-    val mem_reg_ctrl    = Output(new RegCtrl)
-    val wb_reg_ctrl     = Output(new RegCtrl)
-    val pc_en           = Output(Bool())
-    val forward1        = Output(UInt(2.W))
-    val forward2        = Output(UInt(2.W))
+    val idu_rf           = Input(new IdRfCtrlIO)
+    val idu_csr          = Input(new IdCsrCtrlIO)
+    val ex_reg_rf        = Input(new WbRfCtrlIO)
+    val ex_reg_csr       = Input(new WbCsrCtrlIO)
+    val ex_reg_mem_ctrl  = Input(new MemCtrlIO)
+    val mem_reg_rf       = Input(new WbRfCtrlIO)
+    val mem_reg_csr      = Input(new WbCsrCtrlIO)
+    val mem_reg_mem_ctrl = Input(new MemCtrlIO)
+    val B_en             = Input(Bool())
+    val pc_mux           = Input(Bool())
+    val miss             = Input(Bool())
+    val id_reg_ctrl      = Output(new RegCtrl)
+    val ex_reg_ctrl      = Output(new RegCtrl)
+    val mem_reg_ctrl     = Output(new RegCtrl)
+    val wb_reg_ctrl      = Output(new RegCtrl)
+    val pc_en            = Output(Bool())
+    val forward1         = Output(UInt(2.W))
+    val forward2         = Output(UInt(2.W))
   })
   val sNone :: sDH1 :: Nil = Enum(2) // Data Hazard
   val state                = RegInit(sNone)
@@ -40,20 +41,24 @@ class PipelineCtrl extends Module with RVNoobConfig {
   val ex_hazard_1_delay  = ex_hazard_1 && io.ex_reg_mem_ctrl.r_pmem
   val ex_hazard_2_bypass = ex_hazard_2 && !io.ex_reg_mem_ctrl.r_pmem
   val ex_hazard_2_delay  = ex_hazard_2 && io.ex_reg_mem_ctrl.r_pmem
+
   val mem_hazard_1 =
     (io.idu_rf.rs1 === io.mem_reg_rf.rd) && (io.mem_reg_rf.rd =/= 0.U) && io.mem_reg_rf.wen && io.idu_rf.ren1
   val mem_hazard_2 =
     (io.idu_rf.rs2 === io.mem_reg_rf.rd) && (io.mem_reg_rf.rd =/= 0.U) && io.mem_reg_rf.wen && io.idu_rf.ren2
+  val mem_hazard_1_bypass = mem_hazard_1 && !io.mem_reg_mem_ctrl.r_pmem
+  val mem_hazard_1_delay  = mem_hazard_1 && io.mem_reg_mem_ctrl.r_pmem
+  val mem_hazard_2_bypass = mem_hazard_2 && !io.mem_reg_mem_ctrl.r_pmem
+  val mem_hazard_2_delay  = mem_hazard_2 && io.mem_reg_mem_ctrl.r_pmem
 
   val ex_csr_hazard =
     io.ex_reg_csr.csr_wen && io.idu_csr.csr_ren && io.idu_csr.csr_raddr === io.ex_reg_csr.csr_waddr
   val mem_csr_hazard =
     io.mem_reg_csr.csr_wen && io.idu_csr.csr_ren && io.idu_csr.csr_raddr === io.mem_reg_csr.csr_waddr
 
-  // Forward
-  val forward1 =
-    RegEnable(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1, 1.U, 0.U)), 0.U, !io.miss) // ex_hazard优先级大于mem_hazard
-  val forward2 = RegEnable(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2, 1.U, 0.U)), 0.U, !io.miss)
+  // Forward  ex_hazard优先级大于mem_hazard
+  val forward1 = RegEnable(Mux(ex_hazard_1_bypass, 2.U, Mux(mem_hazard_1_bypass, 1.U, 0.U)), 0.U, !io.miss)
+  val forward2 = RegEnable(Mux(ex_hazard_2_bypass, 2.U, Mux(mem_hazard_2_bypass, 1.U, 0.U)), 0.U, !io.miss)
   io.forward1 := forward1
   io.forward2 := forward2
 
@@ -77,11 +82,11 @@ class PipelineCtrl extends Module with RVNoobConfig {
     ns
   }
 
-  io.id_reg_ctrl   := normal_state
-  io.ex_reg_ctrl   := normal_state
-  io.mem_reg_ctrl  := normal_state
-  io.wb_reg_ctrl   := normal_state
-  io.pc_en         := 1.B
+  io.id_reg_ctrl  := normal_state
+  io.ex_reg_ctrl  := normal_state
+  io.mem_reg_ctrl := normal_state
+  io.wb_reg_ctrl  := normal_state
+  io.pc_en        := 1.B
 
   def if_id_delay_ex_flush = { // if,id stop, ex flush
     io.id_reg_ctrl := delay_state
@@ -104,12 +109,12 @@ class PipelineCtrl extends Module with RVNoobConfig {
     }.otherwise {
       switch(state) {
         is(sNone) {
-          when(ex_hazard_1_delay || ex_hazard_2_delay) {
+          when(ex_hazard_1_delay || ex_hazard_2_delay || mem_hazard_1_delay || mem_hazard_2_delay) {
             if_id_delay_ex_flush
             state := sNone
           }.elsewhen(ex_csr_hazard) {
             if_id_delay_ex_flush
-            state            := sDH1
+            state := sDH1
           }.elsewhen(mem_csr_hazard) {
             if_id_delay_ex_flush
             state := sNone
