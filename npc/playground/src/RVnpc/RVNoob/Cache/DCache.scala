@@ -462,6 +462,7 @@ class DCache(
     dpi_cache_cnt.io.miss := inpmem_miss
   }
 
+  override def getClassName: String = if(isICache) "ICache" else "DCache"
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
