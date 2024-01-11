@@ -79,6 +79,10 @@ tapeout:
 	sed -i 's/\(val tapeout: *Boolean = \)false/\1true/g' $(SRC_CODE_DIR)/RVNoobConfig.scala
 	./mill -i __.test.runMain $(PACKAGE).RVNoobCoreGen
 	sed -i '/initial begin/,/end /d;/`ifdef/,/`endif/d;/^\/\//d;/`ifndef/,/`endif/d' /home/jiexxpu/ysyx/ysyx-workbench/npc/build/soc/ysyx_22040495.v
+	#make split_tapeout
+
+split_tapeout:
+	python3 split_modules.py /home/jiexxpu/ysyx/ysyx-workbench/npc/build/soc/ysyx_22040495.v
 
 verilog: update_config_spmu
 	$(call git_commit, "generate $(TOPNAME) verilog")

@@ -1,7 +1,7 @@
 package RVnpc.RVNoob.Cache
 
 import RVnpc.RVNoob.Axi.{AxiReadCtrlIO, AxiWriteCtrlIO}
-import RVnpc.RVNoob.{dualEdge, fallEdge, riseEdge, RVNoobConfig}
+import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
 import chisel3.util._
 
@@ -357,36 +357,41 @@ class DCache(
   pmem_write_ok := io.axi_wctrl.whandshake
   pmem_writeback_ok := io.axi_wctrl.bhandshake
   // ********************************** Replace信号 **********************************
-  switch(replace_fsm_state) {
-    is(sRE0) {
-      when(replace_dirty && into_re_or_al_r) {
-        replace_fsm_state := sRE1
+  if(isICache){
+    replace_fsm_state := sRE0
+  }else{
+    switch(replace_fsm_state) {
+      is(sRE0) {
+        when(replace_dirty && into_re_or_al_r) {
+          replace_fsm_state := sRE1
+        }
       }
-    }
-    is(sRE1) {
-      replace_fsm_state := sRE2
-    }
-    is(sRE2) {
-      when(pmem_write_ok) {
-        replace_fsm_state := sRE3
+      is(sRE1) {
+        replace_fsm_state := sRE2
       }
-    }
-    is(sRE3) {
-      when(pmem_write_ok) {
-        replace_fsm_state := sRE4
+      is(sRE2) {
+        when(pmem_write_ok) {
+          replace_fsm_state := sRE3
+        }
       }
-    }
-    is(sRE4) {
-      when(pmem_write_ok) {
-        replace_fsm_state := sRE5
+      is(sRE3) {
+        when(pmem_write_ok) {
+          replace_fsm_state := sRE4
+        }
       }
-    }
-    is(sRE5) {
-      when(pmem_writeback_ok) {
-        replace_fsm_state := sRE0
+      is(sRE4) {
+        when(pmem_write_ok) {
+          replace_fsm_state := sRE5
+        }
+      }
+      is(sRE5) {
+        when(pmem_writeback_ok) {
+          replace_fsm_state := sRE0
+        }
       }
     }
   }
+
 
   when(inpmem_op && hit) {
     PLRU_bits(addr_index)(0) := hit_oh.asUInt()(1, 0).orR
@@ -396,7 +401,11 @@ class DCache(
       PLRU_bits(addr_index)(2) := hit_oh.asUInt()(2)
     }
   }
-  replace_state := into_replace_r || replace_fsm_state =/= sRE0
+  if (isICache) {
+    replace_state := 0.B
+  } else {
+    replace_state := (into_replace_r || replace_fsm_state =/= sRE0)
+  }
   replace_way := Mux(
     fencei_state,
     fencei_way,
