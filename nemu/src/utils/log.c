@@ -32,6 +32,8 @@ int ftrace_func_num;
 char symname[MAX_FUNC_NUM][20];
 vaddr_t symaddr[MAX_FUNC_NUM];
 vaddr_t symaddr_end[MAX_FUNC_NUM];
+int tail_recursion_index = 0;
+int tail_recursion_buffer[30];
 
 void init_ftrace(const char *elf_file) {
   FILE *fp = fopen(elf_file, "r");

@@ -79,6 +79,8 @@ extern char symname[MAX_FUNC_NUM][20];
 extern vaddr_t symaddr[MAX_FUNC_NUM];
 extern vaddr_t symaddr_end[MAX_FUNC_NUM];
 extern FILE *ftrace_fp;
+extern int tail_recursion_index;
+extern int tail_recursion_buffer[30];
 static void ftrace_call_ret(Decode *s, vaddr_t pc) {
   // printf("djfa;d");
   // if ((s->isa.inst.val & 0x7F) != 0x6F || (s->isa.inst.val & 0x7F) != 0x67) {
@@ -92,7 +94,16 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc) {
         for (int i = 0; i < ftrace_depth; i++) {
           fprintf(ftrace_fp, "  ");
         }
-        fprintf(ftrace_fp, "ret  [%s@%8lx]\n", symname[i], s->dnpc);
+        fprintf(ftrace_fp, "ret  [%s@%8lx] #%d\n", symname[i], s->dnpc, ftrace_depth);
+		if(tail_recursion_buffer[tail_recursion_index] > 0){
+			tail_recursion_buffer[tail_recursion_index]--;
+			if(tail_recursion_buffer[tail_recursion_index] == 0){
+				ftrace_depth--;
+				if(tail_recursion_index != 0){
+					tail_recursion_index--;
+				}
+			}
+		}
         return;
       }
     }
@@ -103,7 +114,13 @@ static void ftrace_call_ret(Decode *s, vaddr_t pc) {
       for (int i = 0; i < ftrace_depth; i++) {
         fprintf(ftrace_fp, "  ");
       }
-      fprintf(ftrace_fp, "call [%s@%8lx]\n", symname[i], symaddr[i]);
+      fprintf(ftrace_fp, "call [%s@%8lx] #%d\n", symname[i], symaddr[i], ftrace_depth);
+	  if(s->isa.inst.val == 0x00078067){
+		if(tail_recursion_buffer[tail_recursion_index] != 0){
+			tail_recursion_index++;
+		}
+		tail_recursion_buffer[tail_recursion_index]++;
+	  }
       ftrace_depth++;
       return;
     }
