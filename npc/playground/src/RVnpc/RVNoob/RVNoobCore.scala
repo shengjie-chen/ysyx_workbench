@@ -70,14 +70,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   //  val icache = Module(new ICache)
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val ppl_ctrl = Module(new PipelineCtrl)
-  val id_reg = IDreg(
-    pc     = pc,
-    inst   = icache.io.rdata,
-    snpc   = snpc,
-    reg_en = ppl_ctrl.io.id_reg_ctrl.en,
-    valid  = icache.io.out_rvalid
-  )
+  val ppl_ctrl   = Module(new PipelineCtrl)
+  val id_reg     = Module(new IDreg)
   val idu        = Module(new IDU)
   val rf         = Module(new RegisterFile)
   val csr        = Module(new CSR)
@@ -85,61 +79,22 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val npc_add_res = Wire(UInt(addr_w.W))
-  val ex_reg: EXreg = EXreg(
-    pc          = id_reg.out.pc,
-    inst        = id_reg.out.inst,
-    snpc        = id_reg.out.snpc,
-    src1        = Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1),
-    src2        = Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2),
-    imm         = idu.io.imm,
-    csr_dnpc    = csr.io.csr_dnpc,
-    exe_ctrl    = idu.io.exe_ctrl,
-    mem_ctrl    = idu.io.mem_ctrl,
-    wb_rf_ctrl  = idu.io.wb_rf_ctrl,
-    wb_csr_ctrl = idu.io.wb_csr_ctrl,
-    dnpc_ctrl   = idu.io.dnpc_ctrl,
-    reg_en      = ppl_ctrl.io.ex_reg_ctrl.en,
-    valid       = id_reg.out.inst_valid
-  )
-  val dnpc_out = Wire(UInt(addr_w.W))
-  val exe      = Module(new EXE)
+  val ex_reg      = Module(new EXreg)
+  val dnpc_out    = Wire(UInt(addr_w.W))
+  val exe         = Module(new EXE)
 //  val exe_src1 = Wire(UInt(xlen.W))
   val exe_src2 = Wire(UInt(xlen.W))
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  val mem_reg: MEMreg = MEMreg(
-    pc          = ex_reg.out.pc,
-    inst        = ex_reg.out.inst,
-    src2        = exe_src2,
-    mem_addr    = exe.io.mem_addr,
-    alu_res     = exe.io.gp_out,
-    B_en        = exe.io.B_en,
-    dnpc        = dnpc_out,
-    mem_ctrl    = ex_reg.out.mem_ctrl,
-    wb_rf_ctrl  = ex_reg.out.wb_rf_ctrl,
-    wb_csr_ctrl = ex_reg.out.wb_csr_ctrl,
-    reg_en      = ppl_ctrl.io.mem_reg_ctrl.en,
-    valid       = ex_reg.out.inst_valid
-  )
-  val dcache        = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
-  val maxi          = Module(new AxiMaster)
+  val mem_reg = Module(new MEMreg)
+  val dcache  = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
+  val maxi    = Module(new AxiMaster)
 //  val axi_reg_slice = Module(new AxiRegSlice)
-  val axi_crossbar  = Module(new AxiCrossBar)
-  val clint         = Module(new Clint)
+  val axi_crossbar = Module(new AxiCrossBar)
+  val clint        = Module(new Clint)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  val wb_reg = WBreg(
-    pc          = mem_reg.out.pc,
-    inst        = mem_reg.out.inst,
-    src2        = mem_reg.out.src2,
-    alu_res     = mem_reg.out.alu_res,
-    mem_data    = dcache.io.rdata,
-    mem_ctrl    = mem_reg.out.mem_ctrl,
-    wb_rf_ctrl  = mem_reg.out.wb_rf_ctrl,
-    wb_csr_ctrl = mem_reg.out.wb_csr_ctrl,
-    reg_en      = ppl_ctrl.io.wb_reg_ctrl.en,
-    valid       = mem_reg.out.inst_valid
-  )
+  val wb_reg        = Module(new WBreg)
   val judge_load    = Module(new JudgeLoad)
   val not_csr_wdata = Wire(UInt(xlen.W))
 
@@ -174,6 +129,13 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     icache.io.sram.get(3) <> io.sram3.get
   }
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
+  id_reg.in.pc           <> pc
+  id_reg.in.inst         <> icache.io.rdata
+  id_reg.in.snpc         <> snpc
+  id_reg.in.reg_en       <> ppl_ctrl.io.id_reg_ctrl.en
+  id_reg.in.valid        <> icache.io.out_rvalid
+//  id_reg.in.br_pre.taken <> (phts.io.taken && btb.io.hit && Mux(ret_en, ras.io.pop.valid, true.B))
+
   cache_miss := icache.io.miss || dcache.io.miss
 
   ppl_ctrl.io.idu_rf           <> idu.io.id_rf_ctrl
@@ -201,7 +163,21 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
-  ex_reg.reset <> (ppl_ctrl.io.ex_reg_ctrl.flush || reset.asBool())
+  ex_reg.in.pc          <> id_reg.out.pc
+  ex_reg.in.inst        <> id_reg.out.inst
+  ex_reg.in.snpc        <> id_reg.out.snpc
+  ex_reg.in.src1        <> Mux(idu.io.id_csr_ctrl.zimm_en, uext_64(idu.io.id_rf_ctrl.rs1), rf.io.rdata1)
+  ex_reg.in.src2        <> Mux(idu.io.id_csr_ctrl.csr_ren, csr.io.csr_rdata, rf.io.rdata2)
+  ex_reg.in.imm         <> idu.io.imm
+  ex_reg.in.csr_dnpc    <> csr.io.csr_dnpc
+  ex_reg.in.exe_ctrl    <> idu.io.exe_ctrl
+  ex_reg.in.mem_ctrl    <> idu.io.mem_ctrl
+  ex_reg.in.wb_rf_ctrl  <> idu.io.wb_rf_ctrl
+  ex_reg.in.wb_csr_ctrl <> idu.io.wb_csr_ctrl
+  ex_reg.in.dnpc_ctrl   <> idu.io.dnpc_ctrl
+  ex_reg.in.reg_en      <> ppl_ctrl.io.ex_reg_ctrl.en
+  ex_reg.in.valid       <> id_reg.out.inst_valid
+  ex_reg.reset          <> (ppl_ctrl.io.ex_reg_ctrl.flush || reset.asBool())
 
   dnpc_out := Mux(
     ex_reg.out.dnpc_ctrl.dnpc_csr,
@@ -232,7 +208,19 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   exe.io.valid <> ex_reg.out.valid
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  mem_reg.reset <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
+  mem_reg.in.pc          <> ex_reg.out.pc
+  mem_reg.in.inst        <> ex_reg.out.inst
+  mem_reg.in.src2        <> exe_src2
+  mem_reg.in.mem_addr    <> exe.io.mem_addr
+  mem_reg.in.alu_res     <> exe.io.gp_out
+  mem_reg.in.B_en        <> exe.io.B_en
+  mem_reg.in.dnpc        <> dnpc_out
+  mem_reg.in.mem_ctrl    <> ex_reg.out.mem_ctrl
+  mem_reg.in.wb_rf_ctrl  <> ex_reg.out.wb_rf_ctrl
+  mem_reg.in.wb_csr_ctrl <> ex_reg.out.wb_csr_ctrl
+  mem_reg.in.reg_en      <> ppl_ctrl.io.mem_reg_ctrl.en
+  mem_reg.in.valid       <> ex_reg.out.inst_valid
+  mem_reg.reset          <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
 
   dcache.io.addr       <> mem_reg.out.mem_addr
   dcache.io.ren        <> mem_reg.out.mem_ctrl.r_pmem
@@ -323,6 +311,16 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   }
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
+  wb_reg.in.pc                <> mem_reg.out.pc
+  wb_reg.in.inst              <> mem_reg.out.inst
+  wb_reg.in.src2              <> mem_reg.out.src2
+  wb_reg.in.alu_res           <> mem_reg.out.alu_res
+  wb_reg.in.mem_data          <> dcache.io.rdata
+  wb_reg.in.mem_ctrl          <> mem_reg.out.mem_ctrl
+  wb_reg.in.wb_rf_ctrl        <> mem_reg.out.wb_rf_ctrl
+  wb_reg.in.wb_csr_ctrl       <> mem_reg.out.wb_csr_ctrl
+  wb_reg.in.reg_en            <> ppl_ctrl.io.wb_reg_ctrl.en
+  wb_reg.in.valid             <> mem_reg.out.inst_valid
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
