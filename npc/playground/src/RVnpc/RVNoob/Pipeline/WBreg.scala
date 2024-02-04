@@ -56,35 +56,35 @@ class WBreg extends MultiIOModule with RVNoobConfig {
 
 }
 
-object WBreg {
-  def apply(
-    pc:          UInt,
-    inst:        UInt,
-    src2:        UInt,
-    alu_res:     UInt,
-    mem_data:    UInt,
-    mem_ctrl:    MemCtrlIO,
-    wb_rf_ctrl:  WbRfCtrlIO,
-    wb_csr_ctrl: WbCsrCtrlIO,
-    reg_en:      Bool,
-    valid:       Bool
-  ): WBreg = {
-    val wb_reg = Module(new WBreg)
-    wb_reg.in.pc          <> pc
-    wb_reg.in.inst        <> inst
-    wb_reg.in.src2        <> src2
-    wb_reg.in.alu_res     <> alu_res
-    wb_reg.in.mem_data    <> mem_data
-    wb_reg.in.mem_ctrl    <> mem_ctrl
-    wb_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
-    wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
-
-    wb_reg.in.reg_en <> reg_en
-    wb_reg.in.valid  <> valid
-
-    wb_reg
-  }
-}
+//object WBreg {
+//  def apply(
+//    pc:          UInt,
+//    inst:        UInt,
+//    src2:        UInt,
+//    alu_res:     UInt,
+//    mem_data:    UInt,
+//    mem_ctrl:    MemCtrlIO,
+//    wb_rf_ctrl:  WbRfCtrlIO,
+//    wb_csr_ctrl: WbCsrCtrlIO,
+//    reg_en:      Bool,
+//    valid:       Bool
+//  ): WBreg = {
+//    val wb_reg = Module(new WBreg)
+//    wb_reg.in.pc          <> pc
+//    wb_reg.in.inst        <> inst
+//    wb_reg.in.src2        <> src2
+//    wb_reg.in.alu_res     <> alu_res
+//    wb_reg.in.mem_data    <> mem_data
+//    wb_reg.in.mem_ctrl    <> mem_ctrl
+//    wb_reg.in.wb_rf_ctrl  <> wb_rf_ctrl
+//    wb_reg.in.wb_csr_ctrl <> wb_csr_ctrl
+//
+//    wb_reg.in.reg_en <> reg_en
+//    wb_reg.in.valid  <> valid
+//
+//    wb_reg
+//  }
+//}
 
 class DpiWb extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {

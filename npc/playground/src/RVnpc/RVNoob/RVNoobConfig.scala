@@ -2,8 +2,9 @@ package RVnpc.RVNoob
 
 import chisel3.{Module, _}
 import chisel3.util._
+import scala.math.pow
 
-trait RVNoobConfig extends util_function {
+trait RVNoobConfig extends util_function with BranchConfig {
   val alu_op_w   = 5 //alu_op_width
   val jdg_op_w   = 4 //judge_op_width
   val jdgl_op_w  = 3 //judge_load_op_width
@@ -14,7 +15,6 @@ trait RVNoobConfig extends util_function {
 
 //  val ICacheSize = 1
 //  val DCacheSize = 0.5
-
   val ICacheSize = 4
   val DCacheSize = 4
 
@@ -25,6 +25,20 @@ trait RVNoobConfig extends util_function {
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
+}
+
+trait BranchConfig {
+  val BTBSetWidth = 4
+  val BTBSet      = pow(2, BTBSetWidth).toInt
+  val BTBWay      = 2 // support 1 or 2
+  val BTBTagWidth = 12
+  val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "not_br" ->4)
+
+  val PhtAddrWidth = 6
+  val PhtDepth     = pow(2, PhtAddrWidth).toInt
+
+  val RASDepth = 6
+  val RASCntNum = 4
 }
 
 trait ALU_op {
@@ -155,58 +169,13 @@ trait util_function {
   def dualEdge(in: Bool): Bool = {
     RegNext(in, 0.B) ^ in
   }
+
+  def rangeAdd(cnt: UInt, num: Int): UInt = {
+    Mux(cnt === (num-1).U, 0.U, cnt + 1.U)
+  }
+
+  def rangeSub(cnt: UInt, num: Int): UInt = {
+    Mux(cnt === 0.U, (num - 1).U, cnt - 1.U)
+  }
+
 }
-//
-////----------------------Get Rise Edge----------------------//
-//class riseEdge extends Module with RVNoobConfig {
-//  val io = IO(new Bundle() {
-//    val in   = Input(Bool())
-//    val edge = Output(Bool())
-//  })
-//  io.edge := !RegNext(io.in, 0.B) && io.in
-//  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
-//}
-//
-//object riseEdge {
-//  def apply(in: Bool): Bool = {
-//    val inst = Module(new riseEdge)
-//    inst.io.in := in
-//    inst.io.edge
-//  }
-//}
-//
-////----------------------Get Fall Edge----------------------//
-//class fallEdge extends Module with RVNoobConfig {
-//  val io = IO(new Bundle() {
-//    val in   = Input(Bool())
-//    val edge = Output(Bool())
-//  })
-//  io.edge := RegNext(io.in, 0.B) && !io.in
-//  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
-//}
-//
-//object fallEdge {
-//  def apply(in: Bool): Bool = {
-//    val inst = Module(new fallEdge)
-//    inst.io.in := in
-//    inst.io.edge
-//  }
-//}
-//
-////----------------------Get Dual Edge----------------------//
-//class dualEdge extends Module with RVNoobConfig {
-//  val io = IO(new Bundle() {
-//    val in   = Input(Bool())
-//    val edge = Output(Bool())
-//  })
-//  io.edge := RegNext(io.in, 0.B) ^ io.in
-//  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
-//}
-//
-//object dualEdge {
-//  def apply(in: Bool): Bool = {
-//    val inst = Module(new dualEdge)
-//    inst.io.in := in
-//    inst.io.edge
-//  }
-//}

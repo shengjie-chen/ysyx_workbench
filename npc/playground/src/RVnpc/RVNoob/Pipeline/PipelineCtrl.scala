@@ -19,8 +19,9 @@ class PipelineCtrl extends Module with RVNoobConfig {
     val mem_reg_rf       = Input(new WbRfCtrlIO)
     val mem_reg_csr      = Input(new WbCsrCtrlIO)
     val mem_reg_mem_ctrl = Input(new MemCtrlIO)
-    val B_en             = Input(Bool())
-    val pc_mux           = Input(Bool())
+    val mem_dnpc_en      = Input(Bool())
+    val ex_dnpc_en       = Input(Bool())
+    val id_snpc_en       = Input(Bool())
     val miss             = Input(Bool())
     val id_reg_ctrl      = Output(new RegCtrl)
     val ex_reg_ctrl      = Output(new RegCtrl)
@@ -101,10 +102,10 @@ class PipelineCtrl extends Module with RVNoobConfig {
     io.wb_reg_ctrl  := delay_state
     io.pc_en        := 0.B
   }.otherwise {
-    when(io.B_en || io.pc_mux) {
+    when(io.mem_dnpc_en || io.ex_dnpc_en || io.id_snpc_en) {
       io.id_reg_ctrl  := flush_state
-      io.ex_reg_ctrl  := flush_state
-      io.mem_reg_ctrl := Mux(io.B_en, flush_state, normal_state)
+      io.ex_reg_ctrl  := Mux(io.ex_dnpc_en, flush_state, normal_state)
+      io.mem_reg_ctrl := Mux(io.mem_dnpc_en, flush_state, normal_state)
       state           := sNone
     }.otherwise {
       switch(state) {
@@ -133,30 +134,30 @@ class PipelineCtrl extends Module with RVNoobConfig {
 
 }
 
-object PipelineCtrl {
-  def apply(
-    idu_rf:      IdRfCtrlIO,
-    idu_csr:     IdCsrCtrlIO,
-    ex_reg_rf:   WbRfCtrlIO,
-    ex_reg_csr:  WbCsrCtrlIO,
-    mem_reg_rf:  WbRfCtrlIO,
-    mem_reg_csr: WbCsrCtrlIO,
-    B_en:        Bool,
-    pc_mux:      Bool
-  ): PipelineCtrl = {
-    val hazard = Module(new PipelineCtrl)
-    hazard.io.idu_rf      <> idu_rf
-    hazard.io.idu_csr     <> idu_csr
-    hazard.io.ex_reg_rf   <> ex_reg_rf
-    hazard.io.ex_reg_csr  <> ex_reg_csr
-    hazard.io.mem_reg_rf  <> mem_reg_rf
-    hazard.io.mem_reg_csr <> mem_reg_csr
-    hazard.io.B_en        <> B_en
-    hazard.io.pc_mux      <> pc_mux
-
-    hazard
-  }
-}
+//object PipelineCtrl {
+//  def apply(
+//    idu_rf:      IdRfCtrlIO,
+//    idu_csr:     IdCsrCtrlIO,
+//    ex_reg_rf:   WbRfCtrlIO,
+//    ex_reg_csr:  WbCsrCtrlIO,
+//    mem_reg_rf:  WbRfCtrlIO,
+//    mem_reg_csr: WbCsrCtrlIO,
+//    B_en:        Bool,
+//    pc_mux:      Bool
+//  ): PipelineCtrl = {
+//    val hazard = Module(new PipelineCtrl)
+//    hazard.io.idu_rf      <> idu_rf
+//    hazard.io.idu_csr     <> idu_csr
+//    hazard.io.ex_reg_rf   <> ex_reg_rf
+//    hazard.io.ex_reg_csr  <> ex_reg_csr
+//    hazard.io.mem_reg_rf  <> mem_reg_rf
+//    hazard.io.mem_reg_csr <> mem_reg_csr
+//    hazard.io.B_en        <> B_en
+//    hazard.io.pc_mux      <> pc_mux
+//
+//    hazard
+//  }
+//}
 
 object PipelineCtrlGen extends App {
   (new chisel3.stage.ChiselStage)

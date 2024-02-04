@@ -17,6 +17,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val dnpc_ctrl   = Output(new DnpcCtrlIO)
     val intr        = Input(Bool())
     val valid       = if (!tapeout && spmu_en) Some(Input(Bool())) else None
+    val gold_br_type = Output(UInt(3.W))
   })
   if (!tapeout) {
     val dpi_inst = Module(new DpiInst)
@@ -212,12 +213,12 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   )
 
   // >>>>>>>>>>>>>> EXECtrlIO <<<<<<<<<<<<<<
-  io.exe_ctrl.exe_out_mux  := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
-  io.exe_ctrl.dir_out_mux  := rvi_lui || rvi_csrrw || rvi_csrrwi
-  io.exe_ctrl.src1_bypass  := rvi_csrrw || rvi_csrrwi
-  io.exe_ctrl.alu_src1_mux := type_U
-  io.exe_ctrl.alu_src2_mux := (type_I || type_S || type_U) & !instset_csr
-  io.exe_ctrl.is_branch_inst     := type_B || instset_jdnpc
+  io.exe_ctrl.exe_out_mux    := rvi_lui || rvi_jal || rvi_jalr || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.dir_out_mux    := rvi_lui || rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.src1_bypass    := rvi_csrrw || rvi_csrrwi
+  io.exe_ctrl.alu_src1_mux   := type_U
+  io.exe_ctrl.alu_src2_mux   := (type_I || type_S || type_U) & !instset_csr
+  io.exe_ctrl.is_branch_inst := type_B || instset_jdnpc
 
   // >>>>>>>>>>>>>> MemCtrlIO <<<<<<<<<<<<<<
   io.mem_ctrl.judge_load_op := MuxCase(
@@ -274,6 +275,16 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.dnpc_ctrl.pc_mux    := instset_jdnpc || io.intr // 出现pc=的指令
   io.dnpc_ctrl.dnpc_jalr := rvi_jalr
   io.dnpc_ctrl.dnpc_csr  := rvi_ecall || pri_mret || io.intr
+
+  io.gold_br_type := MuxCase(
+    br_type_id("not_br").U,
+    Array(
+      (type_B) -> br_type_id("typeb").U,
+      (io.inst === 0x00008067.U) -> br_type_id("return").U,
+      (io.inst(11, 0) === 0x0ef.U) -> br_type_id("call").U,
+      (instset_jdnpc) -> br_type_id("taken_br").U
+    )
+  )
 
   // ********************************** Software PMU **********************************
   if (!tapeout && spmu_en) {
@@ -338,12 +349,12 @@ class ALUCtrlIO extends Bundle with RVNoobConfig {
 }
 
 class EXECtrlIO extends ALUCtrlIO with RVNoobConfig {
-  val alu_src1_mux = Bool()
-  val alu_src2_mux = Bool()
-  val exe_out_mux  = Bool()
-  val dir_out_mux  = Bool()
-  val src1_bypass  = Bool()
-  val is_branch_inst     = Bool()
+  val alu_src1_mux   = Bool()
+  val alu_src2_mux   = Bool()
+  val exe_out_mux    = Bool()
+  val dir_out_mux    = Bool()
+  val src1_bypass    = Bool()
+  val is_branch_inst = Bool()
 }
 
 class MemCtrlIO extends Bundle with RVNoobConfig {
