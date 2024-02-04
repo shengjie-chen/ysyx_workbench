@@ -9,7 +9,7 @@ class Port128test extends Module {
   val addr = Wire(UInt(128.W))
 //  val addr_temp : BigInt= 0x0ffffffffffffffff
   //  addr := addr_temp.U(128.W)
-  addr    := 0xffffffffffffffffL.S(64.W).asUInt()
+  addr := 0xffffffffffffffffL.S(64.W).asUInt()
 //  addr    := 0x0fffffffffffffffL.asUInt()
   io.out1 := addr(63, 0)
   io.out2 := addr(127, 64)

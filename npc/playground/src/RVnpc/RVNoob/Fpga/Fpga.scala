@@ -6,7 +6,7 @@ import chisel3.util._
 //----------------------Single Port Ram----------------------//
 //ram_style: distributed / block / ultra
 class SPRAM(data_width: Int, depth: Int, ram_style: String)
-  extends BlackBox(Map("DATA_WIDTH" -> data_width, "DEPTH" -> depth, "RAM_STYLE_VAL" -> ram_style))
+    extends BlackBox(Map("DATA_WIDTH" -> data_width, "DEPTH" -> depth, "RAM_STYLE_VAL" -> ram_style))
     with HasBlackBoxPath {
   val io = IO(new Bundle {
     val CLK = Input(Clock())
@@ -32,7 +32,7 @@ class SPRAM_WRAP(data_width: Int, depth: Int, ram_style: String, rd_unchange: Bo
     val rdata = Output(UInt(data_width.W))
   })
   val spram     = Module(new SPRAM(data_width, depth, ram_style))
-  val rd_en = if (rd_unchange) Some(RegNext(io.en && io.wr)) else None
+  val rd_en     = if (rd_unchange) Some(RegNext(io.en && io.wr)) else None
   val rdata_reg = if (rd_unchange) Some(RegEnable(spram.io.Q, rd_en.get)) else None
 
   spram.io.CLK <> clock

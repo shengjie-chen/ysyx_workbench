@@ -1,8 +1,8 @@
 package RVnpc.RVNoob.Cache
 
-import RVnpc.RVNoob.{ext_function, Judge_Load_op, MemCtrlIO, RVNoobConfig}
+import RVnpc.RVNoob.{Judge_Load_op, MemCtrlIO, RVNoobConfig, ext_function}
 import chisel3._
-import chisel3.util.{HasBlackBoxInline, MuxCase}
+import chisel3.util.MuxCase
 
 // Data Mem, have discarded
 class DATAM extends Module with RVNoobConfig {

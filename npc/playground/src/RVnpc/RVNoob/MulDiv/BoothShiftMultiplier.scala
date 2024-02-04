@@ -39,11 +39,14 @@ class BoothShiftMultiplier extends Module with RVNoobConfig {
       multiplier   := io.multiplier ## 0.B
       multiplicand := io.multiplicand
     }.elsewhen(io.mul_signed === 2.U) {
-      multiplier   := io.multiplier ## 0.B
-      multiplicand := Fill(64, io.multiplicand.head(1)) ## io.multiplicand // VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
+      multiplier := io.multiplier ## 0.B
+      multiplicand := Fill(
+        64,
+        io.multiplicand.head(1)
+      ) ## io.multiplicand // VecInit(Seq.fill(64)(io.multiplicand.head(1))).asUInt() ## io.multiplicand
     }.elsewhen(io.mul_signed === 3.U) {
       multiplier   := Fill(2, io.multiplier.head(1)) ## io.multiplier ## 0.B
-      multiplicand := Fill(64,io.multiplicand.head(1)) ## io.multiplicand
+      multiplicand := Fill(64, io.multiplicand.head(1)) ## io.multiplicand
     }
   }.elsewhen(multing_state) {
     multiplier   := multiplier >> 2

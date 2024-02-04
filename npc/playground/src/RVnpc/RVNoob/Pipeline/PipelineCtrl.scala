@@ -1,7 +1,7 @@
 package RVnpc.RVNoob.Pipeline
+import RVnpc.RVNoob._
 import chisel3._
 import chisel3.util._
-import RVnpc.RVNoob._
 
 class RegCtrl extends Bundle {
   val en    = Bool()

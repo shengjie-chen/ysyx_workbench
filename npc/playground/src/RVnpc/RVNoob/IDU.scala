@@ -8,15 +8,15 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     val inst = Input(UInt(inst_w.W))
     val imm  = Output(UInt(xlen.W))
     // control
-    val exe_ctrl    = Output(new EXECtrlIO)
-    val mem_ctrl    = Output(new MemCtrlIO)
-    val id_csr_ctrl = Output(new IdCsrCtrlIO)
-    val wb_csr_ctrl = Output(new WbCsrCtrlIO)
-    val id_rf_ctrl  = Output(new IdRfCtrlIO)
-    val wb_rf_ctrl  = Output(new WbRfCtrlIO)
-    val dnpc_ctrl   = Output(new DnpcCtrlIO)
-    val intr        = Input(Bool())
-    val valid       = if (!tapeout && spmu_en) Some(Input(Bool())) else None
+    val exe_ctrl     = Output(new EXECtrlIO)
+    val mem_ctrl     = Output(new MemCtrlIO)
+    val id_csr_ctrl  = Output(new IdCsrCtrlIO)
+    val wb_csr_ctrl  = Output(new WbCsrCtrlIO)
+    val id_rf_ctrl   = Output(new IdRfCtrlIO)
+    val wb_rf_ctrl   = Output(new WbRfCtrlIO)
+    val dnpc_ctrl    = Output(new DnpcCtrlIO)
+    val intr         = Input(Bool())
+    val valid        = if (!tapeout && spmu_en) Some(Input(Bool())) else None
     val gold_br_type = Output(UInt(3.W))
   })
   if (!tapeout) {

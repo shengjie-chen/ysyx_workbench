@@ -6,12 +6,12 @@ import chisel3.util._
 class Clint extends Module with RVNoobConfig {
 
   val io = IO(new Bundle() {
-    val rctrl             = new AxiReadCtrlIO
-    val wctrl             = new AxiWriteCtrlIO
-    val time_interrupt    = Output(Bool())
+    val rctrl          = new AxiReadCtrlIO
+    val wctrl          = new AxiWriteCtrlIO
+    val time_interrupt = Output(Bool())
 
-    val mstatus_mie       = Input(Bool())
-    val mie_mtie          = Input(Bool())
+    val mstatus_mie = Input(Bool())
+    val mie_mtie    = Input(Bool())
 
     val id_reg_pc         = Input(UInt(addr_w.W))
     val mem_B_en          = Input(Bool())
@@ -43,7 +43,7 @@ class Clint extends Module with RVNoobConfig {
   time_intr_condition := (io.id_reg_pc =/= 0.U) && !(io.ex_is_branch_inst || io.mem_B_en) && ex_mem_not_write_csr
 
   val time_intr_reg = RegInit(0.B)
-  when(time_intr && (!time_intr_condition || io.miss) ) {
+  when(time_intr && (!time_intr_condition || io.miss)) {
     time_intr_reg := 1.B
   }.elsewhen(time_intr_condition && !io.miss) {
     time_intr_reg := 0.B

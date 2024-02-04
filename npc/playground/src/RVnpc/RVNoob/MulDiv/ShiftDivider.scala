@@ -2,7 +2,6 @@ package RVnpc.RVNoob.MulDiv
 
 import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
-import chisel3.util._
 
 class ShiftDivider extends Module with RVNoobConfig {
   val io = IO(new Bundle() {

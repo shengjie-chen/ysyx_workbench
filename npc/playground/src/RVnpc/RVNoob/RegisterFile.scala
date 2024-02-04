@@ -1,7 +1,6 @@
 package RVnpc.RVNoob
 
 import chisel3._
-import chisel3.util.HasBlackBoxInline
 
 import scala.math._
 

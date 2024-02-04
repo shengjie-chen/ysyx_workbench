@@ -3,7 +3,6 @@ package RVnpc.RVNoob.Branch
 import RVnpc.RVNoob._
 import chisel3._
 import chisel3.util._
-import scala.math.pow
 
 class RASArrays extends Bundle with RVNoobConfig {
   val addr = UInt(addr_w.W)
@@ -19,9 +18,9 @@ class RAS extends Module with RVNoobConfig {
   val push_index = RegInit(0.U(log2Ceil(RASDepth).W))
   val pop_index  = Wire(push_index.cloneType) // push_index - 1
   val ras        = RegInit(Vec(RASDepth, new RASArrays), 0.B.asTypeOf(Vec(RASDepth, new RASArrays)))
-  val pop_valid = RegInit(0.B)
+  val pop_valid  = RegInit(0.B)
   pop_index := rangeSub(push_index, RASDepth)
-  when(io.push.valid){
+  when(io.push.valid) {
     pop_valid := 1.B
   }
   io.pop.valid := pop_valid

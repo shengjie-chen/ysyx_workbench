@@ -1,13 +1,13 @@
 package RVnpc.RVNoob
 
 import RVnpc.RVNoob.Axi._
+import RVnpc.RVNoob.Branch._
 import RVnpc.RVNoob.Cache._
 import RVnpc.RVNoob.Pipeline._
-import RVnpc.RVNoob.Branch._
 import chisel3._
 import chisel3.util._
 
-import scala.math.{exp, pow}
+import scala.math.pow
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
@@ -86,14 +86,15 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   if (!tapeout) { dontTouch(npc) }
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
-  val ppl_ctrl = Module(new PipelineCtrl)
   val id_reg   = Module(new IDreg)
+  val ppl_ctrl = Module(new PipelineCtrl)
   val idu      = Module(new IDU)
   val rf       = Module(new RegisterFile)
   val csr      = Module(new CSR)
 
   val is_branch_inst = Wire(Bool())
   val cache_miss     = Wire(Bool())
+
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   val ex_reg = Module(new EXreg)
   val exe    = Module(new EXE)
@@ -104,13 +105,13 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val exe_src2_forward = Wire(UInt(xlen.W))
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
-  val mem_reg = Module(new MEMreg)
-  val dcache  = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
-  val maxi    = Module(new AxiMaster)
-//  val axi_reg_slice = Module(new AxiRegSlice)
-  val axi_crossbar = Module(new AxiCrossBar)
+  val mem_reg      = Module(new MEMreg)
+  val dcache       = DCache(isICache = false, deviceId = 1, sizeInKB = DCacheSize)
   val clint        = Module(new Clint)
-  val br_info      = Wire(new branch_info)
+  val axi_crossbar = Module(new AxiCrossBar)
+  val maxi         = Module(new AxiMaster)
+  //  val axi_reg_slice = Module(new AxiRegSlice)
+  val br_info = Wire(new branch_info)
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   val wb_reg        = Module(new WBreg)
@@ -119,6 +120,33 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
+  icache.io.addr     <> pc
+  icache.io.ren      <> !reset.asBool()
+  icache.io.in_valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
+  if (fpga) {
+    icache.io.bram.get <> io.i_bram.get
+  } else {
+    icache.io.sram.get(0) <> io.sram0.get
+    icache.io.sram.get(1) <> io.sram1.get
+    icache.io.sram.get(2) <> io.sram2.get
+    icache.io.sram.get(3) <> io.sram3.get
+  }
+
+  phts.io.addr   <> pc
+  phts.io.update <> br_update.io.pht_update
+
+  btb.io.addr   <> pc
+  btb.io.update <> br_update.io.btb_update
+
+  ras.io.push      <> br_update.io.ras_push
+  ras.io.pop.ready := RegNext(pc_en, 0.B)
+
+  br_update.io.pc      <> mem_reg.out.pc
+  br_update.io.snpc    <> mem_reg.out.snpc
+  br_update.io.valid   <> mem_reg.out.valid
+  br_update.io.br_pre  <> mem_reg.out.br_pre
+  br_update.io.br_info <> br_info
+
   pre_dnpc_en   := !(exmem_dnpc_en || id_snpc_en) && phts.io.taken && btb.io.hit && Mux(ret_en, ras.io.pop.valid, true.B)
   exmem_dnpc_en := ex_dnpc_en || mem_dnpc_en
   ret_en        := btb.io.br_type === br_type_id("return").U
@@ -141,21 +169,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ex_dnpc  := dnpc_out
   mem_dnpc := mem_reg.out.dnpc
 
-  br_update.io.pc      <> mem_reg.out.pc
-  br_update.io.snpc    <> mem_reg.out.snpc
-  br_update.io.valid   <> mem_reg.out.valid
-  br_update.io.br_pre  <> mem_reg.out.br_pre
-  br_update.io.br_info <> br_info
-
-  btb.io.addr   <> pc
-  btb.io.update <> br_update.io.btb_update
-
-  ras.io.push      <> br_update.io.ras_push
-  ras.io.pop.ready := RegNext(pc_en, 0.B)
-
-  phts.io.addr   <> pc
-  phts.io.update <> br_update.io.pht_update
-
   if (!tapeout) {
     io.pc.get := pc
     val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
@@ -167,18 +180,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     }
   }
 
-  icache.io.addr     <> pc
-  icache.io.ren      <> !reset.asBool()
-  icache.io.in_valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
-
-  if (fpga) {
-    icache.io.bram.get <> io.i_bram.get
-  } else {
-    icache.io.sram.get(0) <> io.sram0.get
-    icache.io.sram.get(1) <> io.sram1.get
-    icache.io.sram.get(2) <> io.sram2.get
-    icache.io.sram.get(3) <> io.sram3.get
-  }
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   id_reg.in.pc             <> pc
   id_reg.in.inst           <> icache.io.rdata
@@ -189,9 +190,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   id_reg.in.br_pre.taken   <> pre_dnpc_en
   id_reg.in.br_pre.target  <> Mux(pre_dnpc_en, pre_dnpc, snpc)
   id_reg.in.br_pre.br_type <> Mux(btb.io.hit, btb.io.br_type, br_type_id("not_br").U)
-
-  cache_miss     := icache.io.miss || dcache.io.miss
-  is_branch_inst := idu.io.exe_ctrl.is_branch_inst
 
   ppl_ctrl.io.idu_rf           <> idu.io.id_rf_ctrl
   ppl_ctrl.io.idu_csr          <> idu.io.id_csr_ctrl
@@ -216,6 +214,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
+  cache_miss     := icache.io.miss || dcache.io.miss
+  is_branch_inst := idu.io.exe_ctrl.is_branch_inst
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.in.pc              <> id_reg.out.pc
   ex_reg.in.inst            <> id_reg.out.inst
@@ -283,10 +283,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   mem_reg.in.br_info.target  <> dnpc_out
   mem_reg.in.br_info.br_type <> ex_reg.out.br_info.br_type
 
-  br_info.taken   := mem_reg.out.br_info.taken || mem_reg.out.B_en
-  br_info.target  := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.br_info.target)
-  br_info.br_type := mem_reg.out.br_info.br_type
-
   dcache.io.addr       <> mem_reg.out.mem_addr
   dcache.io.ren        <> mem_reg.out.mem_ctrl.r_pmem
   dcache.io.wen        <> mem_reg.out.mem_ctrl.w_pmem
@@ -296,7 +292,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     dcache.io.fencei <> mem_reg.out.mem_ctrl.fencei
   }
   dcache.io.in_valid <> mem_reg.out.valid
-
   if (fpga) {
     dcache.io.bram.get <> io.d_bram.get
   } else {
@@ -376,6 +371,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     io.axi_pc.get <> axi_crossbar.maxi.pc
   }
 
+  br_info.taken   := mem_reg.out.br_info.taken || mem_reg.out.B_en
+  br_info.target  := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.br_info.target)
+  br_info.br_type := mem_reg.out.br_info.br_type
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.in.pc                <> mem_reg.out.pc
   wb_reg.in.inst              <> mem_reg.out.inst
@@ -388,9 +386,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   wb_reg.in.reg_en            <> ppl_ctrl.io.wb_reg_ctrl.en
   wb_reg.in.valid             <> mem_reg.out.inst_valid
   wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
+
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
+
   not_csr_wdata               := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
+
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
     wb_reg.out.src2,

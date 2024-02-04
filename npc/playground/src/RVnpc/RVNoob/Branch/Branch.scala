@@ -40,7 +40,10 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.pht_update.taken := 0.B
   }
 
-  when(io.br_info.br_type =/= br_type_id("not_br").U && (io.br_info.br_type =/= io.br_pre.br_type || io.br_info.target =/= io.br_pre.target) && io.valid) {
+  when(
+    io.br_info.br_type =/= br_type_id("not_br").U
+      && (io.br_info.br_type =/= io.br_pre.br_type || io.br_info.target =/= io.br_pre.target) && io.valid
+  ) {
     io.btb_update.valid   := 1.B
     io.btb_update.addr    := io.pc
     io.btb_update.bta     := io.br_info.target

@@ -3,7 +3,6 @@ package RVnpc.RVNoob.Branch
 import RVnpc.RVNoob._
 import chisel3._
 import chisel3.util._
-import scala.math.pow
 
 class BTBArrays extends Bundle with RVNoobConfig {
   val valid   = Bool()

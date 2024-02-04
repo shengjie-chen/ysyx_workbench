@@ -2,8 +2,7 @@ package RVnpc.RVNoob
 
 import RVnpc.RVNoob.MulDiv.{BoothShiftMultiplier, ShiftDivider}
 import chisel3._
-import chisel3.util.{Cat, HasBlackBoxInline, MuxCase}
-import firrtl.transforms.BlackBoxInlineAnno
+import chisel3.util.MuxCase
 
 class EXE extends Module with RVNoobConfig {
   val io = IO(new Bundle {

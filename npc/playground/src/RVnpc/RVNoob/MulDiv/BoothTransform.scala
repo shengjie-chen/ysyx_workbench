@@ -1,6 +1,6 @@
 package RVnpc.RVNoob.MulDiv
-import chisel3._
 import RVnpc.RVNoob.RVNoobConfig
+import chisel3._
 
 class BoothTransform extends Module with RVNoobConfig {
   val io = IO(new Bundle() {

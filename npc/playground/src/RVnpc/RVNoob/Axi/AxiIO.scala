@@ -1,8 +1,6 @@
 package RVnpc.RVNoob.Axi
 
-import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
-import chisel3.util._
 
 class AxiIO extends Bundle {
   // >>>>>>>>>>>>>> AW <<<<<<<<<<<<<<
@@ -57,12 +55,12 @@ class AxiWriteCtrlIO extends Bundle {
 }
 
 class AxiReadCtrlIO extends Bundle {
-  val en        = Input(Bool())
-  val id        = Input(UInt(4.W))
-  val size      = Input(UInt(3.W))
-  val addr      = Input(UInt(32.W))
-  val burst     = Input(UInt(2.W))
-  val len       = Input(UInt(8.W))
+  val en    = Input(Bool())
+  val id    = Input(UInt(4.W))
+  val size  = Input(UInt(3.W))
+  val addr  = Input(UInt(32.W))
+  val burst = Input(UInt(2.W))
+  val len   = Input(UInt(8.W))
 
   val data      = Output(UInt(64.W))
   val handshake = Output(Bool())

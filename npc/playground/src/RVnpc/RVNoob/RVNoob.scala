@@ -1,11 +1,9 @@
 package RVnpc.RVNoob
 
-import chisel3._
-import chisel3.util._
-import Pipeline._
 import RVnpc.RVNoob.Axi.AxiSlaveMem
-import RVnpc.RVNoob.Cache.{CacheSramIO, DCache, JudgeLoad, S011HD1P_X32Y2D128_BW}
+import RVnpc.RVNoob.Cache.S011HD1P_X32Y2D128_BW
 import RVnpc.RVNoob.Fpga.SPRAM_WRAP
+import chisel3._
 
 import scala.math.pow
 

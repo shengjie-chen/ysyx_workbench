@@ -1,7 +1,8 @@
 package RVnpc.RVNoob
 
-import chisel3.{Module, _}
+import chisel3._
 import chisel3.util._
+
 import scala.math.pow
 
 trait RVNoobConfig extends util_function with BranchConfig {
@@ -32,12 +33,12 @@ trait BranchConfig {
   val BTBSet      = pow(2, BTBSetWidth).toInt
   val BTBWay      = 2 // support 1 or 2
   val BTBTagWidth = 12
-  val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "not_br" ->4)
+  val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "not_br" -> 4)
 
   val PhtAddrWidth = 6
   val PhtDepth     = pow(2, PhtAddrWidth).toInt
 
-  val RASDepth = 6
+  val RASDepth  = 6
   val RASCntNum = 4
 }
 
@@ -171,7 +172,7 @@ trait util_function {
   }
 
   def rangeAdd(cnt: UInt, num: Int): UInt = {
-    Mux(cnt === (num-1).U, 0.U, cnt + 1.U)
+    Mux(cnt === (num - 1).U, 0.U, cnt + 1.U)
   }
 
   def rangeSub(cnt: UInt, num: Int): UInt = {

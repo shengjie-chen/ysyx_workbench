@@ -1,9 +1,9 @@
 package RVnpc.RVNoob.Pipeline
 
+import RVnpc.RVNoob.Branch._
 import RVnpc.RVNoob._
 import chisel3._
 import chisel3.util._
-import RVnpc.RVNoob.Branch._
 
 trait IDregSignal extends RVNoobConfig {
   val pc     = UInt(addr_w.W)

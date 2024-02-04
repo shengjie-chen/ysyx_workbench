@@ -2,7 +2,6 @@ package RVnpc.RVNoob.Axi
 
 import RVnpc.RVNoob.RVNoobConfig
 import chisel3._
-import chisel3.util._
 
 class AxiRegSlice extends Module with RVNoobConfig {
   val io = IO(new Bundle {
