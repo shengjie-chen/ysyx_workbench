@@ -104,7 +104,7 @@ class PipelineCtrl extends Module with RVNoobConfig {
   }.otherwise {
     when(io.mem_dnpc_en || io.ex_dnpc_en || io.id_snpc_en) {
       io.id_reg_ctrl  := flush_state
-      io.ex_reg_ctrl  := Mux(io.ex_dnpc_en, flush_state, normal_state)
+      io.ex_reg_ctrl  := Mux(!io.id_snpc_en, flush_state, normal_state)
       io.mem_reg_ctrl := Mux(io.mem_dnpc_en, flush_state, normal_state)
       state           := sNone
     }.otherwise {

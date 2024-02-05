@@ -57,7 +57,9 @@ void one_clock() {
   } else {
     printf("error happen!! time %ld read inst addr : %x\n", main_time, top->io_pc);
     // tfp->close();
-    exit(1);
+    // exit(1);
+    npc_state.state = NPC_ABORT;
+    return;
   }
   top->eval();
 #ifdef CONFIG_DUMPVCD

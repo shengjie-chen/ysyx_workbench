@@ -139,7 +139,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   btb.io.update <> br_update.io.btb_update
 
   ras.io.push      <> br_update.io.ras_push
-  ras.io.pop.ready := RegNext(pc_en, 0.B)
+  ras.io.pop.ready := RegNext(pc_en, 0.B) && btb.io.br_type === br_type_id("return").U && btb.io.hit
 
   br_update.io.pc      <> mem_reg.out.pc
   br_update.io.snpc    <> mem_reg.out.snpc
@@ -152,7 +152,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ret_en        := btb.io.br_type === br_type_id("return").U
   id_snpc_en    := id_reg.out.br_pre.taken && !is_branch_inst
   ex_dnpc_en    := ex_reg.out.dnpc_ctrl.pc_mux && ex_reg.out.br_pre.target =/= dnpc_out
-  mem_dnpc_en := mem_reg.out.br_pre.br_type === br_type_id("typeb").U && Mux(
+  mem_dnpc_en := mem_reg.out.br_info.br_type === br_type_id("typeb").U && Mux(
     mem_reg.out.B_en =/= mem_reg.out.br_pre.taken,
     1.B,
     mem_reg.out.br_pre.target =/= mem_reg.out.dnpc
@@ -163,11 +163,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   pre_dnpc := Mux(ret_en, ras.io.pop.bits, btb.io.bta)
   npc_t    := Mux(exmem_dnpc_en, dnpc, snpc_t)
   dnpc     := Mux(mem_dnpc_en, mem_dnpc, ex_dnpc)
-  snpc_t   := Mux(id_snpc_en, snpc, id_snpc)
+  snpc_t   := Mux(id_snpc_en, id_snpc, snpc)
   snpc     := pc + 4.U
   id_snpc  := id_reg.out.snpc
   ex_dnpc  := dnpc_out
-  mem_dnpc := mem_reg.out.dnpc
+  mem_dnpc := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.snpc)
 
   if (!tapeout) {
     io.pc.get := pc
@@ -375,22 +375,22 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   br_info.target  := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.br_info.target)
   br_info.br_type := mem_reg.out.br_info.br_type
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  wb_reg.in.pc                <> mem_reg.out.pc
-  wb_reg.in.inst              <> mem_reg.out.inst
-  wb_reg.in.src2              <> mem_reg.out.src2
-  wb_reg.in.alu_res           <> mem_reg.out.alu_res
-  wb_reg.in.mem_data          <> dcache.io.rdata
-  wb_reg.in.mem_ctrl          <> mem_reg.out.mem_ctrl
-  wb_reg.in.wb_rf_ctrl        <> mem_reg.out.wb_rf_ctrl
-  wb_reg.in.wb_csr_ctrl       <> mem_reg.out.wb_csr_ctrl
-  wb_reg.in.reg_en            <> ppl_ctrl.io.wb_reg_ctrl.en
-  wb_reg.in.valid             <> mem_reg.out.inst_valid
-  wb_reg.reset                <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
+  wb_reg.in.pc          <> mem_reg.out.pc
+  wb_reg.in.inst        <> mem_reg.out.inst
+  wb_reg.in.src2        <> mem_reg.out.src2
+  wb_reg.in.alu_res     <> mem_reg.out.alu_res
+  wb_reg.in.mem_data    <> dcache.io.rdata
+  wb_reg.in.mem_ctrl    <> mem_reg.out.mem_ctrl
+  wb_reg.in.wb_rf_ctrl  <> mem_reg.out.wb_rf_ctrl
+  wb_reg.in.wb_csr_ctrl <> mem_reg.out.wb_csr_ctrl
+  wb_reg.in.reg_en      <> ppl_ctrl.io.wb_reg_ctrl.en
+  wb_reg.in.valid       <> mem_reg.out.inst_valid
+  wb_reg.reset          <> (ppl_ctrl.io.wb_reg_ctrl.flush || reset.asBool())
 
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
 
-  not_csr_wdata               := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
+  not_csr_wdata := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
 
   rf.io.wdata <> Mux(
     wb_reg.out.wb_csr_ctrl.csr_wen,
