@@ -169,17 +169,6 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ex_dnpc  := dnpc_out
   mem_dnpc := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.snpc)
 
-  if (!tapeout) {
-    io.pc.get := pc
-    val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
-    dpi_npc.io.npc <> npc
-    if (spmu_en) {
-      val dpi_branch_error = Module(new DpiBranchError)
-      dpi_branch_error.io.clk   <> clock
-      dpi_branch_error.io.valid <> ((ex_reg.out.dnpc_ctrl.pc_mux && ex_reg.out.valid) || (mem_reg.out.B_en && mem_reg.out.valid))
-    }
-  }
-
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
   id_reg.in.pc             <> pc
   id_reg.in.inst           <> icache.io.rdata
@@ -438,6 +427,23 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     }
   }
 
+  if (!tapeout) {
+    io.pc.get := pc
+    val dpi_npc = Module(new DpiNpc) // use to get npc in sim.c
+    dpi_npc.io.npc <> npc
+
+    if (spmu_en) {
+      val dpi_branch    = Module(new DpiBranch)
+      val mem_reg_is_br = mem_reg.out.br_info.br_type =/= br_type_id("not_br").U
+      dpi_branch.io.clk       <> clock
+      dpi_branch.io.br_valid  <> (mem_reg_is_br && mem_reg.out.valid && mem_reg.out.inst_valid)
+      dpi_branch.io.is_typeb  <> (mem_reg.out.br_info.br_type === br_type_id("typeb").U)
+      dpi_branch.io.id_error  <> ((id_snpc_en && id_reg.out.valid) && !(ex_dnpc_en && ex_reg.out.valid) && !(mem_dnpc_en && mem_reg.out.valid))
+      dpi_branch.io.exe_error <> ((ex_dnpc_en && ex_reg.out.valid) && !(mem_dnpc_en && mem_reg.out.valid))
+      dpi_branch.io.mem_error <> (mem_dnpc_en && mem_reg.out.valid)
+    }
+  }
+
   override def desiredName = if (tapeout) ysyxid else getClassName
 
 }
@@ -499,20 +505,40 @@ class DpiNpc extends BlackBox with HasBlackBoxInline {
   )
 }
 
-class DpiBranchError extends BlackBox with HasBlackBoxInline {
+class DpiBranch extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
-    val clk   = Input(Clock())
-    val valid = Input(Bool())
+    val clk       = Input(Clock())
+    val br_valid  = Input(Bool())
+    val is_typeb  = Input(Bool())
+    val id_error  = Input(Bool())
+    val exe_error = Input(Bool())
+    val mem_error = Input(Bool())
   })
   setInline(
-    "DpiBranchError.v",
+    "DpiBranch.v",
     """
-      |import "DPI-C" function void find_branch_error();
-      |module DpiBranchError(input clk, input valid);
+      |import "DPI-C" function void find_typeb_branch();
+      |import "DPI-C" function void find_branch_inst();
+      |import "DPI-C" function void find_id_branch_error();
+      |import "DPI-C" function void find_exe_branch_error();
+      |import "DPI-C" function void find_mem_branch_error();
+      |module DpiBranch(input clk, input br_valid, input is_typeb, input id_error, input exe_error, input mem_error);
       |
       |always@(posedge clk) begin
-      |    if(valid == 1'b1) begin
-      |        find_branch_error();
+      |    if(br_valid == 1'b1) begin
+      |        find_branch_inst();
+      |        if(is_typeb == 1'b1) begin
+      |            find_typeb_branch();
+      |        end
+      |    end
+      |    if(id_error == 1'b1) begin
+      |        find_id_branch_error();
+      |    end
+      |    if(exe_error == 1'b1) begin
+      |        find_exe_branch_error();
+      |    end
+      |    if(mem_error == 1'b1) begin
+      |        find_mem_branch_error();
       |    end
       |end
       |

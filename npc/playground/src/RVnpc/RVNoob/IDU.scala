@@ -286,14 +286,6 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
     )
   )
 
-  // ********************************** Software PMU **********************************
-  if (!tapeout && spmu_en) {
-    val branch_inst      = type_B || instset_jdnpc
-    val find_branch_inst = Module(new DpiBranchInst)
-    find_branch_inst.io.clk   := clock
-    find_branch_inst.io.valid := branch_inst && io.valid.get
-  }
-
   override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
@@ -312,28 +304,6 @@ class DpiInst extends BlackBox with HasBlackBoxInline {
       | //initial set_inst_ptr(inst);
       |
       | always @* inst_change(inst);
-      |
-      |endmodule
-            """.stripMargin
-  )
-}
-
-class DpiBranchInst extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val clk   = Input(Clock())
-    val valid = Input(Bool())
-  })
-  setInline(
-    "DpiBranchInst.v",
-    """
-      |import "DPI-C" function void find_branch_inst();
-      |module DpiBranchInst(input clk, input valid);
-      |
-      |always@(posedge clk) begin
-      |    if(valid == 1'b1) begin
-      |        find_branch_inst();
-      |    end
-      |end
       |
       |endmodule
             """.stripMargin

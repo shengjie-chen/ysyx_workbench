@@ -223,16 +223,29 @@ int main(int argc, char **argv, char **env) {
   printf("average clk speed        : %ld clock/s\n", clock_cnt / time);
   printf("average inst speed       : %ld insts/s\n", inst_cnt / time);
 #ifdef SPMU_ENABLE
-  printf("\n\033[;31m************ Software PMU ************\n\033[0m");
+  printf("\n\033[;31m************ Software PMU Cache ************\n\033[0m");
   printf("icache hit               : %ld\n", icache_hit);
   printf("icache miss              : %ld\n", icache_miss);
   printf("dcache hit               : %ld\n", dcache_hit);
   printf("dcache miss              : %ld\n", dcache_miss);
-  printf("\033[;34micache hit rate          : %f\n\033[0m", (double)icache_hit/(double)(icache_hit + icache_miss));
-  printf("\033[;34mdcache hit rate          : %f\n\033[0m", (double)dcache_hit/(double)(dcache_hit + dcache_miss));
+  printf("\033[;34micache hit rate          : %f\n\033[0m", (double)icache_hit / (double)(icache_hit + icache_miss));
+  printf("\033[;34mdcache hit rate          : %f\n\033[0m", (double)dcache_hit / (double)(dcache_hit + dcache_miss));
+
+  uint64_t branch_error = id_branch_error + exe_branch_error + mem_branch_error;
+  uint64_t must_taken_br = branch_inst - typeb_br;
+  
+  printf("\n\033[;31m************ Software PMU Branch ************\n\033[0m");
   printf("branch inst num          : %ld\n", branch_inst);
   printf("branch error num         : %ld\n", branch_error);
-  printf("\033[;34mbranch error rate        : %f\n\033[0m", (double)branch_error/(double)branch_inst);
+  printf("\033[;34mbranch error rate        : %f\n\033[0m", (double)branch_error / (double)branch_inst);
+  printf("typeb inst num           : %ld\n", typeb_br);
+  printf("typeb error num          : %ld\n", mem_branch_error);
+  printf("\033[;34mtypeb error rate         : %f\n\033[0m", (double)mem_branch_error / (double)typeb_br);
+  printf("must taken inst num      : %ld\n", must_taken_br);
+  printf("must taken error num     : %ld\n", exe_branch_error);
+  printf("\033[;34mmust taken error rate    : %f\n\033[0m", (double)exe_branch_error / (double)must_taken_br);
+  printf("not br but taken num     : %ld\n", id_branch_error);
+
 #endif
   printf("\n");
 #ifdef CONFIG_ITRACE

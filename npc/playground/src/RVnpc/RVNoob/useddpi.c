@@ -197,8 +197,23 @@ extern "C" void find_branch_inst(){
   branch_inst++;
 }
 
-uint64_t branch_error=0;
-extern "C" void find_branch_error(){
-  branch_error++;
+uint64_t typeb_br=0;
+extern "C" void find_typeb_branch(){
+  typeb_br++;
+}
+
+uint64_t id_branch_error=0;
+extern "C" void find_id_branch_error(){
+  id_branch_error++;
+}
+
+uint64_t exe_branch_error=0;
+extern "C" void find_exe_branch_error(){
+  exe_branch_error++;
+}
+
+uint64_t mem_branch_error=0;
+extern "C" void find_mem_branch_error(){
+  mem_branch_error++;
 }
 #endif
