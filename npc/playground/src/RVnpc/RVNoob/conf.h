@@ -11,8 +11,8 @@
 
 // ---------------------------->switch
 
-  #define CONFIG_ITRACE
-//  #define CONFIG_FTRACE
+ #define CONFIG_ITRACE
+ #define CONFIG_FTRACE
 //  #define CONFIG_MTRACE
 
  #define SPMU_ENABLE

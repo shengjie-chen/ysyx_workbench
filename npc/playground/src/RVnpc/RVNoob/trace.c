@@ -152,9 +152,11 @@ void init_ftrace(const char *elf_file)
   free(symtab);
 }
 
+int tail_recursion_index = 0;
+int tail_recursion_buffer[30];
 void ftrace_call_ret(uint32_t cpu_inst, vaddr_t pc, vaddr_t npc)
 {
-  if (cpu_inst == 0x00008067) {
+  if (cpu_inst == 0x00008067) { // ret
     for (int i = 0; i < ftrace_func_num; i++) {
       if (pc > symaddr[i] && pc <= symaddr_end[i] && (npc < symaddr[i] || npc > symaddr_end[i])) {
         ftrace_depth--;
@@ -162,19 +164,34 @@ void ftrace_call_ret(uint32_t cpu_inst, vaddr_t pc, vaddr_t npc)
         for (int i = 0; i < ftrace_depth; i++) {
           fprintf(ftrace_fp, "  ");
         }
-        fprintf(ftrace_fp, "ret  [%s@%8lx]\n", symname[i], npc);
+        fprintf(ftrace_fp, "ret  [%s@%8lx] #%d\n", symname[i], npc, ftrace_depth);
+		if(tail_recursion_buffer[tail_recursion_index] > 0){
+			tail_recursion_buffer[tail_recursion_index]--;
+			if(tail_recursion_buffer[tail_recursion_index] == 0){
+				ftrace_depth--;
+				if(tail_recursion_index != 0){
+					tail_recursion_index--;
+				}
+			}
+		}
         return;
       }
     }
   }
-  for (int i = 0; i < ftrace_func_num; i++) {
+  for (int i = 0; i < ftrace_func_num; i++) { // call
     if (npc == symaddr[i]) {
       fprintf(ftrace_fp, "0x%8lx: ", pc);
       for (int i = 0; i < ftrace_depth; i++) {
         fprintf(ftrace_fp, "  ");
       }
-      fprintf(ftrace_fp, "call [%s@%8lx]\n", symname[i], symaddr[i]);
-      ftrace_depth++;
+      fprintf(ftrace_fp, "call [%s@%8lx] #%d\n", symname[i], symaddr[i], ftrace_depth);
+	  if(cpu_inst == 0x00078067){
+		if(tail_recursion_buffer[tail_recursion_index] != 0){
+			tail_recursion_index++;
+		}
+		tail_recursion_buffer[tail_recursion_index]++;
+	  }
+	  ftrace_depth++;
       return;
     }
   }

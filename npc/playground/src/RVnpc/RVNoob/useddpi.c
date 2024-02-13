@@ -192,16 +192,6 @@ extern "C" void dcache_access(svLogic miss){
   }
 }
 
-uint64_t branch_inst=0;
-extern "C" void find_branch_inst(){
-  branch_inst++;
-}
-
-uint64_t typeb_br=0;
-extern "C" void find_typeb_branch(){
-  typeb_br++;
-}
-
 uint64_t id_branch_error=0;
 extern "C" void find_id_branch_error(){
   id_branch_error++;
@@ -216,4 +206,47 @@ uint64_t mem_branch_error=0;
 extern "C" void find_mem_branch_error(){
   mem_branch_error++;
 }
+
+
+#define BR_CALL 0
+#define BR_RET 1
+#define BR_TAKEN 2
+#define BR_TYPEB 3
+#define BR_NOT 4
+
+uint64_t branch_inst=0;
+uint8_t br_type;
+uint8_t pre_taken;
+uint32_t pre_target;
+uint8_t true_taken;
+uint32_t true_target;
+
+uint64_t typeb_br=0;
+uint64_t ret_inst = 0;
+uint64_t ret_error_inst = 0;
+extern "C" void br_change(const svLogicVecVal *br_type_t, svLogic pre_taken_t, const svLogicVecVal *pre_target_t, svLogic true_taken_t, const svLogicVecVal *true_target_t){ {
+  branch_inst++;
+  br_type = *(uint8_t *)(br_type_t);
+  pre_taken = pre_taken_t;
+  pre_target = *(uint32_t *)(pre_target_t);
+  true_taken = true_taken_t;
+  true_target = *(uint32_t *)(true_target_t);
+  
+  if (br_type == BR_RET) {
+      ret_inst++;
+      if (pre_target != true_target || pre_taken == 0) {
+          ret_error_inst++;
+		  printf("0");
+      }
+	  else {
+		  printf("1");
+	  }
+  }
+
+  if (br_type == BR_TYPEB) {
+      typeb_br++;
+  }
+}
+}
+
 #endif

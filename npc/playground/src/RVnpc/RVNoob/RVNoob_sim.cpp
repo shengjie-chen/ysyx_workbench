@@ -234,17 +234,20 @@ int main(int argc, char **argv, char **env) {
   uint64_t branch_error = id_branch_error + exe_branch_error + mem_branch_error;
   uint64_t must_taken_br = branch_inst - typeb_br;
   
-  printf("\n\033[;31m************ Software PMU Branch ************\n\033[0m");
+  printf(ANSI_FMT("************ Software PMU Branch ************\n", ANSI_FG_RED));
   printf("branch inst num          : %ld\n", branch_inst);
   printf("branch error num         : %ld\n", branch_error);
-  printf("\033[;34mbranch error rate        : %f\n\033[0m", (double)branch_error / (double)branch_inst);
+  printf(ANSI_FMT("branch error rate        : %f\n", ANSI_FG_YELLOW), (double)branch_error / (double)branch_inst);
   printf("typeb inst num           : %ld\n", typeb_br);
   printf("typeb error num          : %ld\n", mem_branch_error);
-  printf("\033[;34mtypeb error rate         : %f\n\033[0m", (double)mem_branch_error / (double)typeb_br);
+  printf(ANSI_FMT("typeb error rate         : %f\n", ANSI_FG_YELLOW), (double)mem_branch_error / (double)typeb_br);
   printf("must taken inst num      : %ld\n", must_taken_br);
   printf("must taken error num     : %ld\n", exe_branch_error);
-  printf("\033[;34mmust taken error rate    : %f\n\033[0m", (double)exe_branch_error / (double)must_taken_br);
-  printf("not br but taken num     : %ld\n", id_branch_error);
+  printf(ANSI_FMT("must taken error rate    : %f\n", ANSI_FG_YELLOW), (double)exe_branch_error / (double)must_taken_br);
+  printf(ANSI_FMT("not br but taken num     : %ld\n", ANSI_FG_YELLOW), id_branch_error);
+  printf("retrun inst num          : %ld\n", ret_inst);
+  printf("retrun inst error num    : %ld\n", ret_error_inst);
+  printf(ANSI_FMT("retrun inst error rate   : %f\n", ANSI_FG_YELLOW), (double)ret_error_inst / (double)ret_inst);
 
 #endif
   printf("\n");
