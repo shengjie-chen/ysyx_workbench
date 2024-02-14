@@ -11,11 +11,15 @@
 
 // ---------------------------->switch
 
- #define CONFIG_ITRACE
- #define CONFIG_FTRACE
+// #define CONFIG_ITRACE
+// #define CONFIG_FTRACE
 //  #define CONFIG_MTRACE
 
  #define SPMU_ENABLE
+
+ #ifdef SPMU_ENABLE
+	// #define RAS_SPMU
+ #endif
 
 #ifdef CONFIG_ITRACE  
 #define CONFIG_DUMPSTART 0 

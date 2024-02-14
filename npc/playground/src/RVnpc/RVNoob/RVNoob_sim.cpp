@@ -257,7 +257,6 @@ int main(int argc, char **argv, char **env) {
   printf("retrun inst num          : %ld\n", ret_inst);
   printf("retrun inst error num    : %ld\n", ret_error_inst);
   printf(ANSI_FMT("retrun inst error rate   : %f\n", ANSI_FG_YELLOW), (double)ret_error_inst / (double)ret_inst);
-
 #endif
   printf("\n");
 #ifdef CONFIG_ITRACE

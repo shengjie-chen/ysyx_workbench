@@ -224,6 +224,30 @@ uint32_t true_target;
 uint64_t typeb_br=0;
 uint64_t ret_inst = 0;
 uint64_t ret_error_inst = 0;
+#ifdef RAS_SPMU
+class RASStream {
+public:
+    // 向流中添加一个位
+    void addBit(bool bit) {
+        bits.push_back(bit);
+    }
+
+    // 在程序结束前打印所有位
+    ~RASStream() {
+		std::cout << "RASStream pre result: " << std::endl;
+        for (bool bit : bits) {
+            std::cout << bit;
+        }
+        std::cout << std::endl << std::endl; // 在输出结束后换行
+    }
+
+private:
+    std::vector<bool> bits;
+};
+
+RASStream ras_stream;
+#endif
+
 extern "C" void br_change(const svLogicVecVal *br_type_t, svLogic pre_taken_t, const svLogicVecVal *pre_target_t, svLogic true_taken_t, const svLogicVecVal *true_target_t){ {
   branch_inst++;
   br_type = *(uint8_t *)(br_type_t);
@@ -236,10 +260,14 @@ extern "C" void br_change(const svLogicVecVal *br_type_t, svLogic pre_taken_t, c
       ret_inst++;
       if (pre_target != true_target || pre_taken == 0) {
           ret_error_inst++;
-		  printf("0");
+#ifdef RAS_SPMU
+		  ras_stream.addBit(0);
+#endif
       }
 	  else {
-		  printf("1");
+#ifdef RAS_SPMU
+		  ras_stream.addBit(1);
+#endif
 	  }
   }
 
