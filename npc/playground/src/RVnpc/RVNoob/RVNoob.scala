@@ -9,11 +9,12 @@ import scala.math.pow
 
 class RVNoob extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc       = Output(UInt(addr_w.W))
-    val ebreak   = Output(Bool())
-    val diff_en  = Output(Bool())
-    val diff_pc  = Output(UInt(addr_w.W))
-    val inst_cnt = Output(UInt(xlen.W))
+    val pc        = Output(UInt(addr_w.W))
+    val ebreak    = Output(Bool())
+    val diff_en   = Output(Bool())
+    val diff_pc   = Output(UInt(addr_w.W))
+    val diff_inst = Output(UInt(inst_w.W))
+    val inst_cnt  = Output(UInt(xlen.W))
   })
   // >>>>>>>>>>>>>> RVNoobCore <<<<<<<<<<<<<<
   val core = RVNoobCore()
@@ -39,11 +40,12 @@ class RVNoob extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> SAXI <<<<<<<<<<<<<<
   val axi_pmem = Module(new AxiSlaveMem)
 
-  io.pc       <> core.io.pc.get
-  io.ebreak   <> core.io.ebreak.get
-  io.diff_en  <> core.io.diff_en.get
-  io.diff_pc  <> core.io.diff_pc.get
-  io.inst_cnt <> core.io.inst_cnt.get
+  io.pc        <> core.io.pc.get
+  io.ebreak    <> core.io.ebreak.get
+  io.diff_en   <> core.io.diff_en.get
+  io.diff_pc   <> core.io.diff_pc.get
+  io.diff_inst <> core.io.diff_inst.get
+  io.inst_cnt  <> core.io.inst_cnt.get
 
   if (!fpga) {
     // >>>>>>>>>>>>>> Inst Cache Sram <<<<<<<<<<<<<<

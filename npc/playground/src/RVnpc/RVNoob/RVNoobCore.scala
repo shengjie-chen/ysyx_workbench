@@ -11,12 +11,13 @@ import scala.math.pow
 
 class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc       = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
-    val ebreak   = if (!tapeout) Some(Output(Bool())) else None
-    val diff_en  = if (!tapeout) Some(Output(Bool())) else None
-    val diff_pc  = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
-    val axi_pc   = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
-    val inst_cnt = if (!tapeout) Some(Output(UInt(xlen.W))) else None
+    val pc        = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val ebreak    = if (!tapeout) Some(Output(Bool())) else None
+    val diff_en   = if (!tapeout) Some(Output(Bool())) else None
+    val diff_pc   = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val diff_inst = if (!tapeout) Some(Output(UInt(inst_w.W))) else None
+    val axi_pc    = if (!tapeout) Some(Output(UInt(addr_w.W))) else None
+    val inst_cnt  = if (!tapeout) Some(Output(UInt(xlen.W))) else None
 
     val interrupt = Input(Bool())
     // >>>>>>>>>>>>>> AXI <<<<<<<<<<<<<<
@@ -407,13 +408,16 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     val cache_miss_last_next = !cache_miss && RegNext(cache_miss)
     val cache_miss_first     = cache_miss && !RegNext(cache_miss)
 
-    val diff_pc = RegInit(UInt(addr_w.W), 0x80000000L.U)
+    val diff_pc   = RegInit(UInt(addr_w.W), 0x80000000L.U)
+    val diff_inst = RegInit(UInt(inst_w.W), 0.U)
 
     // wb 写完成的周期
     //    io.diff_en := (RegNext(wb_reg.out.valid) || RegNext(cache_miss_last_next)) &&
     //    (ShiftRegister(wb_reg.out.inst, 1, 1.B) =/= 0.U) && (!cache_miss || cache_miss_first)
-    io.diff_en.get := RegNext(wb_reg.out.valid)
-    io.diff_pc.get := diff_pc
+    io.diff_en.get   := RegNext(wb_reg.out.valid)
+    io.diff_pc.get   := diff_pc
+    io.diff_inst.get := diff_inst
+    diff_inst        := wb_reg.out.inst
     when(wb_reg.out.valid) {
       when(mem_reg.out.valid) {
         diff_pc := mem_reg.out.pc

@@ -31,6 +31,7 @@ const vluint64_t sim_time = -1; // 最高仿真时间 可选：100
 NPCState npc_state;
 /// @brief NPC寄存器状态
 CPU_state cpu_state;
+vaddr_t trace_pc = 0x80000000;
 
 #ifdef CONFIG_MTRACE
 extern FILE *mtrace_fp;
@@ -68,18 +69,22 @@ void one_clock() {
 #endif
   main_time++;
 
+
+
 #ifdef CONFIG_FTRACE
-  ftrace_call_ret(cpu_inst, top->io_pc, cpu_npc);
+if(top->io_diff_en){
+  ftrace_call_ret(top->io_diff_inst, trace_pc, top->io_diff_pc);
+}
 #endif
 
 #ifdef CONFIG_ITRACE
   if (main_time > CONFIG_DUMPSTART) {
-    if (wb_valid == 1) {
+    if (top->io_diff_en) {
       memset(logbuf, 0, 128);
       char *p = logbuf;
-      p += snprintf(p, sizeof(logbuf), "0x%016lx:", wb_pc);
+      p += snprintf(p, sizeof(logbuf), "0x%016lx:", trace_pc);
       int i;
-      uint8_t *inst = (uint8_t *)(&wb_inst);
+      uint8_t *inst = (uint8_t *)(&top->io_diff_inst);
       // printf("%x\n", cpu_inst);
       int ilen = 4;
       for (i = ilen - 1; i >= 0; i--) {
@@ -93,12 +98,16 @@ void one_clock() {
       memset(p, ' ', space_len);
       p += space_len;
       disassemble(p, logbuf + sizeof(logbuf) - p,
-                  top->io_pc, (uint8_t *)(&wb_inst), ilen);
+                  top->io_pc, (uint8_t *)(&top->io_diff_inst), ilen);
 
       fprintf(itrace_fp, "%s\n", logbuf);
     }
   }
 #endif
+
+  if(top->io_diff_en){
+    trace_pc = top->io_diff_pc;
+  }
 
   top->clock = 1;
   top->eval();
