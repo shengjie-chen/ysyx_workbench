@@ -7,6 +7,8 @@
  * @Description: 用到的dpi变量和函数集合
  */
 
+#include "common.h"
+
 /// @brief dpi函数用于读任意有效地址
 /// @param raddr
 /// @param rdata
@@ -225,23 +227,37 @@ uint64_t typeb_br=0;
 uint64_t ret_inst = 0;
 uint64_t ret_error_inst = 0;
 #ifdef RAS_SPMU
+#define RAS_PATH NPC_HOME "/build/RVnpc/RVNoob/npc-ras-log.txt"
+const char *ras_file = RAS_PATH;
+FILE *ras_fp = NULL;
+
 class RASStream {
-public:
+  public:
     // 向流中添加一个位
-    void addBit(bool bit) {
-        bits.push_back(bit);
-    }
+    void addBit(bool bit) { bits.push_back(bit); }
 
     // 在程序结束前打印所有位
     ~RASStream() {
-		std::cout << "RASStream pre result: " << std::endl;
-        for (bool bit : bits) {
-            std::cout << bit;
+        ras_fp = fopen(ras_file, "w");
+        if (ras_fp) {
+            fprintf(ras_fp, "RASStream pre result: \n");
+            for (int i = 0; i < bits.size(); i++) {
+				if (i % 10 == 0) {
+                    fprintf(ras_fp, "%d ~ %d: ", i, i+9);
+                }
+                fprintf(ras_fp, "%d", (bool)bits[i]);
+                if (i % 10 == 9) {
+                    fprintf(ras_fp, "\n");
+                }
+            }
+            fclose(ras_fp);
+
+        } else {
+            std::cout << "Unable to open file" << std::endl;
         }
-        std::cout << std::endl << std::endl; // 在输出结束后换行
     }
 
-private:
+  private:
     std::vector<bool> bits;
 };
 

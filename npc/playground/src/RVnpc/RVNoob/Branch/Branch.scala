@@ -20,14 +20,16 @@ class branch_info extends Bundle with RVNoobConfig {
 
 class BranchUpdate extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val pc         = Input(UInt(addr_w.W))
-    val snpc       = Input(UInt(addr_w.W))
-    val valid      = Input(Bool())
-    val br_pre     = Input(new branch_pre)
-    val br_info    = Input(new branch_info)
-    val btb_update = Output(new BTBUpdate)
-    val pht_update = Output(new PHTUpdate)
-    val ras_push   = ValidIO(UInt(addr_w.W))
+    val pc            = Input(UInt(addr_w.W))
+    val snpc          = Input(UInt(addr_w.W))
+    val valid         = Input(Bool())
+    val br_pre        = Input(new branch_pre)
+    val br_info       = Input(new branch_info)
+    val btb_update    = Output(new BTBUpdate)
+    val pht_update    = Output(new PHTUpdate)
+    val ras_push      = ValidIO(UInt(addr_w.W))
+    val ras_pop_valid = Output(Bool())
+    val ras_pop_reset = Output(Bool())
   })
 
   when(io.br_info.br_type =/= br_type_id("not_br").U && io.valid) {
@@ -60,6 +62,27 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.ras_push.valid := 1.B
   }.otherwise {
     io.ras_push.valid := 0.B
+  }
+  val ras_error_cnt = RegInit(0.U(2.W))
+  val ret_pre_right = io.br_pre.taken && io.br_pre.target === io.br_info.target
+  val return_error  = io.br_info.br_type === br_type_id("return").U && io.valid && !ret_pre_right
+  val return_right  = io.br_info.br_type === br_type_id("return").U && io.valid && ret_pre_right
+  val ras_reset_reg = RegInit(0.B)
+
+  io.ras_pop_valid := return_error
+  when(!io.ras_pop_reset) {
+    when(return_error) {
+      ras_error_cnt := ras_error_cnt + 1.U
+    }.elsewhen(return_right) {
+      ras_error_cnt := 0.U
+    }
+  }
+
+  io.ras_pop_reset := !io.ras_push.valid && ras_reset_reg
+  when(return_error && !io.ras_pop_reset && ras_error_cnt === 3.U) {
+      ras_reset_reg := 1.B
+  }.elsewhen(io.ras_push.valid) {
+    ras_reset_reg := 0.B
   }
 
 }

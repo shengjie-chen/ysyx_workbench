@@ -11,6 +11,11 @@ class BTBArrays extends Bundle with RVNoobConfig {
   val br_type = UInt(2.W) // branch type
 }
 
+class RetArrays extends Bundle with RVNoobConfig {
+  val valid = Bool()
+  val tag   = UInt(BTBTagWidth.W)
+}
+
 class BTBUpdate extends Bundle with RVNoobConfig {
   val valid   = Bool()
   val addr    = UInt(addr_w.W)
@@ -29,6 +34,7 @@ class BTB extends Module with RVNoobConfig {
 
   val btb_arrays =
     RegInit(Vec(BTBWay, Vec(BTBSet, new BTBArrays)), 0.B.asTypeOf(Vec(BTBWay, Vec(BTBSet, new BTBArrays))))
+  val ret_arrays = RegInit(Vec(BTBSet, new RetArrays), 0.B.asTypeOf(Vec(BTBSet, new RetArrays)))
 
   def xor_hash(addr: UInt): UInt = {
     assert(addr.getWidth == 2 * BTBTagWidth)
@@ -48,18 +54,20 @@ class BTB extends Module with RVNoobConfig {
   }
 
   // ********************************** Read **********************************
-  val set_idx  = get_index(io.addr)
-  val read_tag = get_tag(io.addr)
-  val hit_oh   = Wire(Vec(BTBWay, Bool()))
-  val hit_way  = OHToUInt(hit_oh)
-  val hit      = hit_oh.asUInt().orR
-  hit_oh := 0.B.asTypeOf(hit_oh)
+  val set_idx     = get_index(io.addr)
+  val read_tag    = get_tag(io.addr)
+  val btb_hit_oh  = Wire(Vec(BTBWay, Bool()))
+  val btb_hit_way = OHToUInt(btb_hit_oh)
+  val ret_hit     = Wire(Bool())
+  val hit         = btb_hit_oh.asUInt().orR || ret_hit
+  btb_hit_oh := 0.B.asTypeOf(btb_hit_oh)
   for (w <- 0 until BTBWay) {
-    hit_oh(w) := (btb_arrays(w)(set_idx).tag === read_tag) && btb_arrays(w)(set_idx).valid
+    btb_hit_oh(w) := (btb_arrays(w)(set_idx).tag === read_tag) && btb_arrays(w)(set_idx).valid
   }
+  ret_hit    := ret_arrays(set_idx).tag === read_tag && ret_arrays(set_idx).valid
   io.hit     := hit
-  io.bta     := btb_arrays(hit_way)(set_idx).bta
-  io.br_type := btb_arrays(hit_way)(set_idx).br_type
+  io.bta     := Mux(ret_hit, 0.U, btb_arrays(btb_hit_way)(set_idx).bta)
+  io.br_type := Mux(ret_hit, br_type_id("return").U, btb_arrays(btb_hit_way)(set_idx).br_type)
 
   // ********************************** Write **********************************
   val correct_idx = get_index(io.update.addr)
@@ -69,7 +77,7 @@ class BTB extends Module with RVNoobConfig {
   val PLRU_bits = RegInit(VecInit(Seq.fill(BTBSet)(0.B))) //sets, UInt(waysWidth.W)))
   if (BTBWay == 2) {
     when(hit) {
-      PLRU_bits(set_idx) := hit_way
+      PLRU_bits(set_idx) := btb_hit_way
     }
   }
 
@@ -78,13 +86,18 @@ class BTB extends Module with RVNoobConfig {
     btb_arrays(PLRU_bits(correct_idx))(correct_idx).tag === correct_tag,
     PLRU_bits(correct_idx),
     !PLRU_bits(correct_idx)
-  )
+  ) // useful ?
 
   when(io.update.valid) {
-    btb_arrays(correct_way)(correct_idx).valid   := 1.B
-    btb_arrays(correct_way)(correct_idx).tag     := correct_tag
-    btb_arrays(correct_way)(correct_idx).bta     := io.update.bta
-    btb_arrays(correct_way)(correct_idx).br_type := io.update.br_type
+    when(io.update.br_type === br_type_id("return").U) {
+      ret_arrays(correct_idx).valid := 1.B
+      ret_arrays(correct_idx).tag   := correct_tag
+    }.otherwise {
+      btb_arrays(correct_way)(correct_idx).valid   := 1.B
+      btb_arrays(correct_way)(correct_idx).tag     := correct_tag
+      btb_arrays(correct_way)(correct_idx).bta     := io.update.bta
+      btb_arrays(correct_way)(correct_idx).br_type := io.update.br_type
+    }
   }
 
 }

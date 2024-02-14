@@ -139,8 +139,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   btb.io.addr   <> pc
   btb.io.update <> br_update.io.btb_update
 
-  ras.io.push      <> br_update.io.ras_push
-  ras.io.pop.ready := RegNext(pc_en, 0.B) && btb.io.br_type === br_type_id("return").U && btb.io.hit
+  ras.reset   <> (br_update.io.ras_pop_reset || reset.asBool())
+  ras.io.push <> br_update.io.ras_push
+  val btb_hit_ret = RegNext(pc_en, 0.B) && btb.io.br_type === br_type_id("return").U && btb.io.hit
+  ras.io.pop.ready := btb_hit_ret || br_update.io.ras_pop_valid
 
   br_update.io.pc      <> mem_reg.out.pc
   br_update.io.snpc    <> mem_reg.out.snpc
@@ -148,7 +150,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   br_update.io.br_pre  <> mem_reg.out.br_pre
   br_update.io.br_info <> br_info
 
-  pre_dnpc_en   := !(exmem_dnpc_en || id_snpc_en) && phts.io.taken && btb.io.hit && Mux(ret_en, ras.io.pop.valid, true.B)
+  pre_dnpc_en := !(exmem_dnpc_en || id_snpc_en) &&
+    Mux(ret_en, btb_hit_ret && ras.io.pop.valid, phts.io.taken && btb.io.hit)
   exmem_dnpc_en := ex_dnpc_en || mem_dnpc_en
   ret_en        := btb.io.br_type === br_type_id("return").U
   id_snpc_en    := id_reg.out.br_pre.taken && !is_branch_inst
