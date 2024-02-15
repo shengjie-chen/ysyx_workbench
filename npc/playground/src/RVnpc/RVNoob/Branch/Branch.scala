@@ -32,7 +32,7 @@ class BranchUpdate extends Module with RVNoobConfig {
     val ras_pop_reset = Output(Bool())
   })
 
-  when(io.br_info.br_type =/= br_type_id("not_br").U && io.valid) {
+  when(io.br_info.br_type === br_type_id("typeb").U && io.valid) {
     io.pht_update.valid := 1.B
     io.pht_update.addr  := io.pc
     io.pht_update.taken := io.br_info.taken
@@ -43,7 +43,7 @@ class BranchUpdate extends Module with RVNoobConfig {
   }
 
   when(
-    io.br_info.br_type =/= br_type_id("not_br").U
+    io.br_info.br_type =/= br_type_id("not_br").U && io.br_info.taken
       && (io.br_info.br_type =/= io.br_pre.br_type || io.br_info.target =/= io.br_pre.target) && io.valid
   ) {
     io.btb_update.valid   := 1.B

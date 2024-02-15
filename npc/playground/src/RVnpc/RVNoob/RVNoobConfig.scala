@@ -29,7 +29,7 @@ trait RVNoobConfig extends util_function with BranchConfig {
 }
 
 trait BranchConfig {
-  val BTBSetWidth = 4
+  val BTBSetWidth = 5
   val BTBSet      = pow(2, BTBSetWidth).toInt
   val BTBWay      = 2 // support 1 or 2
   val BTBTagWidth = 12
