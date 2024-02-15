@@ -150,8 +150,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   br_update.io.br_pre  <> mem_reg.out.br_pre
   br_update.io.br_info <> br_info
 
-  pre_dnpc_en := !(exmem_dnpc_en || id_snpc_en) &&
-    Mux(ret_en, btb_hit_ret && ras.io.pop.valid, phts.io.taken && btb.io.hit)
+  pre_dnpc_en := !(exmem_dnpc_en || id_snpc_en) && btb.io.hit && Mux(
+    btb.io.br_type === br_type_id("return").U,
+    ras.io.pop.valid,
+    Mux(btb.io.br_type === br_type_id("typeb").U, phts.io.taken, 1.B)
+  )
   exmem_dnpc_en := ex_dnpc_en || mem_dnpc_en
   ret_en        := btb.io.br_type === br_type_id("return").U
   id_snpc_en    := id_reg.out.br_pre.taken && !is_branch_inst
