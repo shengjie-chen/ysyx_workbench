@@ -62,6 +62,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val phts      = Module(new PHTs)
   val btb       = Module(new BTB)
   val ras       = Module(new RAS)
+  val bht       = Module(new BHT)
   val br_update = Module(new BranchUpdate)
 
   val pre_dnpc_en   = Wire(Bool())
@@ -133,8 +134,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     icache.io.sram.get(3) <> io.sram3.get
   }
 
-  phts.io.addr   <> pc
-  phts.io.update <> br_update.io.pht_update
+  phts.io.addr    <> pc
+  phts.io.update  <> br_update.io.pht_update
+  phts.io.bht_reg <> bht.io.bht_reg
 
   btb.io.addr   <> pc
   btb.io.update <> br_update.io.btb_update
@@ -143,6 +145,9 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   ras.io.push <> br_update.io.ras_push
   val btb_hit_ret = RegNext(pc_en, 0.B) && btb.io.br_type === br_type_id("return").U && btb.io.hit
   ras.io.pop.ready := btb_hit_ret || br_update.io.ras_pop_valid
+
+  bht.io.addr   <> pc
+  bht.io.update := br_update.io.bht_update
 
   br_update.io.pc      <> mem_reg.out.pc
   br_update.io.snpc    <> mem_reg.out.snpc
@@ -186,6 +191,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   id_reg.in.br_pre.taken   <> pre_dnpc_en
   id_reg.in.br_pre.target  <> Mux(pre_dnpc_en, pre_dnpc, snpc)
   id_reg.in.br_pre.br_type <> Mux(btb.io.hit, btb.io.br_type, br_type_id("not_br").U)
+  id_reg.in.br_pre.bht_reg <> bht.io.bht_reg
 
   ppl_ctrl.io.idu_rf           <> idu.io.id_rf_ctrl
   ppl_ctrl.io.idu_csr          <> idu.io.id_csr_ctrl
