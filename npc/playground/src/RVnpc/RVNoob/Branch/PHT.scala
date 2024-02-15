@@ -4,18 +4,16 @@ import RVnpc.RVNoob._
 import chisel3._
 
 class PHTUpdate extends Bundle with RVNoobConfig {
-  val valid   = Bool()
-  val addr    = UInt(addr_w.W)
-  val taken   = Bool()
-  val bht_reg = Input(UInt(BHTRegWidth.W))
+  val valid = Bool()
+  val addr  = UInt(addr_w.W)
+  val taken = Bool()
 }
 
 class PHTs extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val addr    = Input(UInt(addr_w.W))
-    val taken   = Output(Bool())
-    val bht_reg = Input(UInt(BHTRegWidth.W))
-    val update  = Input(new PHTUpdate)
+    val addr   = Input(UInt(addr_w.W))
+    val taken  = Output(Bool())
+    val update = Input(new PHTUpdate)
   })
 
   def pht(take: Bool, correct: Bool): UInt = {
@@ -32,26 +30,18 @@ class PHTs extends Module with RVNoobConfig {
     pht
   }
 
-  def hash_index(pc: UInt, bht_reg: UInt): UInt = {
-    val pc_width = PhtAddrWidth - BHTRegWidth
-    val index    = Wire(UInt(PhtAddrWidth.W))
-    index := pc(pc_width - 1 + 2 + BHTAddrWidth, 2 + BHTAddrWidth) ## bht_reg
-    index
-  }
-
   // update
-  val update_index        = hash_index(io.update.addr, io.update.bht_reg)
+  val update_addr = io.update.addr(PhtAddrWidth - 1 + 2, 2)
   val phts_correct_choose = Wire(Vec(PhtDepth, Bool()))
   phts_correct_choose := 0.U.asTypeOf(phts_correct_choose)
   when(io.update.valid) {
-    phts_correct_choose(update_index) := 1.B
+    phts_correct_choose(update_addr) := 1.B
   }
-
-  val phts = Array.tabulate(PhtDepth)(index => pht(io.update.taken, phts_correct_choose(index)))
+  val phts  = Array.tabulate(PhtDepth)(index => pht(io.update.taken, phts_correct_choose(index)))
 
   // read
-  val read_index = hash_index(io.addr, io.bht_reg)
-  val taken      = Wire(Vec(PhtDepth, Bool()))
+  val read_index = io.addr(PhtAddrWidth - 1 + 2, 2)
+  val taken = Wire(Vec(PhtDepth, Bool()))
   for (i <- 0 until PhtDepth) {
     taken(i) := phts(i)(1)
   }

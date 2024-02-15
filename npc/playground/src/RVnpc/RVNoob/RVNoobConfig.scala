@@ -33,19 +33,13 @@ trait BranchConfig {
   val BTBSet      = pow(2, BTBSetWidth).toInt
   val BTBWay      = 2 // support 1 or 2
   val BTBTagWidth = 12
-  val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "jal" -> 4, "not_br" -> 4)
+  val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "not_br" -> 4)
 
-  val PhtAddrWidth = 5
+  val PhtAddrWidth = 4
   val PhtDepth     = pow(2, PhtAddrWidth).toInt
 
   val RASDepth  = 6
   val RASCntNum = 4
-
-  val BHTRegWidth = 3
-  val BHTAddrWidth = 3
-  val BHTDepth = pow(2, BHTAddrWidth).toInt
-  assert(BHTRegWidth < PhtAddrWidth)
-  assert(BHTAddrWidth < PhtAddrWidth)
 }
 
 trait ALU_op {

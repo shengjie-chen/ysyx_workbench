@@ -9,7 +9,6 @@ class branch_pre extends Bundle with RVNoobConfig {
   val target = UInt(addr_w.W)
 //  val snpc    = UInt(addr_w.W)
   val br_type = UInt(3.W) // 5 type
-  val bht_reg = UInt(BHTRegWidth.W)
 }
 
 class branch_info extends Bundle with RVNoobConfig {
@@ -28,22 +27,19 @@ class BranchUpdate extends Module with RVNoobConfig {
     val br_info       = Input(new branch_info)
     val btb_update    = Output(new BTBUpdate)
     val pht_update    = Output(new PHTUpdate)
-    val bht_update    = Output(new BHTUpdate)
     val ras_push      = ValidIO(UInt(addr_w.W))
     val ras_pop_valid = Output(Bool())
     val ras_pop_reset = Output(Bool())
   })
 
   when(io.br_info.br_type === br_type_id("typeb").U && io.valid) {
-    io.pht_update.valid   := 1.B
-    io.pht_update.addr    := io.pc
-    io.pht_update.taken   := io.br_info.taken
-    io.pht_update.bht_reg := io.br_pre.bht_reg
+    io.pht_update.valid := 1.B
+    io.pht_update.addr  := io.pc
+    io.pht_update.taken := io.br_info.taken
   }.otherwise {
-    io.pht_update.valid   := 0.B
-    io.pht_update.addr    := 0.U
-    io.pht_update.taken   := 0.B
-    io.pht_update.bht_reg := 0.U
+    io.pht_update.valid := 0.B
+    io.pht_update.addr  := 0.U
+    io.pht_update.taken := 0.B
   }
 
   when(
@@ -59,16 +55,6 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.btb_update.addr    := 0.U
     io.btb_update.bta     := 0.U
     io.btb_update.br_type := 0.U
-  }
-
-  when(io.br_info.br_type === br_type_id("typeb").U && io.valid) {
-    io.bht_update.valid := 1.B
-    io.bht_update.addr  := io.pc
-    io.bht_update.taken := io.br_info.taken
-  }.otherwise {
-    io.bht_update.valid := 0.B
-    io.bht_update.addr  := 0.U
-    io.bht_update.taken := 0.B
   }
 
   io.ras_push.bits := io.snpc
@@ -94,7 +80,7 @@ class BranchUpdate extends Module with RVNoobConfig {
 
   io.ras_pop_reset := !io.ras_push.valid && ras_reset_reg
   when(return_error && !io.ras_pop_reset && ras_error_cnt === 3.U) {
-    ras_reset_reg := 1.B
+      ras_reset_reg := 1.B
   }.elsewhen(io.ras_push.valid) {
     ras_reset_reg := 0.B
   }
