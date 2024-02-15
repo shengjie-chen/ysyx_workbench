@@ -35,7 +35,7 @@ trait BranchConfig {
   val BTBTagWidth = 12
   val br_type_id  = Map("call" -> 0, "return" -> 1, "taken_br" -> 2, "typeb" -> 3, "not_br" -> 4)
 
-  val PhtAddrWidth = 6
+  val PhtAddrWidth = 4
   val PhtDepth     = pow(2, PhtAddrWidth).toInt
 
   val RASDepth  = 6

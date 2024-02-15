@@ -11,7 +11,7 @@ class PHTUpdate extends Bundle with RVNoobConfig {
 
 class PHTs extends Module with RVNoobConfig {
   val io = IO(new Bundle {
-    val addr   = Input(UInt(PhtAddrWidth.W))
+    val addr   = Input(UInt(addr_w.W))
     val taken  = Output(Bool())
     val update = Input(new PHTUpdate)
   })
@@ -29,17 +29,23 @@ class PHTs extends Module with RVNoobConfig {
     }
     pht
   }
+
+  // update
+  val update_addr = io.update.addr(PhtAddrWidth - 1 + 2, 2)
   val phts_correct_choose = Wire(Vec(PhtDepth, Bool()))
   phts_correct_choose := 0.U.asTypeOf(phts_correct_choose)
   when(io.update.valid) {
-    phts_correct_choose(io.update.addr) := 1.B
+    phts_correct_choose(update_addr) := 1.B
   }
   val phts  = Array.tabulate(PhtDepth)(index => pht(io.update.taken, phts_correct_choose(index)))
+
+  // read
+  val read_index = io.addr(PhtAddrWidth - 1 + 2, 2)
   val taken = Wire(Vec(PhtDepth, Bool()))
   for (i <- 0 until PhtDepth) {
     taken(i) := phts(i)(1)
   }
-  io.taken := taken(io.addr)
+  io.taken := taken(read_index)
 
 }
 
