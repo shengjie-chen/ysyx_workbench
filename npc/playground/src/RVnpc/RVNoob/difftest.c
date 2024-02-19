@@ -19,8 +19,7 @@ extern VRVNoob *top;
 
 char *diff_file = NULL;
 
-enum { DIFFTEST_TO_DUT,
-       DIFFTEST_TO_REF };
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 #ifdef CONFIG_DIFFTEST_REF_MEM_POINT
 uint32_t ref_mem_temp;
@@ -35,14 +34,14 @@ void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
 /// @brief 从硬件那里更新仿真软件这边的cpu寄存器。
 void refresh_gpr_pc_csr() {
-  int i;
-  for (i = 0; i < 32; i++) {
-    cpu_state.gpr[i] = cpu_gpr[i];
-  }
-  cpu_state.pc = top->io_diff_pc;
-  for (i = 0; i < CSR_NUM; i++) {
-    cpu_state.csr[i] = cpu_csr[i];
-  }
+    int i;
+    for (i = 0; i < 32; i++) {
+        cpu_state.gpr[i] = cpu_gpr[i];
+    }
+    cpu_state.pc = top->io_diff_pc;
+    for (i = 0; i < CSR_NUM; i++) {
+        cpu_state.csr[i] = cpu_csr[i];
+    }
 }
 
 /// @brief 显式调用动态链接库,进行difftest初始化
@@ -51,100 +50,100 @@ void refresh_gpr_pc_csr() {
 /// @param port
 /// @param cpu
 void init_difftest(char *ref_so_file, long img_size, int port, void *cpu) {
-  assert(ref_so_file != NULL);
+    assert(ref_so_file != NULL);
 
-  void *handle;
-  handle = dlopen(ref_so_file, RTLD_LAZY);
-  assert(handle);
+    void *handle;
+    handle = dlopen(ref_so_file, RTLD_LAZY);
+    assert(handle);
 
-  ref_difftest_memcpy = (void (*)(paddr_t, void *, size_t, bool))dlsym(handle, "difftest_memcpy");
-  assert(ref_difftest_memcpy);
+    ref_difftest_memcpy = (void (*)(paddr_t, void *, size_t, bool))dlsym(handle, "difftest_memcpy");
+    assert(ref_difftest_memcpy);
 
-  ref_difftest_regcpy = (void (*)(void *, bool))dlsym(handle, "difftest_regcpy");
-  assert(ref_difftest_regcpy);
+    ref_difftest_regcpy = (void (*)(void *, bool))dlsym(handle, "difftest_regcpy");
+    assert(ref_difftest_regcpy);
 
-  ref_difftest_exec = (void (*)(uint64_t))dlsym(handle, "difftest_exec");
-  assert(ref_difftest_exec);
+    ref_difftest_exec = (void (*)(uint64_t))dlsym(handle, "difftest_exec");
+    assert(ref_difftest_exec);
 
-  ref_difftest_raise_intr = (void (*)(uint64_t))dlsym(handle, "difftest_raise_intr");
-  assert(ref_difftest_raise_intr);
+    ref_difftest_raise_intr = (void (*)(uint64_t))dlsym(handle, "difftest_raise_intr");
+    assert(ref_difftest_raise_intr);
 
-  void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
-  assert(ref_difftest_init);
+    void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
+    assert(ref_difftest_init);
 
-  ref_difftest_init(port);
-  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-  ref_difftest_regcpy(cpu, DIFFTEST_TO_REF);
+    ref_difftest_init(port);
+    ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+    ref_difftest_regcpy(cpu, DIFFTEST_TO_REF);
 }
 
 extern vluint64_t main_time;
 bool isa_difftest_checkregs(CPU_state *ref_r) {
-  for (int i = 0; i < 32; i++) {
-    if (cpu_state.gpr[i] != ref_r->gpr[i]) {
-      printf("!!!!!!!\n");
-      printf("main_time : %ld\n", main_time);
-      printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
-      printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
-      printf("!!!!!!!\n");
-      return false;
+    for (int i = 0; i < 32; i++) {
+        if (cpu_state.gpr[i] != ref_r->gpr[i]) {
+            printf("!!!!!!!\n");
+            printf("main_time : %ld\n", main_time);
+            printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
+            printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref_r->gpr[i]);
+            printf("!!!!!!!\n");
+            return false;
+        }
     }
-  }
-  if (cpu_state.pc != ref_r->pc) {
-    printf("!!!!!!!\n");
-    printf("main_time : %ld\n", main_time);
-    printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
-    printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
-    printf("!!!!!!!\n");
-    return false;
-  }
-  for (int i = 0; i < CSR_NUM; i++) {
-    if (cpu_state.csr[i] != ref_r->csr[i]) {
-      printf("!!!!!!!\n");
-      printf("main_time : %ld\n", main_time);
-      printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
-      printf("ref.csr[%d] is " FMT_WORD "\n", i, ref_r->csr[i]);
-      printf("!!!!!!!\n");
-      return false;
+    if (cpu_state.pc != ref_r->pc) {
+        printf("!!!!!!!\n");
+        printf("main_time : %ld\n", main_time);
+        printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
+        printf("ref.pc is " FMT_WORD "\n", ref_r->pc);
+        printf("!!!!!!!\n");
+        return false;
     }
-  }
-  return true;
+    for (int i = 0; i < CSR_NUM; i++) {
+        if (cpu_state.csr[i] != ref_r->csr[i]) {
+            printf("!!!!!!!\n");
+            printf("main_time : %ld\n", main_time);
+            printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
+            printf("ref.csr[%d] is " FMT_WORD "\n", i, ref_r->csr[i]);
+            printf("!!!!!!!\n");
+            return false;
+        }
+    }
+    return true;
 }
 
 void isa_reg_display(CPU_state *ref) {
-  printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
-  printf("ref.pc is " FMT_WORD "\n", ref->pc);
-  int i;
-  for (i = 0; i < 32; i++) {
-    printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
-    printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref->gpr[i]);
-  }
-  for (i = 0; i < CSR_NUM; i++) {
-    printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
-    printf("ref.csr[%d] is " FMT_WORD "\n", i, ref->csr[i]);
-  }
+    printf("cpu.pc is " FMT_WORD "\n", cpu_state.pc);
+    printf("ref.pc is " FMT_WORD "\n", ref->pc);
+    int i;
+    for (i = 0; i < 32; i++) {
+        printf("cpu.gpr[%d] is " FMT_WORD "\n", i, cpu_state.gpr[i]);
+        printf("ref.gpr[%d] is " FMT_WORD "\n", i, ref->gpr[i]);
+    }
+    for (i = 0; i < CSR_NUM; i++) {
+        printf("cpu.csr[%d] is " FMT_WORD "\n", i, cpu_state.csr[i]);
+        printf("ref.csr[%d] is " FMT_WORD "\n", i, ref->csr[i]);
+    }
 }
 
 /// @brief
 /// @param ref
 /// @param pc 上一周期wb的pc，也就是当前检测pc
 void checkregs(CPU_state *ref, vaddr_t pc) {
-  if (!isa_difftest_checkregs(ref)) {
-    npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = pc;
-    printf("diff test fail!!\n");
-    printf("error inst is " FMT_WORD "\n", pc);
-    isa_reg_display(ref);
-  }
+    if (!isa_difftest_checkregs(ref)) {
+        npc_state.state = NPC_ABORT;
+        npc_state.halt_pc = pc;
+        printf("diff test fail!!\n");
+        printf("error inst is " FMT_WORD "\n", pc);
+        isa_reg_display(ref);
+    }
 #ifdef CONFIG_DIFFTEST_REF_MEM_POINT
-  else if (ref_mem_temp != ref_mem_temp_r) {
-    ref_mem_temp_r = ref_mem_temp;
-    printf("----------------------\n");
-    printf("main_time : %ld\n", main_time);
-    printf("ref mem change unusually!!\n");
-    printf("ref mem " FMT_WORD " is " FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
-    printf("error inst is " FMT_WORD "\n", pc);
-    printf("----------------------\n");
-  }
+    else if (ref_mem_temp != ref_mem_temp_r) {
+        ref_mem_temp_r = ref_mem_temp;
+        printf("----------------------\n");
+        printf("main_time : %ld\n", main_time);
+        printf("ref mem change unusually!!\n");
+        printf("ref mem " FMT_WORD " is " FMT_WORD "\n", ref_mem_temp_addr, ref_mem_temp);
+        printf("error inst is " FMT_WORD "\n", pc);
+        printf("----------------------\n");
+    }
 #endif
 }
 
@@ -157,50 +156,50 @@ static int skip_pc_read = 0;
 extern uint32_t mem_pc;
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
-  CPU_state ref_r;
-  if (top->io_diff_en) {
-    if (skip_pc_write != skip_pc_read) {
-      // printf("there is insts wait to skip\n");
-      // printf("finish_pc/current difftest pc:\t\t" FMT_WORD "\n", finish_pc);
-      // printf("inst wait to skip: skip_pc_buf[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
-      if (finish_pc == skip_pc[skip_pc_read]) {
-        // printf("[skip buf output]\tskip difftest!\n");
-        // to skip the checking of an instruction, just copy the reg state to reference design
-        refresh_gpr_pc_csr();                             // 更新状态
-        ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
-        if (skip_pc_read == 3) {
-          skip_pc_read = 0;
-        } else {
-          skip_pc_read++;
+    CPU_state ref_r;
+    if (top->io_diff_en) {
+        if (skip_pc_write != skip_pc_read) {
+            // printf("there is insts wait to skip\n");
+            // printf("finish_pc/current difftest pc:\t\t" FMT_WORD "\n", finish_pc);
+            // printf("inst wait to skip: skip_pc_buf[%d]:\t" FMT_WORD "\n", skip_pc_read, skip_pc[skip_pc_read]);
+            if (finish_pc == skip_pc[skip_pc_read]) {
+                // printf("[skip buf output]\tskip difftest!\n");
+                // to skip the checking of an instruction, just copy the reg state to reference design
+                refresh_gpr_pc_csr();                             // 更新状态
+                ref_difftest_regcpy(&cpu_state, DIFFTEST_TO_REF); // 把状态拷贝到nemu
+                if (skip_pc_read == 3) {
+                    skip_pc_read = 0;
+                } else {
+                    skip_pc_read++;
+                }
+                // printf("\t\t\tskip_pc_buf next read index:%d\n", skip_pc_read);
+                finish_pc = top->io_diff_pc;
+                return;
+            }
         }
-        // printf("\t\t\tskip_pc_buf next read index:%d\n", skip_pc_read);
-        finish_pc = top->io_diff_pc;
-        return;
-      }
-    }
 
-    refresh_gpr_pc_csr();
-    ref_difftest_exec(1);
+        refresh_gpr_pc_csr();
+        ref_difftest_exec(1);
 
 #ifdef CONFIG_DIFFTEST_REF_MEM_POINT
-    ref_difftest_memcpy(ref_mem_temp_addr, &ref_mem_temp, 4, DIFFTEST_TO_DUT);
+        ref_difftest_memcpy(ref_mem_temp_addr, &ref_mem_temp, 4, DIFFTEST_TO_DUT);
 #endif
-    ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-    checkregs(&ref_r, finish_pc);
+        ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+        checkregs(&ref_r, finish_pc);
 
-    finish_pc = top->io_diff_pc;
-  }
+        finish_pc = top->io_diff_pc;
+    }
 }
 
 /// @brief 对外设进行读写时需要跳过difftest
 /// @todo 因为读写发生在mem阶段，需要记录pc或者inst，等到这个指令执行到wb阶段，再进行跳过
 void difftest_skip_ref(vaddr_t addr) {
-  skip_pc[skip_pc_write] = addr;
-  // printf("[skip buf input]\tmem_pc:" FMT_WORD " -> skip_pc_buf[%d]\n", addr, skip_pc_write);
-  if (skip_pc_write == 3) {
-    skip_pc_write = 0;
-  } else {
-    skip_pc_write++;
-  }
-  // printf("\t\t\tskip_pc_buf next write index:%d\n", skip_pc_write);
+    skip_pc[skip_pc_write] = addr;
+    // printf("[skip buf input]\tmem_pc:" FMT_WORD " -> skip_pc_buf[%d]\n", addr, skip_pc_write);
+    if (skip_pc_write == 3) {
+        skip_pc_write = 0;
+    } else {
+        skip_pc_write++;
+    }
+    // printf("\t\t\tskip_pc_buf next write index:%d\n", skip_pc_write);
 }

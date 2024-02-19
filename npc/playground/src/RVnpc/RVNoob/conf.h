@@ -4,7 +4,8 @@
  * @LastEditors: Shengjie Chen chenshengjie1999@126.com
  * @LastEditTime: 2022-12-10 10:41:57
  * @FilePath: /npc/playground/src/RVnpc/RVNoob/conf.h
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置:
+ * https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 #ifndef __MACRO_CONF__
 #define __MACRO_CONF__
@@ -15,17 +16,17 @@
 // #define CONFIG_FTRACE
 //  #define CONFIG_MTRACE
 
- #define SPMU_ENABLE
+#define SPMU_ENABLE
 
- #ifdef SPMU_ENABLE
-	// #define RAS_SPMU
- #endif
-
-#ifdef CONFIG_ITRACE  
-#define CONFIG_DUMPSTART 0 
+#ifdef SPMU_ENABLE
+// #define RAS_SPMU
 #endif
 
- #define CONFIG_DIFFTEST
+#ifdef CONFIG_ITRACE
+#define CONFIG_DUMPSTART 0
+#endif
+
+#define CONFIG_DIFFTEST
 // #define CONFIG_DIFFTEST_REF_MEM_POINT
 
 // 1M --> 1.6GB
@@ -35,14 +36,12 @@
 
 // ---------------------------->switch end
 
-
 // #define BIGPROGRAM
 
 // #ifdef BIGPROGRAM
 // #define BIGPROGRAMDEBUG
 // #define CONFIG_DIFFTEST
 // #endif
-
 
 // #ifndef BIGPROGRAM
 // #define CONFIG_ITRACE
