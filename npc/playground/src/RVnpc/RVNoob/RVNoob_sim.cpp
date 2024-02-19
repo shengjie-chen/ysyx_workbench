@@ -228,7 +228,7 @@ int main(int argc, char **argv, char **env) {
   printf("simulation time          : %d min %d s\n", time / 60, time % 60);
   printf("sim clock num            : %ld\n", clock_cnt);
   printf("complete inst num        : %ld\n", inst_cnt);
-  printf("npc ipc                  : %f\n", (double)inst_cnt / (double)clock_cnt);
+  printf(ANSI_FMT("npc ipc                  : %f\n", ANSI_FG_YELLOW), (double)inst_cnt / (double)clock_cnt);
   printf("average clk speed        : %ld clock/s\n", clock_cnt / time);
   printf("average inst speed       : %ld insts/s\n", inst_cnt / time);
 #ifdef SPMU_ENABLE

@@ -58,6 +58,8 @@ class RAS extends Module with RVNoobConfig {
 
   assert(io.push.valid && io.push.bits =/= 0.U, "RAS push 0")
 
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 object RASGen extends App {

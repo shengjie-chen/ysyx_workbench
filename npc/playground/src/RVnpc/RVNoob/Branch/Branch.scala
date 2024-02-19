@@ -12,7 +12,6 @@ class branch_pre extends Bundle with RVNoobConfig {
 }
 
 class branch_info extends Bundle with RVNoobConfig {
-
   val taken   = Bool()
   val target  = UInt(addr_w.W)
   val br_type = UInt(3.W) // 5 type
@@ -46,15 +45,23 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.br_info.br_type =/= br_type_id("not_br").U && io.br_info.taken
       && (io.br_info.br_type =/= io.br_pre.br_type || io.br_info.target =/= io.br_pre.target) && io.valid
   ) {
-    io.btb_update.valid   := 1.B
-    io.btb_update.addr    := io.pc
-    io.btb_update.bta     := io.br_info.target
-    io.btb_update.br_type := io.br_info.br_type
+    io.btb_update.valid          := 1.B
+    io.btb_update.addr           := io.pc
+    io.btb_update.bta            := io.br_info.target
+    io.btb_update.br_type        := io.br_info.br_type
+    io.btb_update.entity_invalid := 0.B
+  }.elsewhen(io.br_info.br_type === br_type_id("not_br").U && io.br_pre.taken && io.valid) {
+    io.btb_update.valid          := 1.B
+    io.btb_update.addr           := io.pc
+    io.btb_update.bta            := 0.U
+    io.btb_update.br_type        := io.br_pre.br_type
+    io.btb_update.entity_invalid := 1.B
   }.otherwise {
-    io.btb_update.valid   := 0.B
-    io.btb_update.addr    := 0.U
-    io.btb_update.bta     := 0.U
-    io.btb_update.br_type := 0.U
+    io.btb_update.valid          := 0.B
+    io.btb_update.addr           := 0.U
+    io.btb_update.bta            := 0.U
+    io.btb_update.br_type        := 0.U
+    io.btb_update.entity_invalid := 0.B
   }
 
   io.ras_push.bits := io.snpc
@@ -80,9 +87,10 @@ class BranchUpdate extends Module with RVNoobConfig {
 
   io.ras_pop_reset := !io.ras_push.valid && ras_reset_reg
   when(return_error && !io.ras_pop_reset && ras_error_cnt === 3.U) {
-      ras_reset_reg := 1.B
+    ras_reset_reg := 1.B
   }.elsewhen(io.ras_push.valid) {
     ras_reset_reg := 0.B
   }
 
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 }

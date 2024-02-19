@@ -47,6 +47,8 @@ class PHTs extends Module with RVNoobConfig {
   }
   io.taken := taken(read_index)
 
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
+
 }
 
 object PHTsGen extends App {

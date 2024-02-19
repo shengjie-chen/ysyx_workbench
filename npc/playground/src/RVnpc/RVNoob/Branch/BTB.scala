@@ -7,7 +7,7 @@ import chisel3.util._
 class BTBArrays extends Bundle with RVNoobConfig {
   val valid   = Bool()
   val tag     = UInt(BTBTagWidth.W)
-  val bta     = UInt(addr_w.W) // branch target address
+  val bta     = UInt((addr_w - 2 - BTBBtaComWidth).W) // branch target address
   val br_type = UInt(2.W) // branch type
 }
 
@@ -17,10 +17,11 @@ class RetArrays extends Bundle with RVNoobConfig {
 }
 
 class BTBUpdate extends Bundle with RVNoobConfig {
-  val valid   = Bool()
-  val addr    = UInt(addr_w.W)
-  val bta     = UInt(addr_w.W)
-  val br_type = UInt(2.W)
+  val valid          = Bool()
+  val addr           = UInt(addr_w.W)
+  val bta            = UInt(addr_w.W)
+  val br_type        = UInt(2.W)
+  val entity_invalid = Bool()
 }
 
 class BTB extends Module with RVNoobConfig {
@@ -35,6 +36,7 @@ class BTB extends Module with RVNoobConfig {
   val btb_arrays =
     RegInit(Vec(BTBWay, Vec(BTBSet, new BTBArrays)), 0.B.asTypeOf(Vec(BTBWay, Vec(BTBSet, new BTBArrays))))
   val ret_arrays = RegInit(Vec(BTBSet, new RetArrays), 0.B.asTypeOf(Vec(BTBSet, new RetArrays)))
+  val bta_arrays = RegInit(Vec(BTBSet, UInt(BTBBtaComWidth.W)), 0.B.asTypeOf(Vec(BTBSet, UInt(BTBBtaComWidth.W))))
 
   def xor_hash(addr: UInt): UInt = {
     assert(addr.getWidth == 2 * BTBTagWidth)
@@ -66,7 +68,7 @@ class BTB extends Module with RVNoobConfig {
   }
   ret_hit    := ret_arrays(set_idx).tag === read_tag && ret_arrays(set_idx).valid
   io.hit     := hit
-  io.bta     := Mux(ret_hit, 0.U, btb_arrays(btb_hit_way)(set_idx).bta)
+  io.bta     := bta_arrays(set_idx) ## Mux(ret_hit, 0.U, btb_arrays(btb_hit_way)(set_idx).bta) ## 0.U(2.W)
   io.br_type := Mux(ret_hit, br_type_id("return").U, btb_arrays(btb_hit_way)(set_idx).br_type)
 
   // ********************************** Write **********************************
@@ -90,15 +92,19 @@ class BTB extends Module with RVNoobConfig {
 
   when(io.update.valid) {
     when(io.update.br_type === br_type_id("return").U) {
-      ret_arrays(correct_idx).valid := 1.B
+      ret_arrays(correct_idx).valid := !io.update.entity_invalid
       ret_arrays(correct_idx).tag   := correct_tag
     }.otherwise {
-      btb_arrays(correct_way)(correct_idx).valid   := 1.B
+      btb_arrays(correct_way)(correct_idx).valid   := !io.update.entity_invalid
       btb_arrays(correct_way)(correct_idx).tag     := correct_tag
-      btb_arrays(correct_way)(correct_idx).bta     := io.update.bta
+      btb_arrays(correct_way)(correct_idx).bta     := io.update.bta(addr_w - BTBBtaComWidth - 1, 2)
       btb_arrays(correct_way)(correct_idx).br_type := io.update.br_type
+      bta_arrays(correct_idx)                      := io.update.bta(addr_w - 1, addr_w - BTBBtaComWidth)
+
     }
   }
+
+  override def desiredName = if (tapeout) ysyxid + "_" + getClassName else getClassName
 
 }
 
