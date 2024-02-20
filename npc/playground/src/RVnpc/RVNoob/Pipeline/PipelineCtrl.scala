@@ -28,6 +28,7 @@ class PipelineCtrl extends Module with RVNoobConfig {
     val mem_reg_ctrl     = Output(new RegCtrl)
     val wb_reg_ctrl      = Output(new RegCtrl)
     val pc_en            = Output(Bool())
+    val pc_reset         = Output(Bool())
     val forward1         = Output(UInt(2.W))
     val forward2         = Output(UInt(2.W))
   })
@@ -88,6 +89,7 @@ class PipelineCtrl extends Module with RVNoobConfig {
   io.mem_reg_ctrl := normal_state
   io.wb_reg_ctrl  := normal_state
   io.pc_en        := 1.B
+  io.pc_reset     := 0.B
 
   def if_id_delay_ex_flush = { // if,id stop, ex flush
     io.id_reg_ctrl := delay_state
@@ -102,9 +104,9 @@ class PipelineCtrl extends Module with RVNoobConfig {
     io.wb_reg_ctrl  := delay_state
     io.pc_en        := 0.B
   }.otherwise {
-    when(io.mem_dnpc_en || io.ex_dnpc_en || io.id_snpc_en) {
+    when(io.mem_dnpc_en || io.ex_dnpc_en) {
       io.id_reg_ctrl  := flush_state
-      io.ex_reg_ctrl  := Mux(!io.id_snpc_en, flush_state, normal_state)
+      io.ex_reg_ctrl  := flush_state
       io.mem_reg_ctrl := Mux(io.mem_dnpc_en, flush_state, normal_state)
       state           := sNone
     }.otherwise {
@@ -125,6 +127,16 @@ class PipelineCtrl extends Module with RVNoobConfig {
           if_id_delay_ex_flush
           io.mem_reg_ctrl := flush_state
           state           := sNone
+        }
+      }
+
+      when(io.id_snpc_en) {
+        when(
+          ex_hazard_1_delay || ex_hazard_2_delay || mem_hazard_1_delay || mem_hazard_2_delay || mem_csr_hazard
+        ) {
+          io.pc_reset := 1.B
+        }.otherwise {
+          io.id_reg_ctrl := flush_state
         }
       }
     }

@@ -71,6 +71,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val ex_dnpc_en    = Wire(Bool())
   val mem_dnpc_en   = Wire(Bool())
   val pc_en         = Wire(Bool())
+  val pc_reset      = Wire(Bool())
+  val pc_valid      = RegNext(pc_en, 0.B)
 
   val npc      = Wire(UInt(addr_w.W))
   val pre_dnpc = Wire(UInt(addr_w.W))
@@ -81,9 +83,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val id_snpc  = Wire(UInt(addr_w.W))
   val ex_dnpc  = Wire(UInt(addr_w.W))
   val mem_dnpc = Wire(UInt(addr_w.W))
-  val pc =
-    if (tapeout) RegEnable(npc, 0x30000000L.U(addr_w.W), pc_en)
-    else RegEnable(npc, 0x80000000L.U(addr_w.W), pc_en) //2147483648
+  val pc       = Reg(UInt(addr_w.W))
   if (!tapeout) { dontTouch(npc) }
 
   // >>>>>>>>>>>>>> ID Inst Decode  id_reg <<<<<<<<<<<<<<
@@ -123,7 +123,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
   icache.io.addr     <> pc
   icache.io.ren      <> !reset.asBool()
-  icache.io.in_valid <> (RegNext(pc_en, 0.B) || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
+  icache.io.in_valid <> (pc_valid || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
   if (fpga) {
     icache.io.bram.get <> io.i_bram.get
   } else {
@@ -141,7 +141,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   ras.reset   <> (br_update.io.ras_pop_reset || reset.asBool())
   ras.io.push <> br_update.io.ras_push
-  val btb_hit_ret = RegNext(pc_en, 0.B) && btb.io.br_type === br_type_id("return").U && btb.io.hit
+  val btb_hit_ret = pc_valid && btb.io.br_type === br_type_id("return").U && btb.io.hit
   ras.io.pop.ready := btb_hit_ret || br_update.io.ras_pop_valid
 
   br_update.io.pc      <> mem_reg.out.pc
@@ -164,8 +164,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
     1.B,
     mem_reg.out.br_pre.target =/= mem_reg.out.dnpc
   )
-  pc_en := ppl_ctrl.io.pc_en
+  pc_en    := ppl_ctrl.io.pc_en
+  pc_reset := ppl_ctrl.io.pc_reset
 
+  if (tapeout) {
+    pc := Mux(pc_reset || reset.asBool(), 0x30000000L.U(addr_w.W), Mux(pc_en, npc, pc))
+  } else {
+    pc := Mux(pc_reset || reset.asBool(), 0x80000000L.U(addr_w.W), Mux(pc_en, npc, pc)) //2147483648
+  }
   npc      := Mux(pre_dnpc_en, pre_dnpc, npc_t)
   pre_dnpc := Mux(ret_en, ras.io.pop.bits, btb.io.bta)
   npc_t    := Mux(exmem_dnpc_en, dnpc, snpc_t)
@@ -181,7 +187,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   id_reg.in.inst           <> icache.io.rdata
   id_reg.in.snpc           <> snpc
   id_reg.in.reg_en         <> ppl_ctrl.io.id_reg_ctrl.en
-  id_reg.in.valid          <> icache.io.out_rvalid
+  id_reg.in.valid          <> (icache.io.out_rvalid || !pc_reset)
   id_reg.reset             <> (ppl_ctrl.io.id_reg_ctrl.flush || reset.asBool())
   id_reg.in.br_pre.taken   <> pre_dnpc_en
   id_reg.in.br_pre.target  <> Mux(pre_dnpc_en, pre_dnpc, snpc)

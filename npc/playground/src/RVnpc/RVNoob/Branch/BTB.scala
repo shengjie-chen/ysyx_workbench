@@ -99,8 +99,9 @@ class BTB extends Module with RVNoobConfig {
       btb_arrays(correct_way)(correct_idx).tag     := correct_tag
       btb_arrays(correct_way)(correct_idx).bta     := io.update.bta(addr_w - BTBBtaComWidth - 1, 2)
       btb_arrays(correct_way)(correct_idx).br_type := io.update.br_type
-      bta_arrays(correct_idx)                      := io.update.bta(addr_w - 1, addr_w - BTBBtaComWidth)
-
+      when(!io.update.entity_invalid) {
+        bta_arrays(correct_idx) := io.update.bta(addr_w - 1, addr_w - BTBBtaComWidth)
+      }
     }
   }
 
