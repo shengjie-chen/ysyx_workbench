@@ -18,6 +18,8 @@
 
 #define SPMU_ENABLE
 
+// #define SIM_TIME_MAX 100000000
+
 #ifdef SPMU_ENABLE
 // #define RAS_SPMU
 #endif
@@ -30,9 +32,13 @@
 // #define CONFIG_DIFFTEST_REF_MEM_POINT
 
 // 1M --> 1.6GB
-//  #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPVCD
 //  #define CONFIG_DUMPSTART 0
-// #define CONFIG_DUMPSTART 133900000
+// #define CONFIG_DUMPSTART 5900000
+
+#ifndef SIM_TIME_MAX
+#define SIM_TIME_MAX -1
+#endif
 
 // ---------------------------->switch end
 

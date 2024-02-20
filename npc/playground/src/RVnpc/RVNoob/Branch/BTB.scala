@@ -66,6 +66,7 @@ class BTB extends Module with RVNoobConfig {
   for (w <- 0 until BTBWay) {
     btb_hit_oh(w) := (btb_arrays(w)(set_idx).tag === read_tag) && btb_arrays(w)(set_idx).valid
   }
+  if (BTBWay == 1) { btb_hit_way := 0.U }
   ret_hit    := ret_arrays(set_idx).tag === read_tag && ret_arrays(set_idx).valid
   io.hit     := hit
   io.bta     := bta_arrays(set_idx) ## Mux(ret_hit, 0.U, btb_arrays(btb_hit_way)(set_idx).bta) ## 0.U(2.W)
@@ -75,20 +76,24 @@ class BTB extends Module with RVNoobConfig {
   val correct_idx = get_index(io.update.addr)
   val correct_tag = get_tag(io.update.addr)
 
-  //TODO: PLRU change may delay one cycle after id
-  val PLRU_bits = RegInit(VecInit(Seq.fill(BTBSet)(0.B))) //sets, UInt(waysWidth.W)))
+  //TODO: lru change may delay one cycle after id
+  val LRU_bits = RegInit(VecInit(Seq.fill(BTBSet)(0.B))) //sets, UInt(waysWidth.W)))
   if (BTBWay == 2) {
     when(hit) {
-      PLRU_bits(set_idx) := btb_hit_way
+      LRU_bits(set_idx) := btb_hit_way
     }
   }
 
-  val correct_way = Wire(UInt(log2Ceil(BTBWay).W))
-  correct_way := Mux(
-    btb_arrays(PLRU_bits(correct_idx))(correct_idx).tag === correct_tag,
-    PLRU_bits(correct_idx),
-    !PLRU_bits(correct_idx)
-  ) // useful ?
+  val correct_way = Wire(UInt(1.W))
+  if (BTBWay == 2) {
+    val correct_lru_tag0 = btb_arrays(0)(correct_idx).tag
+    val correct_lru_tag1 = btb_arrays(1)(correct_idx).tag
+    val correct_tag_same = correct_lru_tag0 === correct_tag || correct_lru_tag1 === correct_tag
+    val correct_same_way = Mux(correct_lru_tag0 === correct_tag, 0.U, 1.U)
+    correct_way := Mux(correct_tag_same, correct_same_way, ~LRU_bits(correct_idx))
+  } else {
+    correct_way := 0.U
+  }
 
   when(io.update.valid) {
     when(io.update.br_type === br_type_id("return").U) {
