@@ -123,9 +123,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
-  icache.io.addr     <> pc
-  icache.io.ren      <> !reset.asBool()
-  icache.io.in_valid <> (pc_valid || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
+  icache.io.addr        <> pc
+  icache.io.ren         <> !reset.asBool()
+  icache.io.in_valid    <> (pc_valid || (RegNext(reset.asBool(), 1.B) && !reset.asBool()))
+  icache.io.inpmem_stop <> RegNext(id_snpc_en && !ex_dnpc_en && !mem_dnpc_en && icache.io.miss, 0.B)
   if (fpga) {
     icache.io.bram.get <> io.i_bram.get
   } else {

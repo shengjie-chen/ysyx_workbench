@@ -17,7 +17,7 @@
 // #define CONFIG_FTRACE
 //  #define CONFIG_MTRACE
 
-// #define SPMU_ENABLE
+#define SPMU_ENABLE
 
 // #define SIM_TIME_MAX 50000000
 

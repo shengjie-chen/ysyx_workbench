@@ -32,13 +32,14 @@ class DCache(
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
   val io = IO(new Bundle {
-    val addr       = Input(UInt(inst_w.W))
-    val ren        = Input(Bool())
-    val wen        = Input(Bool())
-    val wdata      = Input(UInt(xlen.W))
-    val zero_ex_op = Input(UInt(2.W))
-    val fencei     = Input(Bool())
-    val in_valid   = Input(Bool())
+    val addr        = Input(UInt(inst_w.W))
+    val ren         = Input(Bool())
+    val wen         = Input(Bool())
+    val wdata       = Input(UInt(xlen.W))
+    val zero_ex_op  = Input(UInt(2.W))
+    val fencei      = Input(Bool())
+    val in_valid    = Input(Bool())
+    val inpmem_stop = Input(Bool())
 
     val miss       = Output(Bool())
     val rdata      = Output(if (isICache) UInt(inst_w.W) else UInt(xlen.W))
@@ -150,7 +151,11 @@ class DCache(
   }
   // >>>>>>>>>>>>>> 缺失信号 <<<<<<<<<<<<<<
   val inpmem_miss = Wire(Bool())
-  inpmem_miss := !hit && inpmem_op
+  val inpmem_reg  = RegInit(0.B)
+  when(io.in_valid || io.out_rvalid || io.inpmem_stop) {
+    inpmem_reg := inpmem_miss
+  }
+  inpmem_miss := !hit && inpmem_op && (io.in_valid || inpmem_reg) && !io.inpmem_stop
   // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<
   // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
   val waysWidth = log2Ceil(ways)
@@ -169,7 +174,7 @@ class DCache(
   val replace_way_r     = RegNext(replace_way, 0.U)
   val replace_dirty     = tag_arrays(replace_way_r)(addr_index_r).dirty_bit
   val replace_tag       = Wire(UInt(tagWidth.W))
-  into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty
+  into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty && !io.inpmem_stop
   replace_tag    := tag_arrays(replace_way_r)(addr_index_r).tag
   if (!tapeout) {
     dontTouch(replace_tag)
@@ -181,7 +186,7 @@ class DCache(
   val allocate_state = Wire(Bool())
   val allocate_reg   = RegInit(0.B)
   val allocate_cnt   = RegInit(0.U(2.W))
-  val into_allocate_r = !replace_dirty &&
+  val into_allocate_r = !replace_dirty && !io.inpmem_stop &&
     (RegNext(inpmem_miss && io.in_valid, 0.B) || RegNext(pmem_writeback_ok && !fencei_state && replace_state, 0.B))
 
   // ********************************** Data Array / Single Port RAM x 4 **********************************
@@ -519,6 +524,7 @@ object DCache extends RVNoobConfig {
       if (simplify_design) {
         cache.io.fencei := 0.B
       }
+      cache.io.inpmem_stop := 0.B
     }
     cache
   }
