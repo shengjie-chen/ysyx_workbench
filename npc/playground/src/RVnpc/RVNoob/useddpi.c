@@ -268,11 +268,15 @@ extern "C" void br_change(const svLogicVecVal *br_type_t, svLogic pre_taken_t, c
             if (pre_target != true_target || pre_taken == 0) {
                 ret_error_inst++;
 #ifdef RAS_SPMU
-                ras_stream.addBit(0);
+                if (main_time > CONFIG_DUMPSTART) {
+                    ras_stream.addBit(0);
+                }
 #endif
             } else {
 #ifdef RAS_SPMU
-                ras_stream.addBit(1);
+                if (main_time > CONFIG_DUMPSTART) {
+                    ras_stream.addBit(1);
+                }
 #endif
             }
         }

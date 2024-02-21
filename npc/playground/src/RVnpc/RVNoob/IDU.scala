@@ -282,7 +282,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
       (io.intr) -> br_type_id("intr").U,
       (type_B) -> br_type_id("typeb").U,
       (io.inst === 0x00008067.U) -> br_type_id("return").U,
-      (io.inst(11, 0) === 0x0ef.U) -> br_type_id("call").U,
+      ((rvi_jal || rvi_jalr) && (io.wb_rf_ctrl.rd === 1.U)) -> br_type_id("call").U,
       (instset_jdnpc) -> br_type_id("taken_br").U
     )
   )

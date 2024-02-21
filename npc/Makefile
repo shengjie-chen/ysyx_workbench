@@ -21,6 +21,15 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 					-O3 --x-assign fast --x-initial fast --noassert
 
+WAVE_FORMAT ?= FST #(FST, VCD)
+TRACE_FORMAT ?= --trace-fst
+WAVE_FILE ?= $(GEN_DIR)/$(TOPNAME).fst
+ifeq ($(WAVE_FORMAT), VCD)
+    TRACE_FORMAT := --trace
+	WAVE_FILE ?= $(GEN_DIR)/$(TOPNAME).vcd
+endif
+
+
 # constraint file
 SRC_AUTO_BIND = $(abspath ./nvboard_constr/auto_bind.cpp)# The file is initialized manually
 $(SRC_AUTO_BIND): $(NXDC_FILES)
@@ -104,9 +113,9 @@ sim_board:$(BIN_BOARD)
 sim_vcd: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
-	verilator --cc $(VSRCS) --trace --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
+	verilator --cc $(VSRCS) $(TRACE_FORMAT) --exe --build $(CSRCS_VCD) --Mdir $(OBJ_DIR)  -o $(abspath $(BIN_VCD))
 	$(BIN_VCD)
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	gtkwave $(WAVE_FILE)
 
 IMG=../am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 #IMG=default
@@ -123,9 +132,9 @@ sim_npc_vcd: verilog
 	# sed -i '1i\/* verilator lint_off WIDTH */' $(VERILOG_OBJ_DIR)/$(TOPNAME).v # 让verilator避免检查div处的错误
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) $(TRACE_FORMAT) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	gtkwave $(WAVE_FILE)
 
 sim_npc_vcd_without_gtk: verilog
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
@@ -141,9 +150,9 @@ sim_npc_vcd_without_regen:
 	@echo "Write this Makefile by yourself."
 	mkdir -p $(OBJ_DIR)
 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) --trace --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
+	verilator --top $(TOPNAME) --cc $(VSRCS) --Mdir $(OBJ_DIR) $(TRACE_FORMAT) --exe --build $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  $(addprefix -CFLAGS ,$(VERILAOTR_CXXFLAGS))
 	$(BIN_VCD) $(IMG) $(ARGS)
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	gtkwave $(WAVE_FILE)
 
 sim_npc_vcd_without_regen_gtk:
 	$(call git_commit, "sim $(TOPNAME) RTL") # DO NOT REMOVE THIS LINE!!!
@@ -155,7 +164,7 @@ sim_npc_vcd_without_regen_gtk:
 	$(BIN_VCD) $(IMG) $(ARGS)
 
 gtk:
-	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+	gtkwave $(WAVE_FILE)
 
 perf_sim_npc_nanoslite_pal:
 	make split_verilog
@@ -175,9 +184,9 @@ perf_sim_npc_nanoslite_pal:
 # 	@echo "Write this Makefile by yourself."
 # 	mkdir -p $(OBJ_DIR)
 # 	g++ -O2 -MMD -Wall -Werror -save-temps $(DISASM_CXXFLAGS) -c -o $(abspath $(OBJ_DIR)/disasm.o) $(DISASM_CXXSRC)
-# 	verilator --cc $(VSRCS) --trace --exe --build --gdb $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  
+# 	verilator --cc $(VSRCS) $(TRACE_FORMAT) --exe --build --gdb $(CSRCS_VCD) $(abspath $(OBJ_DIR)/disasm.o) -o $(abspath $(BIN_VCD)) $(addprefix -LDFLAGS ,$(DISASM_LIBS))  
 # 	gdb $(abspath $(BIN_VCD)) --args $(IMG) $(ARGS)
-# 	gtkwave $(GEN_DIR)/$(TOPNAME).vcd
+# 	gtkwave $(WAVE_FILE)
 #$(abspath $(OBJ_DIR)/disasm.o)
 test:
 	mill -i __.test

@@ -11,6 +11,7 @@
 #include "svdpi.h"
 #include "time.h"
 #include "verilated.h"
+#include "verilated_fst_c.h"
 #include "verilated_vcd_c.h"
 #include <sys/time.h>
 
@@ -25,7 +26,7 @@
 extern "C" void init_disasm(const char *triple);
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-vluint64_t main_time = 0;       // 当前仿真时间
+vluint64_t main_time = 0;                 // 当前仿真时间
 const vluint64_t sim_time = SIM_TIME_MAX; // 最高仿真时间 可选：100
 /// @brief NPC当前运行状态等
 NPCState npc_state;
@@ -45,8 +46,12 @@ char *itrace_file = ITRACE_PATH;
 #endif
 
 VRVNoob *top = new VRVNoob;
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
+#ifdef CONFIG_FSTWAVE
+VerilatedFstC *tfp = new VerilatedFstC;
+#else
 VerilatedVcdC *tfp = new VerilatedVcdC;
+#endif
 #endif
 
 /// @brief 仿真一个时钟周期
@@ -63,15 +68,17 @@ void one_clock() {
         return;
     }
     top->eval();
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
     if (main_time > CONFIG_DUMPSTART)
         tfp->dump(main_time);
 #endif
     main_time++;
 
 #ifdef CONFIG_FTRACE
-    if (top->io_diff_en) {
-        ftrace_call_ret(top->io_diff_inst, trace_pc, top->io_diff_pc);
+    if (main_time > CONFIG_DUMPSTART) {
+        if (top->io_diff_en) {
+            ftrace_call_ret(top->io_diff_inst, trace_pc, top->io_diff_pc);
+        }
     }
 #endif
 
@@ -108,7 +115,7 @@ void one_clock() {
 
     top->clock = 1;
     top->eval();
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
     if (main_time > CONFIG_DUMPSTART)
         tfp->dump(main_time);
 #endif
@@ -124,9 +131,13 @@ void one_clock() {
 int main(int argc, char **argv, char **env) {
     Verilated::commandArgs(argc, argv);
     Verilated::traceEverOn(true);
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
     top->trace(tfp, 99);
+#ifdef CONFIG_FSTWAVE
+    tfp->open("./build/RVnpc/RVNoob/RVNoob.fst");
+#else
     tfp->open("./build/RVnpc/RVNoob/RVNoob.vcd");
+#endif
 #endif
     clock_t start, end;
     start = clock();
@@ -156,14 +167,14 @@ int main(int argc, char **argv, char **env) {
     while (n-- > 0) {
         top->clock = 0;
         top->eval();
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
         tfp->dump(main_time);
 #endif
         main_time++;
 
         top->clock = 1;
         top->eval();
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
         tfp->dump(main_time);
 #endif
         main_time++;
@@ -267,12 +278,12 @@ int main(int argc, char **argv, char **env) {
 #ifdef CONFIG_FTRACE
     fclose(ftrace_fp);
 #endif
-    // #ifdef CONFIG_DUMPVCD
+    // #ifdef CONFIG_DUMPWAVE
     //   sleep(1);
     // #endif
 
     free(vmem);
-#ifdef CONFIG_DUMPVCD
+#ifdef CONFIG_DUMPWAVE
     tfp->close();
     delete tfp;
 #endif

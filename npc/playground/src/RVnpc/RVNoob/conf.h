@@ -11,20 +11,21 @@
 #define __MACRO_CONF__
 
 // ---------------------------->switch
+#define CONFIG_FSTWAVE
 
 // #define CONFIG_ITRACE
 // #define CONFIG_FTRACE
 //  #define CONFIG_MTRACE
 
-#define SPMU_ENABLE
+// #define SPMU_ENABLE
 
-// #define SIM_TIME_MAX 100000000
+// #define SIM_TIME_MAX 50000000
 
 #ifdef SPMU_ENABLE
 // #define RAS_SPMU
 #endif
 
-#ifdef CONFIG_ITRACE
+#if defined(CONFIG_ITRACE) || defined(RAS_SPMU) || defined(CONFIG_FTRACE)
 #define CONFIG_DUMPSTART 0
 #endif
 
@@ -32,9 +33,9 @@
 // #define CONFIG_DIFFTEST_REF_MEM_POINT
 
 // 1M --> 1.6GB
-// #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPWAVE
 //  #define CONFIG_DUMPSTART 0
-// #define CONFIG_DUMPSTART 5900000
+// #define CONFIG_DUMPSTART 40000000
 
 #ifndef SIM_TIME_MAX
 #define SIM_TIME_MAX -1
@@ -53,7 +54,7 @@
 // #define CONFIG_ITRACE
 // #define CONFIG_FTRACE
 // #define CONFIG_MTRACE
-// #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPWAVE
 // #define CONFIG_DIFFTEST
 // #define CONFIG_DUMPSTART 0
 // #endif
@@ -62,7 +63,7 @@
 // // #define CONFIG_MTRACE
 // #define CONFIG_ITRACE
 // #define CONFIG_FTRACE
-// #define CONFIG_DUMPVCD
+// #define CONFIG_DUMPWAVE
 // #define CONFIG_DUMPSTART 0
 // // #define CONFIG_DUMPSTART 11200000
 // #endif
