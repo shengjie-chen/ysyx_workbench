@@ -112,12 +112,14 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   val axi_crossbar = Module(new AxiCrossBar)
   val maxi         = Module(new AxiMaster)
   //  val axi_reg_slice = Module(new AxiRegSlice)
-  val br_info = Wire(new branch_info)
+  val br_info          = Wire(new branch_info)
+  val mem_forward_data = Wire(UInt(xlen.W))
 
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
-  val wb_reg        = Module(new WBreg)
-  val judge_load    = Module(new JudgeLoad)
-  val not_csr_wdata = Wire(UInt(xlen.W))
+  val wb_reg          = Module(new WBreg)
+  val judge_load      = Module(new JudgeLoad)
+  val rf_wb_data      = Wire(UInt(xlen.W))
+  val wb_forward_data = Wire(UInt(xlen.W))
 
   // ********************************** Connect and Logic **********************************
   // >>>>>>>>>>>>>> IF inst Fetch <<<<<<<<<<<<<<
@@ -218,6 +220,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
 
   cache_miss     := icache.io.miss || dcache.io.miss
   is_branch_inst := idu.io.exe_ctrl.is_branch_inst
+
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.in.pc              <> id_reg.out.pc
   ex_reg.in.inst            <> id_reg.out.inst
@@ -257,12 +260,12 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   exe_src1_forward := MuxLookup(
     ppl_ctrl.io.forward1,
     ex_reg.out.src1,
-    Array(1.U -> wb_reg.out.alu_res, 2.U -> mem_reg.out.alu_res)
+    Array(1.U -> wb_forward_data, 2.U -> mem_forward_data)
   )
   exe_src2_forward := MuxLookup(
     ppl_ctrl.io.forward2,
     ex_reg.out.src2,
-    Array(1.U -> wb_reg.out.alu_res, 2.U -> mem_reg.out.alu_res)
+    Array(1.U -> wb_forward_data, 2.U -> mem_forward_data)
   )
 
   // >>>>>>>>>>>>>> MEM mem_reg <<<<<<<<<<<<<<
@@ -376,6 +379,8 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   br_info.taken   := mem_reg.out.br_info.taken || mem_reg.out.B_en
   br_info.target  := Mux(mem_reg.out.B_en, mem_reg.out.dnpc, mem_reg.out.br_info.target)
   br_info.br_type := mem_reg.out.br_info.br_type
+
+  mem_forward_data := Mux(mem_reg.out.wb_csr_ctrl.csr_wen, mem_reg.out.src2, mem_reg.out.alu_res)
   // >>>>>>>>>>>>>> WB wb_reg <<<<<<<<<<<<<<
   wb_reg.in.pc          <> mem_reg.out.pc
   wb_reg.in.inst        <> mem_reg.out.inst
@@ -392,13 +397,10 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   judge_load.io.judge_load_op <> wb_reg.out.mem_ctrl.judge_load_op
   judge_load.io.mem_data      <> wb_reg.out.mem_data
 
-  not_csr_wdata := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_reg.out.alu_res)
+  wb_forward_data := Mux(wb_reg.out.wb_csr_ctrl.csr_wen, wb_reg.out.src2, wb_reg.out.alu_res)
+  rf_wb_data      := Mux(wb_reg.out.mem_ctrl.r_pmem, judge_load.io.load_data, wb_forward_data)
 
-  rf.io.wdata <> Mux(
-    wb_reg.out.wb_csr_ctrl.csr_wen,
-    wb_reg.out.src2,
-    not_csr_wdata
-  )
+  rf.io.wdata      <> rf_wb_data
   rf.io.wb_rf_ctrl <> wb_reg.out.wb_rf_ctrl
 
   csr.io.wb_csr_ctrl <> wb_reg.out.wb_csr_ctrl
