@@ -219,7 +219,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   csr.io.id_csr_ctrl <> idu.io.id_csr_ctrl
 
   cache_miss     := icache.io.miss || dcache.io.miss
-  is_branch_inst := idu.io.exe_ctrl.is_branch_inst
+  is_branch_inst := idu.io.exe_ctrl.is_branch_inst || clint.io.time_interrupt // generate id_snpc_en
 
   // >>>>>>>>>>>>>> EXE ex_reg <<<<<<<<<<<<<<
   ex_reg.in.pc              <> id_reg.out.pc

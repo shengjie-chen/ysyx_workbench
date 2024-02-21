@@ -279,6 +279,7 @@ class IDU extends Module with IDU_op with ext_function with RVNoobConfig {
   io.gold_br_type := MuxCase(
     br_type_id("not_br").U,
     Array(
+      (io.intr) -> br_type_id("intr").U,
       (type_B) -> br_type_id("typeb").U,
       (io.inst === 0x00008067.U) -> br_type_id("return").U,
       (io.inst(11, 0) === 0x0ef.U) -> br_type_id("call").U,
