@@ -27,7 +27,7 @@ class DCache(
   val sets:            Int = cacheLineNum / ways // 32
   val byteOffsetWidth: Int = log2Ceil(cacheLineSize) // 5
   val indexWidth:      Int = log2Ceil(sets) //log2Ceil(sets) // 5
-  val tagWidth:        Int = inst_w - indexWidth - byteOffsetWidth // 22
+  val tagWidth:        Int = (inst_w - 1) - indexWidth - byteOffsetWidth // 22-1
   //  println(s"ways = $ways")
   //  println(s"cacheSize = $cacheSize")
   //  println(s"cacheLineNum = $cacheLineNum")
@@ -135,8 +135,8 @@ class DCache(
     mmio_write_reg := 1.B
   }
   // >>>>>>>>>>>>>> 地址分段 <<<<<<<<<<<<<<
-  val addr_tag     = io.addr(inst_w - 1, inst_w - tagWidth)
-  val addr_index   = io.addr(inst_w - tagWidth - 1, inst_w - tagWidth - indexWidth)
+  val addr_tag     = io.addr((inst_w - 1) - 1, (inst_w - 1) - tagWidth)
+  val addr_index   = io.addr((inst_w - 1) - tagWidth - 1, (inst_w - 1) - tagWidth - indexWidth)
   val addr_offset  = io.addr(byteOffsetWidth - 1, 0)
   val addr_index_r = RegNext(Mux(fencei_state, fencei_set, addr_index), 0.U)
   // >>>>>>>>>>>>>> 命中信号 <<<<<<<<<<<<<<
@@ -155,7 +155,11 @@ class DCache(
   when(io.in_valid || io.out_rvalid || io.inpmem_stop) {
     inpmem_reg := inpmem_miss
   }
-  inpmem_miss := !hit && inpmem_op && (io.in_valid || inpmem_reg) && !io.inpmem_stop
+  if(isICache) {
+    inpmem_miss := !hit && inpmem_op && (io.in_valid || inpmem_reg) && !io.inpmem_stop
+  }else{
+    inpmem_miss := !hit && inpmem_op
+  }
   // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<
   // 替换算法 LRU 最近最少使用 近似实现   Pseudo LRU
   val waysWidth = log2Ceil(ways)
@@ -174,7 +178,7 @@ class DCache(
   val replace_way_r     = RegNext(replace_way, 0.U)
   val replace_dirty     = tag_arrays(replace_way_r)(addr_index_r).dirty_bit
   val replace_tag       = Wire(UInt(tagWidth.W))
-  into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty && !io.inpmem_stop
+  into_replace_r := replace_fsm_state === sRE0 && into_re_or_al_r && replace_dirty
   replace_tag    := tag_arrays(replace_way_r)(addr_index_r).tag
   if (!tapeout) {
     dontTouch(replace_tag)
@@ -421,7 +425,7 @@ class DCache(
   )
 
   when(replace_state) {
-    replace_addr := Cat(replace_tag, addr_index_r, 0.U(5.W))
+    replace_addr := Cat(1.U(1.W), replace_tag, addr_index_r, 0.U(5.W))
   }
   if (fpga) {
     when(replace_fsm_state === sRE1) {
