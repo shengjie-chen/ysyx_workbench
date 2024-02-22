@@ -38,7 +38,7 @@ class Clint extends Module with RVNoobConfig {
   val time_intr           = Wire(Bool())
   val time_intr_condition = Wire(Bool())
   time_intr_state := (mtime >= mtimecmp) && io.mstatus_mie && io.mie_mtie
-  time_intr       := time_intr_state && !RegNext(time_intr_state, 0.B)
+  time_intr       := riseEdge(time_intr_state)
   val ex_mem_not_write_csr = !(io.ex_csr_wen || io.mem_csr_wen)
   time_intr_condition := (io.id_reg_pc =/= 0.U) && !(io.ex_is_branch_inst || io.mem_B_en) && ex_mem_not_write_csr
 

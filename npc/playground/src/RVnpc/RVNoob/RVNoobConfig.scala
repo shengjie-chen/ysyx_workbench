@@ -21,8 +21,8 @@ trait RVNoobConfig extends util_function with BranchConfig {
 
   // type : 0 - sim; 1 - tapeout; 2 - fpga
   val fpga:            Boolean = false
-  val tapeout:         Boolean = false
-  val spmu_en:         Boolean = true
+  val tapeout:         Boolean = true
+  val spmu_en:         Boolean = false
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last
@@ -33,7 +33,7 @@ trait BranchConfig {
   val BTBSet         = pow(2, BTBSetWidth).toInt
   val BTBWay         = 2 // support 1 or 2
   val BTBTagWidth    = 11
-  val BTBBtaComWidth = 16 // when way > 1, the width of the common part of bta
+  val BTBBtaComWidth = 12 // when way > 1, the width of the common part of bta
   val br_type_id     = Map("call" -> 0, "return" -> 1, "taken_br" -> 2,
     "typeb" -> 3, "not_br" -> 4, "intr" -> 5)
 

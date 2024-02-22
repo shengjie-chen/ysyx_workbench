@@ -233,7 +233,7 @@ int main(int argc, char **argv, char **env) {
     vluint64_t clock_cnt = main_time / 2;
     if (time == 0)
         time = 1;
-    printf("\n\033[;31m************ SIM SUMMARY ************\n\033[0m");
+    printf(ANSI_FMT("*************** SIM SUMMARY ***************\n", ANSI_FG_RED));
     printf("simulation time          : %d min %d s\n", time / 60, time % 60);
     printf("sim clock num            : %ld\n", clock_cnt);
     printf("complete inst num        : %ld\n", inst_cnt);
@@ -241,7 +241,7 @@ int main(int argc, char **argv, char **env) {
     printf("average clk speed        : %ld clock/s\n", clock_cnt / time);
     printf("average inst speed       : %ld insts/s\n", inst_cnt / time);
 #ifdef SPMU_ENABLE
-    printf("\n\033[;31m************ Software PMU Cache ************\n\033[0m");
+    printf(ANSI_FMT("*********** Software PMU Cache ************\n", ANSI_FG_RED));
     printf("icache hit               : %ld\n", icache_hit);
     printf("icache miss              : %ld\n", icache_miss);
     printf("dcache hit               : %ld\n", dcache_hit);
@@ -252,7 +252,7 @@ int main(int argc, char **argv, char **env) {
     uint64_t branch_error = id_branch_error + exe_branch_error + mem_branch_error;
     uint64_t must_taken_br = branch_inst - typeb_br;
 
-    printf(ANSI_FMT("************ Software PMU Branch ************\n", ANSI_FG_RED));
+    printf(ANSI_FMT("*********** Software PMU Branch ***********\n", ANSI_FG_RED));
     printf("branch inst num          : %ld\n", branch_inst);
     printf("branch error num         : %ld\n", branch_error);
     printf(ANSI_FMT("branch error rate        : %f\n", ANSI_FG_YELLOW), (double)branch_error / (double)branch_inst);
