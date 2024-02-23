@@ -152,13 +152,13 @@ class DCache(
   // >>>>>>>>>>>>>> 缺失信号 <<<<<<<<<<<<<<
   val inpmem_miss = Wire(Bool())
   val inpmem_reg  = RegInit(0.B)
-  val out_rvalid = Wire(Bool())
+  val out_rvalid  = Wire(Bool())
   when(io.in_valid || out_rvalid || io.inpmem_stop) {
     inpmem_reg := inpmem_miss
   }
-  if(isICache) {
+  if (isICache) {
     inpmem_miss := !hit && inpmem_op && (io.in_valid || inpmem_reg) && !io.inpmem_stop
-  }else{
+  } else {
     inpmem_miss := !hit && inpmem_op
   }
   // >>>>>>>>>>>>>> Replace信号 <<<<<<<<<<<<<<

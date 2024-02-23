@@ -67,8 +67,12 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.btb_update.entity_invalid := 0.B
   }
 
-  io.ras_push.bits := io.snpc
-  when(io.br_info.br_type === br_type_id("call").U && io.valid) {
+  io.ras_push.bits := Mux(io.br_info.br_type === br_type_id("call").U, io.snpc, io.br_pre.target)
+  when(
+    (io.br_info.br_type === br_type_id("call").U || (io.br_pre.br_type === br_type_id(
+      "return"
+    ).U && io.br_info.br_type =/= br_type_id("return").U) && io.br_pre.taken) && io.valid
+  ) {
     io.ras_push.valid := 1.B
   }.otherwise {
     io.ras_push.valid := 0.B

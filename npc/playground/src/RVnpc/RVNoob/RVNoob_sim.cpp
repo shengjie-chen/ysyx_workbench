@@ -131,11 +131,12 @@ void one_clock() {
 
     device_update();
     main_time++;
-
+#ifdef CONFIG_DUMPSTART
     if (main_time > CONFIG_DUMPSTART && record_flag == 0) {
         inst_cnt_recordstart = top->io_inst_cnt;
         record_flag = 1;
     }
+#endif
 }
 
 int main(int argc, char **argv, char **env) {
