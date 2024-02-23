@@ -54,6 +54,11 @@ VerilatedVcdC *tfp = new VerilatedVcdC;
 #endif
 #endif
 
+#ifdef CONFIG_DUMPSTART
+vluint64_t inst_cnt_recordstart = 0;
+bool record_flag = 0;
+#endif
+
 /// @brief 仿真一个时钟周期
 void one_clock() {
     vaddr_t pc = top->io_pc;
@@ -126,6 +131,11 @@ void one_clock() {
 
     device_update();
     main_time++;
+
+    if (main_time > CONFIG_DUMPSTART && record_flag == 0) {
+        inst_cnt_recordstart = top->io_inst_cnt;
+        record_flag = 1;
+    }
 }
 
 int main(int argc, char **argv, char **env) {
@@ -240,6 +250,15 @@ int main(int argc, char **argv, char **env) {
     printf(ANSI_FMT("npc ipc                  : %f\n", ANSI_FG_YELLOW), (double)inst_cnt / (double)clock_cnt);
     printf("average clk speed        : %ld clock/s\n", clock_cnt / time);
     printf("average inst speed       : %ld insts/s\n", inst_cnt / time);
+#ifdef CONFIG_DUMPSTART
+    printf(ANSI_FMT("************ RANGE SIM SUMMARY ************\n", ANSI_FG_RED));
+    vluint64_t range_inst_cnt = top->io_inst_cnt - inst_cnt_recordstart;
+    vluint64_t range_clock_cnt = clock_cnt - CONFIG_DUMPSTART / 2;
+    printf(ANSI_FMT("before range npc ipc     : %f\n", ANSI_FG_YELLOW),
+           (double)inst_cnt_recordstart / (double)(CONFIG_DUMPSTART / 2));
+    printf(ANSI_FMT("range npc ipc  		 : %f\n", ANSI_FG_YELLOW),
+           (double)range_inst_cnt / (double)range_clock_cnt);
+#endif
 #ifdef SPMU_ENABLE
     printf(ANSI_FMT("*********** Software PMU Cache ************\n", ANSI_FG_RED));
     printf("icache hit               : %ld\n", icache_hit);

@@ -149,10 +149,26 @@ void init_ftrace(const char *elf_file) {
     free(symtab);
 }
 
+bool is_call(uint32_t cpu_inst) {
+    uint32_t opcode = cpu_inst & 0b1111111;
+    if (opcode == 0b1101111 || ((opcode == 0b1100111) && (((cpu_inst >> 12) & 0b111) == 0))) {
+        if (((cpu_inst >> 7) & 0b11111) == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int tail_recursion_index = 0;
 int tail_recursion_buffer[30];
+int first_call = 0;
 void ftrace_call_ret(uint32_t cpu_inst, vaddr_t pc, vaddr_t npc) {
     if (cpu_inst == 0x00008067) { // ret
+        if (first_call == 0) {
+            first_call = 2;
+            ftrace_depth = 10;
+        }
+        bool match_flag = 0;
         for (int i = 0; i < ftrace_func_num; i++) {
             if (pc > symaddr[i] && pc <= symaddr_end[i] && (npc < symaddr[i] || npc > symaddr_end[i])) {
                 ftrace_depth--;
@@ -170,25 +186,55 @@ void ftrace_call_ret(uint32_t cpu_inst, vaddr_t pc, vaddr_t npc) {
                         }
                     }
                 }
+                match_flag = 1;
                 return;
             }
         }
-    }
-    for (int i = 0; i < ftrace_func_num; i++) { // call
-        if (npc == symaddr[i]) {
+        if (match_flag == 0) {
+            ftrace_depth--;
             fprintf(ftrace_fp, "0x%8lx: ", pc);
             for (int i = 0; i < ftrace_depth; i++) {
                 fprintf(ftrace_fp, "  ");
             }
-            fprintf(ftrace_fp, "call [%s@%8lx] #%d\n", symname[i], symaddr[i], ftrace_depth);
-            if (cpu_inst == 0x00078067) {
-                if (tail_recursion_buffer[tail_recursion_index] != 0) {
-                    tail_recursion_index++;
+            fprintf(ftrace_fp, "ret  [@%8lx] #%d  in software\n", npc, ftrace_depth);
+        }
+    }
+    if (is_call(cpu_inst)) {
+        if (first_call == 0) {
+            first_call = 1;
+        }
+        bool match_flag = 0;
+        for (int i = 0; i < ftrace_func_num; i++) { // call
+            if (npc == symaddr[i]) {
+                fprintf(ftrace_fp, "0x%8lx: ", pc);
+                for (int i = 0; i < ftrace_depth; i++) {
+                    fprintf(ftrace_fp, "  ");
                 }
-                tail_recursion_buffer[tail_recursion_index]++;
+                fprintf(ftrace_fp, "call [%s@%8lx] #%d\n", symname[i], symaddr[i], ftrace_depth);
+                if (cpu_inst == 0x00078067) {
+                    if (tail_recursion_buffer[tail_recursion_index] != 0) {
+                        tail_recursion_index++;
+                    }
+                    tail_recursion_buffer[tail_recursion_index]++;
+                }
+                ftrace_depth++;
+                match_flag = 1;
+                return;
             }
+        }
+        if (match_flag == 0) {
+            fprintf(ftrace_fp, "0x%8lx: ", pc);
+            for (int i = 0; i < ftrace_depth; i++) {
+                fprintf(ftrace_fp, "  ");
+            }
+            fprintf(ftrace_fp, "call [@%8lx] #%d  in software\n", npc, ftrace_depth);
             ftrace_depth++;
-            return;
+        }
+    } else {
+        for (int i = 0; i < ftrace_func_num; i++) { // call
+            if (npc == symaddr[i]) {
+                printf("unidentified call %s: %x\n", symname[i], cpu_inst);
+            }
         }
     }
     return;
