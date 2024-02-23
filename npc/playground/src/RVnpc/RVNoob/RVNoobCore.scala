@@ -165,7 +165,7 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   mem_dnpc_en := mem_reg.out.br_info.br_type === br_type_id("typeb").U && Mux(
     mem_reg.out.B_en =/= mem_reg.out.br_pre.taken,
     1.B,
-    mem_reg.out.br_pre.target =/= mem_reg.out.dnpc
+    Mux(mem_reg.out.B_en, mem_reg.out.br_pre.target =/= mem_reg.out.dnpc, 0.B)
   )
   pc_en    := ppl_ctrl.io.pc_en
   pc_reset := ppl_ctrl.io.pc_reset
@@ -286,7 +286,11 @@ class RVNoobCore extends Module with ext_function with RVNoobConfig {
   mem_reg.reset              <> (ppl_ctrl.io.mem_reg_ctrl.flush || reset.asBool())
   mem_reg.in.br_pre          <> ex_reg.out.br_pre
   mem_reg.in.br_info.taken   <> ex_reg.out.dnpc_ctrl.pc_mux
-  mem_reg.in.br_info.target  <> dnpc_out
+  mem_reg.in.br_info.target  <> Mux(
+    ex_reg.out.br_info.br_type === br_type_id("typeb").U || ex_reg.out.br_info.br_type === br_type_id("not_br").U,
+    ex_reg.out.snpc,
+    dnpc_out
+  )
   mem_reg.in.br_info.br_type <> ex_reg.out.br_info.br_type
 
   dcache.io.addr       <> mem_reg.out.mem_addr

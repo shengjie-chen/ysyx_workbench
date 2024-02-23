@@ -42,7 +42,7 @@ class BranchUpdate extends Module with RVNoobConfig {
   }
 
   when(
-    (io.br_info.br_type =/= br_type_id("not_br").U && io.br_info.br_type =/= br_type_id("intr").U) && io.br_info.taken
+    (io.br_info.br_type =/= br_type_id("not_br").U && io.br_info.br_type =/= br_type_id("intr").U)
       && (io.br_info.br_type =/= io.br_pre.br_type || io.br_info.target =/= io.br_pre.target) && io.valid
   ) {
     io.btb_update.valid          := 1.B
@@ -51,8 +51,7 @@ class BranchUpdate extends Module with RVNoobConfig {
     io.btb_update.br_type        := io.br_info.br_type(1, 0)
     io.btb_update.entity_invalid := 0.B
   }.elsewhen(
-    (io.br_info.br_type =/= br_type_id("not_br").U && io.br_info.br_type =/= br_type_id("intr").U)
-      && io.br_pre.taken && io.valid
+    io.br_info.br_type === br_type_id("not_br").U && io.br_pre.taken && io.valid
   ) {
     io.btb_update.valid          := 1.B
     io.btb_update.addr           := io.pc
