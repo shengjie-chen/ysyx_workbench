@@ -152,7 +152,8 @@ class DCache(
   // >>>>>>>>>>>>>> 缺失信号 <<<<<<<<<<<<<<
   val inpmem_miss = Wire(Bool())
   val inpmem_reg  = RegInit(0.B)
-  when(io.in_valid || io.out_rvalid || io.inpmem_stop) {
+  val out_rvalid = Wire(Bool())
+  when(io.in_valid || out_rvalid || io.inpmem_stop) {
     inpmem_reg := inpmem_miss
   }
   if(isICache) {
@@ -458,7 +459,8 @@ class DCache(
 
   // ********************************** Output **********************************
   io.miss       := inpmem_miss || mmio_read || mmio_write || fencei_state
-  io.out_rvalid := (hit && inpmem && io.ren) || mmio_read_ready
+  out_rvalid := (hit && inpmem && io.ren) || mmio_read_ready
+  io.out_rvalid := out_rvalid
 
   when(RegNext(inpmem, 0.B)) {
     if (fpga) {
