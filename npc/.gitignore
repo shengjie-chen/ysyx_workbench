@@ -14,8 +14,8 @@
 !README.md
 build/
 !nvboard_constr/
-
 !mill
+!*.py
 out/
 .bsp/
 .idea/

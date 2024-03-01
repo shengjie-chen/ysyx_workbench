@@ -1,3 +1,5 @@
+export NPC_HOME := $(abspath .)
+
 BUILD_DIR = ./build
 # design module AluFourBit LFSRegister Multiplexer PriorEncoder KeyBoard VgaOutput CharacterInput
 TOPNAME = RVNoob
