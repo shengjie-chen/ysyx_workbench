@@ -32,3 +32,31 @@ config MEM_RANDOM
     This may help to find undefined behaviors.
 
 endmenu #MEMORY
+
+menuconfig SOC
+  bool "SOC"
+  default n
+  help
+    Provide soc support for NEMU.
+
+if SOC
+
+config MROM_BASE
+  hex "MROM base address"
+  default 0x0        if ISA_x86
+  default 0x20000000
+
+config MROM_SIZE
+  hex "MROM size"
+  default 0x1000
+
+config SRAM_BASE
+  hex "SRAM base address"
+  default 0x0        if ISA_x86
+  default 0x0f000000
+
+config SRAM_SIZE
+  hex "SRAM size"
+  default 0x2000
+
+endif # SOC

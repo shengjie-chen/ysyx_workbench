@@ -1,5 +1,5 @@
 include $(AM_HOME)/scripts/isa/riscv64.mk
-include $(AM_HOME)/scripts/platform/ysyxsoc.mk
+include $(AM_HOME)/scripts/platform/npcsoc.mk
 CFLAGS  += -DISA_H=\"riscv/riscv.h\"
 
 AM_SRCS += riscv/npc/start.S \

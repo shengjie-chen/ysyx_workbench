@@ -21,8 +21,8 @@ trait RVNoobConfig extends util_function with BranchConfig {
 
   // type : 0 - sim; 1 - tapeout; 2 - fpga
   val fpga:            Boolean = false
-  val tapeout:         Boolean = true
-  val spmu_en:         Boolean = false
+  val tapeout:         Boolean = false
+  val spmu_en:         Boolean = true
   val simplify_design: Boolean = !tapeout
   val ysyxid = "ysyx_22040495"
   def getClassName: String = this.getClass.toString.split("\\.").last

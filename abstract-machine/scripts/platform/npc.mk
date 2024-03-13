@@ -21,7 +21,7 @@ image: $(IMAGE).elf
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: image
-	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_gtk IMG=$(IMAGE).bin
+	$(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_gtk IMG=$(IMAGE).bin PRJNAME=RVNoobSim
 
 # $(MAKE) -C $(NPC_HOME) sim_npc_vcd IMG=$(IMAGE).bin
 # $(MAKE) -C $(NPC_HOME) sim_npc_vcd_without_gtk IMG=$(IMAGE).bin

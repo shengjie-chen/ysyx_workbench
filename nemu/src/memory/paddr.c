@@ -9,6 +9,11 @@ void difftest_skip_ref();
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+
+#ifdef CONFIG_SOC
+static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+static uint8_t sram[CONFIG_SRAM_SIZE] PG_ALIGN = {};
+#endif
 #endif
 
 #ifdef CONFIG_MTRACE
@@ -16,7 +21,16 @@ extern FILE *mtrace_fp;
 #endif
 
 uint8_t *guest_to_host(paddr_t paddr) {
-  return pmem + paddr - CONFIG_MBASE;
+#ifdef CONFIG_SOC
+    if (likely(in_mrom(paddr)))
+        return mrom + paddr - CONFIG_MROM_BASE;
+    else if (likely(in_sram(paddr)))
+        return sram + paddr - CONFIG_SRAM_BASE;
+    else
+        Assert(0, "paddr = %x, out of bound!\n", paddr);
+#else
+    return pmem + paddr - CONFIG_MBASE;
+#endif
 }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
@@ -100,6 +114,18 @@ word_t paddr_read(paddr_t addr, int len) {
     // printf("in mem\n");// debug skip
     return pmem_read(addr, len);
   }
+#ifdef CONFIG_SOC
+  if (likely(in_mrom(addr))) {
+    return pmem_read(addr, len);
+  }
+
+  if (likely(in_sram(addr))) {
+    return pmem_read(addr, len);
+  }
+
+  Assert(0, "read addr = %x, out of bound!\n", addr);
+#endif
+
   // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
   //   if(in_mmio(addr)){
   //     difftest_skip_ref();
@@ -120,6 +146,26 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     pmem_write(addr, len, data);
     return;
   }
+
+#ifdef CONFIG_SOC
+  if (likely(in_mrom(addr))) {
+    Assert(0, "can not write mrom");
+  }
+
+  if (likely(in_sram(addr))) {
+    pmem_write(addr, len, data);
+	return;
+  }
+
+  if(addr == 0x10000000L){
+	printf("%c", (char)data);
+	return;
+  }
+
+  Assert(0, "write addr = %x, out of bound!\n", addr);
+
+#endif
+
   IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) mmio_write(addr, len, data); return);
 #ifdef CONFIG_MTRACE
   fprintf(mtrace_fp, " -> addr is out of bound!\n");
