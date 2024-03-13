@@ -54,6 +54,7 @@ static word_t pmem_read(paddr_t addr, int len) {
     IFDEF(CONFIG_RT_CHECK, default
           : assert(0));
   }
+  fflush(mtrace_fp);
 #endif
   return ret;
 }

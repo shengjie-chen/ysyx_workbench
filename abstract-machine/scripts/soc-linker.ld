@@ -2,8 +2,8 @@
 ENTRY(_start)
 
 MEMORY {
-  mrom : ORIGIN = 0x20000000, LENGTH = 32K
-  sram : ORIGIN = 0x0f000000, LENGTH = 64K
+  mrom (rx) : ORIGIN = 0x20000000, LENGTH = 32K
+  sram (rwx) : ORIGIN = 0x0f000000, LENGTH = 64K
 }
 
 SECTIONS {
@@ -22,7 +22,7 @@ SECTIONS {
   .data :
   {
 	data_start = .;
-    *(.data)
+    *(.data*)
 	data_end = .;
   } > sram AT>mrom
   edata = .;
@@ -35,6 +35,7 @@ SECTIONS {
     *(.bss*)
     *(.sbss*)
     *(.scommon)
+	_bss_end = .;
   } > sram AT> mrom
   _stack_top = ALIGN(0x10);
   . = _stack_top + 0x8000;
