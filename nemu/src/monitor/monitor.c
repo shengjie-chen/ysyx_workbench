@@ -127,10 +127,10 @@ void init_monitor(int argc, char *argv[])
 #endif
 
   /* Initialize memory. */
-  init_mem();
+  IFNDEF(CONFIG_SOC ,init_mem());
 
   /* Initialize devices. */
-  IFDEF(CONFIG_DEVICE, init_device());
+  IFNDEF(CONFIG_SOC ,IFDEF(CONFIG_DEVICE, init_device()));
 
   /* Perform ISA dependent initialization. */
   init_isa();
