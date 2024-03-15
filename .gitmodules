@@ -1,0 +1,3 @@
+[submodule "npc-chisel5"]
+	path = npc-chisel5
+	url = https://github.com/shengjie-chen/npc-chisel5
