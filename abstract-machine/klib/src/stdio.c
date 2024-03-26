@@ -30,6 +30,70 @@ int printf(const char *fmt, ...) {
     }
     return j;
 }
+static void print_char(char cc, int *j, char *out) {
+    out[*j] = cc;
+    *j = *j + 1;
+}
+
+static void print_int(int dd, int *count, int *j, char *out) {
+    if (dd == 0) {
+        *count = 1;
+        out[*j] = 48;
+    } else {
+        *count = int2char(dd, &out[*j]);
+    }
+    *j += *count;
+}
+
+static void print_long(long int dd, int *count, int *j, char *out, char type) {
+    if (dd == 0) {
+        *count = 1;
+        out[*j] = 48;
+    } else {
+        switch (type) {
+        case 'd': {
+            *count = lint2char(dd, &out[*j]);
+            break;
+        }
+        case 'x': {
+            *count = lhex2char(dd, &out[*j]);
+            break;
+        }
+        case 'u': {
+            *count = luint2char(dd, &out[*j]);
+            break;
+        }
+        default: {
+            *count = 0;
+        }
+        }
+    }
+    *j += *count;
+}
+
+// #pragma GCC push_options
+// #pragma GCC optimize("O0")
+static void print_float(double ff, int *count, int *j, char *out) {
+    long int ff_int = ff;
+    long int ff_dec = (ff > 0 ? 1 : -1) * (ff - ff_int) * 1000000;
+    if (ff < 0 && ff_int == 0) {
+        print_char('-', j, out);
+    }
+    print_long(ff_int, count, j, out, 'd');
+    print_char('.', j, out);
+    if (ff_dec != 0) {
+        for (int i = ff_dec; i < 100000; i *= 10) {
+            print_char('0', j, out);
+        }
+        print_long(ff_dec, count, j, out, 'u');
+    } else {
+        for (int i = 0; i < 6; i++) {
+            print_char('0', j, out);
+        }
+    }
+}
+
+// #pragma GCC pop_options
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
     int i = 0; // fmt
@@ -48,27 +112,34 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         {
             char cc;
             cc = (char)va_arg(ap, int);
-            out[j] = cc;
-            j++;
+            print_char(cc, &j, out);
             break;
         }
         case 'd': // 得到一个整数
         {
             int dd;
             dd = (int)va_arg(ap, int);
-            if (dd == 0) {
-                count = 1;
-                out[j] = 48;
-            } else {
-                count = int2char(dd, &out[j]);
-            }
-            j += count;
+            print_int(dd, &count, &j, out);
             break;
+        }
+        case 'f': // 得到一个float/double数
+        {
+            double ff;
+            ff = va_arg(ap, double);
+            print_float(ff, &count, &j, out);
+            break;
+
+            // long int dd;
+            // dd = (long int)va_arg(ap, long int);
+            // print_float(dd, &count, &j, out);
+            // break;
         }
         case 'x': // 得到一个0x数
         {
             int xx;
             xx = (uint32_t)va_arg(ap, uint32_t);
+            print_char('0', &j, out);
+            print_char('x', &j, out);
             if (xx == 0) {
                 count = 1;
                 out[j] = 48;
@@ -110,43 +181,29 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
             switch (fmt[i]) {
             case 'd': // 得到一个long整数
             {
-                int dd;
+                long int dd;
                 dd = (long int)va_arg(ap, long int);
-                if (dd == 0) {
-                    count = 1;
-                    out[j] = 48;
-                } else {
-                    count = lint2char(dd, &out[j]);
-                }
-                j += count;
+                print_long(dd, &count, &j, out, 'd');
                 break;
             }
             case 'u': {
-                int pp;
+                uint64_t pp;
                 pp = (uint64_t)va_arg(ap, uint64_t);
-                if (pp == 0) {
-                    count = 1;
-                    out[j] = 48;
-                } else {
-                    count = luint2char(pp, &out[j]);
-                }
-                j += count;
+                print_long(pp, &count, &j, out, 'u');
                 break;
             }
             case 'x': // 得到一个0x数
             {
-                int xx;
+                uint64_t xx;
                 xx = (uint64_t)va_arg(ap, uint64_t);
-                if (xx == 0) {
-                    count = 1;
-                    out[j] = 48;
-                } else {
-                    count = lhex2char(xx, &out[j]);
-                }
-                j += count;
+                print_char('0', &j, out);
+                print_char('x', &j, out);
+                print_long(xx, &count, &j, out, 'x');
                 break;
             }
             }
+        }
+        default: {
         }
         }
         i++;
@@ -157,7 +214,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
 int lint2char(long int d, char *out) {
     int count = 0;
-    int n = d;
+    long int n = d;
     char m[20];
     if (d < 0) {
         *out++ = '-';
