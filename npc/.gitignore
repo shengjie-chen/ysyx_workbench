@@ -13,7 +13,6 @@
 !build.sc
 !README.md
 build/
-<<<<<<< HEAD
 !nvboard_constr/
 !mill
 !*.py
@@ -22,5 +21,3 @@ out/
 .idea/
 .idea_modules/
 test_run_dir/
-=======
->>>>>>> d1116915d4c440858a4eaacd9c9571d8d18ac88b

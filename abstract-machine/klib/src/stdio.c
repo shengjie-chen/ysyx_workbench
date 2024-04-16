@@ -71,8 +71,6 @@ static void print_long(long int dd, int *count, int *j, char *out, char type) {
     *j += *count;
 }
 
-// #pragma GCC push_options
-// #pragma GCC optimize("O0")
 static void print_float(double ff, int *count, int *j, char *out) {
     long int ff_int = ff;
     long int ff_dec = (ff > 0 ? 1 : -1) * (ff - ff_int) * 1000000;
@@ -92,8 +90,6 @@ static void print_float(double ff, int *count, int *j, char *out) {
         }
     }
 }
-
-// #pragma GCC pop_options
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
     int i = 0; // fmt
@@ -128,11 +124,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
             ff = va_arg(ap, double);
             print_float(ff, &count, &j, out);
             break;
-
-            // long int dd;
-            // dd = (long int)va_arg(ap, long int);
-            // print_float(dd, &count, &j, out);
-            // break;
         }
         case 'x': // 得到一个0x数
         {
