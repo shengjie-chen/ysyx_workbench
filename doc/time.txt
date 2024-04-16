@@ -1,3 +1,0 @@
-nemu:1min
-npc: 35min
-

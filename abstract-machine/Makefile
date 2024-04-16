@@ -62,7 +62,8 @@ LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recu
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
-    $(LIBS) ))
+    $(LIBS) )) \
+	/opt/linux-riscvim/lib/gcc/riscv64-unknown-linux-gnu/13.2.0/libgcc.a
 $(info ---LIBS:$(LIBS))
 
 ## 3. General Compilation Flags
