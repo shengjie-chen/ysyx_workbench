@@ -9,18 +9,22 @@ static uint32_t *audio_base = NULL;
 static uint32_t pos = 0;
 
 static void audio_callback(void *udata, uint8_t *stream, int len) {
-    int left = audio_base[reg_count] - pos;
-    if (left == 0 && pos != 0) {
-        pos = 0;
-        audio_base[reg_count] = 0;
-        return;
-    }
     SDL_LockAudio();
-    memset(stream, 0, len);
-    len = (len > left ? left : len);
-    memcpy(stream, sbuf + pos, len);
-    pos += len;
+    SDL_memset(stream, 0, len);
+    len = len > audio_base[reg_count] ? audio_base[reg_count] : len;
+    if (audio_base[reg_count] == 0)
+        return;
+    if ((pos + len) < CONFIG_SB_SIZE) {
+        memcpy(stream, sbuf + pos, len);
+        pos += len;
+    } else {
+        memcpy(stream, sbuf + pos, (CONFIG_SB_SIZE - pos));
+        pos = CONFIG_SB_SIZE - pos;
+        memcpy(stream + pos, sbuf, len - pos);
+        pos = len - pos;
+    }
     SDL_UnlockAudio();
+    audio_base[reg_count] -= len;
 }
 
 static void audio_io_handler(uint32_t offset, int len, bool is_write) {
