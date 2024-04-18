@@ -28,7 +28,6 @@ FILE *ftrace_fp = NULL;
 char *ftrace_file = FTRACE_PATH;
 int ftrace_depth = 0;
 int ftrace_func_num;
-#define MAX_FUNC_NUM 100
 char symname[MAX_FUNC_NUM][20];
 vaddr_t symaddr[MAX_FUNC_NUM];
 vaddr_t symaddr_end[MAX_FUNC_NUM];

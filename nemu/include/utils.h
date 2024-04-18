@@ -58,5 +58,6 @@ uint64_t get_time();
     log_write(__VA_ARGS__); \
   } while (0)
 
+#define MAX_FUNC_NUM 1500
 
 #endif

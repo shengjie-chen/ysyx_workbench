@@ -73,7 +73,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 }
 
 #ifdef CONFIG_FTRACE
-#define MAX_FUNC_NUM 100
 extern int ftrace_func_num;
 extern int ftrace_depth;
 extern char symname[MAX_FUNC_NUM][20];
