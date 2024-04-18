@@ -10,7 +10,7 @@ static uint32_t pos = 0;
 
 static void audio_callback(void *udata, uint8_t *stream, int len) {
     int left = audio_base[reg_count] - pos;
-    if (left == 0) {
+    if (left == 0 && pos != 0) {
         pos = 0;
         audio_base[reg_count] = 0;
         return;
