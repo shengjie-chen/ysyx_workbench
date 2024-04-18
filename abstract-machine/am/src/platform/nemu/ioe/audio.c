@@ -10,10 +10,13 @@
 
 static uint32_t bufsize = 0;
 
-void __am_audio_init() { bufsize = inl(AUDIO_SBUF_SIZE_ADDR); }
+void __am_audio_init() {
+    // bufsize = inl(AUDIO_SBUF_SIZE_ADDR);
+}
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
-    cfg->present = true;
+    cfg->present = false; // switch
+    // cfg->present = true; // switch
     cfg->bufsize = bufsize;
 }
 
