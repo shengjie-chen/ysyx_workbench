@@ -1,5 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
+#include "stdio.h"
 
 #define STACK_SIZE (4096 * 8)
 typedef union {
@@ -17,9 +18,20 @@ static void f(void *arg) {
 }
 
 static Context *schedule(Event ev, Context *prev) {
-  current->cp = prev;
-  current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  return current->cp;
+    switch (ev.event) {
+    case EVENT_SYSCALL:
+        printf("syscall!!\n");
+        break;
+    case EVENT_YIELD:
+        // printf("yield!!\n");
+        current->cp = prev;
+        current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+        return current->cp;
+        break;
+    default:
+        printf("Unhandled event ID = %d", ev.event);
+    }
+    return prev;
 }
 
 int main() {
