@@ -3,7 +3,7 @@
 
 #include <common.h>
 
-word_t expr(char *e, bool *success);
+uint32_t expr(char *e, bool *success);
 void add_new_wp(char *args);
 void free_wp(int index);
 void print_watchpoint();

@@ -41,4 +41,15 @@ endef
 _default:
 	@echo "Please run 'make' under subprojects."
 
+clean-all:
+	make -C ./abstract-machine clean-all
+	make -C ./am-kernels clean-all
+	make -C ./fceux-am clean
+	make -C ./nanos-lite clean
+	make -C ./navy-apps clean
+	make -C ./nemu clean
+	make -C ./npc-chisel5 clean
+	
+.PHONY: clean-all 
+
 .PHONY: .git_commit .clean_index _default
