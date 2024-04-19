@@ -1,12 +1,12 @@
 #include <am.h>
 #include <nemu.h>
 
-#define AUDIO_FREQ_ADDR (AUDIO_ADDR + 0x00)
-#define AUDIO_CHANNELS_ADDR (AUDIO_ADDR + 0x04)
-#define AUDIO_SAMPLES_ADDR (AUDIO_ADDR + 0x08)
+#define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
+#define AUDIO_CHANNELS_ADDR  (AUDIO_ADDR + 0x04)
+#define AUDIO_SAMPLES_ADDR   (AUDIO_ADDR + 0x08)
 #define AUDIO_SBUF_SIZE_ADDR (AUDIO_ADDR + 0x0c)
-#define AUDIO_INIT_ADDR (AUDIO_ADDR + 0x10)
-#define AUDIO_COUNT_ADDR (AUDIO_ADDR + 0x14)
+#define AUDIO_INIT_ADDR      (AUDIO_ADDR + 0x10)
+#define AUDIO_COUNT_ADDR     (AUDIO_ADDR + 0x14)
 
 static uint32_t bufsize = 0;
 
