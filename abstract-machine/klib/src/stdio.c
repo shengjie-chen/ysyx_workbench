@@ -71,6 +71,7 @@ static void print_long(long int dd, int *count, int *j, char *out, char type) {
     *j += *count;
 }
 
+#ifdef __SUPPORT_FLOAT__
 static void print_float(double ff, int *count, int *j, char *out) {
     long int ff_int = ff;
     long int ff_dec = (ff > 0 ? 1 : -1) * (ff - ff_int) * 1000000;
@@ -90,6 +91,7 @@ static void print_float(double ff, int *count, int *j, char *out) {
         }
     }
 }
+#endif
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
     int i = 0; // fmt
@@ -120,10 +122,13 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         }
         case 'f': // 得到一个float/double数
         {
+#ifdef __SUPPORT_FLOAT__
             double ff;
             ff = va_arg(ap, double);
             print_float(ff, &count, &j, out);
             break;
+#endif
+            printf("[warming]not support print float, please open macro!");
         }
         case 'x': // 得到一个0x数
         {

@@ -2,9 +2,9 @@
 #include "soc.h"
 #include <am.h>
 
-extern char data_start[];
-extern char data_size[];
-extern char data_load_start[];
+extern uint32_t data_start;
+extern uint32_t data_size;
+extern uint32_t data_load_start;
 
 extern char _heap_start;
 int main(const char *args);
@@ -26,9 +26,10 @@ void halt(int code) {
 }
 
 void _trm_init() {
-	// printf("data_load_start: %lx\n", data_load_start);
+	// printf("1\n");
+    // printf("data_load_start: %x\n", (uint32_t)data_load_start);
     if (data_start != data_load_start && data_size != 0) {
-        memcpy(data_start, data_load_start, (size_t)data_size);
+        memcpy((void *)(uint64_t)data_start, (void *)(uint64_t)data_load_start, (uint32_t)data_size);
     }
     int ret = main(mainargs);
     halt(ret);

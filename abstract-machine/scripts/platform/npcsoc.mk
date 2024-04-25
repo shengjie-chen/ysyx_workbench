@@ -1,8 +1,4 @@
 AM_SRCS := platform/npcsoc/trm.c \
-           platform/npcsoc/ioe/ioe.c \
-           platform/npcsoc/ioe/timer.c \
-           platform/npcsoc/ioe/input.c \
-           platform/npcsoc/ioe/gpu.c \
            platform/npcsoc/mpe.c
 
 CFLAGS    += -fdata-sections -ffunction-sections
