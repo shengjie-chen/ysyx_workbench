@@ -18,7 +18,11 @@ SECTIONS {
     *(.rodata*)
     rodata_end = .;
   } > mrom AT> mrom
-
+  .srodata : {
+    *(.srodata*)
+    srodata_end = .;
+  } > mrom AT> mrom
+  
   .data :
   {
 	data_start = .;
