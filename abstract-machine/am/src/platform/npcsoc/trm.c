@@ -3,8 +3,11 @@
 #include <am.h>
 
 extern char data_start;
-extern char data_size;
 extern char data_load_start;
+extern char data_load_end;
+extern char _bss_start;
+extern char _bss_end;
+// extern char data_size;
 
 extern char _heap_start;
 int main(const char *args);
@@ -26,11 +29,16 @@ void halt(int code) {
 }
 
 void _trm_init() {
-	// printf("1\n");
+    // printf("1\n");
     // printf("data_load_start: %x\n", (uint32_t)data_load_start);
-    if (&data_start != &data_load_start && (uint64_t)&data_size != 0) {
-        memcpy((void *)&data_start, (void *)&data_load_start, (uint64_t)&data_size);
+    size_t load_data_size = (uint64_t)&data_load_end - (uint64_t)&data_load_start;
+    // size_t bss_size = (uint64_t)&_bss_end - (uint64_t)&_bss_start;
+    if (load_data_size != 0) {
+        memcpy(&data_start, &data_load_start, load_data_size);
     }
+    // if (bss_size != 0) {
+    //     memset(&_bss_start, 0, bss_size);
+    // }
     int ret = main(mainargs);
     halt(ret);
 }

@@ -5,15 +5,33 @@
 
 void difftest_skip_ref();
 
+#ifdef CONFIG_SOC
+static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+static uint8_t sram[CONFIG_SRAM_SIZE] PG_ALIGN = {};
+
+#else
 #if defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-
-#ifdef CONFIG_SOC
-static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
-static uint8_t sram[CONFIG_SRAM_SIZE] PG_ALIGN = {};
 #endif
+
+void init_mem() {
+#if defined(CONFIG_PMEM_MALLOC)
+    pmem = malloc(CONFIG_MSIZE);
+    assert(pmem);
+#endif
+#ifdef CONFIG_MEM_RANDOM
+    uint32_t *p = (uint32_t *)pmem;
+    int i;
+    for (i = 0; i < (int)(CONFIG_MSIZE / sizeof(p[0])); i++) {
+        p[i] = rand();
+    }
+#endif
+    Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", (paddr_t)CONFIG_MBASE,
+        (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
+}
+
 #endif
 
 #ifdef CONFIG_MTRACE
@@ -32,144 +50,132 @@ uint8_t *guest_to_host(paddr_t paddr) {
     return pmem + paddr - CONFIG_MBASE;
 #endif
 }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+
+paddr_t host_to_guest(uint8_t *haddr) {
+#ifdef CONFIG_SOC
+    return 1;
+#else
+    return haddr - pmem + CONFIG_MBASE;
+#endif
+}
 
 static word_t pmem_read(paddr_t addr, int len) {
-  word_t ret = host_read(guest_to_host(addr), len);
+    word_t ret = host_read(guest_to_host(addr), len);
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, "read  pmem ## addr: %x", addr);
-  switch (len) {
-  case 1:
-    fprintf(mtrace_fp, " -> 0x%02lx \n", ret);
-    break;
-  case 2:
-    fprintf(mtrace_fp, " -> 0x%04lx \n", ret);
-    break;
-  case 4:
-    fprintf(mtrace_fp, " -> 0x%08lx \n", ret);
-    break;
-    IFDEF(CONFIG_ISA64, case 8
-          : fprintf(mtrace_fp, " -> 0x%016lx \n", ret);
-          break);
-    IFDEF(CONFIG_RT_CHECK, default
-          : assert(0));
-  }
-  fflush(mtrace_fp);
+    fprintf(mtrace_fp, "read  pmem ## addr: %x", addr);
+    switch (len) {
+    case 1:
+        fprintf(mtrace_fp, " -> 0x%02lx \n", ret);
+        break;
+    case 2:
+        fprintf(mtrace_fp, " -> 0x%04lx \n", ret);
+        break;
+    case 4:
+        fprintf(mtrace_fp, " -> 0x%08lx \n", ret);
+        break;
+        IFDEF(CONFIG_ISA64, case 8 : fprintf(mtrace_fp, " -> 0x%016lx \n", ret); break);
+        IFDEF(CONFIG_RT_CHECK, default : assert(0));
+    }
+    fflush(mtrace_fp);
 #endif
-  return ret;
+    return ret;
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
-  host_write(guest_to_host(addr), len, data);
+    host_write(guest_to_host(addr), len, data);
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, "write pmem ## addr: %x", addr);
+    fprintf(mtrace_fp, "write pmem ## addr: %x", addr);
 
-  word_t mem_value;
-  word_t *mem_value_ptr = &mem_value;
-  switch (len) {
-  case 1:
-    *(uint8_t *)mem_value_ptr = data;
-    fprintf(mtrace_fp, " -> 0x%02x \n", *(uint8_t *)mem_value_ptr);
-    break;
-  case 2:
-    *(uint16_t *)mem_value_ptr = data;
-    fprintf(mtrace_fp, " -> 0x%04x \n", *(uint16_t *)mem_value_ptr);
-    break;
-  case 4:
-    *(uint32_t *)mem_value_ptr = data;
-    fprintf(mtrace_fp, " -> 0x%08x \n", *(uint32_t *)mem_value_ptr);
-    break;
-    IFDEF(CONFIG_ISA64, case 8
-          : *(uint64_t *)mem_value_ptr = data;
-          fprintf(mtrace_fp, " -> 0x%016lx \n", *mem_value_ptr);
-          break);
-    IFDEF(CONFIG_RT_CHECK, default
-          : assert(0));
-  }
+    word_t mem_value;
+    word_t *mem_value_ptr = &mem_value;
+    switch (len) {
+    case 1:
+        *(uint8_t *)mem_value_ptr = data;
+        fprintf(mtrace_fp, " -> 0x%02x \n", *(uint8_t *)mem_value_ptr);
+        break;
+    case 2:
+        *(uint16_t *)mem_value_ptr = data;
+        fprintf(mtrace_fp, " -> 0x%04x \n", *(uint16_t *)mem_value_ptr);
+        break;
+    case 4:
+        *(uint32_t *)mem_value_ptr = data;
+        fprintf(mtrace_fp, " -> 0x%08x \n", *(uint32_t *)mem_value_ptr);
+        break;
+        IFDEF(CONFIG_ISA64, case 8
+              : *(uint64_t *)mem_value_ptr = data;
+              fprintf(mtrace_fp, " -> 0x%016lx \n", *mem_value_ptr); break);
+        IFDEF(CONFIG_RT_CHECK, default : assert(0));
+    }
 #endif
 }
 
 static void out_of_bound(paddr_t addr) {
-  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-        addr, (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1, cpu.pc);
-}
-
-void init_mem() {
-#if defined(CONFIG_PMEM_MALLOC)
-  pmem = malloc(CONFIG_MSIZE);
-  assert(pmem);
-#endif
-#ifdef CONFIG_MEM_RANDOM
-  uint32_t *p = (uint32_t *)pmem;
-  int i;
-  for (i = 0; i < (int)(CONFIG_MSIZE / sizeof(p[0])); i++) {
-    p[i] = rand();
-  }
-#endif
-  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]",
-      (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
+    panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD, addr,
+          (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1, cpu.pc);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-  if (likely(in_pmem(addr))) {
-    // printf("in mem\n");// debug skip
-    return pmem_read(addr, len);
-  }
 #ifdef CONFIG_SOC
-  if (likely(in_mrom(addr))) {
-    return pmem_read(addr, len);
-  }
+    if (likely(in_mrom(addr))) {
+        return pmem_read(addr, len);
+    }
 
-  if (likely(in_sram(addr))) {
-    return pmem_read(addr, len);
-  }
+    if (likely(in_sram(addr))) {
+        return pmem_read(addr, len);
+    }
+    Assert(0, "read addr = %x, out of bound!\n", addr);
 
-  Assert(0, "read addr = %x, out of bound!\n", addr);
+#else
+    if (likely(in_pmem(addr))) {
+        // printf("in mem\n");// debug skip
+        return pmem_read(addr, len);
+    }
 #endif
 
-  // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
-  //   if(in_mmio(addr)){
-  //     difftest_skip_ref();
-  //   }
-  // #endif
+    // #if defined(CONFIG_DEVICE) && defined(CONFIG_DIFFTEST)
+    //   if(in_mmio(addr)){
+    //     difftest_skip_ref();
+    //   }
+    // #endif
 
-  IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) return mmio_read(addr, len));
+    IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) return mmio_read(addr, len));
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, " -> addr is out of bound!\n");
+    fprintf(mtrace_fp, " -> addr is out of bound!\n");
 #endif
-  out_of_bound(addr);
-  return 0;
+    out_of_bound(addr);
+    return 0;
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-
-  if (likely(in_pmem(addr))) {
-    pmem_write(addr, len, data);
-    return;
-  }
-
 #ifdef CONFIG_SOC
-  if (likely(in_mrom(addr))) {
-    Assert(0, "can not write mrom");
-  }
+    if (likely(in_mrom(addr))) {
+        Assert(0, "can not write mrom");
+    }
 
-  if (likely(in_sram(addr))) {
-    pmem_write(addr, len, data);
-	return;
-  }
+    if (likely(in_sram(addr))) {
+        pmem_write(addr, len, data);
+        return;
+    }
 
-  if(addr == 0x10000000L){
-	printf("%c", (char)data);
-	return;
-  }
+    if (addr == 0x10000000L) {
+        printf("%c", (char)data);
+        return;
+    }
 
-  Assert(0, "write addr = %x, out of bound!\n", addr);
+    Assert(0, "write addr = %x, out of bound!\n", addr);
 
-#endif
+#else
 
-  IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) mmio_write(addr, len, data); return);
+    if (likely(in_pmem(addr))) {
+        pmem_write(addr, len, data);
+        return;
+    }
+
+    IFDEF(CONFIG_DEVICE, IFDEF(CONFIG_DIFFTEST, difftest_skip_ref();) mmio_write(addr, len, data); return);
 #ifdef CONFIG_MTRACE
-  fprintf(mtrace_fp, " -> addr is out of bound!\n");
+    fprintf(mtrace_fp, " -> addr is out of bound!\n");
 #endif
-  out_of_bound(addr);
+
+    out_of_bound(addr);
+#endif
 }
