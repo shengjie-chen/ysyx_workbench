@@ -26,7 +26,7 @@ int main() {
             return 1;
         }
     }
-    str = "8p\n";
+    str = "8bit pass!\n";
     for (int i = 0; str[i] != '\0'; i++) {
         putch(str[i]);
     }
@@ -47,7 +47,7 @@ int main() {
             return 1;
         }
     }
-    str = "16p\n";
+    str = "16bit pass!\n";
     for (int i = 0; str[i] != '\0'; i++) {
         putch(str[i]);
     }
@@ -68,7 +68,7 @@ int main() {
             return 1;
         }
     }
-    str = "32p\n";
+    str = "32bit pass!\n";
     for (int i = 0; str[i] != '\0'; i++) {
         putch(str[i]);
     }
@@ -89,7 +89,7 @@ int main() {
             return 1;
         }
     }
-    str = "64p\n";
+    str = "64bit pass!\n";
     for (int i = 0; str[i] != '\0'; i++) {
         putch(str[i]);
     }
